@@ -97,7 +97,11 @@ setInterval(async () => {
     return;
   }
 
-  const now = new Date();
+  const now = new Date(
+  new Date().toLocaleString("en-US", {
+    timeZone: "Africa/Lagos"
+  })
+);
 
   const currentTime =
     String(now.getHours()).padStart(2, "0") +
