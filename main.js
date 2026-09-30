@@ -172,3 +172,21 @@ if (notificationButton) {
     }
   });
 }
+
+async function enablePushNotifications() {
+  if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+    alert("Push notifications are not supported on this device/browser.");
+    return;
+  }
+
+  const permission = await Notification.requestPermission();
+
+  if (permission !== "granted") {
+    alert("Notifications were not enabled.");
+    return;
+  }
+
+  const registration = await navigator.serviceWorker.ready;
+
+  alert("Notifications permission granted. Push setup is next.");
+}
