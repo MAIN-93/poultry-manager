@@ -90,6 +90,46 @@ app.post("/send-test", async (req, res) => {
   }
 });
 
+let lastSentFeedTime = "";
+
+setInterval(async () => {
+  if (!savedSubscription) {
+    return;
+  }
+
+  const now = new Date();
+
+  const currentTime =
+    String(now.getHours()).padStart(2, "0") +
+    ":" +
+    String(now.getMinutes()).padStart(2, "0");
+
+  if (
+    (currentTime === feedSchedule.morning ||
+     currentTime === feedSchedule.afternoon) &&
+    lastSentFeedTime !== currentTime
+  ) {
+    try {
+      await webpush.sendNotification(
+        savedSubscription,
+        JSON.stringify({
+          title: "Poultry Manager",
+          body: "🐔⏰ It's feeding time!"
+        })
+      );
+
+      console.log("Automatic feed notification sent.");
+
+      lastSentFeedTime = currentTime;
+    } catch (error) {
+      console.error(
+        "Automatic feed notification failed:",
+        error
+      );
+    }
+  }
+}, 1000);
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
