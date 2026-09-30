@@ -17,6 +17,8 @@ app.get("/", (req, res) => {
   res.send("Poultry Manager API is running.");
 });
 
+let savedSubscription = null;
+
 app.post("/subscribe", (req, res) => {
   const subscription = req.body;
 
@@ -26,11 +28,41 @@ app.post("/subscribe", (req, res) => {
     });
   }
 
-  console.log("Push subscription received:", subscription);
+  savedSubscription = subscription;
+
+  console.log("Push subscription saved.");
 
   res.status(201).json({
     message: "Push subscription saved."
   });
+});
+
+app.post("/send-test", async (req, res) => {
+  if (!savedSubscription) {
+    return res.status(404).json({
+      error: "No push subscription saved."
+    });
+  }
+
+  try {
+    await webpush.sendNotification(
+      savedSubscription,
+      JSON.stringify({
+        title: "Poultry Manager",
+        body: "🐔 Test notification received!"
+      })
+    );
+
+    res.json({
+      message: "Test notification sent."
+    });
+  } catch (error) {
+    console.error("Push notification failed:", error);
+
+    res.status(500).json({
+      error: "Push notification failed."
+    });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
