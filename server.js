@@ -24,7 +24,25 @@ let feedSchedule = {
   afternoon: null
 };
 
-app.post("/subscribe", (req, res) => {
+app.post("/schedule", (req, res) => {
+  const { morning, afternoon } = req.body;
+
+  if (!morning || !afternoon) {
+    return res.status(400).json({
+      error: "Both feeding times are required."
+    });
+  }
+
+  feedSchedule.morning = morning;
+  feedSchedule.afternoon = afternoon;
+
+  console.log("Feed schedule updated:", feedSchedule);
+
+  res.json({
+    message: "Feed schedule saved.",
+    schedule: feedSchedule
+  });
+});
   const subscription = req.body;
 
   if (!subscription || !subscription.endpoint) {
