@@ -19,6 +19,11 @@ app.get("/", (req, res) => {
 
 let savedSubscription = null;
 
+let feedSchedule = {
+  morning: null,
+  afternoon: null
+};
+
 app.post("/subscribe", (req, res) => {
   const subscription = req.body;
 
