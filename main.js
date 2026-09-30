@@ -235,3 +235,25 @@ function urlBase64ToUint8Array(base64String) {
     [...rawData].map(char => char.charCodeAt(0))
   );
 }
+
+const testPushButton = document.getElementById("testPush");
+
+if (testPushButton) {
+  testPushButton.addEventListener("click", async () => {
+    try {
+      const response = await fetch(
+        "https://poultry-manager-hppo.onrender.com/send-test",
+        {
+          method: "POST"
+        }
+      );
+
+      const result = await response.json();
+
+      alert(result.message || result.error);
+    } catch (error) {
+      console.error("Test push failed:", error);
+      alert("Test push failed.");
+    }
+  });
+}
