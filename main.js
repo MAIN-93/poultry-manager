@@ -50,18 +50,53 @@ if (savedMorningTime && savedAfternoonTime) {
     "Morning: " + savedMorningTime +
     " | Afternoon: " + savedAfternoonTime;
 }
-saveScheduleButton.addEventListener("click", function() {
+saveScheduleButton.addEventListener("click", async function() {
   const morning = morningFeedTime.value;
   const afternoon = afternoonFeedTime.value;
+
   if (!morning || !afternoon) {
     scheduleStatus.textContent = "Please set both feeding times.";
     return;
   }
+
   localStorage.setItem("morningFeedTime", morning);
   localStorage.setItem("afternoonFeedTime", afternoon);
+
   scheduleStatus.textContent =
     "Morning: " + morning +
     " | Afternoon: " + afternoon;
+
+  try {
+    const response = await fetch(
+      "https://poultry-manager-hppo.onrender.com/schedule",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          morning: morning,
+          afternoon: afternoon
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Schedule could not be saved.");
+    }
+
+    scheduleStatus.textContent =
+      "Morning: " + morning +
+      " | Afternoon: " + afternoon +
+      " • Server saved";
+  } catch (error) {
+    console.error("Schedule sync failed:", error);
+
+    scheduleStatus.textContent =
+      "Saved on phone, but server sync failed.";
+  }
 });
 
 function updateNextFeed() {
