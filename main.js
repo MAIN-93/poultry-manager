@@ -154,3 +154,21 @@ if ("serviceWorker" in navigator) {
       console.error("Service worker registration failed:", error);
     });
 }
+const notificationButton = document.getElementById("enableNotifications");
+
+if (notificationButton) {
+  notificationButton.addEventListener("click", async () => {
+    if (!("Notification" in window)) {
+      alert("Notifications are not supported on this device/browser.");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      alert("🔔 Notifications enabled!");
+    } else {
+      alert("Notifications were not enabled.");
+    }
+  });
+}
