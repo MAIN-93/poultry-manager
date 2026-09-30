@@ -17,6 +17,22 @@ app.get("/", (req, res) => {
   res.send("Poultry Manager API is running.");
 });
 
+app.post("/subscribe", (req, res) => {
+  const subscription = req.body;
+
+  if (!subscription || !subscription.endpoint) {
+    return res.status(400).json({
+      error: "Invalid push subscription."
+    });
+  }
+
+  console.log("Push subscription received:", subscription);
+
+  res.status(201).json({
+    message: "Push subscription saved."
+  });
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
