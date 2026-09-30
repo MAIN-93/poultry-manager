@@ -24,6 +24,24 @@ let feedSchedule = {
   afternoon: null
 };
 
+app.post("/subscribe", (req, res) => {
+  const subscription = req.body;
+
+  if (!subscription || !subscription.endpoint) {
+    return res.status(400).json({
+      error: "Invalid push subscription."
+    });
+  }
+
+  savedSubscription = subscription;
+
+  console.log("Push subscription saved.");
+
+  res.status(201).json({
+    message: "Push subscription saved."
+  });
+});
+
 app.post("/schedule", (req, res) => {
   const { morning, afternoon } = req.body;
 
@@ -41,22 +59,6 @@ app.post("/schedule", (req, res) => {
   res.json({
     message: "Feed schedule saved.",
     schedule: feedSchedule
-  });
-});
-  const subscription = req.body;
-
-  if (!subscription || !subscription.endpoint) {
-    return res.status(400).json({
-      error: "Invalid push subscription."
-    });
-  }
-
-  savedSubscription = subscription;
-
-  console.log("Push subscription saved.");
-
-  res.status(201).json({
-    message: "Push subscription saved."
   });
 });
 
