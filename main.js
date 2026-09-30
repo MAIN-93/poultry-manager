@@ -190,3 +190,5 @@ async function enablePushNotifications() {
 
   alert("Notifications permission granted. Push setup is next.");
 }
+const VAPID_PUBLIC_KEY =
+  "BIcVdte-foGuqHPNOv1m9XhBHconqjfIVSNUH7m9FcUlp9aRJn7XT3PT42vBbk9qN2ZPINXisFjOYhTAdoJapOU";
