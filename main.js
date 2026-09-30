@@ -165,9 +165,8 @@ if (notificationButton) {
 
     const permission = await Notification.requestPermission();
 
-if (permission === "granted") {
-  await subscribeToPush();
-}
+    if (permission === "granted") {
+      await subscribeToPush();
     } else {
       alert("Notifications were not enabled.");
     }
