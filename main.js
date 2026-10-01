@@ -7,8 +7,14 @@ if (savedDate !== today) {
     JSON.parse(localStorage.getItem("eggHistory")) || {};
 
   if (savedDate) {
-    eggHistory[savedDate] = eggs;
-  }
+  const flockSize =
+    Number(localStorage.getItem("chickenCount")) || 0;
+
+  eggHistory[savedDate] = {
+    eggs: eggs,
+    flock: flockSize
+  };
+}
 
   localStorage.setItem(
     "eggHistory",
