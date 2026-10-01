@@ -86,18 +86,33 @@
             <p id="nextFeed">Not set</p>
         </section>
 
-        <section class="card">
+     <section class="card flock-card">
     <h2>🐔 Flock</h2>
 
-    <p>Total Chickens: <strong id="chickenCount">0</strong></p>
+    <div class="flock-total">
+        <p>Total Chickens</p>
+        <strong id="chickenCount">0</strong>
+    </div>
+
+    <div class="flock-actions">
+        <button id="removeChicken">− Remove</button>
+        <button id="addChicken">+ Add</button>
+    </div>
+
+    <hr>
+
+    <h3>Edit Flock Size</h3>
 
     <input
         type="number"
         id="flockInput"
-        placeholder="Set flock size"
+        placeholder="Enter total chickens"
         min="0"
         step="1"
     >
+
+    <button id="setFlockButton">Update Flock</button>
+</section>
 
     <button id="setFlockButton">Set Flock</button>
 
