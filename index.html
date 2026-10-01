@@ -12,75 +12,87 @@
         <h1>PoultryMate</h1>
         <p>Manage your flock with ease.</p>
     </header>
-    <main>
-        <section class="dashboard">
-            <div class="card">
-                <h2>🐔 Birds</h2>
-                <p id="birdCount">5</p>
-            </div>
-           <div class="card">
-    <h2>🥚 Today's Eggs</h2>
-    <p id="eggCount">0</p>
-    <button id="addEggButton">+ Add Egg</button>
-</div>
-           <div class="card">
-    <h2>🌾 Feed</h2>
-    <p id="feedAmount">0 kg</p>
-    <input
-        type="number"
-        id="feedInput"
-        placeholder="Add feed (kg)"
-        min="0"
-        step="0.01"
-    >
-    <button id="addFeedButton">+ Add Feed</button>
-    <input
-        type="number"
-        id="useFeedInput"
-        placeholder="Use feed (kg)"
-        min="0"
-        step="0.01"
-    >
-    <button id="useFeedButton">− Use Feed</button>
-    
-    <h3>Feeding Schedule</h3>
-<label for="morningFeedTime">Morning feeding</label>
-<input type="time" id="morningFeedTime">
-<label for="afternoonFeedTime">Afternoon feeding</label>
-<input type="time" id="afternoonFeedTime">
-<button id="saveScheduleButton">Save Schedule</button>
-<p id="scheduleStatus">No schedule saved.</p>
+   <main>
+    <section class="dashboard">
 
-<hr>
+        <div class="card">
+            <h2>🐔 Birds</h2>
+            <p id="birdCount">5</p>
+        </div>
 
-<h3>Feed Alarm</h3>
+        <div class="card">
+            <h2>🥚 Today's Eggs</h2>
+            <p id="eggCount">0</p>
+            <button id="addEggButton">+ Add Egg</button>
+        </div>
 
-<button id="alarmButton">🔔 Turn Alarm On</button>
+        <div class="card">
+            <h2>🌾 Feed</h2>
 
-<p id="alarmStatus">Alarm is off.</p>
+            <p id="feedAmount">0 kg</p>
 
-<div id="alarmMessage"></div>
-    <button id="enableNotifications">
-  🔔 Enable Notifications
-</button>
-               
-</div>
-            <section class="card">
-  <h2>⏰ Next Feed</h2>
-  <p id="nextFeed">Not set</p>
-</section>
+            <input
+                type="number"
+                id="feedInput"
+                placeholder="Add feed (kg)"
+                min="0"
+                step="0.01"
+            >
 
-<section class="card">
-  <h2>🐔 Flock</h2>
+            <button id="addFeedButton">+ Add Feed</button>
 
-  <p>Total Chickens: <strong id="chickenCount">0</strong></p>
+            <input
+                type="number"
+                id="useFeedInput"
+                placeholder="Use feed (kg)"
+                min="0"
+                step="0.01"
+            >
 
-  <button id="addChicken">+ Add Chicken</button>
-</section>
-                
-            </div>
+            <button id="useFeedButton">− Use Feed</button>
+
+            <h3>Feeding Schedule</h3>
+
+            <label for="morningFeedTime">Morning feeding</label>
+            <input type="time" id="morningFeedTime">
+
+            <label for="afternoonFeedTime">Afternoon feeding</label>
+            <input type="time" id="afternoonFeedTime">
+
+            <button id="saveScheduleButton">Save Schedule</button>
+
+            <p id="scheduleStatus">No schedule saved.</p>
+
+            <hr>
+
+            <h3>Feed Alarm</h3>
+
+            <button id="alarmButton">🔔 Turn Alarm On</button>
+
+            <p id="alarmStatus">Alarm is off.</p>
+
+            <div id="alarmMessage"></div>
+
+            <button id="enableNotifications">
+                🔔 Enable Notifications
+            </button>
+        </div>
+
+        <section class="card">
+            <h2>⏰ Next Feed</h2>
+            <p id="nextFeed">Not set</p>
         </section>
-    </main>
+
+        <section class="card">
+            <h2>🐔 Flock</h2>
+
+            <p>Total Chickens: <strong id="chickenCount">0</strong></p>
+
+            <button id="addChicken">+ Add Chicken</button>
+        </section>
+
+    </section>
+</main>
     <script src="main.js"></script>
 </body>
 </html>
