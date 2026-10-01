@@ -80,3 +80,45 @@ body {
 .card {
   margin-bottom: 20px;
 }
+
+
+.flock-card {
+  text-align: center;
+}
+
+.flock-total {
+  margin: 15px 0;
+}
+
+.flock-total p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.flock-total strong {
+  display: block;
+  font-size: 42px;
+  margin-top: 4px;
+}
+
+.flock-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.flock-actions button {
+  flex: 1;
+}
+
+.flock-card hr {
+  margin: 20px 0;
+  opacity: 0.2;
+}
+
+.flock-card input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
