@@ -379,10 +379,18 @@ removeChickenButton.onclick = function() {
 };
 
 setFlockButton.onclick = function() {
-  const newFlockSize =
-    Number(flockInput.value);
+  const inputValue = flockInput.value.trim();
 
-  if (newFlockSize < 0 || !Number.isInteger(newFlockSize)) {
+  if (inputValue === "") {
+    return;
+  }
+
+  const newFlockSize = Number(inputValue);
+
+  if (
+    !Number.isInteger(newFlockSize) ||
+    newFlockSize < 0
+  ) {
     return;
   }
 
