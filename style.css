@@ -122,3 +122,46 @@ body {
   box-sizing: border-box;
   margin-bottom: 10px;
 }
+
+.eggs-card {
+  text-align: center;
+}
+
+.egg-total {
+  margin: 15px 0 20px;
+}
+
+.egg-total p,
+.egg-rate p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.egg-total strong {
+  display: block;
+  font-size: 42px;
+  margin-top: 4px;
+}
+
+.egg-actions {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.egg-actions button {
+  flex: 1;
+}
+
+.egg-rate {
+  padding: 15px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.egg-rate strong {
+  display: block;
+  font-size: 30px;
+  margin-top: 4px;
+}
