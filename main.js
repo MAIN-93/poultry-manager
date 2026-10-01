@@ -339,18 +339,62 @@ const chickenCount =
 const addChickenButton =
   document.getElementById("addChicken");
 
+const removeChickenButton =
+  document.getElementById("removeChicken");
+
+const flockInput =
+  document.getElementById("flockInput");
+
+const setFlockButton =
+  document.getElementById("setFlockButton");
+
 chickenCount.textContent = chickenCountValue;
 
-if (addChickenButton) {
-  addChickenButton.onclick = function() {
-    chickenCountValue++;
+addChickenButton.onclick = function() {
+  chickenCountValue++;
 
-    chickenCount.textContent =
-      chickenCountValue;
+  chickenCount.textContent =
+    chickenCountValue;
 
-    localStorage.setItem(
-      "chickenCount",
-      chickenCountValue
-    );
-  };
-} 
+  localStorage.setItem(
+    "chickenCount",
+    chickenCountValue
+  );
+};
+
+removeChickenButton.onclick = function() {
+  if (chickenCountValue <= 0) {
+    return;
+  }
+
+  chickenCountValue--;
+
+  chickenCount.textContent =
+    chickenCountValue;
+
+  localStorage.setItem(
+    "chickenCount",
+    chickenCountValue
+  );
+};
+
+setFlockButton.onclick = function() {
+  const newFlockSize =
+    Number(flockInput.value);
+
+  if (newFlockSize < 0 || !Number.isInteger(newFlockSize)) {
+    return;
+  }
+
+  chickenCountValue = newFlockSize;
+
+  chickenCount.textContent =
+    chickenCountValue;
+
+  localStorage.setItem(
+    "chickenCount",
+    chickenCountValue
+  );
+
+  flockInput.value = "";
+};
