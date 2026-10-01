@@ -414,21 +414,18 @@ function updateLayingRate() {
     document.getElementById("layingRate");
 
   const flockSize =
-    Number(localStorage.getItem("chickenCount")) || 0;
+    Number(localStorage.getItem("chickenCount"));
 
-  if (flockSize === 0) {
+  if (!flockSize || flockSize <= 0) {
     layingRate.textContent = "0%";
     return;
   }
 
-  console.log("Eggs:", eggs);
-console.log("Flock size:", flockSize);
   const rate =
     (eggs / flockSize) * 100;
 
   layingRate.textContent =
     Math.round(rate) + "%";
 }
-
 
 updateLayingRate();
