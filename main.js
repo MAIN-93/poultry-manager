@@ -9,10 +9,28 @@ if (savedDate !== today) {
 }
 const eggCount = document.getElementById("eggCount");
 const addEggButton = document.getElementById("addEggButton");
+const removeEggButton = document.getElementById("removeEggButton");
+
 eggCount.textContent = eggs;
+
 addEggButton.addEventListener("click", function() {
   eggs = eggs + 1;
+
   eggCount.textContent = eggs;
+
+  localStorage.setItem("eggs", eggs);
+  localStorage.setItem("eggDate", today);
+});
+
+removeEggButton.addEventListener("click", function() {
+  if (eggs <= 0) {
+    return;
+  }
+
+  eggs = eggs - 1;
+
+  eggCount.textContent = eggs;
+
   localStorage.setItem("eggs", eggs);
   localStorage.setItem("eggDate", today);
 });
