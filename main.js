@@ -41,6 +41,7 @@ addEggButton.addEventListener("click", function() {
   localStorage.setItem("eggDate", today);
 
   updateLayingRate();
+  displayEggHistory();
 });
 
 removeEggButton.onclick = function() {
