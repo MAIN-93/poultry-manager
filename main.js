@@ -57,6 +57,7 @@ removeEggButton.onclick = function() {
   localStorage.setItem("eggDate", today);
 
   updateLayingRate();
+  displayEggHistory();
 };
 
 let feed = Number(localStorage.getItem("feed")) || 0;
