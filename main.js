@@ -415,8 +415,8 @@ function updateLayingRate() {
   const layingRate =
     document.getElementById("layingRate");
 
-  const flockSize =
-    Number(localStorage.getItem("chickenCount"));
+  const flockSize = 5;
+
 
   if (!flockSize || flockSize <= 0) {
     layingRate.textContent = "0%";
