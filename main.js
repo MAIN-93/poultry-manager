@@ -496,7 +496,7 @@ const eggsForDay =
 const flockForDay =
   typeof record === "object"
     ? record.flock
-    : 0;
+    : Number(localStorage.getItem("chickenCount")) || 0;
 
 let rate = 0;
 
