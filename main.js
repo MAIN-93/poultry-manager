@@ -437,3 +437,12 @@ function updateLayingRate() {
 }
 
 updateLayingRate();
+let eggHistory =
+  JSON.parse(localStorage.getItem("eggHistory")) || {};
+
+eggHistory[today] = eggs;
+
+localStorage.setItem(
+  "eggHistory",
+  JSON.stringify(eggHistory)
+);
