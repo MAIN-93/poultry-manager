@@ -192,23 +192,31 @@ if ("serviceWorker" in navigator) {
 const notificationButton = document.getElementById("enableNotifications");
 
 if (notificationButton) {
-  notificationButton.addEventListener("click", async () => {
-    if (!("Notification" in window)) {
-      alert("Notifications are not supported on this device/browser.");
-      return;
-    }
+  if (
+    "Notification" in window &&
+    Notification.permission === "granted"
+  ) {
+    notificationButton.textContent = "✅ Notifications Enabled";
+    notificationButton.disabled = true;
+  } else {
+    notificationButton.addEventListener("click", async () => {
+      if (!("Notification" in window)) {
+        alert("Notifications are not supported on this device/browser.");
+        return;
+      }
 
-    const permission = await Notification.requestPermission();
+      const permission = await Notification.requestPermission();
 
-    if (permission === "granted") {
-  await subscribeToPush();
+      if (permission === "granted") {
+        await subscribeToPush();
 
-  notificationButton.textContent = "✅ Notifications Enabled";
-  notificationButton.disabled = true;
-} else {
-  alert("Notifications were not enabled.");
-}
-  });
+        notificationButton.textContent = "✅ Notifications Enabled";
+        notificationButton.disabled = true;
+      } else {
+        alert("Notifications were not enabled.");
+      }
+    });
+  }
 }
 
 async function enablePushNotifications() {
