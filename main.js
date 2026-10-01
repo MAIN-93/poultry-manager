@@ -312,15 +312,27 @@ if (
   notificationButton.disabled = true;
 }
 
-const addChickenButton = document.getElementById("addChicken");
+let chickenCountValue =
+  Number(localStorage.getItem("chickenCount")) || 0;
+
+const chickenCount =
+  document.getElementById("chickenCount");
+
+const addChickenButton =
+  document.getElementById("addChicken");
+
+chickenCount.textContent = chickenCountValue;
 
 if (addChickenButton) {
   addChickenButton.onclick = function() {
-    const chickenCount = document.getElementById("chickenCount");
-    let count = Number(chickenCount.textContent);
+    chickenCountValue++;
 
-    count++;
+    chickenCount.textContent =
+      chickenCountValue;
 
-    chickenCount.textContent = count;
+    localStorage.setItem(
+      "chickenCount",
+      chickenCountValue
+    );
   };
-}
+} 
