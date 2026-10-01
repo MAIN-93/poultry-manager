@@ -20,6 +20,8 @@ addEggButton.addEventListener("click", function() {
 
   localStorage.setItem("eggs", eggs);
   localStorage.setItem("eggDate", today);
+
+  updateLayingRate();
 });
 
 removeEggButton.addEventListener("click", function() {
@@ -406,3 +408,24 @@ setFlockButton.onclick = function() {
 
   flockInput.value = "";
 };
+
+function updateLayingRate() {
+  const layingRate =
+    document.getElementById("layingRate");
+
+  const flockSize =
+    Number(localStorage.getItem("chickenCount")) || 0;
+
+  if (flockSize === 0) {
+    layingRate.textContent = "0%";
+    return;
+  }
+
+  const rate =
+    (eggs / flockSize) * 100;
+
+  layingRate.textContent =
+    Math.round(rate) + "%";
+}
+
+updateLayingRate();
