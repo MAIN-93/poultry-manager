@@ -312,15 +312,3 @@ if (
   notificationButton.disabled = true;
 }
 
-const chickenCount = document.getElementById("chickenCount");
-const addChickenButton = document.getElementById("addChicken");
-
-if (chickenCount && addChickenButton) {
-  addChickenButton.addEventListener("click", () => {
-    let count = Number(chickenCount.textContent);
-
-    count++;
-
-    chickenCount.textContent = count;
-  });
-}
