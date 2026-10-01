@@ -486,11 +486,34 @@ function displayEggHistory() {
   dates.forEach(function(date) {
     const row = document.createElement("div");
 
-    row.innerHTML =
-      "<strong>" + date + "</strong>" +
-      "<span>" + history[date] + " eggs</span>";
+    const record = history[date];
 
-    historyList.appendChild(row);
+const eggsForDay =
+  typeof record === "object"
+    ? record.eggs
+    : record;
+
+const flockForDay =
+  typeof record === "object"
+    ? record.flock
+    : 0;
+
+let rate = 0;
+
+if (flockForDay > 0) {
+  rate = Math.round(
+    (eggsForDay / flockForDay) * 100
+  );
+}
+
+row.innerHTML =
+  "<strong>" + date + "</strong>" +
+  "<span>" +
+  eggsForDay +
+  " eggs • " +
+  rate +
+  "%" +
+  "</span>"; historyList.appendChild(row);
   });
 }
 
