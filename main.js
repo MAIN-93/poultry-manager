@@ -24,18 +24,20 @@ addEggButton.addEventListener("click", function() {
   updateLayingRate();
 });
 
-removeEggButton.addEventListener("click", function() {
+removeEggButton.onclick = function() {
   if (eggs <= 0) {
     return;
   }
 
-  eggs = eggs - 1;
+  eggs--;
 
   eggCount.textContent = eggs;
 
   localStorage.setItem("eggs", eggs);
   localStorage.setItem("eggDate", today);
-});
+
+  updateLayingRate();
+};
 
 let feed = Number(localStorage.getItem("feed")) || 0;
 const feedAmount = document.getElementById("feedAmount");
