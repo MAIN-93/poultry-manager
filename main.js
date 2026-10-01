@@ -201,10 +201,13 @@ if (notificationButton) {
     const permission = await Notification.requestPermission();
 
     if (permission === "granted") {
-      await subscribeToPush();
-    } else {
-      alert("Notifications were not enabled.");
-    }
+  await subscribeToPush();
+
+  notificationButton.textContent = "✅ Notifications Enabled";
+  notificationButton.disabled = true;
+} else {
+  alert("Notifications were not enabled.");
+}
   });
 }
 
