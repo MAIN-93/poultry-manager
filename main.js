@@ -3,7 +3,20 @@ let savedDate = localStorage.getItem("eggDate");
 let eggs = Number(localStorage.getItem("eggs")) || 0;
 // Check if the saved eggs are from today
 if (savedDate !== today) {
+  let eggHistory =
+    JSON.parse(localStorage.getItem("eggHistory")) || {};
+
+  if (savedDate) {
+    eggHistory[savedDate] = eggs;
+  }
+
+  localStorage.setItem(
+    "eggHistory",
+    JSON.stringify(eggHistory)
+  );
+
   eggs = 0;
+
   localStorage.setItem("eggs", eggs);
   localStorage.setItem("eggDate", today);
 }
