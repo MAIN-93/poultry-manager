@@ -459,3 +459,33 @@ localStorage.setItem(
   "eggHistory",
   JSON.stringify(eggHistory)
 );
+
+function displayEggHistory() {
+  const historyList =
+    document.getElementById("eggHistoryList");
+
+  const history =
+    JSON.parse(localStorage.getItem("eggHistory")) || {};
+
+  const dates = Object.keys(history).sort().reverse();
+
+  if (dates.length === 0) {
+    historyList.innerHTML =
+      "<p>No history yet.</p>";
+    return;
+  }
+
+  historyList.innerHTML = "";
+
+  dates.forEach(function(date) {
+    const row = document.createElement("div");
+
+    row.innerHTML =
+      "<strong>" + date + "</strong>" +
+      "<span>" + history[date] + " eggs</span>";
+
+    historyList.appendChild(row);
+  });
+}
+
+displayEggHistory();
