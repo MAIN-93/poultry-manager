@@ -295,3 +295,11 @@ if (testPushButton) {
     }
   });
 }
+
+if (
+  "Notification" in window &&
+  Notification.permission === "granted"
+) {
+  notificationButton.textContent = "✅ Notifications Enabled";
+  notificationButton.disabled = true;
+}
