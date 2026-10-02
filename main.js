@@ -543,3 +543,78 @@ row.innerHTML =
 
 
 displayEggHistory();
+
+const viewHistoryButton =
+  document.getElementById("viewHistoryButton");
+
+let showAllHistory = false;
+
+if (viewHistoryButton) {
+  viewHistoryButton.onclick = function() {
+    showAllHistory = !showAllHistory;
+
+    const historyList =
+      document.getElementById("eggHistoryList");
+
+    const history =
+      JSON.parse(localStorage.getItem("eggHistory")) || {};
+
+    const dates =
+      Object.keys(history).sort().reverse();
+
+    const visibleDates =
+      showAllHistory ? dates : dates.slice(0, 4);
+
+    historyList.innerHTML = "";
+
+    visibleDates.forEach(function(date) {
+      const row = document.createElement("div");
+
+      const formattedDate =
+        date === today
+          ? "Today"
+          : new Date(date + "T00:00:00").toLocaleDateString(
+              "en-US",
+              {
+                month: "short",
+                day: "numeric",
+                year: "numeric"
+              }
+            );
+
+      const record = history[date];
+
+      const eggsForDay =
+        typeof record === "object"
+          ? record.eggs
+          : record;
+
+      const flockForDay =
+        typeof record === "object"
+          ? record.flock
+          : Number(localStorage.getItem("chickenCount")) || 0;
+
+      let rate = 0;
+
+      if (flockForDay > 0) {
+        rate = Math.round(
+          (eggsForDay / flockForDay) * 100
+        );
+      }
+
+      row.innerHTML =
+        "<strong>" + formattedDate + "</strong>" +
+        "<span>" +
+        eggsForDay +
+        " eggs • " +
+        rate +
+        "%" +
+        "</span>";
+
+      historyList.appendChild(row);
+    });
+
+    viewHistoryButton.textContent =
+      showAllHistory ? "Show Less" : "View All History";
+  };
+}
