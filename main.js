@@ -816,30 +816,158 @@ function renderProductionTrend() {
    ========================================================= */
 
 function updateProductionAnalytics() {
+    const dateKeys = getLastSevenDateKeys();
 
-    const dates =
-        getLastSevenDateKeys();
+    const records = dateKeys.map(dateKey => {
+        const record = getHistoryRecord(dateKey);
 
+        return {
+            dateKey,
+            eggs: Number(record.eggs) || 0,
+            flock: Number(record.flock) || 0
+        };
+    });
 
-    const records =
-        dates.map(dateKey => {
+    const totalEggs = records.reduce((sum, record) => {
+        return sum + record.eggs;
+    }, 0);
 
-            const record =
-                getHistoryRecord(dateKey);
+    const daysProducing = records.filter(record => record.eggs > 0).length;
 
-            return {
+    const averageDailyEggs = totalEggs / 7;
 
-                date: dateKey,
+    /*
+     * Eggs per hen
+     *
+     * Only use days where we have a recorded flock size.
+     * This prevents missing flock data from incorrectly
+     * affecting the calculation.
+     */
+    const flockRecords = records.filter(record => record.flock > 0);
 
-                eggs: record.eggs,
+    const averageFlock = flockRecords.length > 0
+        ? flockRecords.reduce((sum, record) => {
+            return sum + record.flock;
+        }, 0) / flockRecords.length
+        : 0;
 
-                flock: record.flock
+    const eggsPerHen = averageFlock > 0
+        ? totalEggs / averageFlock
+        : 0;
 
-            };
+    /*
+     * Highest and lowest production days.
+     */
+    const highestRecord = records.reduce((highest, record) => {
+        return record.eggs > highest.eggs ? record : highest;
+    }, records[0]);
 
+    const lowestRecord = records.reduce((lowest, record) => {
+        return record.eggs < lowest.eggs ? record : lowest;
+    }, records[0]);
+
+    /*
+     * Production consistency.
+     *
+     * Example:
+     * 7 productive days out of 7 = 100%
+     * 5 productive days out of 7 = 71%
+     */
+    const consistency = Math.round((daysProducing / 7) * 100);
+
+    /*
+     * Compare the first 3 days with the latest 3 days.
+     */
+    const earlierRecords = records.slice(0, 3);
+    const recentRecords = records.slice(4, 7);
+
+    const earlierAverage =
+        earlierRecords.reduce((sum, record) => {
+            return sum + record.eggs;
+        }, 0) / 3;
+
+    const recentAverage =
+        recentRecords.reduce((sum, record) => {
+            return sum + record.eggs;
+        }, 0) / 3;
+
+    let changeText = "0%";
+
+    if (earlierAverage === 0 && recentAverage > 0) {
+        changeText = "New";
+    } else if (earlierAverage > 0) {
+        const change = ((recentAverage - earlierAverage) / earlierAverage) * 100;
+
+        changeText = `${change >= 0 ? "+" : ""}${Math.round(change)}%`;
+    }
+
+    /*
+     * Format dates for display.
+     */
+    function formatAnalyticsDate(dateKey) {
+        if (!dateKey) return "No data";
+
+        const date = new Date(`${dateKey}T00:00:00`);
+
+        return date.toLocaleDateString("en-NG", {
+            day: "numeric",
+            month: "short"
         });
+    }
 
+    /*
+     * Production insight.
+     */
+    let insight = "";
 
+    if (totalEggs === 0) {
+        insight = "No eggs have been recorded during this 7-day period yet.";
+    } else if (consistency === 100) {
+        if (recentAverage > earlierAverage) {
+            insight = `Your flock produced eggs every day, and recent production is higher than earlier in the week.`;
+        } else if (recentAverage < earlierAverage) {
+            insight = `Your flock produced eggs every day, but recent production is lower than earlier in the week.`;
+        } else {
+            insight = `Your flock produced eggs every day with a relatively stable production pattern.`;
+        }
+    } else if (consistency >= 70) {
+        insight = `Your flock produced eggs on ${daysProducing} of the last 7 days. Production is occurring regularly, with some days having no recorded eggs.`;
+    } else if (consistency >= 40) {
+        insight = `Your flock produced eggs on ${daysProducing} of the last 7 days. There is noticeable variation in production across the period.`;
+    } else {
+        insight = `Egg production was recorded on ${daysProducing} of the last 7 days. More daily records will make the production pattern clearer.`;
+    }
+
+    /*
+     * Update the dashboard.
+     */
+    document.getElementById("analyticsEggsPerHen").textContent =
+        eggsPerHen.toFixed(2);
+
+    document.getElementById("analyticsAverage").textContent =
+        averageDailyEggs.toFixed(2);
+
+    document.getElementById("analyticsHighestDay").textContent =
+        highestRecord.eggs;
+
+    document.getElementById("analyticsHighestDayDate").textContent =
+        formatAnalyticsDate(highestRecord.dateKey);
+
+    document.getElementById("analyticsLowestDay").textContent =
+        lowestRecord.eggs;
+
+    document.getElementById("analyticsLowestDayDate").textContent =
+        formatAnalyticsDate(lowestRecord.dateKey);
+
+    document.getElementById("analyticsConsistency").textContent =
+        `${consistency}%`;
+
+    document.getElementById("analyticsChange").textContent =
+        changeText;
+
+    document.getElementById("analyticsInsight").textContent =
+        insight;
+}
     /*
        ---------------------------------------------
        7-DAY TOTAL
