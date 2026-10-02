@@ -1,8 +1,7 @@
 /* =========================================================
    POULTRY MANAGER
-   Production Tracking v3
+   Production Tracking v4
    ========================================================= */
-
 
 /* =========================================================
    DOM REFERENCES
@@ -24,48 +23,107 @@ const trendMaxLabel = document.getElementById("trendMaxLabel");
 const trendMidLabel = document.getElementById("trendMidLabel");
 const productionTrendChart = document.getElementById("productionTrendChart");
 
-const analyticsEggsPerHen = document.getElementById("analyticsEggsPerHen");
-const analyticsAverage = document.getElementById("analyticsAverage");
-const analyticsHighestDay = document.getElementById("analyticsHighestDay");
-const analyticsHighestDayDate = document.getElementById("analyticsHighestDayDate");
-const analyticsLowestDay = document.getElementById("analyticsLowestDay");
-const analyticsLowestDayDate = document.getElementById("analyticsLowestDayDate");
-const analyticsConsistency = document.getElementById("analyticsConsistency");
-const analyticsChange = document.getElementById("analyticsChange");
+const analyticsEggsPerHen =
+    document.getElementById("analyticsEggsPerHen");
 
-const eggCount = document.getElementById("eggCount");
-const layingRate = document.getElementById("layingRate");
+const analyticsAverage =
+    document.getElementById("analyticsAverage");
 
-const addEggButton = document.getElementById("addEggButton");
-const removeEggButton = document.getElementById("removeEggButton");
+const analyticsHighestDay =
+    document.getElementById("analyticsHighestDay");
 
-const eggHistoryList = document.getElementById("eggHistoryList");
-const viewHistoryButton = document.getElementById("viewHistoryButton");
+const analyticsHighestDayDate =
+    document.getElementById("analyticsHighestDayDate");
 
-const feedAmount = document.getElementById("feedAmount");
-const feedInput = document.getElementById("feedInput");
-const addFeedButton = document.getElementById("addFeedButton");
+const analyticsLowestDay =
+    document.getElementById("analyticsLowestDay");
 
-const useFeedInput = document.getElementById("useFeedInput");
-const useFeedButton = document.getElementById("useFeedButton");
+const analyticsLowestDayDate =
+    document.getElementById("analyticsLowestDayDate");
 
-const morningFeedTime = document.getElementById("morningFeedTime");
-const afternoonFeedTime = document.getElementById("afternoonFeedTime");
-const saveScheduleButton = document.getElementById("saveScheduleButton");
-const scheduleStatus = document.getElementById("scheduleStatus");
-const nextFeed = document.getElementById("nextFeed");
+const analyticsConsistency =
+    document.getElementById("analyticsConsistency");
 
-const chickenCount = document.getElementById("chickenCount");
-const addChicken = document.getElementById("addChicken");
-const removeChicken = document.getElementById("removeChicken");
-const flockInput = document.getElementById("flockInput");
-const setFlockButton = document.getElementById("setFlockButton");
+const analyticsChange =
+    document.getElementById("analyticsChange");
 
-const alarmButton = document.getElementById("alarmButton");
-const alarmStatus = document.getElementById("alarmStatus");
-const alarmMessage = document.getElementById("alarmMessage");
+const analyticsInsight =
+    document.getElementById("analyticsInsight");
 
-const enableNotifications = document.getElementById("enableNotifications");
+const eggCount =
+    document.getElementById("eggCount");
+
+const layingRate =
+    document.getElementById("layingRate");
+
+const addEggButton =
+    document.getElementById("addEggButton");
+
+const removeEggButton =
+    document.getElementById("removeEggButton");
+
+const eggHistoryList =
+    document.getElementById("eggHistoryList");
+
+const viewHistoryButton =
+    document.getElementById("viewHistoryButton");
+
+const feedAmount =
+    document.getElementById("feedAmount");
+
+const feedInput =
+    document.getElementById("feedInput");
+
+const addFeedButton =
+    document.getElementById("addFeedButton");
+
+const useFeedInput =
+    document.getElementById("useFeedInput");
+
+const useFeedButton =
+    document.getElementById("useFeedButton");
+
+const morningFeedTime =
+    document.getElementById("morningFeedTime");
+
+const afternoonFeedTime =
+    document.getElementById("afternoonFeedTime");
+
+const saveScheduleButton =
+    document.getElementById("saveScheduleButton");
+
+const scheduleStatus =
+    document.getElementById("scheduleStatus");
+
+const nextFeed =
+    document.getElementById("nextFeed");
+
+const chickenCount =
+    document.getElementById("chickenCount");
+
+const addChicken =
+    document.getElementById("addChicken");
+
+const removeChicken =
+    document.getElementById("removeChicken");
+
+const flockInput =
+    document.getElementById("flockInput");
+
+const setFlockButton =
+    document.getElementById("setFlockButton");
+
+const alarmButton =
+    document.getElementById("alarmButton");
+
+const alarmStatus =
+    document.getElementById("alarmStatus");
+
+const alarmMessage =
+    document.getElementById("alarmMessage");
+
+const enableNotifications =
+    document.getElementById("enableNotifications");
 
 
 /* =========================================================
@@ -76,11 +134,13 @@ function getLocalDateKey(date = new Date()) {
 
     const year = date.getFullYear();
 
-    const month = String(date.getMonth() + 1)
-        .padStart(2, "0");
+    const month =
+        String(date.getMonth() + 1)
+            .padStart(2, "0");
 
-    const day = String(date.getDate())
-        .padStart(2, "0");
+    const day =
+        String(date.getDate())
+            .padStart(2, "0");
 
     return `${year}-${month}-${day}`;
 }
@@ -88,34 +148,47 @@ function getLocalDateKey(date = new Date()) {
 
 function getDateFromKey(dateKey) {
 
-    const [year, month, day] = dateKey
-        .split("-")
-        .map(Number);
+    const [year, month, day] =
+        dateKey
+            .split("-")
+            .map(Number);
 
-    return new Date(year, month - 1, day);
+    return new Date(
+        year,
+        month - 1,
+        day
+    );
 }
 
 
 function formatDate(dateKey) {
 
-    const date = getDateFromKey(dateKey);
+    const date =
+        getDateFromKey(dateKey);
 
-    return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric"
-    });
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            month: "short",
+            day: "numeric"
+        }
+    );
 }
 
 
 function formatFullDate(dateKey) {
 
-    const date = getDateFromKey(dateKey);
+    const date =
+        getDateFromKey(dateKey);
 
-    return date.toLocaleDateString("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric"
-    });
+    return date.toLocaleDateString(
+        "en-US",
+        {
+            weekday: "short",
+            month: "short",
+            day: "numeric"
+        }
+    );
 }
 
 
@@ -123,15 +196,25 @@ function getLastSevenDateKeys() {
 
     const dates = [];
 
-    const today = new Date();
+    const todayDate =
+        new Date();
 
-    for (let i = 6; i >= 0; i--) {
+    for (
+        let i = 6;
+        i >= 0;
+        i--
+    ) {
 
-        const date = new Date(today);
+        const date =
+            new Date(todayDate);
 
-        date.setDate(today.getDate() - i);
+        date.setDate(
+            todayDate.getDate() - i
+        );
 
-        dates.push(getLocalDateKey(date));
+        dates.push(
+            getLocalDateKey(date)
+        );
     }
 
     return dates;
@@ -144,17 +227,19 @@ function getLastSevenDateKeys() {
 
 function displayHeaderDate() {
 
-    const today = new Date();
+    const currentDate =
+        new Date();
 
-    headerDate.textContent = today.toLocaleDateString(
-        "en-US",
-        {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric"
-        }
-    );
+    headerDate.textContent =
+        currentDate.toLocaleDateString(
+            "en-US",
+            {
+                weekday: "long",
+                month: "long",
+                day: "numeric",
+                year: "numeric"
+            }
+        );
 }
 
 
@@ -167,7 +252,9 @@ function getEggHistory() {
     try {
 
         return JSON.parse(
-            localStorage.getItem("eggHistory")
+            localStorage.getItem(
+                "eggHistory"
+            )
         ) || {};
 
     } catch (error) {
@@ -189,9 +276,11 @@ function saveEggHistory(history) {
 
 function getHistoryRecord(dateKey) {
 
-    const history = getEggHistory();
+    const history =
+        getEggHistory();
 
-    const record = history[dateKey];
+    const record =
+        history[dateKey];
 
     if (
         record === undefined ||
@@ -221,7 +310,9 @@ function getHistoryRecord(dateKey) {
        }
     */
 
-    if (typeof record === "number") {
+    if (
+        typeof record === "number"
+    ) {
 
         return {
             eggs: record,
@@ -233,9 +324,11 @@ function getHistoryRecord(dateKey) {
 
     return {
 
-        eggs: Number(record.eggs) || 0,
+        eggs:
+            Number(record.eggs) || 0,
 
-        flock: Number(record.flock) || 0
+        flock:
+            Number(record.flock) || 0
 
     };
 }
@@ -245,30 +338,41 @@ function getHistoryRecord(dateKey) {
    CURRENT DAY
    ========================================================= */
 
-const today = getLocalDateKey();
+const today =
+    getLocalDateKey();
 
-let savedDate = localStorage.getItem("eggDate");
+let savedDate =
+    localStorage.getItem(
+        "eggDate"
+    );
 
-let eggs = Number(
-    localStorage.getItem("eggs")
-) || 0;
+let eggs =
+    Number(
+        localStorage.getItem(
+            "eggs"
+        )
+    ) || 0;
 
 
 /* =========================================================
    DAILY ROLLOVER
    ========================================================= */
 
-if (savedDate !== today) {
+if (
+    savedDate !== today
+) {
 
-    const history = getEggHistory();
+    const history =
+        getEggHistory();
 
     if (savedDate) {
 
         const previousFlock =
             Number(
-                localStorage.getItem("chickenCount")
+                localStorage.getItem(
+                    "chickenCount"
+                )
             ) || 0;
-
 
         history[savedDate] = {
 
@@ -280,9 +384,9 @@ if (savedDate !== today) {
 
     }
 
-
-    saveEggHistory(history);
-
+    saveEggHistory(
+        history
+    );
 
     eggs = 0;
 
@@ -305,7 +409,9 @@ if (savedDate !== today) {
 function getCurrentFlock() {
 
     return Number(
-        localStorage.getItem("chickenCount")
+        localStorage.getItem(
+            "chickenCount"
+        )
     ) || 0;
 }
 
@@ -319,15 +425,20 @@ function calculateLayingRate(
     flockSize
 ) {
 
-    if (!flockSize || flockSize <= 0) {
+    if (
+        !flockSize ||
+        flockSize <= 0
+    ) {
 
         return 0;
 
     }
 
-
     return Math.round(
-        (eggAmount / flockSize) * 100
+        (
+            eggAmount /
+            flockSize
+        ) * 100
     );
 }
 
@@ -338,17 +449,21 @@ function calculateLayingRate(
 
 function saveTodayEggHistory() {
 
-    const history = getEggHistory();
+    const history =
+        getEggHistory();
 
     history[today] = {
 
         eggs: eggs,
 
-        flock: getCurrentFlock()
+        flock:
+            getCurrentFlock()
 
     };
 
-    saveEggHistory(history);
+    saveEggHistory(
+        history
+    );
 }
 
 
@@ -358,23 +473,26 @@ function saveTodayEggHistory() {
 
 function updateEggDisplay() {
 
-    const flock = getCurrentFlock();
+    const flock =
+        getCurrentFlock();
 
-    const rate = calculateLayingRate(
-        eggs,
-        flock
-    );
+    const rate =
+        calculateLayingRate(
+            eggs,
+            flock
+        );
 
+    eggCount.textContent =
+        eggs;
 
-    eggCount.textContent = eggs;
+    layingRate.textContent =
+        `${rate}%`;
 
-    layingRate.textContent = `${rate}%`;
-
-    overviewEggCount.textContent = eggs;
+    overviewEggCount.textContent =
+        eggs;
 
     overviewLayingRate.textContent =
         `${rate}%`;
-
 }
 
 
@@ -413,12 +531,13 @@ removeEggButton.addEventListener(
     "click",
     () => {
 
-        if (eggs <= 0) {
+        if (
+            eggs <= 0
+        ) {
 
             return;
 
         }
-
 
         eggs -= 1;
 
@@ -447,24 +566,31 @@ removeEggButton.addEventListener(
    EGG HISTORY DISPLAY
    ========================================================= */
 
-let historyExpanded = false;
+let historyExpanded =
+    false;
 
 
 function displayEggHistory() {
 
-    const history = getEggHistory();
+    const history =
+        getEggHistory();
 
-    const records = Object.entries(history)
-        .sort(
-            ([dateA], [dateB]) =>
-                dateB.localeCompare(dateA)
-        );
+    const records =
+        Object.entries(history)
+            .sort(
+                ([dateA], [dateB]) =>
+                    dateB.localeCompare(
+                        dateA
+                    )
+            );
+
+    eggHistoryList.innerHTML =
+        "";
 
 
-    eggHistoryList.innerHTML = "";
-
-
-    if (records.length === 0) {
+    if (
+        records.length === 0
+    ) {
 
         eggHistoryList.innerHTML = `
             <div class="empty-state">
@@ -472,7 +598,8 @@ function displayEggHistory() {
             </div>
         `;
 
-        viewHistoryButton.style.display = "none";
+        viewHistoryButton.style.display =
+            "none";
 
         return;
     }
@@ -488,7 +615,9 @@ function displayEggHistory() {
         ([dateKey]) => {
 
             const record =
-                getHistoryRecord(dateKey);
+                getHistoryRecord(
+                    dateKey
+                );
 
             const rate =
                 calculateLayingRate(
@@ -496,23 +625,26 @@ function displayEggHistory() {
                     record.flock
                 );
 
-
             const item =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             item.className =
                 "history-item";
-
 
             item.innerHTML = `
 
                 <div>
                     <strong>
-                        ${formatFullDate(dateKey)}
+                        ${formatFullDate(
+                            dateKey
+                        )}
                     </strong>
 
                     <small>
-                        ${record.eggs} ${
+                        ${record.eggs}
+                        ${
                             record.eggs === 1
                                 ? "egg"
                                 : "eggs"
@@ -532,14 +664,17 @@ function displayEggHistory() {
 
             `;
 
-
-            eggHistoryList.appendChild(item);
+            eggHistoryList.appendChild(
+                item
+            );
 
         }
     );
 
 
-    if (records.length > 4) {
+    if (
+        records.length > 4
+    ) {
 
         viewHistoryButton.style.display =
             "inline-flex";
@@ -555,7 +690,6 @@ function displayEggHistory() {
             "none";
 
     }
-
 }
 
 
@@ -581,56 +715,73 @@ function updateProductionSummary() {
     const dates =
         getLastSevenDateKeys();
 
-
     const records =
-        dates.map(dateKey => {
+        dates.map(
+            dateKey => {
 
-            const record =
-                getHistoryRecord(dateKey);
+                const record =
+                    getHistoryRecord(
+                        dateKey
+                    );
 
-            return {
+                return {
 
-                date: dateKey,
+                    date: dateKey,
 
-                eggs: record.eggs,
+                    eggs:
+                        record.eggs,
 
-                flock: record.flock
+                    flock:
+                        record.flock
 
-            };
+                };
 
-        });
+            }
+        );
 
 
     const totalEggs =
         records.reduce(
-            (total, record) =>
-                total + record.eggs,
+            (
+                total,
+                record
+            ) =>
+                total +
+                record.eggs,
             0
         );
 
 
     const rateRecords =
         records.filter(
-            record => record.flock > 0
+            record =>
+                record.flock > 0
         );
 
 
-    let averageRate = 0;
+    let averageRate =
+        0;
 
 
-    if (rateRecords.length > 0) {
+    if (
+        rateRecords.length > 0
+    ) {
 
         averageRate =
             Math.round(
                 rateRecords.reduce(
-                    (total, record) =>
+                    (
+                        total,
+                        record
+                    ) =>
                         total +
                         calculateLayingRate(
                             record.eggs,
                             record.flock
                         ),
                     0
-                ) / rateRecords.length
+                ) /
+                rateRecords.length
             );
 
     }
@@ -638,8 +789,12 @@ function updateProductionSummary() {
 
     const bestRecord =
         records.reduce(
-            (best, record) =>
-                record.eggs > best.eggs
+            (
+                best,
+                record
+            ) =>
+                record.eggs >
+                best.eggs
                     ? record
                     : best,
             records[0]
@@ -654,12 +809,13 @@ function updateProductionSummary() {
 
     bestProductionDay.textContent =
         bestRecord.eggs > 0
-            ? formatDate(bestRecord.date)
+            ? formatDate(
+                bestRecord.date
+            )
             : "—";
 
     bestProductionEggs.textContent =
         bestRecord.eggs;
-
 }
 
 
@@ -672,31 +828,37 @@ function renderProductionTrend() {
     const dates =
         getLastSevenDateKeys();
 
-
     const records =
-        dates.map(dateKey => {
+        dates.map(
+            dateKey => {
 
-            const record =
-                getHistoryRecord(dateKey);
+                const record =
+                    getHistoryRecord(
+                        dateKey
+                    );
 
-            return {
+                return {
 
-                date: dateKey,
+                    date: dateKey,
 
-                eggs: record.eggs,
+                    eggs:
+                        record.eggs,
 
-                flock: record.flock
+                    flock:
+                        record.flock
 
-            };
+                };
 
-        });
+            }
+        );
 
 
     const maxEggs =
         Math.max(
             1,
             ...records.map(
-                record => record.eggs
+                record =>
+                    record.eggs
             )
         );
 
@@ -704,12 +866,16 @@ function renderProductionTrend() {
     const chartMax =
         Math.max(
             1,
-            Math.ceil(maxEggs / 5) * 5
+            Math.ceil(
+                maxEggs / 5
+            ) * 5
         );
 
 
     const midValue =
-        Math.ceil(chartMax / 2);
+        Math.ceil(
+            chartMax / 2
+        );
 
 
     trendMaxLabel.textContent =
@@ -718,96 +884,125 @@ function renderProductionTrend() {
     trendMidLabel.textContent =
         midValue;
 
-
-    productionTrendChart.innerHTML = "";
-
-
-    records.forEach(record => {
-
-        const column =
-            document.createElement("div");
-
-        column.className =
-            "trend-column";
+    productionTrendChart.innerHTML =
+        "";
 
 
-        const barContainer =
-            document.createElement("div");
+    records.forEach(
+        record => {
 
-        barContainer.className =
-            "trend-bar-container";
+            const column =
+                document.createElement(
+                    "div"
+                );
 
-
-        const bar =
-            document.createElement("div");
-
-        bar.className =
-            "trend-bar";
+            column.className =
+                "trend-column";
 
 
-        if (record.eggs === 0) {
+            const barContainer =
+                document.createElement(
+                    "div"
+                );
 
-            bar.classList.add("zero");
+            barContainer.className =
+                "trend-bar-container";
+
+
+            const bar =
+                document.createElement(
+                    "div"
+                );
+
+            bar.className =
+                "trend-bar";
+
+
+            if (
+                record.eggs === 0
+            ) {
+
+                bar.classList.add(
+                    "zero"
+                );
+
+            }
+
+
+            const height =
+                record.eggs === 0
+                    ? 0
+                    : (
+                        record.eggs /
+                        chartMax
+                    ) * 100;
+
+
+            bar.style.height =
+                `${height}%`;
+
+
+            const value =
+                document.createElement(
+                    "span"
+                );
+
+            value.className =
+                "trend-bar-value";
+
+            value.textContent =
+                record.eggs;
+
+
+            bar.appendChild(
+                value
+            );
+
+            barContainer.appendChild(
+                bar
+            );
+
+
+            const day =
+                document.createElement(
+                    "span"
+                );
+
+            day.className =
+                "trend-day";
+
+
+            if (
+                record.date === today
+            ) {
+
+                day.classList.add(
+                    "today"
+                );
+
+            }
+
+
+            day.textContent =
+                formatDate(
+                    record.date
+                );
+
+
+            column.appendChild(
+                barContainer
+            );
+
+            column.appendChild(
+                day
+            );
+
+            productionTrendChart.appendChild(
+                column
+            );
 
         }
-
-
-        const height =
-            record.eggs === 0
-                ? 0
-                : (record.eggs / chartMax) * 100;
-
-
-        bar.style.height =
-            `${height}%`;
-
-
-        const value =
-            document.createElement("span");
-
-        value.className =
-            "trend-bar-value";
-
-        value.textContent =
-            record.eggs;
-
-
-        bar.appendChild(value);
-
-        barContainer.appendChild(bar);
-
-
-        const day =
-            document.createElement("span");
-
-        day.className =
-            "trend-day";
-
-
-        if (record.date === today) {
-
-            day.classList.add("today");
-
-        }
-
-
-        day.textContent =
-            formatDate(record.date);
-
-
-        column.appendChild(
-            barContainer
-        );
-
-        column.appendChild(day);
-
-
-        productionTrendChart.appendChild(
-            column
-        );
-
-    });
-
+    );
 }
 
 
@@ -816,344 +1011,166 @@ function renderProductionTrend() {
    ========================================================= */
 
 function updateProductionAnalytics() {
-    const dateKeys = getLastSevenDateKeys();
 
-    const records = dateKeys.map(dateKey => {
-        const record = getHistoryRecord(dateKey);
+    const dateKeys =
+        getLastSevenDateKeys();
 
-        return {
-            dateKey,
-            eggs: Number(record.eggs) || 0,
-            flock: Number(record.flock) || 0
-        };
-    });
 
-    const totalEggs = records.reduce((sum, record) => {
-        return sum + record.eggs;
-    }, 0);
+    const records =
+        dateKeys.map(
+            dateKey => {
 
-    const daysProducing = records.filter(record => record.eggs > 0).length;
+                const record =
+                    getHistoryRecord(
+                        dateKey
+                    );
 
-    const averageDailyEggs = totalEggs / 7;
+                return {
 
-    /*
-     * Eggs per hen
-     *
-     * Only use days where we have a recorded flock size.
-     * This prevents missing flock data from incorrectly
-     * affecting the calculation.
-     */
-    const flockRecords = records.filter(record => record.flock > 0);
+                    dateKey,
 
-    const averageFlock = flockRecords.length > 0
-        ? flockRecords.reduce((sum, record) => {
-            return sum + record.flock;
-        }, 0) / flockRecords.length
-        : 0;
+                    eggs:
+                        Number(
+                            record.eggs
+                        ) || 0,
 
-    const eggsPerHen = averageFlock > 0
-        ? totalEggs / averageFlock
-        : 0;
+                    flock:
+                        Number(
+                            record.flock
+                        ) || 0
 
-    /*
-     * Highest and lowest production days.
-     */
-    const highestRecord = records.reduce((highest, record) => {
-        return record.eggs > highest.eggs ? record : highest;
-    }, records[0]);
+                };
 
-    const lowestRecord = records.reduce((lowest, record) => {
-        return record.eggs < lowest.eggs ? record : lowest;
-    }, records[0]);
+            }
+        );
 
-    /*
-     * Production consistency.
-     *
-     * Example:
-     * 7 productive days out of 7 = 100%
-     * 5 productive days out of 7 = 71%
-     */
-    const consistency = Math.round((daysProducing / 7) * 100);
 
-    /*
-     * Compare the first 3 days with the latest 3 days.
-     */
-    const earlierRecords = records.slice(0, 3);
-    const recentRecords = records.slice(4, 7);
-
-    const earlierAverage =
-        earlierRecords.reduce((sum, record) => {
-            return sum + record.eggs;
-        }, 0) / 3;
-
-    const recentAverage =
-        recentRecords.reduce((sum, record) => {
-            return sum + record.eggs;
-        }, 0) / 3;
-
-    let changeText = "0%";
-
-    if (earlierAverage === 0 && recentAverage > 0) {
-        changeText = "New";
-    } else if (earlierAverage > 0) {
-        const change = ((recentAverage - earlierAverage) / earlierAverage) * 100;
-
-        changeText = `${change >= 0 ? "+" : ""}${Math.round(change)}%`;
-    }
-
-    /*
-     * Format dates for display.
-     */
-    function formatAnalyticsDate(dateKey) {
-        if (!dateKey) return "No data";
-
-        const date = new Date(`${dateKey}T00:00:00`);
-
-        return date.toLocaleDateString("en-NG", {
-            day: "numeric",
-            month: "short"
-        });
-    }
-
-    /*
-     * Production insight.
-     */
-    let insight = "";
-
-    if (totalEggs === 0) {
-        insight = "No eggs have been recorded during this 7-day period yet.";
-    } else if (consistency === 100) {
-        if (recentAverage > earlierAverage) {
-            insight = `Your flock produced eggs every day, and recent production is higher than earlier in the week.`;
-        } else if (recentAverage < earlierAverage) {
-            insight = `Your flock produced eggs every day, but recent production is lower than earlier in the week.`;
-        } else {
-            insight = `Your flock produced eggs every day with a relatively stable production pattern.`;
-        }
-    } else if (consistency >= 70) {
-        insight = `Your flock produced eggs on ${daysProducing} of the last 7 days. Production is occurring regularly, with some days having no recorded eggs.`;
-    } else if (consistency >= 40) {
-        insight = `Your flock produced eggs on ${daysProducing} of the last 7 days. There is noticeable variation in production across the period.`;
-    } else {
-        insight = `Egg production was recorded on ${daysProducing} of the last 7 days. More daily records will make the production pattern clearer.`;
-    }
-
-    /*
-     * Update the dashboard.
-     */
-    document.getElementById("analyticsEggsPerHen").textContent =
-        eggsPerHen.toFixed(2);
-
-    document.getElementById("analyticsAverage").textContent =
-        averageDailyEggs.toFixed(2);
-
-    document.getElementById("analyticsHighestDay").textContent =
-        highestRecord.eggs;
-
-    document.getElementById("analyticsHighestDayDate").textContent =
-        formatAnalyticsDate(highestRecord.dateKey);
-
-    document.getElementById("analyticsLowestDay").textContent =
-        lowestRecord.eggs;
-
-    document.getElementById("analyticsLowestDayDate").textContent =
-        formatAnalyticsDate(lowestRecord.dateKey);
-
-    document.getElementById("analyticsConsistency").textContent =
-        `${consistency}%`;
-
-    document.getElementById("analyticsChange").textContent =
-        changeText;
-
-    document.getElementById("analyticsInsight").textContent =
-        insight;
-}
-    /*
-       ---------------------------------------------
+    /* ---------------------------------------------
        7-DAY TOTAL
-       ---------------------------------------------
-    */
+       --------------------------------------------- */
 
     const totalEggs =
         records.reduce(
-            (total, record) =>
-                total + record.eggs,
+            (
+                sum,
+                record
+            ) =>
+                sum +
+                record.eggs,
             0
         );
 
 
-    /*
-       ---------------------------------------------
+    /* ---------------------------------------------
+       DAYS PRODUCING
+       --------------------------------------------- */
+
+    const daysProducing =
+        records.filter(
+            record =>
+                record.eggs > 0
+        ).length;
+
+
+    /* ---------------------------------------------
+       DAILY AVERAGE
+       --------------------------------------------- */
+
+    const averageDailyEggs =
+        totalEggs / 7;
+
+
+    /* ---------------------------------------------
        EGGS PER HEN
        
        Uses the average recorded flock size
        across the seven-day period.
-       ---------------------------------------------
-    */
+       --------------------------------------------- */
 
     const flockRecords =
         records.filter(
-            record => record.flock > 0
+            record =>
+                record.flock > 0
         );
 
 
-    let averageFlock = 0;
-
-
-    if (flockRecords.length > 0) {
-
-        averageFlock =
-            flockRecords.reduce(
-                (total, record) =>
-                    total + record.flock,
+    const averageFlock =
+        flockRecords.length > 0
+            ? flockRecords.reduce(
+                (
+                    sum,
+                    record
+                ) =>
+                    sum +
+                    record.flock,
                 0
-            ) / flockRecords.length;
-
-    }
-
-
-    if (averageFlock > 0) {
-
-        const eggsPerHen =
-            totalEggs / averageFlock;
+            ) /
+            flockRecords.length
+            : 0;
 
 
-        analyticsEggsPerHen.textContent =
-            eggsPerHen.toFixed(2);
-
-    } else {
-
-        analyticsEggsPerHen.textContent =
-            "—";
-
-    }
+    const eggsPerHen =
+        averageFlock > 0
+            ? totalEggs /
+                averageFlock
+            : 0;
 
 
-    /*
-       ---------------------------------------------
-       7-DAY AVERAGE
-       ---------------------------------------------
-    */
-
-    const sevenDayAverage =
-        totalEggs / 7;
-
-
-    analyticsAverage.textContent =
-        sevenDayAverage.toFixed(2);
-
-
-    /*
-       ---------------------------------------------
+    /* ---------------------------------------------
        HIGHEST PRODUCTION DAY
-       ---------------------------------------------
-    */
+       --------------------------------------------- */
 
     const highestRecord =
         records.reduce(
-            (highest, record) =>
-                record.eggs > highest.eggs
+            (
+                highest,
+                record
+            ) =>
+                record.eggs >
+                highest.eggs
                     ? record
                     : highest,
             records[0]
         );
 
 
-    if (totalEggs > 0) {
-
-        analyticsHighestDay.textContent =
-            `${highestRecord.eggs} ${
-                highestRecord.eggs === 1
-                    ? "egg"
-                    : "eggs"
-            }`;
-
-        analyticsHighestDayDate.textContent =
-            formatFullDate(
-                highestRecord.date
-            );
-
-    } else {
-
-        analyticsHighestDay.textContent =
-            "—";
-
-        analyticsHighestDayDate.textContent =
-            "No data";
-
-    }
-
-
-    /*
-       ---------------------------------------------
+    /* ---------------------------------------------
        LOWEST PRODUCTION DAY
        
        Includes zero-production calendar days.
-       ---------------------------------------------
-    */
+       --------------------------------------------- */
 
     const lowestRecord =
         records.reduce(
-            (lowest, record) =>
-                record.eggs < lowest.eggs
+            (
+                lowest,
+                record
+            ) =>
+                record.eggs <
+                lowest.eggs
                     ? record
                     : lowest,
             records[0]
         );
 
 
-    if (totalEggs > 0) {
-
-        analyticsLowestDay.textContent =
-            `${lowestRecord.eggs} ${
-                lowestRecord.eggs === 1
-                    ? "egg"
-                    : "eggs"
-            }`;
-
-        analyticsLowestDayDate.textContent =
-            formatFullDate(
-                lowestRecord.date
-            );
-
-    } else {
-
-        analyticsLowestDay.textContent =
-            "—";
-
-        analyticsLowestDayDate.textContent =
-            "No data";
-
-    }
-
-
-    /*
-       ---------------------------------------------
+    /* ---------------------------------------------
        PRODUCTION CONSISTENCY
        
        Percentage of the seven calendar days
        that had at least one egg recorded.
-       ---------------------------------------------
-    */
-
-    const productionDays =
-        records.filter(
-            record => record.eggs > 0
-        ).length;
-
+       --------------------------------------------- */
 
     const consistency =
         Math.round(
-            (productionDays / 7) * 100
+            (
+                daysProducing /
+                7
+            ) * 100
         );
 
 
-    analyticsConsistency.textContent =
-        `${consistency}%`;
-
-
-    /*
-       ---------------------------------------------
+    /* ---------------------------------------------
        PRODUCTION CHANGE
        
        Compares the first three days against
@@ -1161,65 +1178,306 @@ function updateProductionAnalytics() {
        
        Day 4 is intentionally excluded so the
        two groups have equal size.
-       ---------------------------------------------
-    */
+       --------------------------------------------- */
 
     const earlierRecords =
-        records.slice(0, 3);
+        records.slice(
+            0,
+            3
+        );
+
 
     const recentRecords =
-        records.slice(4, 7);
+        records.slice(
+            4,
+            7
+        );
 
 
     const earlierAverage =
         earlierRecords.reduce(
-            (total, record) =>
-                total + record.eggs,
+            (
+                sum,
+                record
+            ) =>
+                sum +
+                record.eggs,
             0
-        ) / earlierRecords.length;
+        ) /
+        earlierRecords.length;
 
 
     const recentAverage =
         recentRecords.reduce(
-            (total, record) =>
-                total + record.eggs,
+            (
+                sum,
+                record
+            ) =>
+                sum +
+                record.eggs,
             0
-        ) / recentRecords.length;
+        ) /
+        recentRecords.length;
 
 
-    if (earlierAverage === 0) {
+    let changeText =
+        "0%";
 
-        if (recentAverage > 0) {
 
-            analyticsChange.textContent =
-                "New";
+    if (
+        earlierAverage === 0 &&
+        recentAverage > 0
+    ) {
 
-        } else {
+        changeText =
+            "New";
 
-            analyticsChange.textContent =
-                "0%";
+    }
 
-        }
-
-    } else {
+    else if (
+        earlierAverage > 0
+    ) {
 
         const change =
             (
-                (recentAverage -
-                    earlierAverage) /
+                (
+                    recentAverage -
+                    earlierAverage
+                ) /
                 earlierAverage
             ) * 100;
 
 
-        const roundedChange =
-            Math.round(change);
-
-
-        analyticsChange.textContent =
-            `${roundedChange > 0 ? "+" : ""}${roundedChange}%`;
+        changeText =
+            `${
+                change >= 0
+                    ? "+"
+                    : ""
+            }${Math.round(change)}%`;
 
     }
 
+
+    /* ---------------------------------------------
+       ANALYTICS DATE FORMAT
+       --------------------------------------------- */
+
+    function formatAnalyticsDate(
+        dateKey
+    ) {
+
+        if (!dateKey) {
+
+            return "No data";
+
+        }
+
+
+        const date =
+            new Date(
+                `${dateKey}T00:00:00`
+            );
+
+
+        return date.toLocaleDateString(
+            "en-NG",
+            {
+                day: "numeric",
+                month: "short"
+            }
+        );
+
+    }
+
+
+    /* ---------------------------------------------
+       PRODUCTION INSIGHT
+       --------------------------------------------- */
+
+    let insight =
+        "Start recording eggs to see production insights.";
+
+
+    if (
+        totalEggs === 0
+    ) {
+
+        insight =
+            "No eggs have been recorded during this 7-day period yet.";
+
+    }
+
+    else if (
+        consistency === 100
+    ) {
+
+        if (
+            recentAverage >
+            earlierAverage
+        ) {
+
+            insight =
+                "Your flock produced eggs every day, and recent production is higher than earlier in the week.";
+
+        }
+
+        else if (
+            recentAverage <
+            earlierAverage
+        ) {
+
+            insight =
+                "Your flock produced eggs every day, but recent production is lower than earlier in the week.";
+
+        }
+
+        else {
+
+            insight =
+                "Your flock produced eggs every day with a relatively stable production pattern.";
+
+        }
+
+    }
+
+    else if (
+        consistency >= 70
+    ) {
+
+        insight =
+            `Your flock produced eggs on ${daysProducing} of the last 7 days. Production is occurring regularly, with some days having no recorded eggs.`;
+
+    }
+
+    else if (
+        consistency >= 40
+    ) {
+
+        insight =
+            `Your flock produced eggs on ${daysProducing} of the last 7 days. There is noticeable variation in production across the period.`;
+
+    }
+
+    else {
+
+        insight =
+            `Egg production was recorded on ${daysProducing} of the last 7 days. More daily records will make the production pattern clearer.`;
+
+    }
+
+
+    /* ---------------------------------------------
+       UPDATE ANALYTICS CARDS
+       --------------------------------------------- */
+
+    if (
+        analyticsEggsPerHen
+    ) {
+
+        analyticsEggsPerHen.textContent =
+            eggsPerHen.toFixed(2);
+
+    }
+
+
+    if (
+        analyticsAverage
+    ) {
+
+        analyticsAverage.textContent =
+            averageDailyEggs.toFixed(2);
+
+    }
+
+
+    if (
+        analyticsHighestDay
+    ) {
+
+        analyticsHighestDay.textContent =
+            totalEggs > 0
+                ? `${highestRecord.eggs} ${
+                    highestRecord.eggs === 1
+                        ? "egg"
+                        : "eggs"
+                }`
+                : "—";
+
+    }
+
+
+    if (
+        analyticsHighestDayDate
+    ) {
+
+        analyticsHighestDayDate.textContent =
+            totalEggs > 0
+                ? formatAnalyticsDate(
+                    highestRecord.dateKey
+                )
+                : "No data";
+
+    }
+
+
+    if (
+        analyticsLowestDay
+    ) {
+
+        analyticsLowestDay.textContent =
+            totalEggs > 0
+                ? `${lowestRecord.eggs} ${
+                    lowestRecord.eggs === 1
+                        ? "egg"
+                        : "eggs"
+                }`
+                : "—";
+
+    }
+
+
+    if (
+        analyticsLowestDayDate
+    ) {
+
+        analyticsLowestDayDate.textContent =
+            totalEggs > 0
+                ? formatAnalyticsDate(
+                    lowestRecord.dateKey
+                )
+                : "No data";
+
+    }
+
+
+    if (
+        analyticsConsistency
+    ) {
+
+        analyticsConsistency.textContent =
+            `${consistency}%`;
+
+    }
+
+
+    if (
+        analyticsChange
+    ) {
+
+        analyticsChange.textContent =
+            changeText;
+
+    }
+
+
+    if (
+        analyticsInsight
+    ) {
+
+        analyticsInsight.textContent =
+            insight;
+
+    }
 }
 
 
@@ -1232,13 +1490,11 @@ function updateChickenDisplay() {
     const flock =
         getCurrentFlock();
 
-
     chickenCount.textContent =
         flock;
 
     birdCount.textContent =
         flock;
-
 
     updateEggDisplay();
 
@@ -1258,12 +1514,10 @@ addChicken.addEventListener(
 
         flock += 1;
 
-
         localStorage.setItem(
             "chickenCount",
             String(flock)
         );
-
 
         saveTodayEggHistory();
 
@@ -1288,22 +1542,20 @@ removeChicken.addEventListener(
         let flock =
             getCurrentFlock();
 
-
-        if (flock <= 0) {
+        if (
+            flock <= 0
+        ) {
 
             return;
 
         }
 
-
         flock -= 1;
-
 
         localStorage.setItem(
             "chickenCount",
             String(flock)
         );
-
 
         saveTodayEggHistory();
 
@@ -1326,7 +1578,9 @@ setFlockButton.addEventListener(
     () => {
 
         const value =
-            Number(flockInput.value);
+            Number(
+                flockInput.value
+            );
 
 
         if (
@@ -1349,7 +1603,8 @@ setFlockButton.addEventListener(
         );
 
 
-        flockInput.value = "";
+        flockInput.value =
+            "";
 
 
         saveTodayEggHistory();
@@ -1375,7 +1630,9 @@ setFlockButton.addEventListener(
 function getFeedAmount() {
 
     return Number(
-        localStorage.getItem("feed")
+        localStorage.getItem(
+            "feed"
+        )
     ) || 0;
 
 }
@@ -1385,7 +1642,6 @@ function updateFeedDisplay() {
 
     const amount =
         getFeedAmount();
-
 
     feedAmount.textContent =
         `${amount.toFixed(1)} kg`;
@@ -1401,7 +1657,9 @@ addFeedButton.addEventListener(
     () => {
 
         const amount =
-            Number(feedInput.value);
+            Number(
+                feedInput.value
+            );
 
 
         if (
@@ -1417,7 +1675,6 @@ addFeedButton.addEventListener(
         const current =
             getFeedAmount();
 
-
         const updated =
             current + amount;
 
@@ -1428,7 +1685,9 @@ addFeedButton.addEventListener(
         );
 
 
-        feedInput.value = "";
+        feedInput.value =
+            "";
+
 
         updateFeedDisplay();
 
@@ -1441,7 +1700,9 @@ useFeedButton.addEventListener(
     () => {
 
         const amount =
-            Number(useFeedInput.value);
+            Number(
+                useFeedInput.value
+            );
 
 
         if (
@@ -1471,7 +1732,9 @@ useFeedButton.addEventListener(
         );
 
 
-        useFeedInput.value = "";
+        useFeedInput.value =
+            "";
+
 
         updateFeedDisplay();
 
@@ -1533,6 +1796,7 @@ saveScheduleButton.addEventListener(
             morning
         );
 
+
         localStorage.setItem(
             "afternoonFeedTime",
             afternoon
@@ -1558,14 +1822,17 @@ saveScheduleButton.addEventListener(
                             "application/json"
                     },
 
-                    body: JSON.stringify({
-                        morning,
-                        afternoon
-                    })
+                    body:
+                        JSON.stringify({
+                            morning,
+                            afternoon
+                        })
                 }
             );
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.log(
                 "Schedule sync unavailable."
@@ -1589,10 +1856,14 @@ function updateNextFeed() {
 
         afternoonFeedTime.value
 
-    ].filter(Boolean);
+    ].filter(
+        Boolean
+    );
 
 
-    if (times.length === 0) {
+    if (
+        times.length === 0
+    ) {
 
         nextFeed.textContent =
             "No schedule set";
@@ -1602,7 +1873,9 @@ function updateNextFeed() {
     }
 
 
-    const now = new Date();
+    const now =
+        new Date();
+
 
     const currentMinutes =
         now.getHours() * 60 +
@@ -1611,40 +1884,48 @@ function updateNextFeed() {
 
     const upcoming =
         times
-            .map(time => {
+            .map(
+                time => {
 
-                const [
-                    hours,
-                    minutes
-                ] = time
-                    .split(":")
-                    .map(Number);
-
-
-                return {
-
-                    time,
-
-                    minutes:
-                        hours * 60 +
+                    const [
+                        hours,
                         minutes
+                    ] =
+                        time
+                            .split(":")
+                            .map(Number);
 
-                };
 
-            })
+                    return {
+
+                        time,
+
+                        minutes:
+                            hours * 60 +
+                            minutes
+
+                    };
+
+                }
+            )
             .filter(
                 item =>
                     item.minutes >
                     currentMinutes
             )
             .sort(
-                (a, b) =>
+                (
+                    a,
+                    b
+                ) =>
                     a.minutes -
                     b.minutes
             );
 
 
-    if (upcoming.length > 0) {
+    if (
+        upcoming.length > 0
+    ) {
 
         nextFeed.textContent =
             formatTime(
@@ -1657,8 +1938,9 @@ function updateNextFeed() {
 
 
     nextFeed.textContent =
-        formatTime(times[0]) +
-        " tomorrow";
+        `${formatTime(
+            times[0]
+        )} tomorrow`;
 
 }
 
@@ -1675,14 +1957,19 @@ function formatTime(time) {
     const [
         hourString,
         minuteString
-    ] = time.split(":");
+    ] =
+        time.split(":");
 
 
     const hour =
-        Number(hourString);
+        Number(
+            hourString
+        );
 
     const minute =
-        Number(minuteString);
+        Number(
+            minuteString
+        );
 
 
     const suffix =
@@ -1697,7 +1984,10 @@ function formatTime(time) {
 
     return `${displayHour}:${String(
         minute
-    ).padStart(2, "0")} ${suffix}`;
+    ).padStart(
+        2,
+        "0"
+    )} ${suffix}`;
 
 }
 
@@ -1734,7 +2024,9 @@ function updateAlarmDisplay() {
         alarmButton.textContent =
             "Disable Alarm";
 
-    } else {
+    }
+
+    else {
 
         alarmStatus.textContent =
             "Alarm Off";
@@ -1774,26 +2066,37 @@ alarmButton.addEventListener(
    ALARM CHECK
    ========================================================= */
 
-let lastAlarmTrigger = "";
+let lastAlarmTrigger =
+    "";
 
 
 function checkFeedAlarm() {
 
-    if (!getAlarmEnabled()) {
+    if (
+        !getAlarmEnabled()
+    ) {
 
         return;
 
     }
 
 
-    const now = new Date();
+    const now =
+        new Date();
+
 
     const currentTime =
         `${String(
             now.getHours()
-        ).padStart(2, "0")}:${String(
+        ).padStart(
+            2,
+            "0"
+        )}:${String(
             now.getMinutes()
-        ).padStart(2, "0")}`;
+        ).padStart(
+            2,
+            "0"
+        )}`;
 
 
     const currentDate =
@@ -1806,7 +2109,9 @@ function checkFeedAlarm() {
 
         afternoonFeedTime.value
 
-    ].filter(Boolean);
+    ].filter(
+        Boolean
+    );
 
 
     schedules.forEach(
@@ -1825,7 +2130,6 @@ function checkFeedAlarm() {
 
                 lastAlarmTrigger =
                     triggerKey;
-
 
                 triggerFeedAlarm();
 
@@ -1871,7 +2175,10 @@ enableNotifications.addEventListener(
     async () => {
 
         if (
-            !("Notification" in window)
+            !(
+                "Notification" in
+                window
+            )
         ) {
 
             return;
@@ -1880,11 +2187,13 @@ enableNotifications.addEventListener(
 
 
         const permission =
-            await Notification.requestPermission();
+            await Notification
+                .requestPermission();
 
 
         if (
-            permission !== "granted"
+            permission !==
+            "granted"
         ) {
 
             return;
@@ -1895,7 +2204,8 @@ enableNotifications.addEventListener(
         try {
 
             const registration =
-                await navigator.serviceWorker
+                await navigator
+                    .serviceWorker
                     .register(
                         "/service-worker.js"
                     );
@@ -1907,7 +2217,9 @@ enableNotifications.addEventListener(
                 );
 
 
-            if (!response.ok) {
+            if (
+                !response.ok
+            ) {
 
                 return;
 
@@ -1919,9 +2231,11 @@ enableNotifications.addEventListener(
 
 
             const subscription =
-                await registration.pushManager
+                await registration
+                    .pushManager
                     .subscribe({
-                        userVisibleOnly: true,
+                        userVisibleOnly:
+                            true,
 
                         applicationServerKey:
                             data.publicKey
@@ -1938,9 +2252,10 @@ enableNotifications.addEventListener(
                             "application/json"
                     },
 
-                    body: JSON.stringify(
-                        subscription
-                    )
+                    body:
+                        JSON.stringify(
+                            subscription
+                        )
                 }
             );
 
@@ -1948,7 +2263,9 @@ enableNotifications.addEventListener(
             enableNotifications.textContent =
                 "Notifications Enabled";
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.error(
                 "Notification setup failed:",
@@ -1968,17 +2285,21 @@ enableNotifications.addEventListener(
 async function registerServiceWorker() {
 
     if (
-        "serviceWorker" in navigator
+        "serviceWorker" in
+        navigator
     ) {
 
         try {
 
-            await navigator.serviceWorker
+            await navigator
+                .serviceWorker
                 .register(
                     "/service-worker.js"
                 );
 
-        } catch (error) {
+        }
+
+        catch (error) {
 
             console.log(
                 "Service worker registration failed."
