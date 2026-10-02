@@ -544,4 +544,13 @@ row.innerHTML =
   });
 }
 
+if (viewHistoryButton) {
+  viewHistoryButton.textContent =
+    showAllHistory ? "Show Less" : "View All History";
+
+  viewHistoryButton.onclick = function() {
+    showAllHistory = !showAllHistory;
+    displayEggHistory();
+  };
+}
 displayEggHistory();
