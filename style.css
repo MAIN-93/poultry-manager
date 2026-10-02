@@ -1,6 +1,6 @@
 /* =========================================
    POULTRY MANAGER
-   Professional Dashboard Styles
+   Production Dashboard
 ========================================= */
 
 :root {
@@ -9,7 +9,7 @@
     --surface-soft: #f8f9fa;
 
     --text: #171717;
-    --text-secondary: #666;
+    --text-secondary: #666666;
     --text-muted: #8a8a8a;
 
     --border: #e7e7e7;
@@ -21,9 +21,6 @@
     --success-text: #287a3d;
 
     --neutral-bg: #f1f1f1;
-
-    --danger-bg: #f8eeee;
-    --danger-text: #9a3333;
 
     --shadow-sm:
         0 2px 8px rgba(0, 0, 0, 0.04);
@@ -53,6 +50,7 @@ html {
 
 body {
     margin: 0;
+
     min-height: 100vh;
 
     font-family:
@@ -65,6 +63,7 @@ body {
         sans-serif;
 
     background: var(--bg);
+
     color: var(--text);
 
     -webkit-font-smoothing: antialiased;
@@ -77,12 +76,18 @@ body {
 
 .app-header {
     max-width: 1180px;
+
     margin: 0 auto;
 
-    padding: 34px 24px 26px;
+    padding:
+        34px
+        24px
+        26px;
 
     display: flex;
+
     justify-content: space-between;
+
     align-items: flex-start;
 
     gap: 20px;
@@ -95,6 +100,7 @@ body {
     margin: 0;
 
     font-size: 11px;
+
     font-weight: 700;
 
     letter-spacing: 0.12em;
@@ -104,9 +110,13 @@ body {
 
 
 .app-header h1 {
-    margin: 5px 0 7px;
+    margin:
+        5px
+        0
+        7px;
 
     font-size: 34px;
+
     line-height: 1.1;
 
     letter-spacing: -0.04em;
@@ -123,7 +133,9 @@ body {
 
 
 .header-date {
-    padding: 9px 13px;
+    padding:
+        9px
+        13px;
 
     border-radius: 999px;
 
@@ -134,6 +146,7 @@ body {
     color: var(--text-secondary);
 
     font-size: 13px;
+
     font-weight: 600;
 
     white-space: nowrap;
@@ -143,30 +156,40 @@ body {
 
 
 /* =========================================
-   MAIN CONTAINER
+   MAIN
 ========================================= */
 
 .app-container {
     width: 100%;
+
     max-width: 1180px;
 
     margin: 0 auto;
 
-    padding: 0 24px 50px;
+    padding:
+        0
+        24px
+        50px;
 }
 
 
 /* =========================================
-   SECTION HEADINGS
+   SECTION HEADING
 ========================================= */
 
 .section-heading {
-    margin: 8px 0 14px;
+    margin:
+        8px
+        0
+        14px;
 }
 
 
 .section-heading h2 {
-    margin: 4px 0 0;
+    margin:
+        4px
+        0
+        0;
 
     font-size: 22px;
 
@@ -196,17 +219,22 @@ body {
     padding: 18px;
 
     display: flex;
+
     align-items: center;
 
     gap: 14px;
 
     background: var(--surface);
 
-    border: 1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
 
-    border-radius: var(--radius-md);
+    border-radius:
+        var(--radius-md);
 
-    box-shadow: var(--shadow-sm);
+    box-shadow:
+        var(--shadow-sm);
 }
 
 
@@ -217,12 +245,14 @@ body {
     flex-shrink: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     border-radius: 12px;
 
-    background: var(--surface-soft);
+    background:
+        var(--surface-soft);
 
     font-size: 20px;
 }
@@ -241,6 +271,7 @@ body {
     color: var(--text-secondary);
 
     font-size: 12px;
+
     font-weight: 600;
 }
 
@@ -262,6 +293,140 @@ body {
     margin-top: 2px;
 
     color: var(--text-muted);
+
+    font-size: 11px;
+}
+
+
+/* =========================================
+   PRODUCTION SUMMARY
+========================================= */
+
+.production-summary-card {
+    margin-bottom: 20px;
+
+    padding: 22px;
+
+    background: var(--surface);
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius:
+        var(--radius-lg);
+
+    box-shadow:
+        var(--shadow-sm);
+}
+
+
+.summary-heading {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+
+.summary-heading h2 {
+    margin:
+        5px
+        0
+        0;
+
+    font-size: 19px;
+
+    letter-spacing: -0.025em;
+}
+
+
+.summary-period {
+    padding:
+        6px
+        9px;
+
+    border-radius: 999px;
+
+    background:
+        var(--neutral-bg);
+
+    color:
+        var(--text-secondary);
+
+    font-size: 11px;
+
+    font-weight: 650;
+
+    white-space: nowrap;
+}
+
+
+.production-summary-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+.summary-stat {
+    min-width: 0;
+
+    padding: 16px;
+
+    border-radius: 14px;
+
+    background:
+        var(--surface-soft);
+}
+
+
+.summary-stat span {
+    display: block;
+
+    color:
+        var(--text-secondary);
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.summary-stat strong {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 28px;
+
+    line-height: 1.1;
+
+    letter-spacing: -0.04em;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.summary-stat small {
+    display: block;
+
+    margin-top: 3px;
+
+    color:
+        var(--text-muted);
 
     font-size: 11px;
 }
@@ -290,19 +455,26 @@ body {
 
     padding: 22px;
 
-    background: var(--surface);
+    background:
+        var(--surface);
 
-    border: 1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
 
-    border-radius: var(--radius-lg);
+    border-radius:
+        var(--radius-lg);
 
-    box-shadow: var(--shadow-sm);
+    box-shadow:
+        var(--shadow-sm);
 }
 
 
 .card-header {
     display: flex;
+
     align-items: flex-start;
+
     justify-content: space-between;
 
     gap: 15px;
@@ -312,7 +484,10 @@ body {
 
 
 .card-header h2 {
-    margin: 5px 0 0;
+    margin:
+        5px
+        0
+        0;
 
     font-size: 19px;
 
@@ -322,17 +497,23 @@ body {
 
 .status-badge {
     display: inline-flex;
+
     align-items: center;
 
-    padding: 6px 9px;
+    padding:
+        6px
+        9px;
 
     border-radius: 999px;
 
-    background: var(--success-bg);
+    background:
+        var(--success-bg);
 
-    color: var(--success-text);
+    color:
+        var(--success-text);
 
     font-size: 11px;
+
     font-weight: 700;
 
     white-space: nowrap;
@@ -340,8 +521,11 @@ body {
 
 
 .status-badge.neutral {
-    background: var(--neutral-bg);
-    color: var(--text-secondary);
+    background:
+        var(--neutral-bg);
+
+    color:
+        var(--text-secondary);
 }
 
 
@@ -367,7 +551,8 @@ body {
 
     border-radius: 15px;
 
-    background: var(--surface-soft);
+    background:
+        var(--surface-soft);
 }
 
 
@@ -375,9 +560,11 @@ body {
 .egg-rate span {
     display: block;
 
-    color: var(--text-secondary);
+    color:
+        var(--text-secondary);
 
     font-size: 12px;
+
     font-weight: 600;
 }
 
@@ -417,11 +604,14 @@ body {
 
     min-height: 44px;
 
-    padding: 11px 15px;
+    padding:
+        11px
+        15px;
 
     border-radius: 11px;
 
     font-size: 14px;
+
     font-weight: 650;
 
     cursor: pointer;
@@ -448,22 +638,29 @@ body {
 
 
 .button-primary {
-    background: var(--primary);
+    background:
+        var(--primary);
+
     color: white;
 }
 
 
 .button-primary:hover {
-    background: var(--primary-hover);
+    background:
+        var(--primary-hover);
 }
 
 
 .button-secondary {
-    background: var(--surface-soft);
+    background:
+        var(--surface-soft);
 
-    color: var(--text);
+    color:
+        var(--text);
 
-    border: 1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
 }
 
 
@@ -475,7 +672,8 @@ body {
 .egg-actions {
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        1fr 1fr;
 
     gap: 10px;
 }
@@ -490,7 +688,9 @@ body {
 
     padding-top: 20px;
 
-    border-top: 1px solid var(--border);
+    border-top:
+        1px solid
+        var(--border);
 }
 
 
@@ -500,7 +700,10 @@ body {
 
 
 .subsection-header h3 {
-    margin: 4px 0 0;
+    margin:
+        4px
+        0
+        0;
 
     font-size: 15px;
 }
@@ -509,11 +712,14 @@ body {
 .history-list {
     overflow: hidden;
 
-    border: 1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
 
     border-radius: 13px;
 
-    background: var(--surface);
+    background:
+        var(--surface);
 }
 
 
@@ -521,13 +727,18 @@ body {
     display: flex;
 
     align-items: center;
+
     justify-content: space-between;
 
     gap: 15px;
 
-    padding: 13px 14px;
+    padding:
+        13px
+        14px;
 
-    border-bottom: 1px solid var(--border);
+    border-bottom:
+        1px solid
+        var(--border);
 }
 
 
@@ -542,7 +753,8 @@ body {
 
 
 #eggHistoryList span {
-    color: var(--text-secondary);
+    color:
+        var(--text-secondary);
 
     font-size: 12px;
 
@@ -555,7 +767,8 @@ body {
 
     padding: 16px;
 
-    color: var(--text-muted);
+    color:
+        var(--text-muted);
 
     font-size: 13px;
 
@@ -576,9 +789,11 @@ body {
 
     background: transparent;
 
-    color: var(--text);
+    color:
+        var(--text);
 
     font-size: 13px;
+
     font-weight: 650;
 
     cursor: pointer;
@@ -593,6 +808,7 @@ body {
     display: flex;
 
     align-items: center;
+
     justify-content: space-between;
 
     gap: 15px;
@@ -603,14 +819,17 @@ body {
 
     border-radius: 15px;
 
-    background: var(--surface-soft);
+    background:
+        var(--surface-soft);
 }
 
 
 .feed-stock span {
-    color: var(--text-secondary);
+    color:
+        var(--text-secondary);
 
     font-size: 13px;
+
     font-weight: 600;
 }
 
@@ -632,9 +851,11 @@ body {
 
     margin-bottom: 7px;
 
-    color: var(--text-secondary);
+    color:
+        var(--text-secondary);
 
     font-size: 12px;
+
     font-weight: 650;
 }
 
@@ -642,7 +863,8 @@ body {
 .input-row {
     display: grid;
 
-    grid-template-columns: 1fr auto;
+    grid-template-columns:
+        1fr auto;
 
     gap: 8px;
 }
@@ -653,15 +875,21 @@ input {
 
     min-height: 44px;
 
-    padding: 10px 12px;
+    padding:
+        10px
+        12px;
 
-    border: 1px solid var(--border);
+    border:
+        1px solid
+        var(--border);
 
     border-radius: 11px;
 
-    background: var(--surface);
+    background:
+        var(--surface);
 
-    color: var(--text);
+    color:
+        var(--text);
 
     font-family: inherit;
 
@@ -679,14 +907,16 @@ input:focus {
     border-color: #999;
 
     box-shadow:
-        0 0 0 3px rgba(0, 0, 0, 0.05);
+        0 0 0 3px
+        rgba(0, 0, 0, 0.05);
 }
 
 
 .schedule-grid {
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        1fr 1fr;
 
     gap: 10px;
 }
@@ -698,9 +928,13 @@ input:focus {
 
 
 .feedback-message {
-    margin: 10px 0 0;
+    margin:
+        10px
+        0
+        0;
 
-    color: var(--text-muted);
+    color:
+        var(--text-muted);
 
     font-size: 12px;
 
@@ -711,9 +945,12 @@ input:focus {
 .divider {
     height: 1px;
 
-    margin: 20px 0;
+    margin:
+        20px
+        0;
 
-    background: var(--border);
+    background:
+        var(--border);
 }
 
 
@@ -727,7 +964,9 @@ input:focus {
     padding: 16px;
 
     display: flex;
+
     align-items: center;
+
     justify-content: space-between;
 
     gap: 15px;
@@ -763,7 +1002,8 @@ input:focus {
 
     border-radius: 16px;
 
-    background: var(--surface-soft);
+    background:
+        var(--surface-soft);
 
     margin-bottom: 14px;
 }
@@ -772,9 +1012,11 @@ input:focus {
 .flock-total span {
     display: block;
 
-    color: var(--text-secondary);
+    color:
+        var(--text-secondary);
 
     font-size: 12px;
+
     font-weight: 600;
 }
 
@@ -795,20 +1037,22 @@ input:focus {
 .flock-actions {
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        1fr 1fr;
 
     gap: 10px;
 }
 
 
 /* =========================================
-   ALARM / NOTIFICATIONS
+   ALARMS
 ========================================= */
 
 .alarm-panel {
     display: flex;
 
     align-items: center;
+
     justify-content: space-between;
 
     gap: 15px;
@@ -819,15 +1063,20 @@ input:focus {
     display: block;
 
     font-size: 14px;
+
     font-weight: 700;
 }
 
 
 .alarm-panel p,
 .notification-panel p {
-    margin: 4px 0 0;
+    margin:
+        4px
+        0
+        0;
 
-    color: var(--text-secondary);
+    color:
+        var(--text-secondary);
 
     font-size: 12px;
 
@@ -842,11 +1091,14 @@ input:focus {
 
     border-radius: 11px;
 
-    background: var(--success-bg);
+    background:
+        var(--success-bg);
 
-    color: var(--success-text);
+    color:
+        var(--success-text);
 
     font-size: 13px;
+
     font-weight: 650;
 
     text-align: center;
@@ -867,22 +1119,30 @@ input:focus {
 ========================================= */
 
 .app-footer {
-    padding: 0 24px 35px;
+    padding:
+        0
+        24px
+        35px;
 
     text-align: center;
 
-    color: var(--text-muted);
+    color:
+        var(--text-muted);
 
     font-size: 11px;
 }
 
 
 .app-footer p {
-    margin: 0 0 3px;
+    margin:
+        0
+        0
+        3px;
 
     font-weight: 700;
 
-    color: var(--text-secondary);
+    color:
+        var(--text-secondary);
 }
 
 
@@ -892,7 +1152,7 @@ input:focus {
 
 
 /* =========================================
-   MOBILE
+   TABLET
 ========================================= */
 
 @media (max-width: 850px) {
@@ -909,6 +1169,10 @@ input:focus {
 
 }
 
+
+/* =========================================
+   MOBILE
+========================================= */
 
 @media (max-width: 560px) {
 
@@ -938,7 +1202,8 @@ input:focus {
 
 
     .overview-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns:
+            1fr 1fr;
 
         gap: 10px;
     }
@@ -969,6 +1234,21 @@ input:focus {
     }
 
 
+    .production-summary-card {
+        padding: 18px;
+    }
+
+
+    .production-summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .summary-heading {
+        flex-direction: column;
+    }
+
+
     .card {
         padding: 18px;
     }
@@ -985,7 +1265,8 @@ input:focus {
 
 
     .egg-actions {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns:
+            1fr 1fr;
     }
 
 
@@ -1007,6 +1288,10 @@ input:focus {
 
 }
 
+
+/* =========================================
+   SMALL PHONES
+========================================= */
 
 @media (max-width: 380px) {
 
@@ -1036,6 +1321,7 @@ input:focus {
     *,
     *::before,
     *::after {
+
         scroll-behavior: auto !important;
 
         transition: none !important;
