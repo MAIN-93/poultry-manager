@@ -1,8 +1,6 @@
 /* =========================================================
    POULTRY MANAGER
-   Production Tracking v6
-   Feed Management v2
-   Reversible Feed Transactions
+   Complete Production + Feed Management
    ========================================================= */
 
 
@@ -10,100 +8,163 @@
    DOM REFERENCES
    ========================================================= */
 
+/* Header */
+
 const headerDate =
     document.getElementById("headerDate");
 
-const todayEggs =
-    document.getElementById("todayEggs");
 
-const flockCount =
-    document.getElementById("flockCount");
+/* Overview */
+
+const birdCount =
+    document.getElementById("birdCount");
+
+const overviewEggCount =
+    document.getElementById("overviewEggCount");
+
+const overviewLayingRate =
+    document.getElementById("overviewLayingRate");
+
+const overviewFeedAmount =
+    document.getElementById("overviewFeedAmount");
+
+
+/* Production Summary */
+
+const sevenDayEggs =
+    document.getElementById("sevenDayEggs");
+
+const averageLayingRate =
+    document.getElementById("averageLayingRate");
+
+const bestProductionDay =
+    document.getElementById("bestProductionDay");
+
+const bestProductionEggs =
+    document.getElementById("bestProductionEggs");
+
+
+/* Production Trend */
+
+const trendMaxLabel =
+    document.getElementById("trendMaxLabel");
+
+const trendMidLabel =
+    document.getElementById("trendMidLabel");
+
+const productionTrendChart =
+    document.getElementById(
+        "productionTrendChart"
+    );
+
+
+/* Production Analytics */
+
+const analyticsEggsPerHen =
+    document.getElementById(
+        "analyticsEggsPerHen"
+    );
+
+const analyticsAverage =
+    document.getElementById(
+        "analyticsAverage"
+    );
+
+const analyticsHighestDay =
+    document.getElementById(
+        "analyticsHighestDay"
+    );
+
+const analyticsHighestDayDate =
+    document.getElementById(
+        "analyticsHighestDayDate"
+    );
+
+const analyticsLowestDay =
+    document.getElementById(
+        "analyticsLowestDay"
+    );
+
+const analyticsLowestDayDate =
+    document.getElementById(
+        "analyticsLowestDayDate"
+    );
+
+const analyticsConsistency =
+    document.getElementById(
+        "analyticsConsistency"
+    );
+
+const analyticsChange =
+    document.getElementById(
+        "analyticsChange"
+    );
+
+const analyticsInsight =
+    document.getElementById(
+        "analyticsInsight"
+    );
+
+
+/* Egg Production */
+
+const eggCount =
+    document.getElementById("eggCount");
 
 const layingRate =
     document.getElementById("layingRate");
 
-const eggInput =
-    document.getElementById("eggInput");
-
 const addEggButton =
-    document.getElementById("addEggButton");
+    document.getElementById(
+        "addEggButton"
+    );
 
 const removeEggButton =
-    document.getElementById("removeEggButton");
+    document.getElementById(
+        "removeEggButton"
+    );
 
-const eggHistory =
-    document.getElementById("eggHistory");
+const viewHistoryButton =
+    document.getElementById(
+        "viewHistoryButton"
+    );
 
-const productionSummary =
-    document.getElementById("productionSummary");
-
-const productionTrend =
-    document.getElementById("productionTrend");
-
-const analyticsEggsPerHen =
-    document.getElementById("analyticsEggsPerHen");
-
-const analyticsAverage =
-    document.getElementById("analyticsAverage");
-
-const analyticsHighestDay =
-    document.getElementById("analyticsHighestDay");
-
-const analyticsHighestDayDate =
-    document.getElementById("analyticsHighestDayDate");
-
-const analyticsLowestDay =
-    document.getElementById("analyticsLowestDay");
-
-const analyticsLowestDayDate =
-    document.getElementById("analyticsLowestDayDate");
-
-const analyticsConsistency =
-    document.getElementById("analyticsConsistency");
-
-const analyticsChange =
-    document.getElementById("analyticsChange");
-
-const analyticsInsight =
-    document.getElementById("analyticsInsight");
+const eggHistoryList =
+    document.getElementById(
+        "eggHistoryList"
+    );
 
 
-/* =========================================================
-   FEED DOM REFERENCES
-   ========================================================= */
+/* Feed */
 
 const feedAmount =
-    document.getElementById("feedAmount");
+    document.getElementById(
+        "feedAmount"
+    );
 
 const feedInput =
-    document.getElementById("feedInput");
+    document.getElementById(
+        "feedInput"
+    );
 
 const addFeedButton =
-    document.getElementById("addFeedButton");
+    document.getElementById(
+        "addFeedButton"
+    );
 
 const useFeedInput =
-    document.getElementById("useFeedInput");
+    document.getElementById(
+        "useFeedInput"
+    );
 
 const useFeedButton =
-    document.getElementById("useFeedButton");
+    document.getElementById(
+        "useFeedButton"
+    );
 
 const resetFeedTodayButton =
     document.getElementById(
         "resetFeedTodayButton"
-    );
-
-const feedUsedToday =
-    document.getElementById("feedUsedToday");
-
-const feedDailyAverage =
-    document.getElementById("feedDailyAverage");
-
-const feedDaysRemaining =
-    document.getElementById("feedDaysRemaining");
-
-const feedDaysRemainingText =
-    document.getElementById(
-        "feedDaysRemainingText"
     );
 
 const feedStatusBadge =
@@ -121,6 +182,26 @@ const feedStockProgress =
         "feedStockProgress"
     );
 
+const feedUsedToday =
+    document.getElementById(
+        "feedUsedToday"
+    );
+
+const feedDailyAverage =
+    document.getElementById(
+        "feedDailyAverage"
+    );
+
+const feedDaysRemaining =
+    document.getElementById(
+        "feedDaysRemaining"
+    );
+
+const feedDaysRemainingText =
+    document.getElementById(
+        "feedDaysRemainingText"
+    );
+
 const feedSevenDayUsage =
     document.getElementById(
         "feedSevenDayUsage"
@@ -136,14 +217,106 @@ const feedPerBird =
         "feedPerBird"
     );
 
-const feedHistory =
+const feedConsumptionChart =
     document.getElementById(
-        "feedHistory"
+        "feedConsumptionChart"
     );
 
-const feedChart =
+const viewFeedHistoryButton =
     document.getElementById(
-        "feedChart"
+        "viewFeedHistoryButton"
+    );
+
+const feedHistoryList =
+    document.getElementById(
+        "feedHistoryList"
+    );
+
+
+/* Feed Schedule */
+
+const morningFeedTime =
+    document.getElementById(
+        "morningFeedTime"
+    );
+
+const afternoonFeedTime =
+    document.getElementById(
+        "afternoonFeedTime"
+    );
+
+const saveScheduleButton =
+    document.getElementById(
+        "saveScheduleButton"
+    );
+
+const scheduleStatus =
+    document.getElementById(
+        "scheduleStatus"
+    );
+
+const nextFeedCountdown =
+    document.getElementById(
+        "nextFeedCountdown"
+    );
+
+const nextFeed =
+    document.getElementById(
+        "nextFeed"
+    );
+
+
+/* Flock */
+
+const chickenCount =
+    document.getElementById(
+        "chickenCount"
+    );
+
+const addChicken =
+    document.getElementById(
+        "addChicken"
+    );
+
+const removeChicken =
+    document.getElementById(
+        "removeChicken"
+    );
+
+const flockInput =
+    document.getElementById(
+        "flockInput"
+    );
+
+const setFlockButton =
+    document.getElementById(
+        "setFlockButton"
+    );
+
+
+/* Alarm */
+
+const alarmStatus =
+    document.getElementById(
+        "alarmStatus"
+    );
+
+const alarmMessage =
+    document.getElementById(
+        "alarmMessage"
+    );
+
+const alarmButton =
+    document.getElementById(
+        "alarmButton"
+    );
+
+
+/* Notifications */
+
+const enableNotifications =
+    document.getElementById(
+        "enableNotifications"
     );
 
 
@@ -170,11 +343,33 @@ function getTodayKey() {
 
 }
 
+
 const today =
     getTodayKey();
 
 
-function formatDate(dateKey) {
+function getDateKeyFromDate(
+    date
+) {
+
+    return (
+        date.getFullYear() +
+        "-" +
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0") +
+        "-" +
+        String(
+            date.getDate()
+        ).padStart(2, "0")
+    );
+
+}
+
+
+function formatDate(
+    dateKey
+) {
 
     const parts =
         dateKey.split("-");
@@ -197,7 +392,9 @@ function formatDate(dateKey) {
 }
 
 
-function formatFullDate(dateKey) {
+function formatFullDate(
+    dateKey
+) {
 
     const parts =
         dateKey.split("-");
@@ -249,7 +446,7 @@ function displayHeaderDate() {
 
 
 /* =========================================================
-   EGG HISTORY
+   EGG STORAGE
    ========================================================= */
 
 function getEggHistory() {
@@ -271,11 +468,15 @@ function getEggHistory() {
 }
 
 
-function saveEggHistory(history) {
+function saveEggHistory(
+    history
+) {
 
     localStorage.setItem(
         "eggHistory",
-        JSON.stringify(history)
+        JSON.stringify(
+            history
+        )
     );
 
 }
@@ -293,7 +494,9 @@ function getTodayEggs() {
 }
 
 
-function saveTodayEggs(amount) {
+function saveTodayEggs(
+    amount
+) {
 
     const history =
         getEggHistory();
@@ -312,59 +515,7 @@ function saveTodayEggs(amount) {
 
 
 /* =========================================================
-   CURRENT DAY
-   ========================================================= */
-
-function updateCurrentDay() {
-
-    const history =
-        getEggHistory();
-
-    if (
-        typeof history[today] ===
-        "undefined"
-    ) {
-
-        history[today] = 0;
-
-        saveEggHistory(
-            history
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   DAILY ROLLOVER
-   ========================================================= */
-
-function checkDailyRollover() {
-
-    const storedDate =
-        localStorage.getItem(
-            "poultryManagerDate"
-        );
-
-    if (
-        storedDate !== today
-    ) {
-
-        localStorage.setItem(
-            "poultryManagerDate",
-            today
-        );
-
-        updateCurrentDay();
-
-    }
-
-}
-
-
-/* =========================================================
-   FLOCK
+   FLOCK STORAGE
    ========================================================= */
 
 function getFlockCount() {
@@ -378,7 +529,9 @@ function getFlockCount() {
 }
 
 
-function saveFlockCount(amount) {
+function saveFlockCount(
+    amount
+) {
 
     localStorage.setItem(
         "flockCount",
@@ -394,44 +547,106 @@ function saveFlockCount(amount) {
 
 
 /* =========================================================
-   LAYING RATE
+   FEED STORAGE
    ========================================================= */
 
-function updateLayingRate() {
+function getFeedAmount() {
 
-    if (!layingRate) {
-        return;
+    return Number(
+        localStorage.getItem(
+            "feed"
+        )
+    ) || 0;
+
+}
+
+
+function saveFeedAmount(
+    amount
+) {
+
+    localStorage.setItem(
+        "feed",
+        String(
+            Math.max(
+                0,
+                Number(amount) || 0
+            )
+        )
+    );
+
+}
+
+
+/* =========================================================
+   FEED USAGE STORAGE
+   ========================================================= */
+
+function getFeedUsageHistory() {
+
+    try {
+
+        return JSON.parse(
+            localStorage.getItem(
+                "feedUsageHistory"
+            )
+        ) || {};
+
+    } catch (error) {
+
+        return {};
+
     }
 
-    const flock =
-        getFlockCount();
+}
 
-    const eggs =
-        getTodayEggs();
 
-    if (
-        flock <= 0
-    ) {
+function saveFeedUsageHistory(
+    history
+) {
 
-        layingRate.textContent =
-            "0%";
+    localStorage.setItem(
+        "feedUsageHistory",
+        JSON.stringify(
+            history
+        )
+    );
 
-        return;
+}
 
-    }
 
-    const rate =
+function getFeedUsage(
+    dateKey
+) {
+
+    const history =
+        getFeedUsageHistory();
+
+    return Number(
+        history[dateKey]
+    ) || 0;
+
+}
+
+
+function recordFeedUsage(
+    amount
+) {
+
+    const history =
+        getFeedUsageHistory();
+
+    history[today] =
         (
-            eggs /
-            flock
-        ) *
-        100;
+            Number(
+                history[today]
+            ) || 0
+        ) +
+        amount;
 
-    layingRate.textContent =
-        `${Math.min(
-            100,
-            rate
-        ).toFixed(0)}%`;
+    saveFeedUsageHistory(
+        history
+    );
 
 }
 
@@ -445,35 +660,89 @@ function updateEggDisplay() {
     const eggs =
         getTodayEggs();
 
-    if (todayEggs) {
+    const flock =
+        getFlockCount();
 
-        todayEggs.textContent =
+    if (eggCount) {
+
+        eggCount.textContent =
             eggs;
 
     }
 
-    updateLayingRate();
+    if (overviewEggCount) {
+
+        overviewEggCount.textContent =
+            eggs;
+
+    }
+
+    let rate = 0;
+
+    if (
+        flock > 0
+    ) {
+
+        rate =
+            (
+                eggs /
+                flock
+            ) *
+            100;
+
+    }
+
+    rate =
+        Math.min(
+            100,
+            rate
+        );
+
+    if (layingRate) {
+
+        layingRate.textContent =
+            `${rate.toFixed(0)}%`;
+
+    }
+
+    if (overviewLayingRate) {
+
+        overviewLayingRate.textContent =
+            `${rate.toFixed(0)}%`;
+
+    }
 
 }
 
 
 /* =========================================================
-   CHICKEN DISPLAY
+   FLOCK DISPLAY
    ========================================================= */
 
-function updateChickenDisplay() {
+function updateFlockDisplay() {
 
     const flock =
         getFlockCount();
 
-    if (flockCount) {
+    if (birdCount) {
 
-        flockCount.textContent =
+        birdCount.textContent =
             flock;
 
     }
 
-    updateLayingRate();
+    if (chickenCount) {
+
+        chickenCount.textContent =
+            flock;
+
+    }
+
+    updateEggDisplay();
+
+    updateProductionSummary();
+
+    updateProductionAnalytics();
 
     updateFeedManagement();
 
@@ -490,32 +759,12 @@ if (addEggButton) {
         "click",
         () => {
 
-            const amount =
-                Number(
-                    eggInput.value
-                );
-
-            if (
-                !Number.isFinite(
-                    amount
-                ) ||
-                amount <= 0
-            ) {
-
-                return;
-
-            }
-
             const current =
                 getTodayEggs();
 
             saveTodayEggs(
-                current +
-                amount
+                current + 1
             );
-
-            eggInput.value =
-                "";
 
             updateEggDisplay();
 
@@ -539,34 +788,20 @@ if (removeEggButton) {
         "click",
         () => {
 
-            const amount =
-                Number(
-                    eggInput.value
-                );
+            const current =
+                getTodayEggs();
 
             if (
-                !Number.isFinite(
-                    amount
-                ) ||
-                amount <= 0
+                current <= 0
             ) {
 
                 return;
 
             }
 
-            const current =
-                getTodayEggs();
-
             saveTodayEggs(
-                Math.max(
-                    0,
-                    current - amount
-                )
+                current - 1
             );
-
-            eggInput.value =
-                "";
 
             updateEggDisplay();
 
@@ -585,12 +820,16 @@ if (removeEggButton) {
 
 
 /* =========================================================
-   EGG HISTORY DISPLAY
+   EGG HISTORY
    ========================================================= */
+
+let showAllEggHistory =
+    false;
+
 
 function displayEggHistory() {
 
-    if (!eggHistory) {
+    if (!eggHistoryList) {
         return;
     }
 
@@ -600,10 +839,6 @@ function displayEggHistory() {
     const entries =
         Object.entries(
             history
-        )
-        .filter(
-            ([date, eggs]) =>
-                Number(eggs) >= 0
         )
         .sort(
             (
@@ -619,28 +854,56 @@ function displayEggHistory() {
         entries.length === 0
     ) {
 
-        eggHistory.innerHTML =
-            "<p>No egg history yet.</p>";
+        eggHistoryList.innerHTML =
+            `
+            <div class="empty-state">
+                No egg history yet.
+            </div>
+            `;
 
         return;
 
     }
 
-    eggHistory.innerHTML =
-        entries
-            .slice(0, 7)
+    const visibleEntries =
+        showAllEggHistory
+            ? entries
+            : entries.slice(
+                0,
+                7
+            );
+
+    eggHistoryList.innerHTML =
+        visibleEntries
             .map(
                 (
-                    [date, eggs]
+                    [
+                        date,
+                        eggs
+                    ]
                 ) => `
-                    <div class="history-row">
-                        <span>
-                            ${formatFullDate(date)}
-                        </span>
+                    <div class="history-item">
 
-                        <strong>
-                            ${eggs} eggs
-                        </strong>
+                        <div>
+                            <strong>
+                                ${formatFullDate(
+                                    date
+                                )}
+                            </strong>
+
+                            <small>
+                                Egg production
+                            </small>
+                        </div>
+
+                        <div>
+                            <strong>
+                                ${Number(
+                                    eggs
+                                )} eggs
+                            </strong>
+                        </div>
+
                     </div>
                 `
             )
@@ -649,53 +912,33 @@ function displayEggHistory() {
 }
 
 
-/* =========================================================
-   PRODUCTION SUMMARY
-   ========================================================= */
+if (viewHistoryButton) {
 
-function updateProductionSummary() {
+    viewHistoryButton.addEventListener(
+        "click",
+        () => {
 
-    if (!productionSummary) {
-        return;
-    }
+            showAllEggHistory =
+                !showAllEggHistory;
 
-    const history =
-        getEggHistory();
+            viewHistoryButton.textContent =
+                showAllEggHistory
+                    ? "Show Less"
+                    : "View All History";
 
-    const values =
-        Object.values(
-            history
-        )
-        .map(
-            value =>
-                Number(value) || 0
-        );
+            displayEggHistory();
 
-    const total =
-        values.reduce(
-            (
-                sum,
-                value
-            ) =>
-                sum + value,
-            0
-        );
-
-    productionSummary.textContent =
-        `${total} eggs`;
+        }
+    );
 
 }
 
 
 /* =========================================================
-   PRODUCTION TREND
+   PRODUCTION SUMMARY
    ========================================================= */
 
-function renderProductionTrend() {
-
-    if (!productionTrend) {
-        return;
-    }
+function getLastSevenDays() {
 
     const history =
         getEggHistory();
@@ -716,15 +959,9 @@ function renderProductionTrend() {
         );
 
         const dateKey =
-            date.getFullYear() +
-            "-" +
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0") +
-            "-" +
-            String(
-                date.getDate()
-            ).padStart(2, "0");
+            getDateKeyFromDate(
+                date
+            );
 
         records.push({
             dateKey,
@@ -736,6 +973,107 @@ function renderProductionTrend() {
 
     }
 
+    return records;
+
+}
+
+
+function updateProductionSummary() {
+
+    const records =
+        getLastSevenDays();
+
+    const flock =
+        getFlockCount();
+
+    const totalEggs =
+        records.reduce(
+            (
+                sum,
+                record
+            ) =>
+                sum +
+                record.eggs,
+            0
+        );
+
+    const averageDaily =
+        totalEggs / 7;
+
+    const averageRate =
+        flock > 0
+            ? (
+                averageDaily /
+                flock
+            ) *
+            100
+            : 0;
+
+    const bestRecord =
+        records.reduce(
+            (
+                best,
+                record
+            ) =>
+                record.eggs >
+                best.eggs
+                    ? record
+                    : best,
+            records[0]
+        );
+
+
+    if (sevenDayEggs) {
+
+        sevenDayEggs.textContent =
+            totalEggs;
+
+    }
+
+    if (averageLayingRate) {
+
+        averageLayingRate.textContent =
+            `${Math.min(
+                100,
+                averageRate
+            ).toFixed(0)}%`;
+
+    }
+
+    if (bestProductionDay) {
+
+        bestProductionDay.textContent =
+            bestRecord.eggs > 0
+                ? formatDate(
+                    bestRecord.dateKey
+                )
+                : "—";
+
+    }
+
+    if (bestProductionEggs) {
+
+        bestProductionEggs.textContent =
+            bestRecord.eggs;
+
+    }
+
+}
+
+
+/* =========================================================
+   PRODUCTION TREND
+   ========================================================= */
+
+function renderProductionTrend() {
+
+    if (!productionTrendChart) {
+        return;
+    }
+
+    const records =
+        getLastSevenDays();
+
     const maxEggs =
         Math.max(
             ...records.map(
@@ -745,7 +1083,26 @@ function renderProductionTrend() {
             1
         );
 
-    productionTrend.innerHTML =
+    const midValue =
+        Math.ceil(
+            maxEggs / 2
+        );
+
+    if (trendMaxLabel) {
+
+        trendMaxLabel.textContent =
+            maxEggs;
+
+    }
+
+    if (trendMidLabel) {
+
+        trendMidLabel.textContent =
+            midValue;
+
+    }
+
+    productionTrendChart.innerHTML =
         records
             .map(
                 record => {
@@ -757,25 +1114,50 @@ function renderProductionTrend() {
                         ) *
                         100;
 
+                    const zeroClass =
+                        record.eggs === 0
+                            ? " zero"
+                            : "";
+
+                    const todayClass =
+                        record.dateKey === today
+                            ? " today"
+                            : "";
+
                     return `
-                        <div class="trend-bar-wrap">
+                        <div
+                            class="trend-column"
+                        >
 
                             <div
-                                class="trend-value"
+                                class="trend-bar-container"
                             >
-                                ${record.eggs}
+
+                                <div
+                                    class="trend-bar${zeroClass}"
+                                    style="height:${Math.max(
+                                        3,
+                                        height
+                                    )}%"
+                                >
+
+                                    <span
+                                        class="trend-bar-value"
+                                    >
+                                        ${record.eggs}
+                                    </span>
+
+                                </div>
+
                             </div>
 
                             <div
-                                class="trend-bar"
-                                style="height:${height}%"
-                            ></div>
-
-                            <span>
+                                class="trend-day${todayClass}"
+                            >
                                 ${formatDate(
                                     record.dateKey
                                 )}
-                            </span>
+                            </div>
 
                         </div>
                     `;
@@ -793,53 +1175,8 @@ function renderProductionTrend() {
 
 function updateProductionAnalytics() {
 
-    if (
-        !analyticsEggsPerHen ||
-        !analyticsAverage
-    ) {
-
-        return;
-
-    }
-
-    const history =
-        getEggHistory();
-
-    const records = [];
-
-    for (
-        let i = 6;
-        i >= 0;
-        i--
-    ) {
-
-        const date =
-            new Date();
-
-        date.setDate(
-            date.getDate() - i
-        );
-
-        const dateKey =
-            date.getFullYear() +
-            "-" +
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0") +
-            "-" +
-            String(
-                date.getDate()
-            ).padStart(2, "0");
-
-        records.push({
-            dateKey,
-            eggs:
-                Number(
-                    history[dateKey]
-                ) || 0
-        });
-
-    }
+    const records =
+        getLastSevenDays();
 
     const totalEggs =
         records.reduce(
@@ -860,7 +1197,8 @@ function updateProductionAnalytics() {
 
     const eggsPerHen =
         flock > 0
-            ? averageDailyEggs / flock
+            ? averageDailyEggs /
+              flock
             : 0;
 
     const highestRecord =
@@ -890,81 +1228,99 @@ function updateProductionAnalytics() {
         );
 
 
-    analyticsEggsPerHen.textContent =
-        eggsPerHen.toFixed(2);
+    if (analyticsEggsPerHen) {
 
-    analyticsAverage.textContent =
-        averageDailyEggs.toFixed(2);
+        analyticsEggsPerHen.textContent =
+            eggsPerHen.toFixed(2);
 
-    analyticsHighestDay.textContent =
-        highestRecord.eggs;
+    }
 
-    analyticsHighestDayDate.textContent =
-        highestRecord.eggs > 0
-            ? formatFullDate(
-                highestRecord.dateKey
-            )
-            : "—";
+    if (analyticsAverage) {
 
-    analyticsLowestDay.textContent =
-        lowestRecord.eggs;
+        analyticsAverage.textContent =
+            averageDailyEggs.toFixed(2);
 
-    analyticsLowestDayDate.textContent =
-        formatFullDate(
-            lowestRecord.dateKey
-        );
+    }
 
+    if (analyticsHighestDay) {
 
-    let consistency =
-        0;
+        analyticsHighestDay.textContent =
+            highestRecord.eggs;
 
-    if (
-        averageDailyEggs > 0
-    ) {
+    }
 
-        const variance =
-            records.reduce(
-                (
-                    sum,
-                    record
-                ) =>
-                    sum +
-                    Math.pow(
-                        record.eggs -
-                        averageDailyEggs,
-                        2
-                    ),
-                0
-            ) / 7;
+    if (analyticsHighestDayDate) {
 
-        const standardDeviation =
-            Math.sqrt(
-                variance
-            );
-
-        consistency =
-            Math.max(
-                0,
-                Math.round(
-                    100 -
-                    (
-                        standardDeviation /
-                        averageDailyEggs
-                    ) *
-                    100
+        analyticsHighestDayDate.textContent =
+            highestRecord.eggs > 0
+                ? formatFullDate(
+                    highestRecord.dateKey
                 )
-            );
+                : "No data";
+
+    }
+
+    if (analyticsLowestDay) {
+
+        analyticsLowestDay.textContent =
+            lowestRecord.eggs;
+
+    }
+
+    if (analyticsLowestDayDate) {
+
+        analyticsLowestDayDate.textContent =
+            lowestRecord.eggs > 0
+                ? formatFullDate(
+                    lowestRecord.dateKey
+                )
+                : "No data";
 
     }
 
 
-    analyticsConsistency.textContent =
-        `${consistency}%`;
+    /* Consistency */
 
+    let consistency =
+        0;
+
+    const producingDays =
+        records.filter(
+            record =>
+                record.eggs > 0
+        ).length;
+
+    if (
+        producingDays > 0
+    ) {
+
+        consistency =
+            Math.round(
+                (
+                    producingDays /
+                    7
+                ) *
+                100
+            );
+
+    }
+
+    if (analyticsConsistency) {
+
+        analyticsConsistency.textContent =
+            `${consistency}%`;
+
+    }
+
+
+    /* Production Change */
 
     const firstHalf =
         records
-            .slice(0, 3)
+            .slice(
+                0,
+                3
+            )
             .reduce(
                 (
                     sum,
@@ -977,7 +1333,9 @@ function updateProductionAnalytics() {
 
     const secondHalf =
         records
-            .slice(4)
+            .slice(
+                4
+            )
             .reduce(
                 (
                     sum,
@@ -987,7 +1345,6 @@ function updateProductionAnalytics() {
                     record.eggs,
                 0
             );
-
 
     let productionChange =
         0;
@@ -1010,141 +1367,57 @@ function updateProductionAnalytics() {
 
     }
 
+    if (analyticsChange) {
 
-    analyticsChange.textContent =
-        `${productionChange >= 0 ? "+" : ""}${productionChange}%`;
-
-
-    if (
-        totalEggs === 0
-    ) {
-
-        analyticsInsight.textContent =
-            "No production data yet.";
+        analyticsChange.textContent =
+            `${
+                productionChange >= 0
+                    ? "+"
+                    : ""
+            }${productionChange}%`;
 
     }
 
-    else if (
-        productionChange > 0
-    ) {
 
-        analyticsInsight.textContent =
-            "Egg production has increased compared with the earlier part of the seven-day period.";
+    /* Insight */
 
-    }
+    if (analyticsInsight) {
 
-    else if (
-        productionChange < 0
-    ) {
+        if (
+            totalEggs === 0
+        ) {
 
-        analyticsInsight.textContent =
-            "Egg production has decreased compared with the earlier part of the seven-day period.";
+            analyticsInsight.textContent =
+                "Start recording eggs to see production insights.";
 
-    }
+        }
 
-    else {
+        else if (
+            productionChange > 0
+        ) {
 
-        analyticsInsight.textContent =
-            "Egg production has remained relatively stable across the seven-day period.";
+            analyticsInsight.textContent =
+                "Egg production has increased compared with the earlier part of the seven-day period.";
 
-    }
+        }
 
-}
+        else if (
+            productionChange < 0
+        ) {
 
+            analyticsInsight.textContent =
+                "Egg production has decreased compared with the earlier part of the seven-day period.";
 
-/* =========================================================
-   FEED STORAGE
-   ========================================================= */
+        }
 
-function getFeedAmount() {
+        else {
 
-    return Number(
-        localStorage.getItem(
-            "feed"
-        )
-    ) || 0;
+            analyticsInsight.textContent =
+                "Egg production has remained relatively stable across the seven-day period.";
 
-}
-
-
-function saveFeedAmount(amount) {
-
-    localStorage.setItem(
-        "feed",
-        String(
-            Math.max(
-                0,
-                amount
-            )
-        )
-    );
-
-}
-
-
-/* =========================================================
-   FEED USAGE HISTORY
-   ========================================================= */
-
-function getFeedUsageHistory() {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem(
-                "feedUsageHistory"
-            )
-        ) || {};
-
-    } catch (error) {
-
-        return {};
+        }
 
     }
-
-}
-
-
-function saveFeedUsageHistory(history) {
-
-    localStorage.setItem(
-        "feedUsageHistory",
-        JSON.stringify(
-            history
-        )
-    );
-
-}
-
-
-function getFeedUsage(dateKey) {
-
-    const history =
-        getFeedUsageHistory();
-
-    return Number(
-        history[dateKey]
-    ) || 0;
-
-}
-
-
-function recordFeedUsage(amount) {
-
-    const history =
-        getFeedUsageHistory();
-
-    history[today] =
-        (
-            Number(
-                history[today]
-            ) || 0
-        ) +
-        amount;
-
-    saveFeedUsageHistory(
-        history
-    );
 
 }
 
@@ -1174,15 +1447,9 @@ function getFeedAnalytics() {
         );
 
         const dateKey =
-            date.getFullYear() +
-            "-" +
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0") +
-            "-" +
-            String(
-                date.getDate()
-            ).padStart(2, "0");
+            getDateKeyFromDate(
+                date
+            );
 
         records.push({
             dateKey,
@@ -1250,9 +1517,7 @@ function updateFeedStatus(
 ) {
 
     if (
-        !feedStatusBadge ||
-        !feedStockProgress ||
-        !feedStockPercentage
+        !feedStatusBadge
     ) {
 
         return;
@@ -1267,17 +1532,26 @@ function updateFeedStatus(
             "Out of feed";
 
         feedStatusBadge.className =
-            "feed-status-badge feed-status-critical";
+            "feed-status-badge feed-status-empty";
 
-        feedStockPercentage.textContent =
-            "0%";
+        if (feedStockPercentage) {
 
-        feedStockProgress.style.width =
-            "0%";
+            feedStockPercentage.textContent =
+                "0%";
+
+        }
+
+        if (feedStockProgress) {
+
+            feedStockProgress.style.width =
+                "0%";
+
+        }
 
         return;
 
     }
+
 
     if (
         averageDailyUsage <= 0
@@ -1289,15 +1563,24 @@ function updateFeedStatus(
         feedStatusBadge.className =
             "feed-status-badge feed-status-neutral";
 
-        feedStockPercentage.textContent =
-            "—";
+        if (feedStockPercentage) {
 
-        feedStockProgress.style.width =
-            "100%";
+            feedStockPercentage.textContent =
+                "—";
+
+        }
+
+        if (feedStockProgress) {
+
+            feedStockProgress.style.width =
+                "100%";
+
+        }
 
         return;
 
     }
+
 
     const daysRemaining =
         stock /
@@ -1313,13 +1596,22 @@ function updateFeedStatus(
             100
         );
 
-    feedStockPercentage.textContent =
-        `${Math.round(
-            percentage
-        )}%`;
 
-    feedStockProgress.style.width =
-        `${percentage}%`;
+    if (feedStockPercentage) {
+
+        feedStockPercentage.textContent =
+            `${Math.round(
+                percentage
+            )}%`;
+
+    }
+
+    if (feedStockProgress) {
+
+        feedStockProgress.style.width =
+            `${percentage}%`;
+
+    }
 
 
     if (
@@ -1367,8 +1659,12 @@ function renderFeedConsumptionChart(
     records
 ) {
 
-    if (!feedChart) {
+    if (
+        !feedConsumptionChart
+    ) {
+
         return;
+
     }
 
     const maxUsage =
@@ -1380,7 +1676,7 @@ function renderFeedConsumptionChart(
             0.1
         );
 
-    feedChart.innerHTML =
+    feedConsumptionChart.innerHTML =
         records
             .map(
                 record => {
@@ -1392,42 +1688,52 @@ function renderFeedConsumptionChart(
                         ) *
                         100;
 
-                    const todayClass =
-                        record.dateKey === today
-                            ? " today"
-                            : "";
-
                     const zeroClass =
                         record.usage === 0
                             ? " zero"
                             : "";
 
+                    const todayClass =
+                        record.dateKey === today
+                            ? " today"
+                            : "";
+
                     return `
                         <div
-                            class="feed-chart-bar-wrap"
+                            class="feed-chart-column"
                         >
 
                             <div
-                                class="feed-chart-value"
+                                class="feed-chart-bar-area"
                             >
-                                ${
-                                    record.usage
-                                        .toFixed(1)
-                                }
+
+                                <div
+                                    class="feed-chart-bar${zeroClass}"
+                                    style="height:${Math.max(
+                                        3,
+                                        height
+                                    )}%"
+                                >
+
+                                    <span
+                                        class="feed-chart-value"
+                                    >
+                                        ${record.usage.toFixed(
+                                            1
+                                        )}
+                                    </span>
+
+                                </div>
+
                             </div>
 
                             <div
-                                class="feed-chart-bar${todayClass}${zeroClass}"
-                                style="height:${height}%"
-                            ></div>
-
-                            <span>
-                                ${
-                                    formatDate(
-                                        record.dateKey
-                                    )
-                                }
-                            </span>
+                                class="feed-chart-day${todayClass}"
+                            >
+                                ${formatDate(
+                                    record.dateKey
+                                )}
+                            </div>
 
                         </div>
                     `;
@@ -1443,10 +1749,18 @@ function renderFeedConsumptionChart(
    FEED HISTORY
    ========================================================= */
 
+let showAllFeedHistory =
+    false;
+
+
 function displayFeedHistory() {
 
-    if (!feedHistory) {
+    if (
+        !feedHistoryList
+    ) {
+
         return;
+
     }
 
     const history =
@@ -1457,8 +1771,15 @@ function displayFeedHistory() {
             history
         )
         .filter(
-            ([date, usage]) =>
-                Number(usage) > 0
+            (
+                [
+                    date,
+                    usage
+                ]
+            ) =>
+                Number(
+                    usage
+                ) > 0
         )
         .sort(
             (
@@ -1470,40 +1791,107 @@ function displayFeedHistory() {
                 )
         );
 
+
     if (
         entries.length === 0
     ) {
 
-        feedHistory.innerHTML =
-            "<p>No feed usage recorded yet.</p>";
+        feedHistoryList.innerHTML =
+            `
+            <div class="empty-state">
+                No feed usage recorded yet.
+            </div>
+            `;
 
         return;
 
     }
 
-    feedHistory.innerHTML =
-        entries
-            .slice(0, 5)
+
+    const visibleEntries =
+        showAllFeedHistory
+            ? entries
+            : entries.slice(
+                0,
+                5
+            );
+
+
+    feedHistoryList.innerHTML =
+        visibleEntries
             .map(
                 (
-                    [date, usage]
+                    [
+                        date,
+                        usage
+                    ]
                 ) => `
-                    <div class="history-row">
+                    <div
+                        class="feed-history-item"
+                    >
 
-                        <span>
-                            ${formatFullDate(date)}
-                        </span>
+                        <div
+                            class="feed-history-main"
+                        >
 
-                        <strong>
-                            ${Number(
-                                usage
-                            ).toFixed(1)} kg
-                        </strong>
+                            <strong>
+                                ${formatFullDate(
+                                    date
+                                )}
+                            </strong>
+
+                            <small>
+                                Feed consumption
+                            </small>
+
+                        </div>
+
+                        <div
+                            class="feed-history-amount"
+                        >
+
+                            <strong>
+                                ${Number(
+                                    usage
+                                ).toFixed(
+                                    1
+                                )} kg
+                            </strong>
+
+                            <small>
+                                recorded
+                            </small>
+
+                        </div>
 
                     </div>
                 `
             )
             .join("");
+
+}
+
+
+if (
+    viewFeedHistoryButton
+) {
+
+    viewFeedHistoryButton.addEventListener(
+        "click",
+        () => {
+
+            showAllFeedHistory =
+                !showAllFeedHistory;
+
+            viewFeedHistoryButton.textContent =
+                showAllFeedHistory
+                    ? "Show Less"
+                    : "View All";
+
+            displayFeedHistory();
+
+        }
+    );
 
 }
 
@@ -1521,56 +1909,116 @@ function updateFeedManagement() {
         getFeedAnalytics();
 
     const todayUsage =
-        getFeedUsage(today);
+        getFeedUsage(
+            today
+        );
 
-    if (feedAmount) {
+
+    /* Overview feed */
+
+    if (
+        overviewFeedAmount
+    ) {
+
+        overviewFeedAmount.textContent =
+            `${stock.toFixed(
+                1
+            )} kg`;
+
+    }
+
+
+    /* Main stock */
+
+    if (
+        feedAmount
+    ) {
 
         feedAmount.textContent =
-            `${stock.toFixed(1)} kg`;
+            `${stock.toFixed(
+                1
+            )} kg`;
 
     }
 
-    if (feedUsedToday) {
+
+    /* Used today */
+
+    if (
+        feedUsedToday
+    ) {
 
         feedUsedToday.textContent =
-            `${todayUsage.toFixed(1)} kg`;
+            `${todayUsage.toFixed(
+                1
+            )} kg`;
 
     }
 
-    if (feedDailyAverage) {
+
+    /* Daily average */
+
+    if (
+        feedDailyAverage
+    ) {
 
         feedDailyAverage.textContent =
             analytics.averageDailyUsage > 0
-                ? `${analytics.averageDailyUsage.toFixed(2)} kg`
+                ? `${analytics.averageDailyUsage.toFixed(
+                    2
+                )} kg`
                 : "—";
 
     }
 
-    if (feedSevenDayUsage) {
+
+    /* 7-day usage */
+
+    if (
+        feedSevenDayUsage
+    ) {
 
         feedSevenDayUsage.textContent =
-            `${analytics.totalUsage.toFixed(1)} kg`;
+            `${analytics.totalUsage.toFixed(
+                1
+            )} kg`;
 
     }
 
-    if (feedUsageDays) {
+
+    /* Usage days */
+
+    if (
+        feedUsageDays
+    ) {
 
         feedUsageDays.textContent =
             analytics.usageDays;
 
     }
 
-    if (feedPerBird) {
+
+    /* Per bird */
+
+    if (
+        feedPerBird
+    ) {
 
         feedPerBird.textContent =
             analytics.perBird > 0
-                ? `${analytics.perBird.toFixed(0)} g`
+                ? `${analytics.perBird.toFixed(
+                    0
+                )} g`
                 : "—";
 
     }
 
 
-    if (feedDaysRemaining) {
+    /* Days remaining */
+
+    if (
+        feedDaysRemaining
+    ) {
 
         if (
             analytics.averageDailyUsage > 0
@@ -1581,9 +2029,13 @@ function updateFeedManagement() {
                 analytics.averageDailyUsage;
 
             feedDaysRemaining.textContent =
-                `${daysRemaining.toFixed(1)}`;
+                daysRemaining.toFixed(
+                    1
+                );
 
-            if (feedDaysRemainingText) {
+            if (
+                feedDaysRemainingText
+            ) {
 
                 feedDaysRemainingText.textContent =
                     "estimated days remaining";
@@ -1597,7 +2049,9 @@ function updateFeedManagement() {
             feedDaysRemaining.textContent =
                 "—";
 
-            if (feedDaysRemainingText) {
+            if (
+                feedDaysRemainingText
+            ) {
 
                 feedDaysRemainingText.textContent =
                     "record usage to calculate";
@@ -1624,10 +2078,12 @@ function updateFeedManagement() {
 
 
 /* =========================================================
-   ADD FEED HANDLER
+   ADD FEED
    ========================================================= */
 
-if (addFeedButton) {
+if (
+    addFeedButton
+) {
 
     addFeedButton.addEventListener(
         "click",
@@ -1669,10 +2125,12 @@ if (addFeedButton) {
 
 
 /* =========================================================
-   USE FEED HANDLER
+   RECORD FEED USAGE
    ========================================================= */
 
-if (useFeedButton) {
+if (
+    useFeedButton
+) {
 
     useFeedButton.addEventListener(
         "click",
@@ -1732,10 +2190,12 @@ if (useFeedButton) {
 
 
 /* =========================================================
-   RESET TODAY'S FEED USAGE
+   RESET TODAY'S USAGE
    ========================================================= */
 
-if (resetFeedTodayButton) {
+if (
+    resetFeedTodayButton
+) {
 
     resetFeedTodayButton.addEventListener(
         "click",
@@ -1749,6 +2209,7 @@ if (resetFeedTodayButton) {
                     history[today]
                 ) || 0;
 
+
             if (
                 todayUsage <= 0
             ) {
@@ -1757,10 +2218,12 @@ if (resetFeedTodayButton) {
 
             }
 
+
             const confirmed =
                 confirm(
                     "Reset today's feed usage? This will return today's recorded usage to your stock and recalculate your feed analytics."
                 );
+
 
             if (
                 !confirmed
@@ -1770,12 +2233,15 @@ if (resetFeedTodayButton) {
 
             }
 
+
             const currentStock =
                 getFeedAmount();
 
+
             /*
-             * Return today's recorded usage
-             * back into the feed stock.
+             * Return today's
+             * recorded usage
+             * back to stock.
              */
 
             saveFeedAmount(
@@ -1783,9 +2249,10 @@ if (resetFeedTodayButton) {
                 todayUsage
             );
 
+
             /*
-             * Remove today's usage
-             * from the usage history.
+             * Remove today's
+             * usage record.
              */
 
             delete history[today];
@@ -1794,19 +2261,21 @@ if (resetFeedTodayButton) {
                 history
             );
 
-            /*
-             * Clear the usage input.
-             */
 
-            if (useFeedInput) {
+            if (
+                useFeedInput
+            ) {
 
                 useFeedInput.value =
                     "";
 
             }
 
+
             /*
-             * Recalculate everything.
+             * Recalculate
+             * the entire feed
+             * dashboard.
              */
 
             updateFeedManagement();
@@ -1833,29 +2302,82 @@ function loadFeedSchedule() {
             "afternoonFeedTime"
         ) || "14:00";
 
-    const morningInput =
-        document.getElementById(
-            "morningFeedTime"
-        );
 
-    const afternoonInput =
-        document.getElementById(
-            "afternoonFeedTime"
-        );
+    if (
+        morningFeedTime
+    ) {
 
-    if (morningInput) {
-
-        morningInput.value =
+        morningFeedTime.value =
             morning;
 
     }
 
-    if (afternoonInput) {
+    if (
+        afternoonFeedTime
+    ) {
 
-        afternoonInput.value =
+        afternoonFeedTime.value =
             afternoon;
 
     }
+
+}
+
+
+if (
+    saveScheduleButton
+) {
+
+    saveScheduleButton.addEventListener(
+        "click",
+        () => {
+
+            const morning =
+                morningFeedTime
+                    ? morningFeedTime.value
+                    : "07:00";
+
+            const afternoon =
+                afternoonFeedTime
+                    ? afternoonFeedTime.value
+                    : "14:00";
+
+
+            localStorage.setItem(
+                "morningFeedTime",
+                morning
+            );
+
+            localStorage.setItem(
+                "afternoonFeedTime",
+                afternoon
+            );
+
+
+            if (
+                scheduleStatus
+            ) {
+
+                scheduleStatus.textContent =
+                    "Feed schedule saved.";
+
+                setTimeout(
+                    () => {
+
+                        scheduleStatus.textContent =
+                            "";
+
+                    },
+                    2500
+                );
+
+            }
+
+
+            updateNextFeed();
+
+        }
+    );
 
 }
 
@@ -1864,13 +2386,25 @@ function loadFeedSchedule() {
    NEXT FEED
    ========================================================= */
 
-function formatTime(time) {
+function formatTime(
+    time
+) {
+
+    if (
+        !time
+    ) {
+
+        return "—";
+
+    }
 
     const parts =
         time.split(":");
 
     let hour =
-        Number(parts[0]);
+        Number(
+            parts[0]
+        );
 
     const minute =
         parts[1];
@@ -1884,20 +2418,21 @@ function formatTime(time) {
         hour % 12 ||
         12;
 
-    return `${hour}:${minute} ${suffix}`;
+    return (
+        `${hour}:${minute} ${suffix}`
+    );
 
 }
 
 
 function updateNextFeed() {
 
-    const nextFeed =
-        document.getElementById(
-            "nextFeed"
-        );
+    if (
+        !nextFeed
+    ) {
 
-    if (!nextFeed) {
         return;
+
     }
 
     const morning =
@@ -1910,32 +2445,50 @@ function updateNextFeed() {
             "afternoonFeedTime"
         ) || "14:00";
 
+
     const now =
         new Date();
 
-    const times = [
+    const schedules = [
         morning,
         afternoon
     ];
 
-    let nextTime =
+
+    let closest =
         null;
 
-    times.forEach(
+
+    schedules.forEach(
         time => {
+
+            if (
+                !time
+            ) {
+
+                return;
+
+            }
 
             const parts =
                 time.split(":");
 
             const candidate =
-                new Date(now);
+                new Date(
+                    now
+                );
 
             candidate.setHours(
-                Number(parts[0]),
-                Number(parts[1]),
+                Number(
+                    parts[0]
+                ),
+                Number(
+                    parts[1]
+                ),
                 0,
                 0
             );
+
 
             if (
                 candidate <= now
@@ -1947,12 +2500,14 @@ function updateNextFeed() {
 
             }
 
+
             if (
-                !nextTime ||
-                candidate < nextTime
+                !closest ||
+                candidate <
+                closest
             ) {
 
-                nextTime =
+                closest =
                     candidate;
 
             }
@@ -1960,44 +2515,80 @@ function updateNextFeed() {
         }
     );
 
-    if (nextTime) {
 
-        const difference =
-            nextTime.getTime() -
-            now.getTime();
-
-        const minutes =
-            Math.floor(
-                difference /
-                60000
-            );
-
-        const hours =
-            Math.floor(
-                minutes /
-                60
-            );
-
-        const remainingMinutes =
-            minutes %
-            60;
+    if (
+        !closest
+    ) {
 
         nextFeed.textContent =
-            `${formatTime(
-                nextTime
-                    .getHours()
-                    .toString()
-                    .padStart(2, "0") +
-                ":" +
-                nextTime
-                    .getMinutes()
-                    .toString()
-                    .padStart(2, "0")
-            )} • ${
-                hours
-            }h ${
-                remainingMinutes
-            }m`;
+            "—";
+
+        return;
+
+    }
+
+
+    nextFeed.textContent =
+        formatTime(
+            String(
+                closest.getHours()
+            ).padStart(
+                2,
+                "0"
+            ) +
+            ":" +
+            String(
+                closest.getMinutes()
+            ).padStart(
+                2,
+                "0"
+            )
+        );
+
+
+    const difference =
+        closest.getTime() -
+        now.getTime();
+
+
+    const totalMinutes =
+        Math.floor(
+            difference /
+            60000
+        );
+
+
+    const hours =
+        Math.floor(
+            totalMinutes /
+            60
+        );
+
+
+    const minutes =
+        totalMinutes %
+        60;
+
+
+    if (
+        nextFeedCountdown
+    ) {
+
+        if (
+            hours > 0
+        ) {
+
+            nextFeedCountdown.textContent =
+                `in ${hours}h ${minutes}m`;
+
+        }
+
+        else {
+
+            nextFeedCountdown.textContent =
+                `in ${minutes}m`;
+
+        }
 
     }
 
@@ -2005,98 +2596,230 @@ function updateNextFeed() {
 
 
 /* =========================================================
-   FEED ALARM
+   FLOCK ACTIONS
    ========================================================= */
+
+if (
+    addChicken
+) {
+
+    addChicken.addEventListener(
+        "click",
+        () => {
+
+            const current =
+                getFlockCount();
+
+            saveFlockCount(
+                current + 1
+            );
+
+            updateFlockDisplay();
+
+        }
+    );
+
+}
+
+
+if (
+    removeChicken
+) {
+
+    removeChicken.addEventListener(
+        "click",
+        () => {
+
+            const current =
+                getFlockCount();
+
+            if (
+                current <= 0
+            ) {
+
+                return;
+
+            }
+
+            saveFlockCount(
+                current - 1
+            );
+
+            updateFlockDisplay();
+
+        }
+    );
+
+}
+
+
+if (
+    setFlockButton
+) {
+
+    setFlockButton.addEventListener(
+        "click",
+        () => {
+
+            const amount =
+                Number(
+                    flockInput.value
+                );
+
+            if (
+                !Number.isFinite(
+                    amount
+                ) ||
+                amount < 0
+            ) {
+
+                return;
+
+            }
+
+            saveFlockCount(
+                amount
+            );
+
+            flockInput.value =
+                "";
+
+            updateFlockDisplay();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   ALARM
+   ========================================================= */
+
+function isAlarmEnabled() {
+
+    return (
+        localStorage.getItem(
+            "alarmEnabled"
+        ) === "true"
+    );
+
+}
+
 
 function updateAlarmDisplay() {
 
-    const alarmToggle =
-        document.getElementById(
-            "feedAlarmToggle"
-        );
-
-    if (!alarmToggle) {
-        return;
-    }
-
     const enabled =
-        localStorage.getItem(
-            "alarmEnabled"
-        ) === "true";
+        isAlarmEnabled();
 
-    alarmToggle.checked =
-        enabled;
-
-}
-
-
-function checkFeedAlarm() {
-
-    const enabled =
-        localStorage.getItem(
-            "alarmEnabled"
-        ) === "true";
-
-    if (!enabled) {
-        return;
-    }
-
-    const now =
-        new Date();
-
-    const currentTime =
-        now.getHours()
-            .toString()
-            .padStart(2, "0") +
-        ":" +
-        now.getMinutes()
-            .toString()
-            .padStart(2, "0");
-
-    const morning =
-        localStorage.getItem(
-            "morningFeedTime"
-        ) || "07:00";
-
-    const afternoon =
-        localStorage.getItem(
-            "afternoonFeedTime"
-        ) || "14:00";
 
     if (
-        currentTime === morning ||
-        currentTime === afternoon
+        alarmStatus
     ) {
 
-        const alarmKey =
-            `feedAlarm_${today}_${currentTime}`;
+        alarmStatus.textContent =
+            enabled
+                ? "Alarm On"
+                : "Alarm Off";
 
-        if (
-            localStorage.getItem(
-                alarmKey
-            ) === "true"
-        ) {
+    }
 
-            return;
 
-        }
+    if (
+        alarmMessage
+    ) {
 
-        localStorage.setItem(
-            alarmKey,
-            "true"
-        );
+        alarmMessage.textContent =
+            enabled
+                ? "Feed alarm is currently enabled."
+                : "Feed alarm is currently disabled.";
 
-        triggerFeedAlarm();
+    }
+
+
+    if (
+        alarmButton
+    ) {
+
+        alarmButton.textContent =
+            enabled
+                ? "Disable Alarm"
+                : "Enable Alarm";
 
     }
 
 }
 
+
+if (
+    alarmButton
+) {
+
+    alarmButton.addEventListener(
+        "click",
+        async () => {
+
+            const enabled =
+                isAlarmEnabled();
+
+
+            if (
+                !enabled
+            ) {
+
+                if (
+                    "Notification" in
+                    window
+                ) {
+
+                    const permission =
+                        await Notification.requestPermission();
+
+                    if (
+                        permission !==
+                        "granted"
+                    ) {
+
+                        return;
+
+                    }
+
+                }
+
+                localStorage.setItem(
+                    "alarmEnabled",
+                    "true"
+                );
+
+            }
+
+            else {
+
+                localStorage.setItem(
+                    "alarmEnabled",
+                    "false"
+                );
+
+            }
+
+
+            updateAlarmDisplay();
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   FEED ALARM CHECK
+   ========================================================= */
 
 function triggerFeedAlarm() {
 
     if (
-        "Notification" in window &&
+        "Notification" in
+        window &&
         Notification.permission ===
             "granted"
     ) {
@@ -2114,6 +2837,134 @@ function triggerFeedAlarm() {
 }
 
 
+function checkFeedAlarm() {
+
+    if (
+        !isAlarmEnabled()
+    ) {
+
+        return;
+
+    }
+
+
+    const now =
+        new Date();
+
+    const currentTime =
+        String(
+            now.getHours()
+        ).padStart(
+            2,
+            "0"
+        ) +
+        ":" +
+        String(
+            now.getMinutes()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const morning =
+        localStorage.getItem(
+            "morningFeedTime"
+        ) || "07:00";
+
+    const afternoon =
+        localStorage.getItem(
+            "afternoonFeedTime"
+        ) || "14:00";
+
+
+    if (
+        currentTime !==
+            morning &&
+        currentTime !==
+            afternoon
+    ) {
+
+        return;
+
+    }
+
+
+    const alarmKey =
+        `feedAlarm_${today}_${currentTime}`;
+
+
+    if (
+        localStorage.getItem(
+            alarmKey
+        ) === "true"
+    ) {
+
+        return;
+
+    }
+
+
+    localStorage.setItem(
+        alarmKey,
+        "true"
+    );
+
+
+    triggerFeedAlarm();
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+   ========================================================= */
+
+if (
+    enableNotifications
+) {
+
+    enableNotifications.addEventListener(
+        "click",
+        async () => {
+
+            if (
+                !(
+                    "Notification" in
+                    window
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            const permission =
+                await Notification.requestPermission();
+
+
+            if (
+                permission ===
+                "granted"
+            ) {
+
+                localStorage.setItem(
+                    "notificationsEnabled",
+                    "true"
+                );
+
+                enableNotifications.textContent =
+                    "Notifications Enabled";
+
+            }
+
+        }
+    );
+
+}
+
+
 /* =========================================================
    SERVICE WORKER
    ========================================================= */
@@ -2121,7 +2972,8 @@ function triggerFeedAlarm() {
 function registerServiceWorker() {
 
     if (
-        "serviceWorker" in navigator
+        "serviceWorker" in
+        navigator
     ) {
 
         navigator.serviceWorker
@@ -2145,153 +2997,14 @@ function registerServiceWorker() {
 
 
 /* =========================================================
-   NOTIFICATION SETUP
-   ========================================================= */
-
-const notificationButton =
-    document.getElementById(
-        "notificationButton"
-    );
-
-
-if (notificationButton) {
-
-    notificationButton.addEventListener(
-        "click",
-        async () => {
-
-            if (
-                !(
-                    "Notification" in
-                    window
-                )
-            ) {
-
-                return;
-
-            }
-
-            const permission =
-                await Notification.requestPermission();
-
-            if (
-                permission !==
-                "granted"
-            ) {
-
-                return;
-
-            }
-
-            localStorage.setItem(
-                "notificationsEnabled",
-                "true"
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   ALARM TOGGLE
-   ========================================================= */
-
-const feedAlarmToggle =
-    document.getElementById(
-        "feedAlarmToggle"
-    );
-
-
-if (feedAlarmToggle) {
-
-    feedAlarmToggle.addEventListener(
-        "change",
-        () => {
-
-            localStorage.setItem(
-                "alarmEnabled",
-                String(
-                    feedAlarmToggle.checked
-                )
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   FEED SCHEDULE SAVE
-   ========================================================= */
-
-const saveFeedScheduleButton =
-    document.getElementById(
-        "saveFeedScheduleButton"
-    );
-
-
-if (saveFeedScheduleButton) {
-
-    saveFeedScheduleButton.addEventListener(
-        "click",
-        () => {
-
-            const morningInput =
-                document.getElementById(
-                    "morningFeedTime"
-                );
-
-            const afternoonInput =
-                document.getElementById(
-                    "afternoonFeedTime"
-                );
-
-            if (morningInput) {
-
-                localStorage.setItem(
-                    "morningFeedTime",
-                    morningInput.value
-                );
-
-            }
-
-            if (afternoonInput) {
-
-                localStorage.setItem(
-                    "afternoonFeedTime",
-                    afternoonInput.value
-                );
-
-            }
-
-            updateNextFeed();
-
-        }
-    );
-
-}
-
-
-/* =========================================================
    INITIALIZATION
    ========================================================= */
-
-checkDailyRollover();
-
-updateCurrentDay();
 
 displayHeaderDate();
 
 updateEggDisplay();
 
-updateChickenDisplay();
-
-updateFeedManagement();
-
-displayEggHistory();
+updateFlockDisplay();
 
 updateProductionSummary();
 
@@ -2299,25 +3012,31 @@ renderProductionTrend();
 
 updateProductionAnalytics();
 
+updateFeedManagement();
+
 loadFeedSchedule();
 
 updateAlarmDisplay();
 
 updateNextFeed();
 
+displayEggHistory();
+
+displayFeedHistory();
+
 registerServiceWorker();
 
 
 /* =========================================================
-   LIVE UPDATES
+   LIVE CLOCK / FEED ALARM
    ========================================================= */
 
 setInterval(
     () => {
 
-        checkFeedAlarm();
-
         updateNextFeed();
+
+        checkFeedAlarm();
 
     },
     1000
