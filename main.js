@@ -1,34 +1,103 @@
-/* =========================================
+/* =========================================================
    POULTRY MANAGER
-   Production Tracking v2
-========================================= */
+   Production Tracking v3
+   ========================================================= */
 
 
-/* =========================================
+/* =========================================================
+   DOM REFERENCES
+   ========================================================= */
+
+const headerDate = document.getElementById("headerDate");
+
+const birdCount = document.getElementById("birdCount");
+const overviewEggCount = document.getElementById("overviewEggCount");
+const overviewLayingRate = document.getElementById("overviewLayingRate");
+const overviewFeedAmount = document.getElementById("overviewFeedAmount");
+
+const sevenDayEggs = document.getElementById("sevenDayEggs");
+const averageLayingRate = document.getElementById("averageLayingRate");
+const bestProductionDay = document.getElementById("bestProductionDay");
+const bestProductionEggs = document.getElementById("bestProductionEggs");
+
+const trendMaxLabel = document.getElementById("trendMaxLabel");
+const trendMidLabel = document.getElementById("trendMidLabel");
+const productionTrendChart = document.getElementById("productionTrendChart");
+
+const analyticsEggsPerHen = document.getElementById("analyticsEggsPerHen");
+const analyticsAverage = document.getElementById("analyticsAverage");
+const analyticsHighestDay = document.getElementById("analyticsHighestDay");
+const analyticsHighestDayDate = document.getElementById("analyticsHighestDayDate");
+const analyticsLowestDay = document.getElementById("analyticsLowestDay");
+const analyticsLowestDayDate = document.getElementById("analyticsLowestDayDate");
+const analyticsConsistency = document.getElementById("analyticsConsistency");
+const analyticsChange = document.getElementById("analyticsChange");
+
+const eggCount = document.getElementById("eggCount");
+const layingRate = document.getElementById("layingRate");
+
+const addEggButton = document.getElementById("addEggButton");
+const removeEggButton = document.getElementById("removeEggButton");
+
+const eggHistoryList = document.getElementById("eggHistoryList");
+const viewHistoryButton = document.getElementById("viewHistoryButton");
+
+const feedAmount = document.getElementById("feedAmount");
+const feedInput = document.getElementById("feedInput");
+const addFeedButton = document.getElementById("addFeedButton");
+
+const useFeedInput = document.getElementById("useFeedInput");
+const useFeedButton = document.getElementById("useFeedButton");
+
+const morningFeedTime = document.getElementById("morningFeedTime");
+const afternoonFeedTime = document.getElementById("afternoonFeedTime");
+const saveScheduleButton = document.getElementById("saveScheduleButton");
+const scheduleStatus = document.getElementById("scheduleStatus");
+const nextFeed = document.getElementById("nextFeed");
+
+const chickenCount = document.getElementById("chickenCount");
+const addChicken = document.getElementById("addChicken");
+const removeChicken = document.getElementById("removeChicken");
+const flockInput = document.getElementById("flockInput");
+const setFlockButton = document.getElementById("setFlockButton");
+
+const alarmButton = document.getElementById("alarmButton");
+const alarmStatus = document.getElementById("alarmStatus");
+const alarmMessage = document.getElementById("alarmMessage");
+
+const enableNotifications = document.getElementById("enableNotifications");
+
+
+/* =========================================================
    DATE HELPERS
-========================================= */
+   ========================================================= */
 
 function getLocalDateKey(date = new Date()) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
 
-    return year + "-" + month + "-" + day;
+    const year = date.getFullYear();
+
+    const month = String(date.getMonth() + 1)
+        .padStart(2, "0");
+
+    const day = String(date.getDate())
+        .padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
 }
 
 
 function getDateFromKey(dateKey) {
-    const parts = dateKey.split("-");
 
-    return new Date(
-        Number(parts[0]),
-        Number(parts[1]) - 1,
-        Number(parts[2])
-    );
+    const [year, month, day] = dateKey
+        .split("-")
+        .map(Number);
+
+    return new Date(year, month - 1, day);
 }
 
 
 function formatDate(dateKey) {
+
     const date = getDateFromKey(dateKey);
 
     return date.toLocaleDateString("en-US", {
@@ -39,27 +108,28 @@ function formatDate(dateKey) {
 
 
 function formatFullDate(dateKey) {
+
     const date = getDateFromKey(dateKey);
 
     return date.toLocaleDateString("en-US", {
         weekday: "short",
         month: "short",
-        day: "numeric",
-        year: "numeric"
+        day: "numeric"
     });
 }
 
 
 function getLastSevenDateKeys() {
+
     const dates = [];
 
-    const todayDate = new Date();
+    const today = new Date();
 
     for (let i = 6; i >= 0; i--) {
 
-        const date = new Date(todayDate);
+        const date = new Date(today);
 
-        date.setDate(todayDate.getDate() - i);
+        date.setDate(today.getDate() - i);
 
         dates.push(getLocalDateKey(date));
     }
@@ -68,39 +138,48 @@ function getLastSevenDateKeys() {
 }
 
 
-/* =========================================
-   GENERAL HELPERS
-========================================= */
+/* =========================================================
+   HEADER
+   ========================================================= */
 
-function getElement(id) {
-    return document.getElementById(id);
+function displayHeaderDate() {
+
+    const today = new Date();
+
+    headerDate.textContent = today.toLocaleDateString(
+        "en-US",
+        {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        }
+    );
 }
 
 
+/* =========================================================
+   EGG HISTORY
+   ========================================================= */
+
 function getEggHistory() {
+
     try {
-        const saved = JSON.parse(
-            localStorage.getItem("eggHistory") || "{}"
-        );
 
-        if (
-            saved &&
-            typeof saved === "object" &&
-            !Array.isArray(saved)
-        ) {
-            return saved;
-        }
+        return JSON.parse(
+            localStorage.getItem("eggHistory")
+        ) || {};
 
-        return {};
     } catch (error) {
-        console.error("Could not read egg history:", error);
 
         return {};
+
     }
 }
 
 
 function saveEggHistory(history) {
+
     localStorage.setItem(
         "eggHistory",
         JSON.stringify(history)
@@ -114,34 +193,57 @@ function getHistoryRecord(dateKey) {
 
     const record = history[dateKey];
 
-    if (record === undefined || record === null) {
+    if (
+        record === undefined ||
+        record === null
+    ) {
+
         return {
             eggs: 0,
             flock: 0
         };
+
     }
 
-    /* Supports older history format:
-       "2026-09-20": 4
+
+    /*
+       Backward compatibility.
+
+       Older versions stored:
+
+       "2026-09-30": 2
+
+       New versions store:
+
+       "2026-09-30": {
+           eggs: 2,
+           flock: 5
+       }
     */
 
     if (typeof record === "number") {
+
         return {
             eggs: record,
             flock: 0
         };
+
     }
 
+
     return {
+
         eggs: Number(record.eggs) || 0,
+
         flock: Number(record.flock) || 0
+
     };
 }
 
 
-/* =========================================
-   CURRENT DATE / EGG STATE
-========================================= */
+/* =========================================================
+   CURRENT DAY
+   ========================================================= */
 
 const today = getLocalDateKey();
 
@@ -152,9 +254,9 @@ let eggs = Number(
 ) || 0;
 
 
-/* =========================================
+/* =========================================================
    DAILY ROLLOVER
-========================================= */
+   ========================================================= */
 
 if (savedDate !== today) {
 
@@ -167,111 +269,38 @@ if (savedDate !== today) {
                 localStorage.getItem("chickenCount")
             ) || 0;
 
+
         history[savedDate] = {
+
             eggs: eggs,
+
             flock: previousFlock
+
         };
+
     }
+
 
     saveEggHistory(history);
 
+
     eggs = 0;
 
-    localStorage.setItem("eggs", "0");
-    localStorage.setItem("eggDate", today);
-}
+    localStorage.setItem(
+        "eggs",
+        "0"
+    );
 
-
-/* =========================================
-   ELEMENTS
-========================================= */
-
-const eggCountElement =
-    getElement("eggCount");
-
-const layingRateElement =
-    getElement("layingRate");
-
-const overviewEggCount =
-    getElement("overviewEggCount");
-
-const overviewLayingRate =
-    getElement("overviewLayingRate");
-
-const birdCountElement =
-    getElement("birdCount");
-
-const chickenCountElement =
-    getElement("chickenCount");
-
-const feedAmountElement =
-    getElement("feedAmount");
-
-const overviewFeedAmount =
-    getElement("overviewFeedAmount");
-
-const eggHistoryList =
-    getElement("eggHistoryList");
-
-const viewHistoryButton =
-    getElement("viewHistoryButton");
-
-const productionTrendChart =
-    getElement("productionTrendChart");
-
-const trendMaxLabel =
-    getElement("trendMaxLabel");
-
-const trendMidLabel =
-    getElement("trendMidLabel");
-
-const sevenDayEggsElement =
-    getElement("sevenDayEggs");
-
-const averageLayingRateElement =
-    getElement("averageLayingRate");
-
-const bestProductionDayElement =
-    getElement("bestProductionDay");
-
-const bestProductionEggsElement =
-    getElement("bestProductionEggs");
-
-
-/* =========================================
-   HEADER DATE
-========================================= */
-
-function displayHeaderDate() {
-
-    const headerDate =
-        getElement("headerDate");
-
-    if (!headerDate) return;
-
-    headerDate.textContent =
-        formatFullDate(today);
-}
-
-
-/* =========================================
-   LAYING RATE
-========================================= */
-
-function calculateLayingRate(
-    eggAmount,
-    flockSize
-) {
-
-    if (!flockSize || flockSize <= 0) {
-        return 0;
-    }
-
-    return Math.round(
-        (eggAmount / flockSize) * 100
+    localStorage.setItem(
+        "eggDate",
+        today
     );
 }
 
+
+/* =========================================================
+   FLOCK
+   ========================================================= */
 
 function getCurrentFlock() {
 
@@ -281,223 +310,185 @@ function getCurrentFlock() {
 }
 
 
-/* =========================================
-   TODAY'S HISTORY
-========================================= */
+/* =========================================================
+   LAYING RATE
+   ========================================================= */
+
+function calculateLayingRate(
+    eggAmount,
+    flockSize
+) {
+
+    if (!flockSize || flockSize <= 0) {
+
+        return 0;
+
+    }
+
+
+    return Math.round(
+        (eggAmount / flockSize) * 100
+    );
+}
+
+
+/* =========================================================
+   SAVE TODAY'S HISTORY
+   ========================================================= */
 
 function saveTodayEggHistory() {
 
     const history = getEggHistory();
 
-    const currentFlock =
-        getCurrentFlock();
-
     history[today] = {
+
         eggs: eggs,
-        flock: currentFlock
+
+        flock: getCurrentFlock()
+
     };
 
     saveEggHistory(history);
 }
 
 
-/* =========================================
+/* =========================================================
    EGG DISPLAY
-========================================= */
+   ========================================================= */
 
 function updateEggDisplay() {
 
-    const flock =
-        getCurrentFlock();
+    const flock = getCurrentFlock();
 
-    const rate =
-        calculateLayingRate(
-            eggs,
-            flock
+    const rate = calculateLayingRate(
+        eggs,
+        flock
+    );
+
+
+    eggCount.textContent = eggs;
+
+    layingRate.textContent = `${rate}%`;
+
+    overviewEggCount.textContent = eggs;
+
+    overviewLayingRate.textContent =
+        `${rate}%`;
+
+}
+
+
+/* =========================================================
+   EGG ACTIONS
+   ========================================================= */
+
+addEggButton.addEventListener(
+    "click",
+    () => {
+
+        eggs += 1;
+
+        localStorage.setItem(
+            "eggs",
+            String(eggs)
         );
 
-    if (eggCountElement) {
-        eggCountElement.textContent =
-            eggs;
+        saveTodayEggHistory();
+
+        updateEggDisplay();
+
+        displayEggHistory();
+
+        updateProductionSummary();
+
+        renderProductionTrend();
+
+        updateProductionAnalytics();
+
     }
-
-    if (layingRateElement) {
-        layingRateElement.textContent =
-            rate + "%";
-    }
-
-    if (overviewEggCount) {
-        overviewEggCount.textContent =
-            eggs;
-    }
-
-    if (overviewLayingRate) {
-        overviewLayingRate.textContent =
-            rate + "%";
-    }
-}
+);
 
 
-/* =========================================
-   ADD EGG
-========================================= */
+removeEggButton.addEventListener(
+    "click",
+    () => {
 
-const addEggButton =
-    getElement("addEggButton");
+        if (eggs <= 0) {
 
-if (addEggButton) {
+            return;
 
-    addEggButton.addEventListener(
-        "click",
-        function () {
-
-            eggs++;
-
-            localStorage.setItem(
-                "eggs",
-                String(eggs)
-            );
-
-            localStorage.setItem(
-                "eggDate",
-                today
-            );
-
-            saveTodayEggHistory();
-
-            updateEggDisplay();
-            displayEggHistory();
-            updateProductionSummary();
-            renderProductionTrend();
         }
-    );
-}
 
 
-/* =========================================
-   REMOVE EGG
-========================================= */
+        eggs -= 1;
 
-const removeEggButton =
-    getElement("removeEggButton");
+        localStorage.setItem(
+            "eggs",
+            String(eggs)
+        );
 
-if (removeEggButton) {
+        saveTodayEggHistory();
 
-    removeEggButton.addEventListener(
-        "click",
-        function () {
+        updateEggDisplay();
 
-            if (eggs <= 0) {
-                return;
-            }
+        displayEggHistory();
 
-            eggs--;
+        updateProductionSummary();
 
-            localStorage.setItem(
-                "eggs",
-                String(eggs)
-            );
+        renderProductionTrend();
 
-            saveTodayEggHistory();
+        updateProductionAnalytics();
 
-            updateEggDisplay();
-            displayEggHistory();
-            updateProductionSummary();
-            renderProductionTrend();
-        }
-    );
-}
+    }
+);
 
 
-/* =========================================
-   EGG HISTORY
-========================================= */
+/* =========================================================
+   EGG HISTORY DISPLAY
+   ========================================================= */
 
-let showAllHistory = false;
+let historyExpanded = false;
 
 
 function displayEggHistory() {
 
-    if (!eggHistoryList) return;
+    const history = getEggHistory();
 
-    const history =
-        getEggHistory();
+    const records = Object.entries(history)
+        .sort(
+            ([dateA], [dateB]) =>
+                dateB.localeCompare(dateA)
+        );
 
-    const dates =
-        Object.keys(history)
-            .sort()
-            .reverse();
 
     eggHistoryList.innerHTML = "";
 
-    if (dates.length === 0) {
 
-        const empty =
-            document.createElement("div");
+    if (records.length === 0) {
 
-        empty.className =
-            "history-row";
+        eggHistoryList.innerHTML = `
+            <div class="empty-state">
+                No egg history yet.
+            </div>
+        `;
 
-        empty.textContent =
-            "No production history yet.";
-
-        eggHistoryList.appendChild(empty);
-
-        if (viewHistoryButton) {
-            viewHistoryButton.style.display =
-                "none";
-        }
+        viewHistoryButton.style.display = "none";
 
         return;
     }
 
 
-    const datesToShow =
-        showAllHistory
-            ? dates
-            : dates.slice(0, 4);
+    const visibleRecords =
+        historyExpanded
+            ? records
+            : records.slice(0, 4);
 
 
-    datesToShow.forEach(
-        function (dateKey) {
+    visibleRecords.forEach(
+        ([dateKey]) => {
 
             const record =
                 getHistoryRecord(dateKey);
-
-            const row =
-                document.createElement("div");
-
-            row.className =
-                "history-row";
-
-
-            const dateElement =
-                document.createElement("span");
-
-            dateElement.className =
-                "history-date";
-
-            dateElement.textContent =
-                dateKey === today
-                    ? "Today"
-                    : formatDate(dateKey);
-
-
-            const eggsElement =
-                document.createElement("span");
-
-            eggsElement.className =
-                "history-eggs";
-
-            eggsElement.textContent =
-                record.eggs + " eggs";
-
-
-            const rateElement =
-                document.createElement("span");
-
-            rateElement.className =
-                "history-rate";
 
             const rate =
                 calculateLayingRate(
@@ -505,111 +496,210 @@ function displayEggHistory() {
                     record.flock
                 );
 
-            rateElement.textContent =
-                record.flock > 0
-                    ? rate + "%"
-                    : "—";
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "history-item";
 
 
-            row.appendChild(
-                dateElement
-            );
+            item.innerHTML = `
 
-            row.appendChild(
-                eggsElement
-            );
+                <div>
+                    <strong>
+                        ${formatFullDate(dateKey)}
+                    </strong>
 
-            row.appendChild(
-                rateElement
-            );
+                    <small>
+                        ${record.eggs} ${
+                            record.eggs === 1
+                                ? "egg"
+                                : "eggs"
+                        }
+                    </small>
+                </div>
 
-            eggHistoryList.appendChild(
-                row
-            );
+                <div>
+                    <strong>
+                        ${rate}%
+                    </strong>
+
+                    <small>
+                        laying rate
+                    </small>
+                </div>
+
+            `;
+
+
+            eggHistoryList.appendChild(item);
+
         }
     );
 
 
-    if (viewHistoryButton) {
+    if (records.length > 4) {
 
-        if (dates.length > 3) {
+        viewHistoryButton.style.display =
+            "inline-flex";
 
-            viewHistoryButton.style.display =
-                "block";
+        viewHistoryButton.textContent =
+            historyExpanded
+                ? "Show Less"
+                : "View All History";
 
-            viewHistoryButton.textContent =
-                showAllHistory
-                    ? "Show Less"
-                    : "View All History";
+    } else {
 
-        } else {
+        viewHistoryButton.style.display =
+            "none";
 
-            viewHistoryButton.style.display =
-                "none";
-        }
     }
+
 }
 
 
-if (viewHistoryButton) {
+viewHistoryButton.addEventListener(
+    "click",
+    () => {
 
-    viewHistoryButton.addEventListener(
-        "click",
-        function () {
+        historyExpanded =
+            !historyExpanded;
 
-            showAllHistory =
-                !showAllHistory;
+        displayEggHistory();
 
-            displayEggHistory();
-        }
-    );
-}
-
-
-/* =========================================
-   7-DAY PRODUCTION TREND
-========================================= */
-
-function renderProductionTrend() {
-
-    if (!productionTrendChart) {
-        return;
     }
+);
+
+
+/* =========================================================
+   PRODUCTION SUMMARY
+   ========================================================= */
+
+function updateProductionSummary() {
 
     const dates =
         getLastSevenDateKeys();
 
+
     const records =
-        dates.map(
-            function (dateKey) {
+        dates.map(dateKey => {
 
-                const record =
-                    getHistoryRecord(dateKey);
+            const record =
+                getHistoryRecord(dateKey);
 
-                return {
-                    date: dateKey,
-                    eggs: record.eggs,
-                    flock: record.flock
-                };
-            }
+            return {
+
+                date: dateKey,
+
+                eggs: record.eggs,
+
+                flock: record.flock
+
+            };
+
+        });
+
+
+    const totalEggs =
+        records.reduce(
+            (total, record) =>
+                total + record.eggs,
+            0
         );
+
+
+    const rateRecords =
+        records.filter(
+            record => record.flock > 0
+        );
+
+
+    let averageRate = 0;
+
+
+    if (rateRecords.length > 0) {
+
+        averageRate =
+            Math.round(
+                rateRecords.reduce(
+                    (total, record) =>
+                        total +
+                        calculateLayingRate(
+                            record.eggs,
+                            record.flock
+                        ),
+                    0
+                ) / rateRecords.length
+            );
+
+    }
+
+
+    const bestRecord =
+        records.reduce(
+            (best, record) =>
+                record.eggs > best.eggs
+                    ? record
+                    : best,
+            records[0]
+        );
+
+
+    sevenDayEggs.textContent =
+        totalEggs;
+
+    averageLayingRate.textContent =
+        `${averageRate}%`;
+
+    bestProductionDay.textContent =
+        bestRecord.eggs > 0
+            ? formatDate(bestRecord.date)
+            : "—";
+
+    bestProductionEggs.textContent =
+        bestRecord.eggs;
+
+}
+
+
+/* =========================================================
+   PRODUCTION TREND
+   ========================================================= */
+
+function renderProductionTrend() {
+
+    const dates =
+        getLastSevenDateKeys();
+
+
+    const records =
+        dates.map(dateKey => {
+
+            const record =
+                getHistoryRecord(dateKey);
+
+            return {
+
+                date: dateKey,
+
+                eggs: record.eggs,
+
+                flock: record.flock
+
+            };
+
+        });
 
 
     const maxEggs =
         Math.max(
             1,
             ...records.map(
-                function (record) {
-                    return record.eggs;
-                }
+                record => record.eggs
             )
         );
 
-
-    /*
-       Give the chart a little breathing room
-       above the highest bar.
-    */
 
     const chartMax =
         Math.max(
@@ -622,853 +712,650 @@ function renderProductionTrend() {
         Math.ceil(chartMax / 2);
 
 
-    if (trendMaxLabel) {
-        trendMaxLabel.textContent =
-            chartMax;
-    }
+    trendMaxLabel.textContent =
+        chartMax;
 
-    if (trendMidLabel) {
-        trendMidLabel.textContent =
-            midValue;
-    }
+    trendMidLabel.textContent =
+        midValue;
 
 
     productionTrendChart.innerHTML = "";
 
 
-    records.forEach(
-        function (record) {
+    records.forEach(record => {
 
-            const column =
-                document.createElement("div");
+        const column =
+            document.createElement("div");
 
-            column.className =
-                "trend-column";
-
-
-            const barContainer =
-                document.createElement("div");
-
-            barContainer.className =
-                "trend-bar-container";
+        column.className =
+            "trend-column";
 
 
-            const bar =
-                document.createElement("div");
+        const barContainer =
+            document.createElement("div");
 
-            bar.className =
-                "trend-bar";
-
-
-            const percentage =
-                record.eggs > 0
-                    ? (record.eggs / chartMax) * 100
-                    : 3;
+        barContainer.className =
+            "trend-bar-container";
 
 
-            bar.style.height =
-                percentage + "%";
+        const bar =
+            document.createElement("div");
+
+        bar.className =
+            "trend-bar";
 
 
-            if (record.eggs === 0) {
-                bar.classList.add("zero");
-            }
+        if (record.eggs === 0) {
 
+            bar.classList.add("zero");
 
-            const value =
-                document.createElement("span");
-
-            value.className =
-                "trend-bar-value";
-
-            value.textContent =
-                record.eggs;
-
-
-            bar.appendChild(value);
-
-            barContainer.appendChild(bar);
-
-
-            const day =
-                document.createElement("div");
-
-            day.className =
-                "trend-day";
-
-
-            if (record.date === today) {
-                day.classList.add("today");
-            }
-
-
-            day.textContent =
-                record.date === today
-                    ? "Today"
-                    : formatDate(record.date);
-
-
-            column.appendChild(
-                barContainer
-            );
-
-            column.appendChild(
-                day
-            );
-
-            productionTrendChart.appendChild(
-                column
-            );
         }
-    );
+
+
+        const height =
+            record.eggs === 0
+                ? 0
+                : (record.eggs / chartMax) * 100;
+
+
+        bar.style.height =
+            `${height}%`;
+
+
+        const value =
+            document.createElement("span");
+
+        value.className =
+            "trend-bar-value";
+
+        value.textContent =
+            record.eggs;
+
+
+        bar.appendChild(value);
+
+        barContainer.appendChild(bar);
+
+
+        const day =
+            document.createElement("span");
+
+        day.className =
+            "trend-day";
+
+
+        if (record.date === today) {
+
+            day.classList.add("today");
+
+        }
+
+
+        day.textContent =
+            formatDate(record.date);
+
+
+        column.appendChild(
+            barContainer
+        );
+
+        column.appendChild(day);
+
+
+        productionTrendChart.appendChild(
+            column
+        );
+
+    });
+
 }
 
 
-/* =========================================
-   PRODUCTION SUMMARY
-========================================= */
+/* =========================================================
+   PRODUCTION ANALYTICS
+   ========================================================= */
 
-function updateProductionSummary() {
+function updateProductionAnalytics() {
 
     const dates =
         getLastSevenDateKeys();
 
+
     const records =
-        dates.map(
-            function (dateKey) {
+        dates.map(dateKey => {
 
-                const record =
-                    getHistoryRecord(dateKey);
+            const record =
+                getHistoryRecord(dateKey);
 
-                return {
-                    date: dateKey,
-                    eggs: record.eggs,
-                    flock: record.flock
-                };
-            }
-        );
+            return {
 
+                date: dateKey,
+
+                eggs: record.eggs,
+
+                flock: record.flock
+
+            };
+
+        });
+
+
+    /*
+       ---------------------------------------------
+       7-DAY TOTAL
+       ---------------------------------------------
+    */
 
     const totalEggs =
         records.reduce(
-            function (total, record) {
-                return total + record.eggs;
-            },
+            (total, record) =>
+                total + record.eggs,
             0
         );
 
 
-    const rates =
-        records
-            .filter(
-                function (record) {
-                    return record.flock > 0;
-                }
-            )
-            .map(
-                function (record) {
-                    return calculateLayingRate(
-                        record.eggs,
-                        record.flock
-                    );
-                }
+    /*
+       ---------------------------------------------
+       EGGS PER HEN
+       
+       Uses the average recorded flock size
+       across the seven-day period.
+       ---------------------------------------------
+    */
+
+    const flockRecords =
+        records.filter(
+            record => record.flock > 0
+        );
+
+
+    let averageFlock = 0;
+
+
+    if (flockRecords.length > 0) {
+
+        averageFlock =
+            flockRecords.reduce(
+                (total, record) =>
+                    total + record.flock,
+                0
+            ) / flockRecords.length;
+
+    }
+
+
+    if (averageFlock > 0) {
+
+        const eggsPerHen =
+            totalEggs / averageFlock;
+
+
+        analyticsEggsPerHen.textContent =
+            eggsPerHen.toFixed(2);
+
+    } else {
+
+        analyticsEggsPerHen.textContent =
+            "—";
+
+    }
+
+
+    /*
+       ---------------------------------------------
+       7-DAY AVERAGE
+       ---------------------------------------------
+    */
+
+    const sevenDayAverage =
+        totalEggs / 7;
+
+
+    analyticsAverage.textContent =
+        sevenDayAverage.toFixed(2);
+
+
+    /*
+       ---------------------------------------------
+       HIGHEST PRODUCTION DAY
+       ---------------------------------------------
+    */
+
+    const highestRecord =
+        records.reduce(
+            (highest, record) =>
+                record.eggs > highest.eggs
+                    ? record
+                    : highest,
+            records[0]
+        );
+
+
+    if (totalEggs > 0) {
+
+        analyticsHighestDay.textContent =
+            `${highestRecord.eggs} ${
+                highestRecord.eggs === 1
+                    ? "egg"
+                    : "eggs"
+            }`;
+
+        analyticsHighestDayDate.textContent =
+            formatFullDate(
+                highestRecord.date
             );
 
+    } else {
 
-    const averageRate =
-        rates.length > 0
-            ? Math.round(
-                rates.reduce(
-                    function (total, rate) {
-                        return total + rate;
-                    },
-                    0
-                ) / rates.length
-            )
-            : 0;
+        analyticsHighestDay.textContent =
+            "—";
 
+        analyticsHighestDayDate.textContent =
+            "No data";
 
-    let bestRecord = null;
-
-
-    records.forEach(
-        function (record) {
-
-            if (
-                !bestRecord ||
-                record.eggs > bestRecord.eggs
-            ) {
-                bestRecord = record;
-            }
-        }
-    );
-
-
-    if (sevenDayEggsElement) {
-        sevenDayEggsElement.textContent =
-            totalEggs;
     }
 
 
-    if (averageLayingRateElement) {
-        averageLayingRateElement.textContent =
-            averageRate + "%";
+    /*
+       ---------------------------------------------
+       LOWEST PRODUCTION DAY
+       
+       Includes zero-production calendar days.
+       ---------------------------------------------
+    */
+
+    const lowestRecord =
+        records.reduce(
+            (lowest, record) =>
+                record.eggs < lowest.eggs
+                    ? record
+                    : lowest,
+            records[0]
+        );
+
+
+    if (totalEggs > 0) {
+
+        analyticsLowestDay.textContent =
+            `${lowestRecord.eggs} ${
+                lowestRecord.eggs === 1
+                    ? "egg"
+                    : "eggs"
+            }`;
+
+        analyticsLowestDayDate.textContent =
+            formatFullDate(
+                lowestRecord.date
+            );
+
+    } else {
+
+        analyticsLowestDay.textContent =
+            "—";
+
+        analyticsLowestDayDate.textContent =
+            "No data";
+
     }
 
 
-    if (
-        bestProductionDayElement &&
-        bestProductionEggsElement
-    ) {
+    /*
+       ---------------------------------------------
+       PRODUCTION CONSISTENCY
+       
+       Percentage of the seven calendar days
+       that had at least one egg recorded.
+       ---------------------------------------------
+    */
 
-        if (
-            bestRecord &&
-            bestRecord.eggs > 0
-        ) {
+    const productionDays =
+        records.filter(
+            record => record.eggs > 0
+        ).length;
 
-            bestProductionDayElement.textContent =
-                bestRecord.date === today
-                    ? "Today"
-                    : formatDate(
-                        bestRecord.date
-                    );
 
-            bestProductionEggsElement.textContent =
-                bestRecord.eggs + " eggs";
+    const consistency =
+        Math.round(
+            (productionDays / 7) * 100
+        );
+
+
+    analyticsConsistency.textContent =
+        `${consistency}%`;
+
+
+    /*
+       ---------------------------------------------
+       PRODUCTION CHANGE
+       
+       Compares the first three days against
+       the latest three days.
+       
+       Day 4 is intentionally excluded so the
+       two groups have equal size.
+       ---------------------------------------------
+    */
+
+    const earlierRecords =
+        records.slice(0, 3);
+
+    const recentRecords =
+        records.slice(4, 7);
+
+
+    const earlierAverage =
+        earlierRecords.reduce(
+            (total, record) =>
+                total + record.eggs,
+            0
+        ) / earlierRecords.length;
+
+
+    const recentAverage =
+        recentRecords.reduce(
+            (total, record) =>
+                total + record.eggs,
+            0
+        ) / recentRecords.length;
+
+
+    if (earlierAverage === 0) {
+
+        if (recentAverage > 0) {
+
+            analyticsChange.textContent =
+                "New";
 
         } else {
 
-            bestProductionDayElement.textContent =
-                "—";
+            analyticsChange.textContent =
+                "0%";
 
-            bestProductionEggsElement.textContent =
-                "0 eggs";
         }
+
+    } else {
+
+        const change =
+            (
+                (recentAverage -
+                    earlierAverage) /
+                earlierAverage
+            ) * 100;
+
+
+        const roundedChange =
+            Math.round(change);
+
+
+        analyticsChange.textContent =
+            `${roundedChange > 0 ? "+" : ""}${roundedChange}%`;
+
     }
+
 }
 
 
-/* =========================================
-   FLOCK MANAGEMENT
-========================================= */
-
-let chickenCount =
-    Number(
-        localStorage.getItem("chickenCount")
-    );
-
-if (
-    !Number.isFinite(chickenCount) ||
-    chickenCount < 0
-) {
-    chickenCount = 0;
-}
-
+/* =========================================================
+   FLOCK DISPLAY
+   ========================================================= */
 
 function updateChickenDisplay() {
 
-    if (chickenCountElement) {
-        chickenCountElement.textContent =
-            chickenCount;
-    }
+    const flock =
+        getCurrentFlock();
 
-    if (birdCountElement) {
-        birdCountElement.textContent =
-            chickenCount;
-    }
+
+    chickenCount.textContent =
+        flock;
+
+    birdCount.textContent =
+        flock;
+
 
     updateEggDisplay();
-    updateProductionSummary();
-    displayEggHistory();
-    renderProductionTrend();
+
 }
 
 
-function saveChickenCount() {
+/* =========================================================
+   FLOCK ACTIONS
+   ========================================================= */
 
-    localStorage.setItem(
-        "chickenCount",
-        String(chickenCount)
-    );
+addChicken.addEventListener(
+    "click",
+    () => {
 
-    localStorage.setItem(
-        "chickenCountUpdated",
-        today
-    );
+        let flock =
+            getCurrentFlock();
 
-    saveTodayEggHistory();
-
-    updateChickenDisplay();
-}
+        flock += 1;
 
 
-/* ADD BIRD */
+        localStorage.setItem(
+            "chickenCount",
+            String(flock)
+        );
 
-const addChicken =
-    getElement("addChicken");
 
-if (addChicken) {
+        saveTodayEggHistory();
 
-    addChicken.addEventListener(
-        "click",
-        function () {
+        updateChickenDisplay();
 
-            chickenCount++;
+        displayEggHistory();
 
-            saveChickenCount();
+        updateProductionSummary();
+
+        renderProductionTrend();
+
+        updateProductionAnalytics();
+
+    }
+);
+
+
+removeChicken.addEventListener(
+    "click",
+    () => {
+
+        let flock =
+            getCurrentFlock();
+
+
+        if (flock <= 0) {
+
+            return;
+
         }
-    );
-}
 
 
-/* REMOVE BIRD */
+        flock -= 1;
 
-const removeChicken =
-    getElement("removeChicken");
 
-if (removeChicken) {
+        localStorage.setItem(
+            "chickenCount",
+            String(flock)
+        );
 
-    removeChicken.addEventListener(
-        "click",
-        function () {
 
-            if (chickenCount <= 0) {
-                return;
-            }
+        saveTodayEggHistory();
 
-            chickenCount--;
+        updateChickenDisplay();
 
-            saveChickenCount();
+        displayEggHistory();
+
+        updateProductionSummary();
+
+        renderProductionTrend();
+
+        updateProductionAnalytics();
+
+    }
+);
+
+
+setFlockButton.addEventListener(
+    "click",
+    () => {
+
+        const value =
+            Number(flockInput.value);
+
+
+        if (
+            !Number.isFinite(value) ||
+            value < 0
+        ) {
+
+            return;
+
         }
-    );
-}
 
 
-/* SET FLOCK */
-
-const setFlockButton =
-    getElement("setFlockButton");
-
-const flockInput =
-    getElement("flockInput");
-
-if (
-    setFlockButton &&
-    flockInput
-) {
-
-    setFlockButton.addEventListener(
-        "click",
-        function () {
-
-            const value =
-                Number(
-                    flockInput.value
-                );
-
-            if (
-                !Number.isFinite(value) ||
-                value < 0
-            ) {
-                return;
-            }
-
-            chickenCount =
-                Math.floor(value);
-
-            flockInput.value = "";
-
-            saveChickenCount();
-        }
-    );
-}
+        const flock =
+            Math.floor(value);
 
 
-/* =========================================
+        localStorage.setItem(
+            "chickenCount",
+            String(flock)
+        );
+
+
+        flockInput.value = "";
+
+
+        saveTodayEggHistory();
+
+        updateChickenDisplay();
+
+        displayEggHistory();
+
+        updateProductionSummary();
+
+        renderProductionTrend();
+
+        updateProductionAnalytics();
+
+    }
+);
+
+
+/* =========================================================
    FEED MANAGEMENT
-========================================= */
+   ========================================================= */
 
-let feed =
-    Number(
+function getFeedAmount() {
+
+    return Number(
         localStorage.getItem("feed")
-    );
+    ) || 0;
 
-if (
-    !Number.isFinite(feed) ||
-    feed < 0
-) {
-    feed = 0;
 }
 
 
 function updateFeedDisplay() {
 
-    if (feedAmountElement) {
+    const amount =
+        getFeedAmount();
 
-        feedAmountElement.textContent =
-            feed.toFixed(2);
-    }
 
-    if (overviewFeedAmount) {
+    feedAmount.textContent =
+        `${amount.toFixed(1)} kg`;
 
-        overviewFeedAmount.textContent =
-            feed.toFixed(2);
-    }
+    overviewFeedAmount.textContent =
+        `${amount.toFixed(1)} kg`;
+
 }
 
 
-function saveFeed() {
+addFeedButton.addEventListener(
+    "click",
+    () => {
 
-    localStorage.setItem(
-        "feed",
-        String(feed)
-    );
-
-    updateFeedDisplay();
-}
+        const amount =
+            Number(feedInput.value);
 
 
-/* ADD FEED */
+        if (
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) {
 
-const addFeedButton =
-    getElement("addFeedButton");
+            return;
 
-const feedInput =
-    getElement("feedInput");
-
-if (
-    addFeedButton &&
-    feedInput
-) {
-
-    addFeedButton.addEventListener(
-        "click",
-        function () {
-
-            const amount =
-                Number(
-                    feedInput.value
-                );
-
-            if (
-                !Number.isFinite(amount) ||
-                amount <= 0
-            ) {
-                return;
-            }
-
-            feed += amount;
-
-            saveFeed();
-
-            feedInput.value = "";
         }
-    );
-}
 
 
-/* USE FEED */
-
-const useFeedButton =
-    getElement("useFeedButton");
-
-const useFeedInput =
-    getElement("useFeedInput");
-
-if (
-    useFeedButton &&
-    useFeedInput
-) {
-
-    useFeedButton.addEventListener(
-        "click",
-        function () {
-
-            const amount =
-                Number(
-                    useFeedInput.value
-                );
-
-            if (
-                !Number.isFinite(amount) ||
-                amount <= 0
-            ) {
-                return;
-            }
+        const current =
+            getFeedAmount();
 
 
-            if (amount > feed) {
-
-                alert(
-                    "You cannot use more feed than you have in stock."
-                );
-
-                return;
-            }
+        const updated =
+            current + amount;
 
 
-            feed -= amount;
+        localStorage.setItem(
+            "feed",
+            String(updated)
+        );
 
-            saveFeed();
 
-            useFeedInput.value = "";
+        feedInput.value = "";
+
+        updateFeedDisplay();
+
+    }
+);
+
+
+useFeedButton.addEventListener(
+    "click",
+    () => {
+
+        const amount =
+            Number(useFeedInput.value);
+
+
+        if (
+            !Number.isFinite(amount) ||
+            amount <= 0
+        ) {
+
+            return;
+
         }
-    );
-}
 
 
-/* =========================================
+        const current =
+            getFeedAmount();
+
+
+        const updated =
+            Math.max(
+                0,
+                current - amount
+            );
+
+
+        localStorage.setItem(
+            "feed",
+            String(updated)
+        );
+
+
+        useFeedInput.value = "";
+
+        updateFeedDisplay();
+
+    }
+);
+
+
+/* =========================================================
    FEED SCHEDULE
-========================================= */
-
-const morningFeedTime =
-    getElement("morningFeedTime");
-
-const afternoonFeedTime =
-    getElement("afternoonFeedTime");
-
-const saveScheduleButton =
-    getElement("saveScheduleButton");
-
-const scheduleStatus =
-    getElement("scheduleStatus");
-
-const nextFeed =
-    getElement("nextFeed");
-
-
-function updateNextFeed() {
-
-    if (
-        !morningFeedTime ||
-        !afternoonFeedTime ||
-        !nextFeed
-    ) {
-        return;
-    }
-
-
-    const now =
-        new Date();
-
-
-    const times = [
-        morningFeedTime.value,
-        afternoonFeedTime.value
-    ]
-        .filter(Boolean)
-        .sort();
-
-
-    let upcoming = null;
-
-
-    for (
-        const time of times
-    ) {
-
-        const parts =
-            time.split(":");
-
-        const feedDate =
-            new Date(now);
-
-        feedDate.setHours(
-            Number(parts[0]),
-            Number(parts[1]),
-            0,
-            0
-        );
-
-
-        if (feedDate > now) {
-
-            upcoming =
-                feedDate;
-
-            break;
-        }
-    }
-
-
-    if (!upcoming && times.length > 0) {
-
-        const parts =
-            times[0].split(":");
-
-        upcoming =
-            new Date(now);
-
-        upcoming.setDate(
-            upcoming.getDate() + 1
-        );
-
-        upcoming.setHours(
-            Number(parts[0]),
-            Number(parts[1]),
-            0,
-            0
-        );
-    }
-
-
-    if (!upcoming) {
-
-        nextFeed.textContent =
-            "Not scheduled";
-
-        return;
-    }
-
-
-    nextFeed.textContent =
-        upcoming.toLocaleTimeString(
-            "en-US",
-            {
-                hour: "numeric",
-                minute: "2-digit"
-            }
-        );
-}
-
+   ========================================================= */
 
 function loadFeedSchedule() {
-
-    const savedMorning =
-        localStorage.getItem(
-            "morningFeedTime"
-        );
-
-    const savedAfternoon =
-        localStorage.getItem(
-            "afternoonFeedTime"
-        );
-
-
-    if (
-        savedMorning &&
-        morningFeedTime
-    ) {
-        morningFeedTime.value =
-            savedMorning;
-    }
-
-
-    if (
-        savedAfternoon &&
-        afternoonFeedTime
-    ) {
-        afternoonFeedTime.value =
-            savedAfternoon;
-    }
-
-
-    updateNextFeed();
-}
-
-
-if (saveScheduleButton) {
-
-    saveScheduleButton.addEventListener(
-        "click",
-        async function () {
-
-            const morning =
-                morningFeedTime.value;
-
-            const afternoon =
-                afternoonFeedTime.value;
-
-
-            localStorage.setItem(
-                "morningFeedTime",
-                morning
-            );
-
-            localStorage.setItem(
-                "afternoonFeedTime",
-                afternoon
-            );
-
-
-            updateNextFeed();
-
-
-            if (scheduleStatus) {
-
-                scheduleStatus.textContent =
-                    "Schedule saved.";
-            }
-
-
-            setTimeout(
-                function () {
-
-                    if (scheduleStatus) {
-                        scheduleStatus.textContent =
-                            "";
-                    }
-
-                },
-                2500
-            );
-
-
-            try {
-
-                await fetch(
-                    "/schedule",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-                        body: JSON.stringify({
-                            morning,
-                            afternoon
-                        })
-                    }
-                );
-
-            } catch (error) {
-
-                console.log(
-                    "Schedule sync unavailable:",
-                    error
-                );
-            }
-        }
-    );
-}
-
-
-/* =========================================
-   FEED ALARM
-========================================= */
-
-let alarmEnabled =
-    localStorage.getItem(
-        "alarmEnabled"
-    ) === "true";
-
-
-const alarmButton =
-    getElement("alarmButton");
-
-const alarmStatus =
-    getElement("alarmStatus");
-
-const alarmMessage =
-    getElement("alarmMessage");
-
-
-function updateAlarmDisplay() {
-
-    if (
-        !alarmButton ||
-        !alarmStatus
-    ) {
-        return;
-    }
-
-
-    if (alarmEnabled) {
-
-        alarmButton.textContent =
-            "Disable Feed Alarm";
-
-        alarmStatus.textContent =
-            "Enabled";
-
-    } else {
-
-        alarmButton.textContent =
-            "Enable Feed Alarm";
-
-        alarmStatus.textContent =
-            "Disabled";
-    }
-}
-
-
-if (alarmButton) {
-
-    alarmButton.addEventListener(
-        "click",
-        function () {
-
-            alarmEnabled =
-                !alarmEnabled;
-
-
-            localStorage.setItem(
-                "alarmEnabled",
-                String(alarmEnabled)
-            );
-
-
-            updateAlarmDisplay();
-
-
-            if (alarmMessage) {
-
-                alarmMessage.textContent =
-                    alarmEnabled
-                        ? "Feed alarm enabled."
-                        : "Feed alarm disabled.";
-            }
-
-
-            setTimeout(
-                function () {
-
-                    if (alarmMessage) {
-                        alarmMessage.textContent =
-                            "";
-                    }
-
-                },
-                2500
-            );
-        }
-    );
-}
-
-
-/* =========================================
-   ALARM CHECK
-========================================= */
-
-let lastAlarmKey =
-    localStorage.getItem(
-        "lastAlarmKey"
-    );
-
-
-function checkFeedAlarm() {
-
-    if (!alarmEnabled) {
-        return;
-    }
-
-
-    const now =
-        new Date();
-
-    const currentTime =
-        String(
-            now.getHours()
-        ).padStart(2, "0") +
-        ":" +
-        String(
-            now.getMinutes()
-        ).padStart(2, "0");
-
-
-    const currentDate =
-        getLocalDateKey(now);
-
 
     const morning =
         localStorage.getItem(
@@ -1481,146 +1368,410 @@ function checkFeedAlarm() {
         );
 
 
-    if (
-        currentTime !== morning &&
-        currentTime !== afternoon
-    ) {
-        return;
+    if (morning) {
+
+        morningFeedTime.value =
+            morning;
+
     }
 
 
-    const alarmKey =
-        currentDate +
-        "-" +
-        currentTime;
+    if (afternoon) {
 
+        afternoonFeedTime.value =
+            afternoon;
 
-    if (lastAlarmKey === alarmKey) {
-        return;
     }
 
 
-    lastAlarmKey =
-        alarmKey;
+    updateNextFeed();
+
+}
 
 
-    localStorage.setItem(
-        "lastAlarmKey",
-        alarmKey
+saveScheduleButton.addEventListener(
+    "click",
+    async () => {
+
+        const morning =
+            morningFeedTime.value;
+
+        const afternoon =
+            afternoonFeedTime.value;
+
+
+        localStorage.setItem(
+            "morningFeedTime",
+            morning
+        );
+
+        localStorage.setItem(
+            "afternoonFeedTime",
+            afternoon
+        );
+
+
+        scheduleStatus.textContent =
+            "Schedule saved.";
+
+
+        updateNextFeed();
+
+
+        try {
+
+            await fetch(
+                "/schedule",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        morning,
+                        afternoon
+                    })
+                }
+            );
+
+        } catch (error) {
+
+            console.log(
+                "Schedule sync unavailable."
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   NEXT FEED
+   ========================================================= */
+
+function updateNextFeed() {
+
+    const times = [
+
+        morningFeedTime.value,
+
+        afternoonFeedTime.value
+
+    ].filter(Boolean);
+
+
+    if (times.length === 0) {
+
+        nextFeed.textContent =
+            "No schedule set";
+
+        return;
+
+    }
+
+
+    const now = new Date();
+
+    const currentMinutes =
+        now.getHours() * 60 +
+        now.getMinutes();
+
+
+    const upcoming =
+        times
+            .map(time => {
+
+                const [
+                    hours,
+                    minutes
+                ] = time
+                    .split(":")
+                    .map(Number);
+
+
+                return {
+
+                    time,
+
+                    minutes:
+                        hours * 60 +
+                        minutes
+
+                };
+
+            })
+            .filter(
+                item =>
+                    item.minutes >
+                    currentMinutes
+            )
+            .sort(
+                (a, b) =>
+                    a.minutes -
+                    b.minutes
+            );
+
+
+    if (upcoming.length > 0) {
+
+        nextFeed.textContent =
+            formatTime(
+                upcoming[0].time
+            );
+
+        return;
+
+    }
+
+
+    nextFeed.textContent =
+        formatTime(times[0]) +
+        " tomorrow";
+
+}
+
+
+function formatTime(time) {
+
+    if (!time) {
+
+        return "—";
+
+    }
+
+
+    const [
+        hourString,
+        minuteString
+    ] = time.split(":");
+
+
+    const hour =
+        Number(hourString);
+
+    const minute =
+        Number(minuteString);
+
+
+    const suffix =
+        hour >= 12
+            ? "PM"
+            : "AM";
+
+
+    const displayHour =
+        hour % 12 || 12;
+
+
+    return `${displayHour}:${String(
+        minute
+    ).padStart(2, "0")} ${suffix}`;
+
+}
+
+
+/* =========================================================
+   ALARM
+   ========================================================= */
+
+function getAlarmEnabled() {
+
+    return (
+        localStorage.getItem(
+            "alarmEnabled"
+        ) === "true"
     );
 
+}
+
+
+function updateAlarmDisplay() {
+
+    const enabled =
+        getAlarmEnabled();
+
+
+    if (enabled) {
+
+        alarmStatus.textContent =
+            "Alarm On";
+
+        alarmMessage.textContent =
+            "Feed alarm is active.";
+
+        alarmButton.textContent =
+            "Disable Alarm";
+
+    } else {
+
+        alarmStatus.textContent =
+            "Alarm Off";
+
+        alarmMessage.textContent =
+            "Feed alarm is currently disabled.";
+
+        alarmButton.textContent =
+            "Enable Alarm";
+
+    }
+
+}
+
+
+alarmButton.addEventListener(
+    "click",
+    () => {
+
+        const enabled =
+            !getAlarmEnabled();
+
+
+        localStorage.setItem(
+            "alarmEnabled",
+            String(enabled)
+        );
+
+
+        updateAlarmDisplay();
+
+    }
+);
+
+
+/* =========================================================
+   ALARM CHECK
+   ========================================================= */
+
+let lastAlarmTrigger = "";
+
+
+function checkFeedAlarm() {
+
+    if (!getAlarmEnabled()) {
+
+        return;
+
+    }
+
+
+    const now = new Date();
+
+    const currentTime =
+        `${String(
+            now.getHours()
+        ).padStart(2, "0")}:${String(
+            now.getMinutes()
+        ).padStart(2, "0")}`;
+
+
+    const currentDate =
+        getLocalDateKey();
+
+
+    const schedules = [
+
+        morningFeedTime.value,
+
+        afternoonFeedTime.value
+
+    ].filter(Boolean);
+
+
+    schedules.forEach(
+        scheduledTime => {
+
+            const triggerKey =
+                `${currentDate}-${scheduledTime}`;
+
+
+            if (
+                currentTime ===
+                scheduledTime &&
+                lastAlarmTrigger !==
+                    triggerKey
+            ) {
+
+                lastAlarmTrigger =
+                    triggerKey;
+
+
+                triggerFeedAlarm();
+
+            }
+
+        }
+    );
+
+}
+
+
+function triggerFeedAlarm() {
 
     if (
         "Notification" in window &&
-        Notification.permission === "granted"
+        Notification.permission ===
+            "granted"
     ) {
 
         new Notification(
             "Poultry Manager",
             {
                 body:
-                    "It's time to feed your chickens."
+                    "It is feeding time for your flock."
             }
         );
 
-    } else {
-
-        alert(
-            "Poultry Manager: It's time to feed your chickens."
-        );
     }
+
+
+    alarmMessage.textContent =
+        "Feeding time!";
+
 }
 
 
-/* =========================================
+/* =========================================================
    NOTIFICATIONS
-========================================= */
+   ========================================================= */
 
-let serviceWorkerRegistration = null;
+enableNotifications.addEventListener(
+    "click",
+    async () => {
 
+        if (
+            !("Notification" in window)
+        ) {
 
-async function registerServiceWorker() {
+            return;
 
-    if (
-        !("serviceWorker" in navigator)
-    ) {
-        return;
-    }
-
-
-    try {
-
-        serviceWorkerRegistration =
-            await navigator.serviceWorker.register(
-                "/service-worker.js"
-            );
-
-        console.log(
-            "Service worker registered."
-        );
-
-    } catch (error) {
-
-        console.log(
-            "Service worker registration failed:",
-            error
-        );
-    }
-}
-
-
-async function enableNotifications() {
-
-    if (
-        !("Notification" in window)
-    ) {
-
-        alert(
-            "Notifications are not supported on this device."
-        );
-
-        return;
-    }
-
-
-    const permission =
-        await Notification.requestPermission();
-
-
-    if (
-        permission !== "granted"
-    ) {
-
-        alert(
-            "Notification permission was not granted."
-        );
-
-        return;
-    }
-
-
-    try {
-
-        if (!serviceWorkerRegistration) {
-
-            await registerServiceWorker();
         }
+
+
+        const permission =
+            await Notification.requestPermission();
 
 
         if (
-            !serviceWorkerRegistration
+            permission !== "granted"
         ) {
+
             return;
+
         }
 
 
-        let subscription =
-            await serviceWorkerRegistration
-                .pushManager
-                .getSubscription();
+        try {
 
+            const registration =
+                await navigator.serviceWorker
+                    .register(
+                        "/service-worker.js"
+                    );
 
-        if (!subscription) {
 
             const response =
                 await fetch(
@@ -1629,9 +1780,9 @@ async function enableNotifications() {
 
 
             if (!response.ok) {
-                throw new Error(
-                    "Could not get VAPID key."
-                );
+
+                return;
+
             }
 
 
@@ -1639,101 +1790,82 @@ async function enableNotifications() {
                 await response.json();
 
 
-            const applicationServerKey =
-                urlBase64ToUint8Array(
-                    data.publicKey
-                );
-
-
-            subscription =
-                await serviceWorkerRegistration
-                    .pushManager
+            const subscription =
+                await registration.pushManager
                     .subscribe({
                         userVisibleOnly: true,
-                        applicationServerKey
+
+                        applicationServerKey:
+                            data.publicKey
                     });
+
+
+            await fetch(
+                "/subscribe",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify(
+                        subscription
+                    )
+                }
+            );
+
+
+            enableNotifications.textContent =
+                "Notifications Enabled";
+
+        } catch (error) {
+
+            console.error(
+                "Notification setup failed:",
+                error
+            );
+
         }
 
-
-        await fetch(
-            "/subscribe",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-                body: JSON.stringify(
-                    subscription
-                )
-            }
-        );
-
-
-        alert(
-            "Notifications enabled."
-        );
-
-    } catch (error) {
-
-        console.error(
-            "Notification setup failed:",
-            error
-        );
-
-        alert(
-            "Notifications could not be enabled."
-        );
     }
+);
+
+
+/* =========================================================
+   SERVICE WORKER
+   ========================================================= */
+
+async function registerServiceWorker() {
+
+    if (
+        "serviceWorker" in navigator
+    ) {
+
+        try {
+
+            await navigator.serviceWorker
+                .register(
+                    "/service-worker.js"
+                );
+
+        } catch (error) {
+
+            console.log(
+                "Service worker registration failed."
+            );
+
+        }
+
+    }
+
 }
 
 
-function urlBase64ToUint8Array(base64String) {
-
-    const padding =
-        "=".repeat(
-            (4 - base64String.length % 4) % 4
-        );
-
-    const base64 =
-        (
-            base64String +
-            padding
-        )
-            .replace(/-/g, "+")
-            .replace(/_/g, "/");
-
-
-    const rawData =
-        window.atob(base64);
-
-
-    return Uint8Array.from(
-        [...rawData].map(
-            char => char.charCodeAt(0)
-        )
-    );
-}
-
-
-const enableNotificationsButton =
-    getElement(
-        "enableNotifications"
-    );
-
-
-if (enableNotificationsButton) {
-
-    enableNotificationsButton.addEventListener(
-        "click",
-        enableNotifications
-    );
-}
-
-
-/* =========================================
-   INITIALIZATION
-========================================= */
+/* =========================================================
+   INITIALIZE APP
+   ========================================================= */
 
 displayHeaderDate();
 
@@ -1749,6 +1881,8 @@ updateProductionSummary();
 
 renderProductionTrend();
 
+updateProductionAnalytics();
+
 loadFeedSchedule();
 
 updateAlarmDisplay();
@@ -1756,12 +1890,12 @@ updateAlarmDisplay();
 registerServiceWorker();
 
 
-/* =========================================
-   TIMERS
-========================================= */
+/* =========================================================
+   LIVE CHECKS
+   ========================================================= */
 
 setInterval(
-    function () {
+    () => {
 
         checkFeedAlarm();
 
