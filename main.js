@@ -483,6 +483,10 @@ history[today] = {
 };
   
   const dates = Object.keys(history).sort().reverse();
+  const viewHistoryButton =
+  document.getElementById("viewHistoryButton");
+
+let showAllHistory = false;
 
   if (dates.length === 0) {
     historyList.innerHTML =
@@ -492,7 +496,7 @@ history[today] = {
 
   historyList.innerHTML = "";
 
- dates.forEach(function(date) {
+ dates.slice(0, showAllHistory ? dates.length : 4).forEach(function(date) { {
   const row = document.createElement("div");
 
   const formattedDate =
