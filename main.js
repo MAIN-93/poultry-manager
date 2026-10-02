@@ -483,10 +483,7 @@ history[today] = {
 };
   
   const dates = Object.keys(history).sort().reverse();
-  const viewHistoryButton =
-  document.getElementById("viewHistoryButton");
-
-let showAllHistory = false;
+  
 
   if (dates.length === 0) {
     historyList.innerHTML =
@@ -496,7 +493,7 @@ let showAllHistory = false;
 
   historyList.innerHTML = "";
 
- dates.slice(0, showAllHistory ? dates.length : 4).forEach(function(date) { {
+ dates.forEach(function(date) {
   const row = document.createElement("div");
 
   const formattedDate =
@@ -544,13 +541,5 @@ row.innerHTML =
   });
 }
 
-if (viewHistoryButton) {
-  viewHistoryButton.textContent =
-    showAllHistory ? "Show Less" : "View All History";
 
-  viewHistoryButton.onclick = function() {
-    showAllHistory = !showAllHistory;
-    displayEggHistory();
-  };
-}
 displayEggHistory();
