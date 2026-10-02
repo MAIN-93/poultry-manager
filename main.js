@@ -556,7 +556,7 @@ if (viewHistoryButton) {
   const dates =
     Object.keys(history).sort().reverse();
 
-  if (dates.length <= 4) {
+  if (dates.length <= 2) {
     viewHistoryButton.style.display = "none";
   }
 
