@@ -1,63 +1,172 @@
 /* =========================================
    POULTRY MANAGER
-   Main Application Logic
+   Production Tracking Engine
 ========================================= */
 
 
 /* =========================================
-   DATE
+   LOCAL DATE
+   IMPORTANT:
+   We deliberately DO NOT use toISOString()
+   because that uses UTC.
 ========================================= */
 
-const today = new Date().toISOString().split("T")[0];
+function getLocalDateKey(date = new Date()) {
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+}
+
+
+const today =
+    getLocalDateKey();
+
+
+/* =========================================
+   LOCAL STORAGE HELPERS
+========================================= */
+
+function getEggHistory() {
+
+    try {
+
+        return (
+            JSON.parse(
+                localStorage.getItem(
+                    "eggHistory"
+                )
+            ) || {}
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Could not read egg history:",
+            error
+        );
+
+        return {};
+    }
+}
+
+
+function saveEggHistory(history) {
+
+    localStorage.setItem(
+        "eggHistory",
+        JSON.stringify(history)
+    );
+}
+
+
+/* =========================================
+   CURRENT EGG DATA
+========================================= */
 
 let savedDate =
-    localStorage.getItem("eggDate");
+    localStorage.getItem(
+        "eggDate"
+    );
+
 
 let eggs =
-    Number(localStorage.getItem("eggs")) || 0;
+    Number(
+        localStorage.getItem(
+            "eggs"
+        )
+    ) || 0;
 
 
 /* =========================================
-   EGG DAY ROLLOVER
+   DAILY ROLLOVER
 ========================================= */
+
+/*
+   This is the new rollover system.
+
+   Example:
+
+   Saved date = 2026-10-02
+   Current date = 2026-10-03
+
+   The Oct 2 record is saved.
+
+   Today's count becomes 0.
+
+   Oct 3 becomes the new active day.
+*/
 
 if (savedDate !== today) {
 
-    let eggHistory =
-        JSON.parse(
-            localStorage.getItem("eggHistory")
-        ) || {};
+    const history =
+        getEggHistory();
 
+
+    /*
+       Only save the previous active day
+       if one actually exists.
+    */
 
     if (savedDate) {
 
-        const flockSize =
+        const previousFlock =
             Number(
-                localStorage.getItem("chickenCount")
+                localStorage.getItem(
+                    "chickenCount"
+                )
             ) || 0;
 
 
-        eggHistory[savedDate] = {
+        history[savedDate] = {
             eggs: eggs,
-            flock: flockSize
+            flock: previousFlock
         };
     }
 
 
-    localStorage.setItem(
-        "eggHistory",
-        JSON.stringify(eggHistory)
-    );
+    /*
+       Save history before starting
+       the new production day.
+    */
 
+    saveEggHistory(history);
+
+
+    /*
+       Start the new day at zero.
+    */
 
     eggs = 0;
 
 
     localStorage.setItem(
         "eggs",
-        eggs
+        "0"
     );
 
+
+    /*
+       Store today's local date.
+    */
 
     localStorage.setItem(
         "eggDate",
@@ -67,10 +176,11 @@ if (savedDate !== today) {
 
 
 /* =========================================
-   DOM HELPERS
+   DOM HELPER
 ========================================= */
 
 function getElement(id) {
+
     return document.getElementById(id);
 }
 
@@ -80,7 +190,9 @@ function getElement(id) {
 ========================================= */
 
 const headerDate =
-    getElement("headerDate");
+    getElement(
+        "headerDate"
+    );
 
 
 if (headerDate) {
@@ -102,16 +214,27 @@ if (headerDate) {
 ========================================= */
 
 const eggCount =
-    getElement("eggCount");
+    getElement(
+        "eggCount"
+    );
+
 
 const overviewEggCount =
-    getElement("overviewEggCount");
+    getElement(
+        "overviewEggCount"
+    );
+
 
 const addEggButton =
-    getElement("addEggButton");
+    getElement(
+        "addEggButton"
+    );
+
 
 const removeEggButton =
-    getElement("removeEggButton");
+    getElement(
+        "removeEggButton"
+    );
 
 
 /* =========================================
@@ -121,12 +244,16 @@ const removeEggButton =
 function updateEggDisplay() {
 
     if (eggCount) {
-        eggCount.textContent = eggs;
+
+        eggCount.textContent =
+            eggs;
     }
 
 
     if (overviewEggCount) {
-        overviewEggCount.textContent = eggs;
+
+        overviewEggCount.textContent =
+            eggs;
     }
 }
 
@@ -166,6 +293,8 @@ if (addEggButton) {
             saveTodayEggHistory();
 
             displayEggHistory();
+
+            updateProductionSummary();
         }
     );
 }
@@ -182,6 +311,7 @@ if (removeEggButton) {
         function() {
 
             if (eggs <= 0) {
+
                 return;
             }
 
@@ -208,6 +338,8 @@ if (removeEggButton) {
             saveTodayEggHistory();
 
             displayEggHistory();
+
+            updateProductionSummary();
         }
     );
 }
@@ -219,31 +351,50 @@ if (removeEggButton) {
 
 let feed =
     Number(
-        localStorage.getItem("feed")
+        localStorage.getItem(
+            "feed"
+        )
     ) || 0;
 
 
 const feedAmount =
-    getElement("feedAmount");
+    getElement(
+        "feedAmount"
+    );
+
 
 const overviewFeedAmount =
-    getElement("overviewFeedAmount");
+    getElement(
+        "overviewFeedAmount"
+    );
+
 
 const feedInput =
-    getElement("feedInput");
+    getElement(
+        "feedInput"
+    );
+
 
 const addFeedButton =
-    getElement("addFeedButton");
+    getElement(
+        "addFeedButton"
+    );
+
 
 const useFeedInput =
-    getElement("useFeedInput");
+    getElement(
+        "useFeedInput"
+    );
+
 
 const useFeedButton =
-    getElement("useFeedButton");
+    getElement(
+        "useFeedButton"
+    );
 
 
 /* =========================================
-   FORMAT FEED
+   FEED FORMAT
 ========================================= */
 
 function formatFeed(value) {
@@ -255,18 +406,22 @@ function formatFeed(value) {
 
 
 /* =========================================
-   UPDATE FEED DISPLAY
+   FEED DISPLAY
 ========================================= */
 
 function updateFeedDisplay() {
 
-    feed = formatFeed(feed);
+    feed =
+        formatFeed(
+            feed
+        );
 
 
     if (feedAmount) {
 
         feedAmount.textContent =
-            feed + " kg";
+            feed +
+            " kg";
     }
 
 
@@ -292,20 +447,27 @@ if (addFeedButton) {
         function() {
 
             const amount =
-                Number(feedInput.value);
+                Number(
+                    feedInput.value
+                );
 
 
             if (
                 !Number.isFinite(amount) ||
                 amount <= 0
             ) {
+
                 return;
             }
 
 
             feed += amount;
 
-            feed = formatFeed(feed);
+
+            feed =
+                formatFeed(
+                    feed
+                );
 
 
             localStorage.setItem(
@@ -334,13 +496,16 @@ if (useFeedButton) {
         function() {
 
             const amount =
-                Number(useFeedInput.value);
+                Number(
+                    useFeedInput.value
+                );
 
 
             if (
                 !Number.isFinite(amount) ||
                 amount <= 0
             ) {
+
                 return;
             }
 
@@ -357,7 +522,11 @@ if (useFeedButton) {
 
             feed -= amount;
 
-            feed = formatFeed(feed);
+
+            feed =
+                formatFeed(
+                    feed
+                );
 
 
             localStorage.setItem(
@@ -380,22 +549,34 @@ if (useFeedButton) {
 ========================================= */
 
 const morningFeedTime =
-    getElement("morningFeedTime");
+    getElement(
+        "morningFeedTime"
+    );
+
 
 const afternoonFeedTime =
-    getElement("afternoonFeedTime");
+    getElement(
+        "afternoonFeedTime"
+    );
+
 
 const saveScheduleButton =
-    getElement("saveScheduleButton");
+    getElement(
+        "saveScheduleButton"
+    );
+
 
 const scheduleStatus =
-    getElement("scheduleStatus");
+    getElement(
+        "scheduleStatus"
+    );
 
 
 const savedMorningTime =
     localStorage.getItem(
         "morningFeedTime"
     );
+
 
 const savedAfternoonTime =
     localStorage.getItem(
@@ -423,12 +604,17 @@ if (
 }
 
 
+/* =========================================
+   SCHEDULE STATUS
+========================================= */
+
 function updateScheduleStatus() {
 
     const morning =
         localStorage.getItem(
             "morningFeedTime"
         );
+
 
     const afternoon =
         localStorage.getItem(
@@ -467,11 +653,15 @@ if (saveScheduleButton) {
             const morning =
                 morningFeedTime.value;
 
+
             const afternoon =
                 afternoonFeedTime.value;
 
 
-            if (!morning || !afternoon) {
+            if (
+                !morning ||
+                !afternoon
+            ) {
 
                 scheduleStatus.textContent =
                     "Please set both feeding times.";
@@ -516,8 +706,11 @@ if (saveScheduleButton) {
                             },
 
                             body: JSON.stringify({
-                                morning: morning,
-                                afternoon: afternoon
+                                morning:
+                                    morning,
+
+                                afternoon:
+                                    afternoon
                             })
                         }
                     );
@@ -566,10 +759,13 @@ if (saveScheduleButton) {
 function updateNextFeed() {
 
     const nextFeed =
-        getElement("nextFeed");
+        getElement(
+            "nextFeed"
+        );
 
 
     if (!nextFeed) {
+
         return;
     }
 
@@ -579,13 +775,17 @@ function updateNextFeed() {
             "morningFeedTime"
         );
 
+
     const afternoon =
         localStorage.getItem(
             "afternoonFeedTime"
         );
 
 
-    if (!morning || !afternoon) {
+    if (
+        !morning ||
+        !afternoon
+    ) {
 
         nextFeed.textContent =
             "Not set";
@@ -636,13 +836,17 @@ function updateNextFeed() {
     );
 
 
-    if (now < todayMorning) {
+    if (
+        now < todayMorning
+    ) {
 
         nextFeed.textContent =
             "Morning • " +
             morning;
 
-    } else if (now < todayAfternoon) {
+    } else if (
+        now < todayAfternoon
+    ) {
 
         nextFeed.textContent =
             "Afternoon • " +
@@ -680,18 +884,30 @@ let lastAlarmTime = "";
 
 
 const alarmButton =
-    getElement("alarmButton");
+    getElement(
+        "alarmButton"
+    );
+
 
 const alarmStatus =
-    getElement("alarmStatus");
+    getElement(
+        "alarmStatus"
+    );
+
 
 const alarmMessage =
-    getElement("alarmMessage");
+    getElement(
+        "alarmMessage"
+    );
 
 
 function updateAlarmDisplay() {
 
-    if (!alarmButton || !alarmStatus) {
+    if (
+        !alarmButton ||
+        !alarmStatus
+    ) {
+
         return;
     }
 
@@ -701,6 +917,7 @@ function updateAlarmDisplay() {
         alarmButton.textContent =
             "🔕 Turn Alarm Off";
 
+
         alarmStatus.textContent =
             "Alarm is on.";
 
@@ -709,11 +926,15 @@ function updateAlarmDisplay() {
         alarmButton.textContent =
             "🔔 Turn Alarm On";
 
+
         alarmStatus.textContent =
             "Alarm is off.";
 
+
         if (alarmMessage) {
-            alarmMessage.textContent = "";
+
+            alarmMessage.textContent =
+                "";
         }
     }
 }
@@ -745,12 +966,13 @@ if (alarmButton) {
 
 
 /* =========================================
-   CHECK FEED ALARM
+   CHECK ALARM
 ========================================= */
 
 function checkFeedAlarm() {
 
     if (!alarmEnabled) {
+
         return;
     }
 
@@ -760,17 +982,20 @@ function checkFeedAlarm() {
 
 
     const currentTime =
-        String(now.getHours())
-            .padStart(2, "0") +
+        String(
+            now.getHours()
+        ).padStart(2, "0") +
         ":" +
-        String(now.getMinutes())
-            .padStart(2, "0");
+        String(
+            now.getMinutes()
+        ).padStart(2, "0");
 
 
     const morning =
         localStorage.getItem(
             "morningFeedTime"
         );
+
 
     const afternoon =
         localStorage.getItem(
@@ -809,23 +1034,29 @@ setInterval(
    SERVICE WORKER
 ========================================= */
 
-if ("serviceWorker" in navigator) {
+if (
+    "serviceWorker" in navigator
+) {
 
     navigator.serviceWorker
         .register("sw.js")
-        .then(function() {
+        .then(
+            function() {
 
-            console.log(
-                "Poultry Manager service worker registered."
-            );
-        })
-        .catch(function(error) {
+                console.log(
+                    "Poultry Manager service worker registered."
+                );
+            }
+        )
+        .catch(
+            function(error) {
 
-            console.error(
-                "Service worker registration failed:",
-                error
-            );
-        });
+                console.error(
+                    "Service worker registration failed:",
+                    error
+                );
+            }
+        );
 }
 
 
@@ -843,11 +1074,13 @@ if (notificationButton) {
 
     if (
         "Notification" in window &&
-        Notification.permission === "granted"
+        Notification.permission ===
+            "granted"
     ) {
 
         notificationButton.textContent =
             "✅ Notifications Enabled";
+
 
         notificationButton.disabled =
             true;
@@ -858,7 +1091,9 @@ if (notificationButton) {
             "click",
             async function() {
 
-                if (!("Notification" in window)) {
+                if (
+                    !("Notification" in window)
+                ) {
 
                     alert(
                         "Notifications are not supported on this device/browser."
@@ -875,7 +1110,8 @@ if (notificationButton) {
 
 
                     if (
-                        permission === "granted"
+                        permission ===
+                        "granted"
                     ) {
 
                         await subscribeToPush();
@@ -883,6 +1119,7 @@ if (notificationButton) {
 
                         notificationButton.textContent =
                             "✅ Notifications Enabled";
+
 
                         notificationButton.disabled =
                             true;
@@ -901,6 +1138,7 @@ if (notificationButton) {
                         error
                     );
 
+
                     alert(
                         "Notification setup failed."
                     );
@@ -912,48 +1150,7 @@ if (notificationButton) {
 
 
 /* =========================================
-   PUSH NOTIFICATION SETUP
-========================================= */
-
-async function enablePushNotifications() {
-
-    if (
-        !("serviceWorker" in navigator) ||
-        !("PushManager" in window)
-    ) {
-
-        alert(
-            "Push notifications are not supported on this device/browser."
-        );
-
-        return;
-    }
-
-
-    const permission =
-        await Notification.requestPermission();
-
-
-    if (permission !== "granted") {
-
-        alert(
-            "Notifications were not enabled."
-        );
-
-        return;
-    }
-
-
-    await navigator.serviceWorker.ready;
-
-    alert(
-        "Notifications permission granted. Push setup is next."
-    );
-}
-
-
-/* =========================================
-   VAPID KEY
+   VAPID
 ========================================= */
 
 const VAPID_PUBLIC_KEY =
@@ -961,7 +1158,7 @@ const VAPID_PUBLIC_KEY =
 
 
 /* =========================================
-   SUBSCRIBE TO PUSH
+   PUSH SUBSCRIPTION
 ========================================= */
 
 async function subscribeToPush() {
@@ -973,21 +1170,26 @@ async function subscribeToPush() {
 
 
         const existingSubscription =
-            await registration.pushManager.getSubscription();
+            await registration
+                .pushManager
+                .getSubscription();
 
 
         const subscription =
             existingSubscription ||
-            await registration.pushManager.subscribe(
-                {
-                    userVisibleOnly: true,
+            await registration
+                .pushManager
+                .subscribe(
+                    {
+                        userVisibleOnly:
+                            true,
 
-                    applicationServerKey:
-                        urlBase64ToUint8Array(
-                            VAPID_PUBLIC_KEY
-                        )
-                }
-            );
+                        applicationServerKey:
+                            urlBase64ToUint8Array(
+                                VAPID_PUBLIC_KEY
+                            )
+                    }
+                );
 
 
         const response =
@@ -1034,6 +1236,7 @@ async function subscribeToPush() {
             error
         );
 
+
         alert(
             "Push subscription failed."
         );
@@ -1051,8 +1254,10 @@ function urlBase64ToUint8Array(
 
     const padding =
         "=".repeat(
-            (4 -
-                base64String.length % 4) % 4
+            (
+                4 -
+                base64String.length % 4
+            ) % 4
         );
 
 
@@ -1091,26 +1296,43 @@ let chickenCountValue =
 
 
 const chickenCount =
-    getElement("chickenCount");
+    getElement(
+        "chickenCount"
+    );
+
 
 const birdCount =
-    getElement("birdCount");
+    getElement(
+        "birdCount"
+    );
+
 
 const addChickenButton =
-    getElement("addChicken");
+    getElement(
+        "addChicken"
+    );
+
 
 const removeChickenButton =
-    getElement("removeChicken");
+    getElement(
+        "removeChicken"
+    );
+
 
 const flockInput =
-    getElement("flockInput");
+    getElement(
+        "flockInput"
+    );
+
 
 const setFlockButton =
-    getElement("setFlockButton");
+    getElement(
+        "setFlockButton"
+    );
 
 
 /* =========================================
-   UPDATE FLOCK DISPLAY
+   FLOCK DISPLAY
 ========================================= */
 
 function updateFlockDisplay() {
@@ -1160,6 +1382,8 @@ if (addChickenButton) {
             saveTodayEggHistory();
 
             displayEggHistory();
+
+            updateProductionSummary();
         }
     );
 }
@@ -1175,7 +1399,10 @@ if (removeChickenButton) {
         "click",
         function() {
 
-            if (chickenCountValue <= 0) {
+            if (
+                chickenCountValue <= 0
+            ) {
+
                 return;
             }
 
@@ -1194,6 +1421,8 @@ if (removeChickenButton) {
             saveTodayEggHistory();
 
             displayEggHistory();
+
+            updateProductionSummary();
         }
     );
 }
@@ -1213,13 +1442,18 @@ if (setFlockButton) {
                 flockInput.value.trim();
 
 
-            if (inputValue === "") {
+            if (
+                inputValue === ""
+            ) {
+
                 return;
             }
 
 
             const newFlockSize =
-                Number(inputValue);
+                Number(
+                    inputValue
+                );
 
 
             if (
@@ -1228,6 +1462,7 @@ if (setFlockButton) {
                 ) ||
                 newFlockSize < 0
             ) {
+
                 return;
             }
 
@@ -1242,7 +1477,8 @@ if (setFlockButton) {
             );
 
 
-            flockInput.value = "";
+            flockInput.value =
+                "";
 
 
             updateFlockDisplay();
@@ -1250,6 +1486,8 @@ if (setFlockButton) {
             saveTodayEggHistory();
 
             displayEggHistory();
+
+            updateProductionSummary();
         }
     );
 }
@@ -1259,10 +1497,36 @@ if (setFlockButton) {
    LAYING RATE
 ========================================= */
 
+function calculateLayingRate(
+    eggAmount,
+    flockSize
+) {
+
+    if (
+        !flockSize ||
+        flockSize <= 0
+    ) {
+
+        return 0;
+    }
+
+
+    return Math.round(
+        (
+            eggAmount /
+            flockSize
+        ) * 100
+    );
+}
+
+
 function updateLayingRate() {
 
     const layingRate =
-        getElement("layingRate");
+        getElement(
+            "layingRate"
+        );
+
 
     const overviewLayingRate =
         getElement(
@@ -1278,7 +1542,8 @@ function updateLayingRate() {
         );
 
 
-    let displayRate = "0%";
+    let displayRate =
+        "0%";
 
 
     if (
@@ -1287,19 +1552,16 @@ function updateLayingRate() {
     ) {
 
         const rate =
-            (eggs / flockSize) * 100;
+            calculateLayingRate(
+                eggs,
+                flockSize
+            );
 
 
-        if (rate >= 100) {
-
-            displayRate =
-                "100%+";
-
-        } else {
-
-            displayRate =
-                Math.round(rate) + "%";
-        }
+        displayRate =
+            rate >= 100
+                ? "100%+"
+                : rate + "%";
     }
 
 
@@ -1310,7 +1572,9 @@ function updateLayingRate() {
     }
 
 
-    if (overviewLayingRate) {
+    if (
+        overviewLayingRate
+    ) {
 
         overviewLayingRate.textContent =
             displayRate;
@@ -1322,23 +1586,7 @@ updateLayingRate();
 
 
 /* =========================================
-   EGG HISTORY
-========================================= */
-
-function getEggHistory() {
-
-    return (
-        JSON.parse(
-            localStorage.getItem(
-                "eggHistory"
-            )
-        ) || {}
-    );
-}
-
-
-/* =========================================
-   SAVE TODAY'S HISTORY
+   SAVE TODAY
 ========================================= */
 
 function saveTodayEggHistory() {
@@ -1356,14 +1604,17 @@ function saveTodayEggHistory() {
 
 
     history[today] = {
-        eggs: eggs,
-        flock: currentFlock
+
+        eggs:
+            eggs,
+
+        flock:
+            currentFlock
     };
 
 
-    localStorage.setItem(
-        "eggHistory",
-        JSON.stringify(history)
+    saveEggHistory(
+        history
     );
 }
 
@@ -1372,12 +1623,16 @@ saveTodayEggHistory();
 
 
 /* =========================================
-   FORMAT HISTORY DATE
+   FORMAT DATE
 ========================================= */
 
-function formatHistoryDate(date) {
+function formatHistoryDate(
+    date
+) {
 
-    if (date === today) {
+    if (
+        date === today
+    ) {
 
         return "Today";
     }
@@ -1397,7 +1652,7 @@ function formatHistoryDate(date) {
 
 
 /* =========================================
-   CREATE HISTORY ROW
+   HISTORY ROW
 ========================================= */
 
 function createHistoryRow(
@@ -1406,41 +1661,46 @@ function createHistoryRow(
 ) {
 
     const row =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
 
     const formattedDate =
-        formatHistoryDate(date);
+        formatHistoryDate(
+            date
+        );
 
 
     const eggsForDay =
         typeof record === "object"
-            ? Number(record.eggs) || 0
-            : Number(record) || 0;
+            ? Number(
+                record.eggs
+            ) || 0
+            : Number(
+                record
+            ) || 0;
 
 
     const flockForDay =
         typeof record === "object"
-            ? Number(record.flock) || 0
+            ? Number(
+                record.flock
+            ) || 0
             : chickenCountValue;
 
 
-    let rate = 0;
-
-
-    if (flockForDay > 0) {
-
-        rate =
-            Math.round(
-                (eggsForDay /
-                    flockForDay) *
-                    100
-            );
-    }
+    const rate =
+        calculateLayingRate(
+            eggsForDay,
+            flockForDay
+        );
 
 
     const dateElement =
-        document.createElement("strong");
+        document.createElement(
+            "strong"
+        );
 
 
     dateElement.textContent =
@@ -1448,14 +1708,19 @@ function createHistoryRow(
 
 
     const resultElement =
-        document.createElement("span");
+        document.createElement(
+            "span"
+        );
 
 
     resultElement.textContent =
         eggsForDay +
         " eggs • " +
-        rate +
-        "%";
+        (
+            rate >= 100
+                ? "100%+"
+                : rate + "%"
+        );
 
 
     row.appendChild(
@@ -1473,10 +1738,11 @@ function createHistoryRow(
 
 
 /* =========================================
-   DISPLAY EGG HISTORY
+   DISPLAY HISTORY
 ========================================= */
 
-let showAllHistory = false;
+let showAllHistory =
+    false;
 
 
 function displayEggHistory() {
@@ -1494,6 +1760,7 @@ function displayEggHistory() {
 
 
     if (!historyList) {
+
         return;
     }
 
@@ -1503,8 +1770,8 @@ function displayEggHistory() {
 
 
     /*
-       Keep today's record current
-       while the app is open.
+       Keep today's record synchronized
+       with the live egg counter.
     */
 
     const currentFlock =
@@ -1516,26 +1783,44 @@ function displayEggHistory() {
 
 
     history[today] = {
-        eggs: eggs,
-        flock: currentFlock
+
+        eggs:
+            eggs,
+
+        flock:
+            currentFlock
     };
 
 
+    saveEggHistory(
+        history
+    );
+
+
     const dates =
-        Object.keys(history)
+        Object.keys(
+            history
+        )
             .sort()
             .reverse();
 
 
-    if (dates.length === 0) {
+    if (
+        dates.length === 0
+    ) {
 
         historyList.innerHTML =
             '<p class="empty-state">No history yet.</p>';
 
-        if (viewHistoryButton) {
+
+        if (
+            viewHistoryButton
+        ) {
+
             viewHistoryButton.style.display =
                 "none";
         }
+
 
         return;
     }
@@ -1544,10 +1829,14 @@ function displayEggHistory() {
     const visibleDates =
         showAllHistory
             ? dates
-            : dates.slice(0, 4);
+            : dates.slice(
+                0,
+                4
+            );
 
 
-    historyList.innerHTML = "";
+    historyList.innerHTML =
+        "";
 
 
     visibleDates.forEach(
@@ -1567,9 +1856,13 @@ function displayEggHistory() {
     );
 
 
-    if (viewHistoryButton) {
+    if (
+        viewHistoryButton
+    ) {
 
-        if (dates.length <= 3) {
+        if (
+            dates.length <= 3
+        ) {
 
             viewHistoryButton.style.display =
                 "none";
@@ -1589,9 +1882,6 @@ function displayEggHistory() {
 }
 
 
-displayEggHistory();
-
-
 /* =========================================
    HISTORY BUTTON
 ========================================= */
@@ -1602,7 +1892,9 @@ const viewHistoryButton =
     );
 
 
-if (viewHistoryButton) {
+if (
+    viewHistoryButton
+) {
 
     viewHistoryButton.addEventListener(
         "click",
@@ -1619,7 +1911,213 @@ if (viewHistoryButton) {
 
 
 /* =========================================
-   INITIAL SYNC
+   PRODUCTION SUMMARY
+========================================= */
+
+function updateProductionSummary() {
+
+    const sevenDayEggs =
+        getElement(
+            "sevenDayEggs"
+        );
+
+
+    const averageLayingRate =
+        getElement(
+            "averageLayingRate"
+        );
+
+
+    const bestProductionDay =
+        getElement(
+            "bestProductionDay"
+        );
+
+
+    const bestProductionEggs =
+        getElement(
+            "bestProductionEggs"
+        );
+
+
+    const history =
+        getEggHistory();
+
+
+    const dates =
+        Object.keys(
+            history
+        )
+            .sort()
+            .reverse()
+            .slice(
+                0,
+                7
+            );
+
+
+    if (
+        dates.length === 0
+    ) {
+
+        if (sevenDayEggs) {
+            sevenDayEggs.textContent =
+                "0";
+        }
+
+        if (averageLayingRate) {
+            averageLayingRate.textContent =
+                "0%";
+        }
+
+        if (bestProductionDay) {
+            bestProductionDay.textContent =
+                "—";
+        }
+
+        if (bestProductionEggs) {
+            bestProductionEggs.textContent =
+                "No records yet";
+        }
+
+        return;
+    }
+
+
+    let totalEggs =
+        0;
+
+
+    let totalRate =
+        0;
+
+
+    let bestEggCount =
+        -1;
+
+
+    let bestDate =
+        null;
+
+
+    dates.forEach(
+        function(date) {
+
+            const record =
+                history[date];
+
+
+            const eggsForDay =
+                typeof record === "object"
+                    ? Number(
+                        record.eggs
+                    ) || 0
+                    : Number(
+                        record
+                    ) || 0;
+
+
+            const flockForDay =
+                typeof record === "object"
+                    ? Number(
+                        record.flock
+                    ) || 0
+                    : 0;
+
+
+            const rate =
+                calculateLayingRate(
+                    eggsForDay,
+                    flockForDay
+                );
+
+
+            totalEggs +=
+                eggsForDay;
+
+
+            totalRate +=
+                rate;
+
+
+            if (
+                eggsForDay >
+                bestEggCount
+            ) {
+
+                bestEggCount =
+                    eggsForDay;
+
+                bestDate =
+                    date;
+            }
+        }
+    );
+
+
+    const averageRate =
+        Math.round(
+            totalRate /
+            dates.length
+        );
+
+
+    if (sevenDayEggs) {
+
+        sevenDayEggs.textContent =
+            totalEggs;
+    }
+
+
+    if (
+        averageLayingRate
+    ) {
+
+        averageLayingRate.textContent =
+            averageRate +
+            "%";
+    }
+
+
+    if (
+        bestProductionDay
+    ) {
+
+        bestProductionDay.textContent =
+            bestDate === today
+                ? "Today"
+                : new Date(
+                    bestDate +
+                    "T00:00:00"
+                ).toLocaleDateString(
+                    "en-US",
+                    {
+                        month:
+                            "short",
+
+                        day:
+                            "numeric"
+                    }
+                );
+    }
+
+
+    if (
+        bestProductionEggs
+    ) {
+
+        bestProductionEggs.textContent =
+            bestEggCount +
+            " eggs";
+    }
+}
+
+
+updateProductionSummary();
+
+
+/* =========================================
+   FINAL INITIALIZATION
 ========================================= */
 
 updateEggDisplay();
@@ -1635,3 +2133,5 @@ updateNextFeed();
 updateScheduleStatus();
 
 displayEggHistory();
+
+updateProductionSummary();
