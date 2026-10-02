@@ -1890,3 +1890,44 @@ input:focus {
     }
 
 }
+
+/* =========================================================
+   RESET TODAY'S FEED USAGE
+   ========================================================= */
+
+.feed-reset-button {
+    margin-top: 10px;
+    padding: 9px 14px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #6b7280;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.feed-reset-button:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+.feed-reset-button:active {
+    transform: scale(0.98);
+}
+
+.feed-reset-button:focus-visible {
+    outline: 2px solid #fca5a5;
+    outline-offset: 2px;
+}
