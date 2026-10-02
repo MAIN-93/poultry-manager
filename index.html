@@ -252,99 +252,385 @@
 
 
         <!-- FEED MANAGEMENT -->
-        <section class="section">
+      <!-- FEED MANAGEMENT -->
+<section class="section feed-management-section">
 
-            <div class="section-title">
+    <div class="section-title">
+        <div>
+            <h2>Feed Management</h2>
+            <p>Monitor stock, consumption and feeding activity.</p>
+        </div>
+    </div>
+
+
+    <!-- FEED OVERVIEW -->
+
+    <div class="feed-dashboard">
+
+        <div class="feed-hero-card">
+
+            <div class="feed-hero-top">
+
                 <div>
-                    <h2>Feed Management</h2>
-                    <p>Track your available feed.</p>
+                    <span class="feed-eyebrow">
+                        CURRENT STOCK
+                    </span>
+
+                    <strong id="feedAmount">
+                        0.0 kg
+                    </strong>
+
+                    <small>
+                        available feed
+                    </small>
                 </div>
+
+                <div
+                    id="feedStatusBadge"
+                    class="feed-status-badge feed-status-neutral"
+                >
+                    No usage data
+                </div>
+
             </div>
 
-            <div class="feed-main-card">
+            <div class="feed-stock-progress">
 
-                <div class="feed-stock">
-                    <span id="feedAmount">0 kg</span>
-                    <small>current stock</small>
+                <div class="feed-progress-header">
+                    <span>Stock level</span>
+                    <span id="feedStockPercentage">
+                        —
+                    </span>
                 </div>
 
-                <div class="feed-actions">
+                <div class="feed-progress-track">
+                    <div
+                        id="feedStockProgress"
+                        class="feed-progress-fill"
+                    ></div>
+                </div>
 
-                    <div class="input-row">
+            </div>
+
+        </div>
+
+
+        <div class="feed-metric-card">
+
+            <span class="feed-metric-label">
+                Used Today
+            </span>
+
+            <strong id="feedUsedToday">
+                0.0 kg
+            </strong>
+
+            <small>
+                recorded consumption
+            </small>
+
+        </div>
+
+
+        <div class="feed-metric-card">
+
+            <span class="feed-metric-label">
+                Daily Average
+            </span>
+
+            <strong id="feedDailyAverage">
+                —
+            </strong>
+
+            <small>
+                based on recorded usage
+            </small>
+
+        </div>
+
+
+        <div class="feed-metric-card">
+
+            <span class="feed-metric-label">
+                Days Remaining
+            </span>
+
+            <strong id="feedDaysRemaining">
+                —
+            </strong>
+
+            <small id="feedDaysRemainingText">
+                record usage to calculate
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- FEED ACTIONS -->
+
+    <div class="feed-action-panel">
+
+        <div class="feed-action-header">
+            <div>
+                <h3>Feed Inventory</h3>
+                <p>
+                    Add new stock or record feed consumed by the flock.
+                </p>
+            </div>
+        </div>
+
+        <div class="feed-action-grid">
+
+            <div class="feed-action-box">
+
+                <div class="feed-action-icon">
+                    +
+                </div>
+
+                <div class="feed-action-content">
+
+                    <strong>
+                        Add Feed
+                    </strong>
+
+                    <span>
+                        Increase your current stock.
+                    </span>
+
+                    <div class="feed-input-row">
+
                         <input
                             id="feedInput"
                             type="number"
                             min="0"
                             step="0.1"
-                            placeholder="Add feed (kg)"
+                            placeholder="Amount in kg"
                         >
 
-                        <button id="addFeedButton" class="primary-button">
+                        <button
+                            id="addFeedButton"
+                            class="primary-button"
+                        >
                             Add Feed
                         </button>
+
                     </div>
 
-                    <div class="input-row">
+                </div>
+
+            </div>
+
+
+            <div class="feed-action-box">
+
+                <div class="feed-action-icon feed-use-icon">
+                    −
+                </div>
+
+                <div class="feed-action-content">
+
+                    <strong>
+                        Record Usage
+                    </strong>
+
+                    <span>
+                        Record feed consumed by your flock.
+                    </span>
+
+                    <div class="feed-input-row">
+
                         <input
                             id="useFeedInput"
                             type="number"
                             min="0"
                             step="0.1"
-                            placeholder="Use feed (kg)"
+                            placeholder="Amount in kg"
                         >
 
-                        <button id="useFeedButton" class="secondary-button">
-                            Use Feed
+                        <button
+                            id="useFeedButton"
+                            class="secondary-button"
+                        >
+                            Record Usage
                         </button>
+
                     </div>
 
                 </div>
 
             </div>
 
+        </div>
 
-            <!-- FEED SCHEDULE -->
+    </div>
 
-            <div class="subsection">
 
-                <div class="subsection-header">
-                    <h3>Feed Schedule</h3>
-                </div>
+    <!-- CONSUMPTION ANALYTICS -->
 
-                <div class="schedule-grid">
+    <div class="feed-consumption-card">
 
-                    <div class="schedule-item">
-                        <label for="morningFeedTime">Morning Feed</label>
-                        <input
-                            id="morningFeedTime"
-                            type="time"
-                        >
-                    </div>
+        <div class="feed-card-header">
 
-                    <div class="schedule-item">
-                        <label for="afternoonFeedTime">Afternoon Feed</label>
-                        <input
-                            id="afternoonFeedTime"
-                            type="time"
-                        >
-                    </div>
+            <div>
+                <h3>Consumption Overview</h3>
 
-                </div>
+                <p>
+                    Your recorded feed usage over the last seven days.
+                </p>
+            </div>
 
-                <button id="saveScheduleButton" class="primary-button">
-                    Save Schedule
-                </button>
+            <div class="feed-period-label">
+                Last 7 days
+            </div>
 
-                <p id="scheduleStatus" class="status-message"></p>
+        </div>
 
-                <div class="next-feed-card">
-                    <span>Next Feed</span>
-                    <strong id="nextFeed">—</strong>
-                </div>
+
+        <div class="feed-consumption-summary">
+
+            <div>
+                <span>
+                    7-Day Usage
+                </span>
+
+                <strong id="feedSevenDayUsage">
+                    0.0 kg
+                </strong>
+            </div>
+
+            <div>
+                <span>
+                    Usage Days
+                </span>
+
+                <strong id="feedUsageDays">
+                    0
+                </strong>
+            </div>
+
+            <div>
+                <span>
+                    Per Bird / Day
+                </span>
+
+                <strong id="feedPerBird">
+                    —
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="feed-chart-wrapper">
+
+            <div
+                id="feedConsumptionChart"
+                class="feed-consumption-chart"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- FEED ACTIVITY -->
+
+    <div class="subsection feed-activity-section">
+
+        <div class="subsection-header">
+
+            <div>
+                <h3>Recent Feed Activity</h3>
+            </div>
+
+            <button
+                id="viewFeedHistoryButton"
+                class="text-button"
+            >
+                View All
+            </button>
+
+        </div>
+
+        <div
+            id="feedHistoryList"
+            class="feed-history-list"
+        ></div>
+
+    </div>
+
+
+    <!-- FEED SCHEDULE -->
+
+    <div class="subsection">
+
+        <div class="subsection-header">
+            <h3>Feed Schedule</h3>
+        </div>
+
+        <div class="schedule-grid">
+
+            <div class="schedule-item">
+
+                <label for="morningFeedTime">
+                    Morning Feed
+                </label>
+
+                <input
+                    id="morningFeedTime"
+                    type="time"
+                >
 
             </div>
 
-        </section>
+            <div class="schedule-item">
+
+                <label for="afternoonFeedTime">
+                    Afternoon Feed
+                </label>
+
+                <input
+                    id="afternoonFeedTime"
+                    type="time"
+                >
+
+            </div>
+
+        </div>
+
+        <button
+            id="saveScheduleButton"
+            class="primary-button"
+        >
+            Save Schedule
+        </button>
+
+        <p
+            id="scheduleStatus"
+            class="status-message"
+        ></p>
+
+
+        <div class="next-feed-card">
+
+            <div>
+                <span>Next Feed</span>
+                <small id="nextFeedCountdown">
+                    —
+                </small>
+            </div>
+
+            <strong id="nextFeed">
+                —
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
 
 
         <!-- FLOCK MANAGEMENT -->
