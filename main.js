@@ -461,7 +461,13 @@ updateLayingRate();
 let eggHistory =
   JSON.parse(localStorage.getItem("eggHistory")) || {};
 
-eggHistory[today] = eggs;
+const currentFlock =
+  Number(localStorage.getItem("chickenCount")) || 0;
+
+eggHistory[today] = {
+  eggs: eggs,
+  flock: currentFlock
+};
 
 localStorage.setItem(
   "eggHistory",
@@ -556,7 +562,7 @@ if (viewHistoryButton) {
   const dates =
     Object.keys(history).sort().reverse();
 
-  if (dates.length <= 1) {
+  if (dates.length <= 3) {
     viewHistoryButton.style.display = "none";
   }
 
