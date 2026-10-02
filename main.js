@@ -550,7 +550,17 @@ const viewHistoryButton =
 let showAllHistory = false;
 
 if (viewHistoryButton) {
-  viewHistoryButton.onclick = function() {{ {
+  const history =
+    JSON.parse(localStorage.getItem("eggHistory")) || {};
+
+  const dates =
+    Object.keys(history).sort().reverse();
+
+  if (dates.length <= 4) {
+    viewHistoryButton.style.display = "none";
+  }
+
+  viewHistoryButton.onclick = function() {
     showAllHistory = !showAllHistory;
 
     const historyList =
