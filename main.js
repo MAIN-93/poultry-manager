@@ -492,10 +492,18 @@ history[today] = {
 
   historyList.innerHTML = "";
 
-  dates.forEach(function(date) {
-    const row = document.createElement("div");
+ dates.forEach(function(date) {
+  const row = document.createElement("div");
 
-    const record = history[date];
+  const formattedDate =
+    new Date(date + "T00:00:00").toLocaleDateString(
+      "en-US",
+      {
+        month: "short",
+        day: "numeric",
+        year: "numeric"
+      }
+    );const record = history[date];
 
 const eggsForDay =
   typeof record === "object"
@@ -516,7 +524,7 @@ if (flockForDay > 0) {
 }
 
 row.innerHTML =
-  "<strong>" + date + "</strong>" +
+  "<strong>" + formattedDate + "</strong>" +
   "<span>" +
   eggsForDay +
   " eggs • " +
