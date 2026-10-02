@@ -474,7 +474,14 @@ function displayEggHistory() {
 
   const history =
     JSON.parse(localStorage.getItem("eggHistory")) || {};
+const currentFlock =
+  Number(localStorage.getItem("chickenCount")) || 0;
 
+history[today] = {
+  eggs: eggs,
+  flock: currentFlock
+};
+  
   const dates = Object.keys(history).sort().reverse();
 
   if (dates.length === 0) {
