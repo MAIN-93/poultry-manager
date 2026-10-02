@@ -114,6 +114,10 @@ const useFeedInput =
 
 const useFeedButton =
     document.getElementById("useFeedButton");
+    const resetFeedTodayButton =
+    document.getElementById(
+        "resetFeedTodayButton"
+    );
 
 
 const feedUsedToday =
@@ -193,6 +197,56 @@ const nextFeedCountdown =
     document.getElementById(
         "nextFeedCountdown"
     );
+
+/* =========================================================
+   RESET TODAY'S FEED USAGE
+   ========================================================= */
+
+resetFeedTodayButton.addEventListener(
+    "click",
+    () => {
+
+        const history =
+            getFeedUsageHistory();
+
+        const todayUsage =
+            Number(
+                history[today]
+            ) || 0;
+
+        if (
+            todayUsage <= 0
+        ) {
+
+            return;
+
+        }
+
+        const confirmed =
+            confirm(
+                "Reset today's feed usage? This will remove today's recorded usage and recalculate the feed analytics."
+            );
+
+        if (
+            !confirmed
+        ) {
+
+            return;
+
+        }
+
+        delete history[today];
+
+        saveFeedUsageHistory(
+            history
+        );
+
+        useFeedInput.value = "";
+
+        updateFeedManagement();
+
+    }
+);
 
 
 /* =========================================================
