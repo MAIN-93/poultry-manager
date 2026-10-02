@@ -198,55 +198,6 @@ const nextFeedCountdown =
         "nextFeedCountdown"
     );
 
-/* =========================================================
-   RESET TODAY'S FEED USAGE
-   ========================================================= */
-
-resetFeedTodayButton.addEventListener(
-    "click",
-    () => {
-
-        const history =
-            getFeedUsageHistory();
-
-        const todayUsage =
-            Number(
-                history[today]
-            ) || 0;
-
-        if (
-            todayUsage <= 0
-        ) {
-
-            return;
-
-        }
-
-        const confirmed =
-            confirm(
-                "Reset today's feed usage? This will remove today's recorded usage and recalculate the feed analytics."
-            );
-
-        if (
-            !confirmed
-        ) {
-
-            return;
-
-        }
-
-        delete history[today];
-
-        saveFeedUsageHistory(
-            history
-        );
-
-        useFeedInput.value = "";
-
-        updateFeedManagement();
-
-    }
-);
 
 
 /* =========================================================
@@ -1409,4 +1360,171 @@ function updateProductionAnalytics() {
                 lowest,
                 record
             ) =>
-                record.eg
+                record.eggs <
+                lowest.eggs
+                    ? record
+                    : lowest,
+            records[0]
+        );
+
+
+    analyticsEggsPerHen.textContent =
+        eggsPerHen.toFixed(2);
+
+    analyticsAverage.textContent =
+        averageDailyEggs.toFixed(2);
+
+    analyticsHighestDay.textContent =
+        highestRecord.eggs;
+
+    analyticsHighestDayDate.textContent =
+        highestRecord.eggs > 0
+            ? formatFullDate(
+                highestRecord.dateKey
+            )
+            : "—";
+
+    analyticsLowestDay.textContent =
+        lowestRecord.eggs;
+
+    analyticsLowestDayDate.textContent =
+        formatFullDate(
+            lowestRecord.dateKey
+        );
+
+
+    let consistency =
+        0;
+
+    if (
+        averageDailyEggs > 0
+    ) {
+
+        const variance =
+            records.reduce(
+                (
+                    sum,
+                    record
+                ) =>
+                    sum +
+                    Math.pow(
+                        record.eggs -
+                        averageDailyEggs,
+                        2
+                    ),
+                0
+            ) / 7;
+
+        const standardDeviation =
+            Math.sqrt(
+                variance
+            );
+
+        consistency =
+            Math.max(
+                0,
+                Math.round(
+                    100 -
+                    (
+                        standardDeviation /
+                        averageDailyEggs
+                    ) *
+                    100
+                )
+            );
+
+    }
+
+
+    analyticsConsistency.textContent =
+        `${consistency}%`;
+
+
+    const firstHalf =
+        records
+            .slice(0, 3)
+            .reduce(
+                (
+                    sum,
+                    record
+                ) =>
+                    sum +
+                    record.eggs,
+                0
+            );
+
+    const secondHalf =
+        records
+            .slice(4)
+            .reduce(
+                (
+                    sum,
+                    record
+                ) =>
+                    sum +
+                    record.eggs,
+                0
+            );
+
+
+    let productionChange =
+        0;
+
+    if (
+        firstHalf > 0
+    ) {
+
+        productionChange =
+            Math.round(
+                (
+                    (
+                        secondHalf -
+                        firstHalf
+                    ) /
+                    firstHalf
+                ) *
+                100
+            );
+
+    }
+
+
+    analyticsChange.textContent =
+        `${productionChange >= 0 ? "+" : ""}${productionChange}%`;
+
+
+    if (
+        totalEggs === 0
+    ) {
+
+        analyticsInsight.textContent =
+            "No production data yet.";
+
+    }
+
+    else if (
+        productionChange > 0
+    ) {
+
+        analyticsInsight.textContent =
+            "Egg production has increased compared with the earlier part of the seven-day period.";
+
+    }
+
+    else if (
+        productionChange < 0
+    ) {
+
+        analyticsInsight.textContent =
+            "Egg production has decreased compared with the earlier part of the seven-day period.";
+
+    }
+
+    else {
+
+        analyticsInsight.textContent =
+            "Egg production has remained relatively stable across the seven-day period.";
+
+    }
+
+}
