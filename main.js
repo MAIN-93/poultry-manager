@@ -4542,36 +4542,36 @@ if (
         );
 
 
-    /* =====================================================
-       DASHBOARD SECTIONS
+       /* =====================================================
+       DASHBOARD VIEW
        ===================================================== */
 
-    const dashboardSections =
+    /*
+     * Everything directly inside .app is part of the
+     * Dashboard unless it is the header or Settings view.
+     *
+     * This keeps the entire Dashboard together, including:
+     * Farm Overview, Quick Actions, Production, Feed,
+     * Flock, Alarm, History, etc.
+     */
+
+    const dashboardElements =
         Array.from(
             app.children
         ).filter(
             element =>
-                element.classList.contains(
-                    "section"
-                )
+                element !== header &&
+                element !== settingsView
         );
-
 
     function setDashboardVisibility(
         visible
     ) {
 
-        dashboardSections.forEach(
-            section => {
+        dashboardElements.forEach(
+            element => {
 
-                if (
-                    section ===
-                    settingsView
-                ) {
-                    return;
-                }
-
-                section.style.display =
+                element.style.display =
                     visible
                         ? ""
                         : "none";
@@ -5995,6 +5995,251 @@ if (
 
     console.log(
         "Poultry Manager Farm Overview initialized."
+    );
+
+})();
+
+
+    /* =========================================================
+   POULTRY MANAGER — DASHBOARD QUICK ACTIONS
+   ========================================================= */
+
+(function initializeQuickActions() {
+
+    "use strict";
+
+    const quickAddEggs =
+        document.getElementById(
+            "quickAddEggs"
+        );
+
+    const quickFeed =
+        document.getElementById(
+            "quickFeed"
+        );
+
+    const quickFlock =
+        document.getElementById(
+            "quickFlock"
+        );
+
+    const quickHistory =
+        document.getElementById(
+            "quickHistory"
+        );
+
+    function goToDashboardSection(
+        target,
+        focusElement = null
+    ) {
+
+        if (!target) {
+            return;
+        }
+
+        /*
+         * If the user is currently on Settings,
+         * switch back to Dashboard first.
+         */
+
+        const dashboardButton =
+            document.getElementById(
+                "pmDashboardButton"
+            );
+
+        if (
+            dashboardButton &&
+            !dashboardButton.classList.contains(
+                "active"
+            )
+        ) {
+
+            dashboardButton.click();
+
+        }
+
+        /*
+         * Give the Dashboard view a moment to
+         * become visible before scrolling.
+         */
+
+        setTimeout(
+            () => {
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+                /*
+                 * Focus the relevant input when one exists.
+                 */
+
+                if (
+                    focusElement &&
+                    typeof focusElement.focus ===
+                        "function"
+                ) {
+
+                    setTimeout(
+                        () => {
+
+                            focusElement.focus();
+
+                        },
+                        450
+                    );
+
+                }
+
+            },
+            100
+        );
+
+    }
+
+    /* =====================================================
+       ADD EGGS
+       ===================================================== */
+
+    if (quickAddEggs) {
+
+        quickAddEggs.addEventListener(
+            "click",
+            () => {
+
+                const eggSection =
+                    document.querySelector(
+                        ".egg-main-card"
+                    );
+
+                const eggButton =
+                    document.getElementById(
+                        "addEggButton"
+                    );
+
+                goToDashboardSection(
+                    eggSection,
+                    eggButton
+                );
+
+            }
+        );
+
+    }
+
+    /* =====================================================
+       ADD FEED
+       ===================================================== */
+
+    if (quickFeed) {
+
+        quickFeed.addEventListener(
+            "click",
+            () => {
+
+                const feedSection =
+                    document.querySelector(
+                        ".feed-management-section"
+                    );
+
+                const feedInput =
+                    document.getElementById(
+                        "feedInput"
+                    );
+
+                goToDashboardSection(
+                    feedSection,
+                    feedInput
+                );
+
+            }
+        );
+
+    }
+
+    /* =====================================================
+       ADD FLOCK
+       ===================================================== */
+
+    if (quickFlock) {
+
+        quickFlock.addEventListener(
+            "click",
+            () => {
+
+                const flockSection =
+                    document.querySelector(
+                        ".flock-card"
+                    );
+
+                const flockInput =
+                    document.getElementById(
+                        "flockInput"
+                    );
+
+                goToDashboardSection(
+                    flockSection,
+                    flockInput
+                );
+
+            }
+        );
+
+    }
+
+    /* =====================================================
+       VIEW HISTORY
+       ===================================================== */
+
+    if (quickHistory) {
+
+        quickHistory.addEventListener(
+            "click",
+            () => {
+
+                const historySection =
+                    document.querySelector(
+                        ".egg-main-card"
+                    );
+
+                const historyList =
+                    document.getElementById(
+                        "eggHistoryList"
+                    );
+
+                goToDashboardSection(
+                    historySection
+                );
+
+                /*
+                 * Scroll slightly further so the
+                 * history area is actually visible.
+                 */
+
+                if (historyList) {
+
+                    setTimeout(
+                        () => {
+
+                            historyList.scrollIntoView({
+                                behavior: "smooth",
+                                block: "center"
+                            });
+
+                        },
+                        500
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+    console.log(
+        "Poultry Manager Quick Actions initialized."
     );
 
 })();
