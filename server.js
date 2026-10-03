@@ -16,6 +16,11 @@ webpush.setVapidDetails(
 app.get("/", (req, res) => {
   res.send("Poultry Manager API is running.");
 });
+app.get("/vapid-public-key", (req, res) => {
+  res.json({
+    publicKey: process.env.VAPID_PUBLIC_KEY
+  });
+});
 
 let savedSubscription = null;
 
