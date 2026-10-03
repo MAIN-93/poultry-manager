@@ -3676,3 +3676,1646 @@ if (
     createAutomaticBackup();
 
 }
+
+/* =========================================================
+   POULTRY MANAGER — PROFESSIONAL SETTINGS SYSTEM
+   ========================================================= */
+
+(function initializePoultryManagerSettings() {
+
+    "use strict";
+
+
+    /* =====================================================
+       SETTINGS STORAGE
+       ===================================================== */
+
+    const SETTINGS_THEME_KEY =
+        "poultryManagerTheme";
+
+
+    const SETTINGS_VIEW_KEY =
+        "poultryManagerLastView";
+
+
+    /* =====================================================
+       BASIC HELPERS
+       ===================================================== */
+
+    function getStoredTheme() {
+
+        return (
+            localStorage.getItem(
+                SETTINGS_THEME_KEY
+            ) || "light"
+        );
+
+    }
+
+
+    function saveTheme(theme) {
+
+        localStorage.setItem(
+            SETTINGS_THEME_KEY,
+            theme
+        );
+
+    }
+
+
+    function applyTheme(theme) {
+
+        if (theme === "dark") {
+
+            document.documentElement
+                .setAttribute(
+                    "data-theme",
+                    "dark"
+                );
+
+        }
+
+        else {
+
+            document.documentElement
+                .removeAttribute(
+                    "data-theme"
+                );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CREATE NAVIGATION
+       ===================================================== */
+
+    const app =
+        document.querySelector(".app");
+
+
+    if (!app) {
+
+        console.error(
+            "Poultry Manager: .app not found."
+        );
+
+        return;
+
+    }
+
+
+    const header =
+        app.querySelector(".app-header");
+
+
+    if (!header) {
+
+        console.error(
+            "Poultry Manager: app header not found."
+        );
+
+        return;
+
+    }
+
+
+    let navigation =
+        document.getElementById(
+            "pmAppNavigation"
+        );
+
+
+    if (!navigation) {
+
+        navigation =
+            document.createElement("nav");
+
+        navigation.id =
+            "pmAppNavigation";
+
+        navigation.className =
+            "app-navigation";
+
+
+        navigation.innerHTML = `
+
+            <button
+                type="button"
+                id="pmDashboardButton"
+                class="active"
+            >
+                🏠 Dashboard
+            </button>
+
+            <button
+                type="button"
+                id="pmSettingsButton"
+            >
+                ⚙️ Settings
+            </button>
+
+        `;
+
+
+        header.appendChild(
+            navigation
+        );
+
+    }
+
+
+    const dashboardButton =
+        document.getElementById(
+            "pmDashboardButton"
+        );
+
+
+    const settingsButton =
+        document.getElementById(
+            "pmSettingsButton"
+        );
+
+
+    /* =====================================================
+       CREATE SETTINGS VIEW
+       ===================================================== */
+
+    let settingsView =
+        document.getElementById(
+            "pmSettingsView"
+        );
+
+
+    if (!settingsView) {
+
+        settingsView =
+            document.createElement("main");
+
+        settingsView.id =
+            "pmSettingsView";
+
+        settingsView.className =
+            "pm-settings-view";
+
+
+        settingsView.innerHTML = `
+
+            <div class="pm-settings-header">
+
+                <h2>Settings</h2>
+
+                <p>
+                    Configure Poultry Manager to match the way you manage your flock.
+                </p>
+
+            </div>
+
+
+            <div class="pm-settings-grid">
+
+
+                <!-- =====================================
+                     FLOCK SETTINGS
+                     ===================================== -->
+
+                <section class="pm-settings-card">
+
+                    <div class="pm-settings-card-header">
+
+                        <div class="pm-settings-icon">
+                            🐔
+                        </div>
+
+                        <div>
+
+                            <h3>Flock Settings</h3>
+
+                            <p>
+                                Keep your flock size accurate.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-row">
+
+                        <div class="pm-settings-row-info">
+
+                            <strong>Current flock</strong>
+
+                            <span>
+                                Number of birds currently being managed.
+                            </span>
+
+                        </div>
+
+                        <strong
+                            id="pmSettingsFlockValue"
+                        >
+                            0 birds
+                        </strong>
+
+                    </div>
+
+
+                    <div class="pm-settings-row">
+
+                        <div class="pm-settings-row-info">
+
+                            <strong>Set flock size</strong>
+
+                            <span>
+                                Update the total number of birds.
+                            </span>
+
+                        </div>
+
+                        <input
+                            id="pmSettingsFlockInput"
+                            class="pm-settings-input"
+                            type="number"
+                            min="0"
+                            step="1"
+                            placeholder="Birds"
+                        >
+
+                    </div>
+
+
+                    <div class="pm-settings-actions">
+
+                        <button
+                            type="button"
+                            id="pmSettingsFlockSave"
+                            class="pm-settings-action-button pm-settings-primary"
+                        >
+                            Save Flock Size
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="pmSettingsFlockStatus"
+                        class="pm-settings-status"
+                    ></div>
+
+                </section>
+
+
+                <!-- =====================================
+                     FEEDING SCHEDULE
+                     ===================================== -->
+
+                <section class="pm-settings-card">
+
+                    <div class="pm-settings-card-header">
+
+                        <div class="pm-settings-icon">
+                            ⏰
+                        </div>
+
+                        <div>
+
+                            <h3>Feeding Schedule</h3>
+
+                            <p>
+                                Set your regular morning and afternoon feeding times.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-schedule-grid">
+
+                        <div class="pm-schedule-field">
+
+                            <label for="pmSettingsMorning">
+                                Morning Feed
+                            </label>
+
+                            <input
+                                id="pmSettingsMorning"
+                                type="time"
+                            >
+
+                        </div>
+
+
+                        <div class="pm-schedule-field">
+
+                            <label for="pmSettingsAfternoon">
+                                Afternoon Feed
+                            </label>
+
+                            <input
+                                id="pmSettingsAfternoon"
+                                type="time"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-actions">
+
+                        <button
+                            type="button"
+                            id="pmSettingsScheduleSave"
+                            class="pm-settings-action-button pm-settings-primary"
+                        >
+                            Save Schedule
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="pmSettingsScheduleStatus"
+                        class="pm-settings-status"
+                    ></div>
+
+                </section>
+
+
+                <!-- =====================================
+                     FEED ALARM
+                     ===================================== -->
+
+                <section class="pm-settings-card">
+
+                    <div class="pm-settings-card-header">
+
+                        <div class="pm-settings-icon">
+                            🔔
+                        </div>
+
+                        <div>
+
+                            <h3>Feed Alarm</h3>
+
+                            <p>
+                                Control the feeding reminder inside Poultry Manager.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-row">
+
+                        <div class="pm-settings-row-info">
+
+                            <strong>Alarm status</strong>
+
+                            <span id="pmSettingsAlarmDescription">
+                                Feed alarm is currently disabled.
+                            </span>
+
+                        </div>
+
+                        <div
+                            id="pmSettingsAlarmBadge"
+                            class="pm-settings-badge"
+                        >
+
+                            <span class="pm-settings-badge-dot"></span>
+
+                            <span id="pmSettingsAlarmBadgeText">
+                                Off
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-actions">
+
+                        <button
+                            type="button"
+                            id="pmSettingsAlarmButton"
+                            class="pm-settings-action-button pm-settings-primary"
+                        >
+                            Enable Alarm
+                        </button>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================
+                     NOTIFICATIONS
+                     ===================================== -->
+
+                <section class="pm-settings-card">
+
+                    <div class="pm-settings-card-header">
+
+                        <div class="pm-settings-icon">
+                            📱
+                        </div>
+
+                        <div>
+
+                            <h3>Notifications</h3>
+
+                            <p>
+                                Notification setup can be completed later.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-row">
+
+                        <div class="pm-settings-row-info">
+
+                            <strong>Push notifications</strong>
+
+                            <span>
+                                Allow Poultry Manager to request notification permission.
+                            </span>
+
+                        </div>
+
+                        <div
+                            id="pmSettingsNotificationBadge"
+                            class="pm-settings-badge"
+                        >
+
+                            <span class="pm-settings-badge-dot"></span>
+
+                            <span>
+                                Available
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-actions">
+
+                        <button
+                            type="button"
+                            id="pmSettingsNotificationsButton"
+                            class="pm-settings-action-button pm-settings-secondary"
+                        >
+                            Notification Settings
+                        </button>
+
+                    </div>
+
+                    <div
+                        id="pmSettingsNotificationStatus"
+                        class="pm-settings-status"
+                    >
+                        Background notification work can remain parked while the core app is developed.
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================
+                     APP PREFERENCES
+                     ===================================== -->
+
+                <section class="pm-settings-card">
+
+                    <div class="pm-settings-card-header">
+
+                        <div class="pm-settings-icon">
+                            🎨
+                        </div>
+
+                        <div>
+
+                            <h3>App Preferences</h3>
+
+                            <p>
+                                Personalize the appearance of Poultry Manager.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-row">
+
+                        <div class="pm-settings-row-info">
+
+                            <strong>Appearance</strong>
+
+                            <span>
+                                Choose how Poultry Manager looks on your device.
+                            </span>
+
+                        </div>
+
+                        <select
+                            id="pmSettingsTheme"
+                            class="pm-settings-select"
+                        >
+
+                            <option value="light">
+                                Light
+                            </option>
+
+                            <option value="dark">
+                                Dark
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =====================================
+                     BACKUP
+                     ===================================== -->
+
+                <section class="pm-settings-card">
+
+                    <div class="pm-settings-card-header">
+
+                        <div class="pm-settings-icon">
+                            💾
+                        </div>
+
+                        <div>
+
+                            <h3>Data Backup</h3>
+
+                            <p>
+                                Protect your Poultry Manager data.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-row">
+
+                        <div class="pm-settings-row-info">
+
+                            <strong>Manual backup</strong>
+
+                            <span>
+                                Export your current Poultry Manager data.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="pm-settings-actions">
+
+                        <button
+                            type="button"
+                            id="pmSettingsExport"
+                            class="pm-settings-action-button pm-settings-primary"
+                        >
+                            Export Backup
+                        </button>
+
+
+                        <button
+                            type="button"
+                            id="pmSettingsRestore"
+                            class="pm-settings-action-button pm-settings-secondary"
+                        >
+                            Restore Backup
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="pmSettingsBackupStatus"
+                        class="pm-settings-status"
+                    ></div>
+
+                </section>
+
+
+                <!-- =====================================
+                     ABOUT
+                     ===================================== -->
+
+                <section class="pm-settings-card pm-settings-card-wide">
+
+                    <div class="pm-about">
+
+                        <div class="pm-about-brand">
+
+                            <div class="pm-about-logo">
+                                🐔
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    Poultry Manager
+                                </strong>
+
+                                <span>
+                                    Version 1.0
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <p class="pm-about-description">
+                            Poultry Manager is a flock management system designed to help poultry keepers monitor birds, egg production, feed consumption, feeding schedules and farm activity from one place.
+                        </p>
+
+
+                        <div class="pm-settings-divider"></div>
+
+
+                        <div class="pm-settings-row">
+
+                            <div class="pm-settings-row-info">
+
+                                <strong>
+                                    Product status
+                                </strong>
+
+                                <span>
+                                    Active development
+                                </span>
+
+                            </div>
+
+                            <div class="pm-settings-badge enabled">
+
+                                <span class="pm-settings-badge-dot"></span>
+
+                                <span>
+                                    Active
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+            </div>
+
+        `;
+
+
+        app.appendChild(
+            settingsView
+        );
+
+    }
+
+
+    /* =====================================================
+       MOVE EXISTING BACKUP SECTION INTO SETTINGS
+       ===================================================== */
+
+    const existingBackupInput =
+        document.getElementById(
+            "importData"
+        );
+
+
+    const existingExportButton =
+        document.getElementById(
+            "exportData"
+        );
+
+
+    const existingBackupSection =
+        existingBackupInput
+            ? existingBackupInput.closest(
+                ".section"
+            )
+            : null;
+
+
+    if (
+        existingBackupSection &&
+        existingBackupSection !== settingsView
+    ) {
+
+        existingBackupSection.style.display =
+            "none";
+
+    }
+
+
+    /* =====================================================
+       SETTINGS ELEMENTS
+       ===================================================== */
+
+    const settingsFlockValue =
+        document.getElementById(
+            "pmSettingsFlockValue"
+        );
+
+
+    const settingsFlockInput =
+        document.getElementById(
+            "pmSettingsFlockInput"
+        );
+
+
+    const settingsFlockSave =
+        document.getElementById(
+            "pmSettingsFlockSave"
+        );
+
+
+    const settingsFlockStatus =
+        document.getElementById(
+            "pmSettingsFlockStatus"
+        );
+
+
+    const settingsMorning =
+        document.getElementById(
+            "pmSettingsMorning"
+        );
+
+
+    const settingsAfternoon =
+        document.getElementById(
+            "pmSettingsAfternoon"
+        );
+
+
+    const settingsScheduleSave =
+        document.getElementById(
+            "pmSettingsScheduleSave"
+        );
+
+
+    const settingsScheduleStatus =
+        document.getElementById(
+            "pmSettingsScheduleStatus"
+        );
+
+
+    const settingsAlarmButton =
+        document.getElementById(
+            "pmSettingsAlarmButton"
+        );
+
+
+    const settingsAlarmDescription =
+        document.getElementById(
+            "pmSettingsAlarmDescription"
+        );
+
+
+    const settingsAlarmBadge =
+        document.getElementById(
+            "pmSettingsAlarmBadge"
+        );
+
+
+    const settingsAlarmBadgeText =
+        document.getElementById(
+            "pmSettingsAlarmBadgeText"
+        );
+
+
+    const settingsTheme =
+        document.getElementById(
+            "pmSettingsTheme"
+        );
+
+
+    const settingsNotificationsButton =
+        document.getElementById(
+            "pmSettingsNotificationsButton"
+        );
+
+
+    const settingsNotificationStatus =
+        document.getElementById(
+            "pmSettingsNotificationStatus"
+        );
+
+
+    const settingsExport =
+        document.getElementById(
+            "pmSettingsExport"
+        );
+
+
+    const settingsRestore =
+        document.getElementById(
+            "pmSettingsRestore"
+        );
+
+
+    const settingsBackupStatus =
+        document.getElementById(
+            "pmSettingsBackupStatus"
+        );
+
+
+    /* =====================================================
+       DASHBOARD SECTIONS
+       ===================================================== */
+
+    const dashboardSections =
+        Array.from(
+            app.children
+        ).filter(
+            element =>
+                element.classList.contains(
+                    "section"
+                )
+        );
+
+
+    function setDashboardVisibility(
+        visible
+    ) {
+
+        dashboardSections.forEach(
+            section => {
+
+                if (
+                    section ===
+                    settingsView
+                ) {
+                    return;
+                }
+
+                section.style.display =
+                    visible
+                        ? ""
+                        : "none";
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       VIEW SWITCHING
+       ===================================================== */
+
+    function showDashboard() {
+
+        setDashboardVisibility(
+            true
+        );
+
+        settingsView.classList.remove(
+            "active"
+        );
+
+        dashboardButton.classList.add(
+            "active"
+        );
+
+        settingsButton.classList.remove(
+            "active"
+        );
+
+
+        localStorage.setItem(
+            SETTINGS_VIEW_KEY,
+            "dashboard"
+        );
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    function showSettings() {
+
+        setDashboardVisibility(
+            false
+        );
+
+        settingsView.classList.add(
+            "active"
+        );
+
+        dashboardButton.classList.remove(
+            "active"
+        );
+
+        settingsButton.classList.add(
+            "active"
+        );
+
+
+        localStorage.setItem(
+            SETTINGS_VIEW_KEY,
+            "settings"
+        );
+
+
+        refreshSettings();
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    dashboardButton.addEventListener(
+        "click",
+        showDashboard
+    );
+
+
+    settingsButton.addEventListener(
+        "click",
+        showSettings
+    );
+
+
+    /* =====================================================
+       FLOCK SETTINGS
+       ===================================================== */
+
+    function getCurrentFlockCount() {
+
+        const stored =
+            localStorage.getItem(
+                "flockCount"
+            );
+
+
+        if (
+            stored !== null &&
+            stored !== ""
+        ) {
+
+            const number =
+                parseInt(
+                    stored,
+                    10
+                );
+
+
+            if (
+                Number.isFinite(
+                    number
+                )
+            ) {
+
+                return number;
+
+            }
+
+        }
+
+
+        const dashboardValue =
+            document.getElementById(
+                "chickenCount"
+            );
+
+
+        if (dashboardValue) {
+
+            const number =
+                parseInt(
+                    dashboardValue.textContent,
+                    10
+                );
+
+
+            if (
+                Number.isFinite(
+                    number
+                )
+            ) {
+
+                return number;
+
+            }
+
+        }
+
+
+        return 0;
+
+    }
+
+
+    function refreshFlockSettings() {
+
+        const flock =
+            getCurrentFlockCount();
+
+
+        if (settingsFlockValue) {
+
+            settingsFlockValue.textContent =
+                `${flock} ${
+                    flock === 1
+                        ? "bird"
+                        : "birds"
+                }`;
+
+        }
+
+    }
+
+
+    if (settingsFlockSave) {
+
+        settingsFlockSave.addEventListener(
+            "click",
+            () => {
+
+                const value =
+                    parseInt(
+                        settingsFlockInput.value,
+                        10
+                    );
+
+
+                if (
+                    !Number.isFinite(
+                        value
+                    ) ||
+                    value < 0
+                ) {
+
+                    settingsFlockStatus.textContent =
+                        "Enter a valid flock size.";
+
+                    settingsFlockStatus.className =
+                        "pm-settings-status error";
+
+                    return;
+
+                }
+
+
+                /*
+                 * Use the existing dashboard
+                 * flock control so all existing
+                 * production calculations
+                 * remain synchronized.
+                 */
+
+                const dashboardInput =
+                    document.getElementById(
+                        "flockInput"
+                    );
+
+
+                const dashboardSetButton =
+                    document.getElementById(
+                        "setFlockButton"
+                    );
+
+
+                if (
+                    dashboardInput &&
+                    dashboardSetButton
+                ) {
+
+                    dashboardInput.value =
+                        value;
+
+                    dashboardSetButton.click();
+
+                }
+
+                else {
+
+                    localStorage.setItem(
+                        "flockCount",
+                        String(value)
+                    );
+
+                }
+
+
+                settingsFlockStatus.textContent =
+                    "Flock size saved.";
+
+                settingsFlockStatus.className =
+                    "pm-settings-status success";
+
+
+                refreshFlockSettings();
+
+                settingsFlockInput.value =
+                    "";
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SCHEDULE SETTINGS
+       ===================================================== */
+
+    function loadScheduleIntoSettings() {
+
+        const dashboardMorning =
+            document.getElementById(
+                "morningFeedTime"
+            );
+
+
+        const dashboardAfternoon =
+            document.getElementById(
+                "afternoonFeedTime"
+            );
+
+
+        if (dashboardMorning) {
+
+            settingsMorning.value =
+                dashboardMorning.value || "";
+
+        }
+
+
+        if (dashboardAfternoon) {
+
+            settingsAfternoon.value =
+                dashboardAfternoon.value || "";
+
+        }
+
+    }
+
+
+    function saveSettingsSchedule() {
+
+        const morning =
+            settingsMorning.value;
+
+
+        const afternoon =
+            settingsAfternoon.value;
+
+
+        if (
+            !morning ||
+            !afternoon
+        ) {
+
+            settingsScheduleStatus.textContent =
+                "Set both feeding times before saving.";
+
+            settingsScheduleStatus.className =
+                "pm-settings-status error";
+
+            return;
+
+        }
+
+
+        const dashboardMorning =
+            document.getElementById(
+                "morningFeedTime"
+            );
+
+
+        const dashboardAfternoon =
+            document.getElementById(
+                "afternoonFeedTime"
+            );
+
+
+        const dashboardSave =
+            document.getElementById(
+                "saveScheduleButton"
+            );
+
+
+        if (
+            dashboardMorning &&
+            dashboardAfternoon
+        ) {
+
+            dashboardMorning.value =
+                morning;
+
+            dashboardAfternoon.value =
+                afternoon;
+
+        }
+
+
+        if (dashboardSave) {
+
+            dashboardSave.click();
+
+        }
+
+        else {
+
+            localStorage.setItem(
+                "morningFeedTime",
+                morning
+            );
+
+            localStorage.setItem(
+                "afternoonFeedTime",
+                afternoon
+            );
+
+        }
+
+
+        settingsScheduleStatus.textContent =
+            "Feeding schedule saved.";
+
+        settingsScheduleStatus.className =
+            "pm-settings-status success";
+
+    }
+
+
+    if (settingsScheduleSave) {
+
+        settingsScheduleSave.addEventListener(
+            "click",
+            saveSettingsSchedule
+        );
+
+    }
+
+
+    /* =====================================================
+       ALARM SETTINGS
+       ===================================================== */
+
+    function getAlarmState() {
+
+        return (
+            localStorage.getItem(
+                "alarmEnabled"
+            ) === "true"
+        );
+
+    }
+
+
+    function refreshAlarmSettings() {
+
+        const enabled =
+            getAlarmState();
+
+
+        if (settingsAlarmBadge) {
+
+            settingsAlarmBadge.classList.toggle(
+                "enabled",
+                enabled
+            );
+
+        }
+
+
+        if (settingsAlarmBadgeText) {
+
+            settingsAlarmBadgeText.textContent =
+                enabled
+                    ? "On"
+                    : "Off";
+
+        }
+
+
+        if (settingsAlarmDescription) {
+
+            settingsAlarmDescription.textContent =
+                enabled
+                    ? "Feed alarm is currently enabled."
+                    : "Feed alarm is currently disabled.";
+
+        }
+
+
+        if (settingsAlarmButton) {
+
+            settingsAlarmButton.textContent =
+                enabled
+                    ? "Disable Alarm"
+                    : "Enable Alarm";
+
+        }
+
+    }
+
+
+    if (settingsAlarmButton) {
+
+        settingsAlarmButton.addEventListener(
+            "click",
+            () => {
+
+                const dashboardAlarmButton =
+                    document.getElementById(
+                        "alarmButton"
+                    );
+
+
+                if (dashboardAlarmButton) {
+
+                    dashboardAlarmButton.click();
+
+                }
+
+                else {
+
+                    const newState =
+                        !getAlarmState();
+
+
+                    localStorage.setItem(
+                        "alarmEnabled",
+                        String(newState)
+                    );
+
+                }
+
+
+                setTimeout(
+                    refreshAlarmSettings,
+                    100
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       NOTIFICATION SETTINGS
+       ===================================================== */
+
+    if (settingsNotificationsButton) {
+
+        settingsNotificationsButton.addEventListener(
+            "click",
+            () => {
+
+                const existingNotificationButton =
+                    document.getElementById(
+                        "enableNotifications"
+                    );
+
+
+                if (
+                    existingNotificationButton
+                ) {
+
+                    existingNotificationButton.click();
+
+
+                    settingsNotificationStatus.textContent =
+                        "Notification permission request started.";
+
+                }
+
+                else {
+
+                    settingsNotificationStatus.textContent =
+                        "Notification controls are not currently available.";
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       THEME
+       ===================================================== */
+
+    const savedTheme =
+        getStoredTheme();
+
+
+    applyTheme(
+        savedTheme
+    );
+
+
+    if (settingsTheme) {
+
+        settingsTheme.value =
+            savedTheme;
+
+
+        settingsTheme.addEventListener(
+            "change",
+            () => {
+
+                const theme =
+                    settingsTheme.value;
+
+
+                saveTheme(
+                    theme
+                );
+
+
+                applyTheme(
+                    theme
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       BACKUP
+       ===================================================== */
+
+    if (settingsExport) {
+
+        settingsExport.addEventListener(
+            "click",
+            () => {
+
+                if (existingExportButton) {
+
+                    existingExportButton.click();
+
+                    settingsBackupStatus.textContent =
+                        "Backup exported successfully.";
+
+                    settingsBackupStatus.className =
+                        "pm-settings-status success";
+
+                }
+
+                else {
+
+                    settingsBackupStatus.textContent =
+                        "Backup export is unavailable.";
+
+                    settingsBackupStatus.className =
+                        "pm-settings-status error";
+
+                }
+
+            }
+        );
+
+    }
+
+
+    if (settingsRestore) {
+
+        settingsRestore.addEventListener(
+            "click",
+            () => {
+
+                if (existingBackupInput) {
+
+                    existingBackupInput.click();
+
+                }
+
+                else {
+
+                    settingsBackupStatus.textContent =
+                        "Restore is unavailable.";
+
+                    settingsBackupStatus.className =
+                        "pm-settings-status error";
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       REFRESH SETTINGS
+       ===================================================== */
+
+    function refreshSettings() {
+
+        refreshFlockSettings();
+
+        loadScheduleIntoSettings();
+
+        refreshAlarmSettings();
+
+
+        if (settingsTheme) {
+
+            settingsTheme.value =
+                getStoredTheme();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       MOVE BACKUP STATUS INTO SETTINGS
+       ===================================================== */
+
+    const existingBackupStatus =
+        document.getElementById(
+            "backupStatus"
+        );
+
+
+    if (existingBackupStatus) {
+
+        existingBackupStatus.style.display =
+            "none";
+
+    }
+
+
+    /* =====================================================
+       INITIAL STATE
+       ===================================================== */
+
+    refreshSettings();
+
+
+    const lastView =
+        localStorage.getItem(
+            SETTINGS_VIEW_KEY
+        );
+
+
+    /*
+     * Always open on Dashboard when
+     * the application is first launched.
+     *
+     * Settings can be reopened instantly
+     * using the navigation.
+     */
+
+    if (
+        lastView === "settings"
+    ) {
+
+        showSettings();
+
+    }
+
+    else {
+
+        showDashboard();
+
+    }
+
+
+    console.log(
+        "Poultry Manager Settings initialized."
+    );
+
+
+})();
