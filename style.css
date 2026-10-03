@@ -2681,3 +2681,407 @@ html[data-theme="dark"] .pm-settings-action-button.pm-settings-secondary {
     }
 
 }
+
+/* =========================================================
+   POULTRY MANAGER — FARM OVERVIEW
+   ========================================================= */
+
+.farm-overview-section {
+    margin-top: 28px;
+    margin-bottom: 28px;
+}
+
+
+.farm-overview-header {
+    margin-bottom: 18px;
+}
+
+
+.farm-overview-eyebrow {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+}
+
+
+.farm-overview-header h2 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.25;
+    color: var(--text);
+}
+
+
+.farm-overview-header p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   OVERVIEW CARDS
+   ========================================================= */
+
+.farm-overview-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+
+.farm-overview-card {
+    min-width: 0;
+    padding: 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow:
+        0 4px 16px rgba(15, 23, 42, 0.035);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.farm-overview-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+
+.farm-overview-card-wide {
+    grid-column: span 2;
+}
+
+
+.farm-overview-card-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 14px;
+}
+
+
+.farm-overview-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    background: var(--settings-soft);
+
+    font-size: 17px;
+}
+
+
+.farm-overview-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+
+.farm-overview-value {
+    display: block;
+
+    font-size: 27px;
+    line-height: 1.15;
+    font-weight: 800;
+
+    color: var(--text);
+
+    overflow-wrap: anywhere;
+}
+
+
+.farm-overview-description {
+    display: block;
+    margin-top: 5px;
+
+    font-size: 11px;
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.quick-actions {
+    margin-top: 22px;
+    padding: 20px;
+
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    box-shadow:
+        0 4px 18px rgba(15, 23, 42, 0.035);
+}
+
+
+.quick-actions-header {
+    margin-bottom: 16px;
+}
+
+
+.quick-actions-header h3 {
+    margin: 0;
+
+    font-size: 17px;
+    color: var(--text);
+}
+
+
+.quick-actions-header p {
+    margin: 5px 0 0;
+
+    font-size: 12px;
+    color: var(--muted);
+}
+
+
+.quick-actions-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+.quick-action-button {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+    padding: 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    background: var(--settings-soft);
+    color: var(--text);
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
+}
+
+
+.quick-action-button:hover {
+    transform: translateY(-2px);
+
+    background: var(--settings-hover);
+
+    border-color: #d1d5db;
+}
+
+
+.quick-action-button:active {
+    transform: scale(0.98);
+}
+
+
+.quick-action-icon {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--card);
+
+    font-size: 18px;
+}
+
+
+.quick-action-button strong {
+    display: block;
+
+    font-size: 13px;
+    line-height: 1.3;
+
+    color: var(--text);
+}
+
+
+.quick-action-button small {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 10px;
+    line-height: 1.35;
+
+    color: var(--muted);
+}
+
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+html[data-theme="dark"] .farm-overview-card,
+html[data-theme="dark"] .quick-actions {
+    background: #111827;
+    border-color: #263244;
+}
+
+
+html[data-theme="dark"] .farm-overview-card:hover {
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+
+html[data-theme="dark"] .quick-action-button {
+    background: #172033;
+    border-color: #263244;
+}
+
+
+html[data-theme="dark"] .quick-action-button:hover {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+
+html[data-theme="dark"] .quick-action-icon {
+    background: #111827;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .farm-overview-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+
+    .farm-overview-card-wide {
+        grid-column: span 2;
+    }
+
+
+    .quick-actions-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 560px) {
+
+    .farm-overview-section {
+        margin-top: 22px;
+    }
+
+
+    .farm-overview-header h2 {
+        font-size: 21px;
+    }
+
+
+    .farm-overview-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+
+    .farm-overview-card {
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+
+    .farm-overview-card-wide {
+        grid-column: span 2;
+    }
+
+
+    .farm-overview-value {
+        font-size: 23px;
+    }
+
+
+    .quick-actions {
+        padding: 16px;
+        border-radius: 15px;
+    }
+
+
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+
+    .quick-action-button {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .farm-overview-grid {
+        gap: 8px;
+    }
+
+
+    .farm-overview-card {
+        padding: 13px;
+    }
+
+
+    .farm-overview-value {
+        font-size: 21px;
+    }
+
+
+    .farm-overview-label {
+        font-size: 11px;
+    }
+
+}
