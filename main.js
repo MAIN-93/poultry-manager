@@ -2999,27 +2999,193 @@ function updateNotificationButton() {
         return;
     }
 
-    const permission =
-        Notification.permission;
-
-    if (permission === "granted") {
+    if (Notification.permission === "granted") {
 
         enableNotifications.textContent =
             "Notifications Enabled";
 
-    }
-
-    else if (permission === "denied") {
+    } else if (Notification.permission === "denied") {
 
         enableNotifications.textContent =
             "Notifications Blocked";
 
-    }
-
-    else {
+    } else {
 
         enableNotifications.textContent =
             "Enable Notifications";
+
+    }
+}
+
+
+function urlBase64ToUint8Array(base64String) {
+
+    const padding =
+        "=".repeat(
+            (4 - base64String.length % 4) % 4
+        );
+
+    const base64 =
+        (base64String + padding)
+            .replace(/-/g, "+")
+            .replace(/_/g, "/");
+
+    const rawData =
+        window.atob(base64);
+
+    return Uint8Array.from(
+        [...rawData].map(
+            char => char.charCodeAt(0)
+        )
+    );
+}
+
+
+async function enablePushNotifications() {
+
+    if (!enableNotifications) {
+        return;
+    }
+
+    if (!("Notification" in window)) {
+
+        alert(
+            "Notifications are not supported by this browser."
+        );
+
+        return;
+    }
+
+    try {
+
+        /* Ask for notification permission */
+
+        const permission =
+            await Notification.requestPermission();
+
+        if (permission !== "granted") {
+
+            enableNotifications.textContent =
+                "Notifications Blocked";
+
+            return;
+        }
+
+
+        /* Register service worker */
+
+        const registration =
+            await navigator.serviceWorker.ready;
+
+
+        /* Get VAPID public key */
+
+        const keyResponse =
+            await fetch(
+                "https://poultry-manager-hppo.onrender.com/vapid-public-key"
+            );
+
+        if (!keyResponse.ok) {
+            throw new Error(
+                "Could not get VAPID public key."
+            );
+        }
+
+        const keyData =
+            await keyResponse.json();
+
+        const applicationServerKey =
+            urlBase64ToUint8Array(
+                keyData.publicKey
+            );
+
+
+        /* Check for an existing subscription */
+
+        let subscription =
+            await registration.pushManager.getSubscription();
+
+
+        /* Create subscription if needed */
+
+        if (!subscription) {
+
+            subscription =
+                await registration.pushManager.subscribe({
+
+                    userVisibleOnly: true,
+
+                    applicationServerKey:
+                        applicationServerKey
+
+                });
+
+        }
+
+
+        /* Send subscription to server */
+
+        const subscribeResponse =
+            await fetch(
+                "https://poultry-manager-hppo.onrender.com/subscribe",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            subscription
+                        )
+                }
+            );
+
+
+        if (!subscribeResponse.ok) {
+
+            throw new Error(
+                "Could not save push subscription."
+            );
+
+        }
+
+
+        /* Success */
+
+        localStorage.setItem(
+            "notificationsEnabled",
+            "true"
+        );
+
+        enableNotifications.textContent =
+            "Notifications Enabled";
+
+
+        /* Small confirmation */
+
+        new Notification(
+            "Poultry Manager",
+            {
+                body:
+                    "🐔 Background notifications are now enabled."
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Push notification setup failed:",
+            error
+        );
+
+        alert(
+            "Could not enable background notifications. Please try again."
+        );
 
     }
 
@@ -3030,132 +3196,13 @@ if (enableNotifications) {
 
     enableNotifications.addEventListener(
         "click",
-        async () => {
-
-            /* Check browser support */
-
-            if (!("Notification" in window)) {
-
-                alert(
-                    "Notifications are not supported by this browser."
-                );
-
-                return;
-
-            }
-
-
-            /* Already enabled */
-
-            if (
-                Notification.permission ===
-                "granted"
-            ) {
-
-                enableNotifications.textContent =
-                    "Notifications Enabled";
-
-                return;
-
-            }
-
-
-            /* Previously blocked */
-
-            if (
-                Notification.permission ===
-                "denied"
-            ) {
-
-                alert(
-                    "Notifications are blocked. Open your browser or device notification settings and allow notifications for Poultry Manager."
-                );
-
-                return;
-
-            }
-
-
-            /* Ask for permission */
-
-            try {
-
-                const permission =
-                    await Notification.requestPermission();
-
-
-                if (
-                    permission ===
-                    "granted"
-                ) {
-
-                    localStorage.setItem(
-                        "notificationsEnabled",
-                        "true"
-                    );
-
-                    enableNotifications.textContent =
-                        "Notifications Enabled";
-
-
-                    /* Test notification */
-
-                    new Notification(
-                        "Poultry Manager",
-                        {
-                            body:
-                                "Notifications are now enabled."
-                        }
-                    );
-
-                }
-
-                else if (
-                    permission ===
-                    "denied"
-                ) {
-
-                    enableNotifications.textContent =
-                        "Notifications Blocked";
-
-                    alert(
-                        "Notifications were blocked. You can allow them later in your device/browser notification settings."
-                    );
-
-                }
-
-                else {
-
-                    enableNotifications.textContent =
-                        "Enable Notifications";
-
-                }
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Notification permission error:",
-                    error
-                );
-
-                alert(
-                    "The notification permission could not be requested here. If you are using an iPhone or iPad, make sure Poultry Manager has been added to your Home Screen."
-                );
-
-            }
-
-        }
+        enablePushNotifications
     );
 
 }
 
 
-/* Set correct button state when the app loads */
-
 updateNotificationButton();
-
 /* =========================================================
    SERVICE WORKER
    ========================================================= */
