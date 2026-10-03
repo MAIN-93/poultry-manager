@@ -2915,47 +2915,168 @@ function checkFeedAlarm() {
 
 }
 
-
 /* =========================================================
    NOTIFICATIONS
    ========================================================= */
 
-if (
-    enableNotifications
-) {
+function updateNotificationButton() {
+
+    if (!enableNotifications) {
+        return;
+    }
+
+    if (!("Notification" in window)) {
+
+        enableNotifications.textContent =
+            "Notifications Not Supported";
+
+        return;
+    }
+
+    const permission =
+        Notification.permission;
+
+    if (permission === "granted") {
+
+        enableNotifications.textContent =
+            "Notifications Enabled";
+
+    }
+
+    else if (permission === "denied") {
+
+        enableNotifications.textContent =
+            "Notifications Blocked";
+
+    }
+
+    else {
+
+        enableNotifications.textContent =
+            "Enable Notifications";
+
+    }
+
+}
+
+
+if (enableNotifications) {
 
     enableNotifications.addEventListener(
         "click",
         async () => {
 
-            if (
-                !(
-                    "Notification" in
-                    window
-                )
-            ) {
+            /* Check browser support */
+
+            if (!("Notification" in window)) {
+
+                alert(
+                    "Notifications are not supported by this browser."
+                );
 
                 return;
 
             }
 
 
-            const permission =
-                await Notification.requestPermission();
-
+            /* Already enabled */
 
             if (
-                permission ===
+                Notification.permission ===
                 "granted"
             ) {
 
-                localStorage.setItem(
-                    "notificationsEnabled",
-                    "true"
-                );
-
                 enableNotifications.textContent =
                     "Notifications Enabled";
+
+                return;
+
+            }
+
+
+            /* Previously blocked */
+
+            if (
+                Notification.permission ===
+                "denied"
+            ) {
+
+                alert(
+                    "Notifications are blocked. Open your browser or device notification settings and allow notifications for Poultry Manager."
+                );
+
+                return;
+
+            }
+
+
+            /* Ask for permission */
+
+            try {
+
+                const permission =
+                    await Notification.requestPermission();
+
+
+                if (
+                    permission ===
+                    "granted"
+                ) {
+
+                    localStorage.setItem(
+                        "notificationsEnabled",
+                        "true"
+                    );
+
+                    enableNotifications.textContent =
+                        "Notifications Enabled";
+
+
+                    /* Test notification */
+
+                    new Notification(
+                        "Poultry Manager",
+                        {
+                            body:
+                                "Notifications are now enabled."
+                        }
+                    );
+
+                }
+
+                else if (
+                    permission ===
+                    "denied"
+                ) {
+
+                    enableNotifications.textContent =
+                        "Notifications Blocked";
+
+                    alert(
+                        "Notifications were blocked. You can allow them later in your device/browser notification settings."
+                    );
+
+                }
+
+                else {
+
+                    enableNotifications.textContent =
+                        "Enable Notifications";
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Notification permission error:",
+                    error
+                );
+
+                alert(
+                    "The notification permission could not be requested here. If you are using an iPhone or iPad, make sure Poultry Manager has been added to your Home Screen."
+                );
 
             }
 
@@ -2964,6 +3085,10 @@ if (
 
 }
 
+
+/* Set correct button state when the app loads */
+
+updateNotificationButton();
 
 /* =========================================================
    SERVICE WORKER
