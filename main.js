@@ -3451,21 +3451,26 @@ if (importDataInput) {
                         }
 
 
-                        localStorage.clear();
+                        automaticBackupPaused = true;
 
+localStorage.clear();
 
-                        Object.entries(
-                            backup.data
-                        ).forEach(
-                            ([key, value]) => {
+Object.entries(
+    backup.data
+).forEach(
+    ([key, value]) => {
 
-                                localStorage.setItem(
-                                    key,
-                                    value
-                                );
+        localStorage.setItem(
+            key,
+            value
+        );
 
-                            }
-                        );
+    }
+);
+
+automaticBackupPaused = false;
+
+createAutomaticBackup();
 
 
                         if (backupStatus) {
@@ -3517,10 +3522,32 @@ if (importDataInput) {
    AUTOMATIC LOCAL BACKUP
    ========================================================= */
 
+let automaticBackupPaused = false;
+let automaticBackupTimer = null;
+
+
 function createAutomaticBackup() {
 
-    const data =
-        getPoultryManagerData();
+    const data = {};
+
+    for (let i = 0; i < localStorage.length; i++) {
+
+        const key =
+            localStorage.key(i);
+
+        if (
+            key &&
+            key !==
+                "poultryManagerAutomaticBackup"
+        ) {
+
+            data[key] =
+                localStorage.getItem(key);
+
+        }
+
+    }
+
 
     const backup = {
 
@@ -3538,6 +3565,7 @@ function createAutomaticBackup() {
 
     };
 
+
     localStorage.setItem(
         "poultryManagerAutomaticBackup",
         JSON.stringify(backup)
@@ -3546,24 +3574,105 @@ function createAutomaticBackup() {
 }
 
 
-function runAutomaticBackup() {
+function scheduleAutomaticBackup() {
 
-    try {
-
-        createAutomaticBackup();
-
+    if (automaticBackupPaused) {
+        return;
     }
 
-    catch (error) {
 
-        console.error(
-            "Automatic backup failed:",
-            error
+    clearTimeout(
+        automaticBackupTimer
+    );
+
+
+    automaticBackupTimer =
+        setTimeout(
+            () => {
+
+                try {
+
+                    createAutomaticBackup();
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Automatic backup failed:",
+                        error
+                    );
+
+                }
+
+            },
+            1000
         );
-
-    }
 
 }
 
 
-runAutomaticBackup();
+/* Watch for Poultry Manager data changes */
+
+const originalSetItem =
+    localStorage.setItem.bind(
+        localStorage
+    );
+
+localStorage.setItem =
+    function(key, value) {
+
+        originalSetItem(
+            key,
+            value
+        );
+
+
+        if (
+            key !==
+                "poultryManagerAutomaticBackup"
+        ) {
+
+            scheduleAutomaticBackup();
+
+        }
+
+    };
+
+
+const originalRemoveItem =
+    localStorage.removeItem.bind(
+        localStorage
+    );
+
+localStorage.removeItem =
+    function(key) {
+
+        originalRemoveItem(
+            key
+        );
+
+
+        if (
+            key !==
+                "poultryManagerAutomaticBackup"
+        ) {
+
+            scheduleAutomaticBackup();
+
+        }
+
+    };
+
+
+/* Create the first backup if none exists */
+
+if (
+    !localStorage.getItem(
+        "poultryManagerAutomaticBackup"
+    )
+) {
+
+    createAutomaticBackup();
+
+}
