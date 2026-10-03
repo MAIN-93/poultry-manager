@@ -2987,9 +2987,7 @@ function checkFeedAlarm() {
 
 function updateNotificationButton() {
 
-    if (!enableNotifications) {
-        return;
-    }
+
 
     if (!("Notification" in window)) {
 
@@ -3001,13 +2999,21 @@ function updateNotificationButton() {
 
     if (Notification.permission === "granted") {
 
-        enableNotifications.textContent =
-            "Notifications Enabled";
+        if (enableNotifications) {
+
+    enableNotifications.textContent =
+        "Notifications Enabled";
+
+}
 
     } else if (Notification.permission === "denied") {
 
-        enableNotifications.textContent =
-            "Notifications Blocked";
+        if (enableNotifications) {
+
+    enableNotifications.textContent =
+        "Notifications Blocked";
+
+}
 
     } else {
 
