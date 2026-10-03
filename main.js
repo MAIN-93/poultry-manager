@@ -5517,3 +5517,484 @@ if (
     );
 
 })();
+
+
+/* =========================================================
+   POULTRY MANAGER — LIVE FARM OVERVIEW
+   ========================================================= */
+
+(function initializeFarmOverview() {
+
+    "use strict";
+
+
+    const flockElement =
+        document.getElementById(
+            "farmOverviewFlock"
+        );
+
+
+    const eggsElement =
+        document.getElementById(
+            "farmOverviewEggs"
+        );
+
+
+    const layingRateElement =
+        document.getElementById(
+            "farmOverviewLayingRate"
+        );
+
+
+    const feedElement =
+        document.getElementById(
+            "farmOverviewFeed"
+        );
+
+
+    const nextFeedElement =
+        document.getElementById(
+            "farmOverviewNextFeed"
+        );
+
+
+    if (
+        !flockElement ||
+        !eggsElement ||
+        !layingRateElement ||
+        !feedElement ||
+        !nextFeedElement
+    ) {
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       FIND CURRENT VALUES
+       ===================================================== */
+
+    function getFlock() {
+
+        const stored =
+            localStorage.getItem(
+                "flockCount"
+            );
+
+
+        if (
+            stored !== null &&
+            stored !== ""
+        ) {
+
+            const value =
+                parseInt(
+                    stored,
+                    10
+                );
+
+
+            if (
+                Number.isFinite(value)
+            ) {
+
+                return value;
+
+            }
+
+        }
+
+
+        const dashboard =
+            document.getElementById(
+                "chickenCount"
+            );
+
+
+        if (dashboard) {
+
+            const value =
+                parseInt(
+                    dashboard.textContent,
+                    10
+                );
+
+
+            if (
+                Number.isFinite(value)
+            ) {
+
+                return value;
+
+            }
+
+        }
+
+
+        return 0;
+
+    }
+
+
+    function getEggs() {
+
+        const possibleKeys = [
+
+            "eggsToday",
+            "todayEggs",
+            "eggCount"
+
+        ];
+
+
+        for (
+            const key of possibleKeys
+        ) {
+
+            const stored =
+                localStorage.getItem(
+                    key
+                );
+
+
+            if (
+                stored !== null &&
+                stored !== ""
+            ) {
+
+                const value =
+                    parseInt(
+                        stored,
+                        10
+                    );
+
+
+                if (
+                    Number.isFinite(value)
+                ) {
+
+                    return value;
+
+                }
+
+            }
+
+        }
+
+
+        const dashboard =
+            document.getElementById(
+                "todayEggs"
+            );
+
+
+        if (dashboard) {
+
+            const value =
+                parseInt(
+                    dashboard.textContent,
+                    10
+                );
+
+
+            if (
+                Number.isFinite(value)
+            ) {
+
+                return value;
+
+            }
+
+        }
+
+
+        return 0;
+
+    }
+
+
+    function getLayingRate() {
+
+        const flock =
+            getFlock();
+
+
+        const eggs =
+            getEggs();
+
+
+        if (
+            flock <= 0
+        ) {
+
+            return 0;
+
+        }
+
+
+        return Math.round(
+            (eggs / flock) * 100
+        );
+
+    }
+
+
+    function getFeedRemaining() {
+
+        const possibleKeys = [
+
+            "feedInventory",
+            "feedAmount",
+            "feedStock",
+            "feedKg"
+
+        ];
+
+
+        for (
+            const key of possibleKeys
+        ) {
+
+            const stored =
+                localStorage.getItem(
+                    key
+                );
+
+
+            if (
+                stored !== null &&
+                stored !== ""
+            ) {
+
+                const value =
+                    parseFloat(
+                        stored
+                    );
+
+
+                if (
+                    Number.isFinite(value)
+                ) {
+
+                    return value;
+
+                }
+
+            }
+
+        }
+
+
+        return 0;
+
+    }
+
+
+    /* =====================================================
+       NEXT FEEDING
+       ===================================================== */
+
+    function getNextFeed() {
+
+        const morning =
+            localStorage.getItem(
+                "morningFeedTime"
+            );
+
+
+        const afternoon =
+            localStorage.getItem(
+                "afternoonFeedTime"
+            );
+
+
+        const times = [
+
+            morning,
+            afternoon
+
+        ].filter(
+            Boolean
+        );
+
+
+        if (
+            times.length === 0
+        ) {
+
+            return "Not scheduled";
+
+        }
+
+
+        const now =
+            new Date();
+
+
+        const currentMinutes =
+            now.getHours() * 60 +
+            now.getMinutes();
+
+
+        let closestTime = null;
+        let closestDifference = Infinity;
+
+
+        times.forEach(
+            time => {
+
+                const parts =
+                    time.split(":");
+
+
+                const hours =
+                    parseInt(
+                        parts[0],
+                        10
+                    );
+
+
+                const minutes =
+                    parseInt(
+                        parts[1],
+                        10
+                    );
+
+
+                const feedMinutes =
+                    hours * 60 +
+                    minutes;
+
+
+                let difference =
+                    feedMinutes -
+                    currentMinutes;
+
+
+                if (
+                    difference < 0
+                ) {
+
+                    difference += 1440;
+
+                }
+
+
+                if (
+                    difference <
+                    closestDifference
+                ) {
+
+                    closestDifference =
+                        difference;
+
+                    closestTime =
+                        time;
+
+                }
+
+            }
+        );
+
+
+        if (!closestTime) {
+
+            return "Not scheduled";
+
+        }
+
+
+        const [hours, minutes] =
+            closestTime.split(":");
+
+
+        const date =
+            new Date();
+
+
+        date.setHours(
+            parseInt(hours, 10),
+            parseInt(minutes, 10),
+            0,
+            0
+        );
+
+
+        return date.toLocaleTimeString(
+            [],
+            {
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       UPDATE OVERVIEW
+       ===================================================== */
+
+    function updateFarmOverview() {
+
+        const flock =
+            getFlock();
+
+
+        const eggs =
+            getEggs();
+
+
+        const layingRate =
+            getLayingRate();
+
+
+        const feed =
+            getFeedRemaining();
+
+
+        flockElement.textContent =
+            flock;
+
+
+        eggsElement.textContent =
+            eggs;
+
+
+        layingRateElement.textContent =
+            `${layingRate}%`;
+
+
+        feedElement.textContent =
+            `${feed.toFixed(2)} kg`;
+
+
+        nextFeedElement.textContent =
+            getNextFeed();
+
+    }
+
+
+    /* =====================================================
+       KEEP OVERVIEW IN SYNC
+       ===================================================== */
+
+    updateFarmOverview();
+
+
+    setInterval(
+        updateFarmOverview,
+        1000
+    );
+
+
+    window.updateFarmOverview =
+        updateFarmOverview;
+
+
+    console.log(
+        "Poultry Manager Farm Overview initialized."
+    );
+
+})();
