@@ -3512,3 +3512,58 @@ if (importDataInput) {
     );
 
 }
+
+/* =========================================================
+   AUTOMATIC LOCAL BACKUP
+   ========================================================= */
+
+function createAutomaticBackup() {
+
+    const data =
+        getPoultryManagerData();
+
+    const backup = {
+
+        app:
+            "Poultry Manager",
+
+        version:
+            "1.0",
+
+        createdAt:
+            new Date().toISOString(),
+
+        data:
+            data
+
+    };
+
+    localStorage.setItem(
+        "poultryManagerAutomaticBackup",
+        JSON.stringify(backup)
+    );
+
+}
+
+
+function runAutomaticBackup() {
+
+    try {
+
+        createAutomaticBackup();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Automatic backup failed:",
+            error
+        );
+
+    }
+
+}
+
+
+runAutomaticBackup();
