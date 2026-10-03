@@ -3279,3 +3279,236 @@ setInterval(
     },
     1000
 );
+
+/* =========================================================
+   DATA BACKUP & RESTORE
+   ========================================================= */
+
+const exportDataButton =
+    document.getElementById("exportData");
+
+const importDataInput =
+    document.getElementById("importData");
+
+const backupStatus =
+    document.getElementById("backupStatus");
+
+
+function getPoultryManagerData() {
+
+    const data = {};
+
+    for (let i = 0; i < localStorage.length; i++) {
+
+        const key =
+            localStorage.key(i);
+
+        if (key !== null) {
+
+            data[key] =
+                localStorage.getItem(key);
+
+        }
+
+    }
+
+    return data;
+}
+
+
+if (exportDataButton) {
+
+    exportDataButton.addEventListener(
+        "click",
+        () => {
+
+            const data =
+                getPoultryManagerData();
+
+            const backup = {
+
+                app:
+                    "Poultry Manager",
+
+                version:
+                    "1.0",
+
+                createdAt:
+                    new Date().toISOString(),
+
+                data:
+                    data
+
+            };
+
+
+            const file =
+                new Blob(
+                    [
+                        JSON.stringify(
+                            backup,
+                            null,
+                            2
+                        )
+                    ],
+                    {
+                        type:
+                            "application/json"
+                    }
+                );
+
+
+            const url =
+                URL.createObjectURL(file);
+
+
+            const link =
+                document.createElement("a");
+
+            link.href = url;
+
+            link.download =
+                "poultry-manager-backup.json";
+
+            document.body.appendChild(link);
+
+            link.click();
+
+            document.body.removeChild(link);
+
+            URL.revokeObjectURL(url);
+
+
+            if (backupStatus) {
+
+                backupStatus.textContent =
+                    "Backup exported successfully.";
+
+            }
+
+        }
+    );
+
+}
+
+
+if (importDataInput) {
+
+    importDataInput.addEventListener(
+        "change",
+        (event) => {
+
+            const file =
+                event.target.files[0];
+
+            if (!file) {
+                return;
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                () => {
+
+                    try {
+
+                        const backup =
+                            JSON.parse(
+                                reader.result
+                            );
+
+
+                        if (
+                            !backup ||
+                            backup.app !==
+                                "Poultry Manager" ||
+                            !backup.data
+                        ) {
+
+                            throw new Error(
+                                "Invalid backup file."
+                            );
+
+                        }
+
+
+                        const confirmed =
+                            confirm(
+                                "Restore this backup? Your current Poultry Manager data will be replaced."
+                            );
+
+
+                        if (!confirmed) {
+
+                            importDataInput.value =
+                                "";
+
+                            return;
+
+                        }
+
+
+                        localStorage.clear();
+
+
+                        Object.entries(
+                            backup.data
+                        ).forEach(
+                            ([key, value]) => {
+
+                                localStorage.setItem(
+                                    key,
+                                    value
+                                );
+
+                            }
+                        );
+
+
+                        if (backupStatus) {
+
+                            backupStatus.textContent =
+                                "Backup restored. Reloading...";
+
+                        }
+
+
+                        setTimeout(
+                            () => {
+
+                                location.reload();
+
+                            },
+                            800
+                        );
+
+                    }
+
+                    catch (error) {
+
+                        console.error(
+                            "Backup restore failed:",
+                            error
+                        );
+
+                        if (backupStatus) {
+
+                            backupStatus.textContent =
+                                "Invalid backup file.";
+
+                        }
+
+                    }
+
+                };
+
+
+            reader.readAsText(file);
+
+        }
+    );
+
+}
