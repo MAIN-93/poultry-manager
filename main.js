@@ -3693,7 +3693,6 @@ if (
     const SETTINGS_THEME_KEY =
         "poultryManagerTheme";
 
-
     const SETTINGS_VIEW_KEY =
         "poultryManagerLastView";
 
@@ -3727,20 +3726,18 @@ if (
 
         if (theme === "dark") {
 
-            document.documentElement
-                .setAttribute(
-                    "data-theme",
-                    "dark"
-                );
+            document.documentElement.setAttribute(
+                "data-theme",
+                "dark"
+            );
 
         }
 
         else {
 
-            document.documentElement
-                .removeAttribute(
-                    "data-theme"
-                );
+            document.documentElement.removeAttribute(
+                "data-theme"
+            );
 
         }
 
@@ -3748,38 +3745,39 @@ if (
 
 
     /* =====================================================
-       CREATE NAVIGATION
+       APP ELEMENTS
        ===================================================== */
 
     const app =
         document.querySelector(".app");
 
-
-    if (!app) {
-
-        console.error(
-            "Poultry Manager: .app not found."
-        );
-
-        return;
-
-    }
-
-
     const header =
-        app.querySelector(".app-header");
+        document.querySelector(".app-header");
+
+    const dashboardView =
+        document.getElementById(
+            "pmDashboardView"
+        );
 
 
-    if (!header) {
+    if (
+        !app ||
+        !header ||
+        !dashboardView
+    ) {
 
         console.error(
-            "Poultry Manager: app header not found."
+            "Poultry Manager: required app views were not found."
         );
 
         return;
 
     }
 
+
+    /* =====================================================
+       CREATE NAVIGATION
+       ===================================================== */
 
     let navigation =
         document.getElementById(
@@ -3831,7 +3829,6 @@ if (
             "pmDashboardButton"
         );
 
-
     const settingsButton =
         document.getElementById(
             "pmSettingsButton"
@@ -3864,7 +3861,9 @@ if (
 
             <div class="pm-settings-header">
 
-                <h2>Settings</h2>
+                <h2>
+                    Settings
+                </h2>
 
                 <p>
                     Configure Poultry Manager to match the way you manage your flock.
@@ -3890,7 +3889,9 @@ if (
 
                         <div>
 
-                            <h3>Flock Settings</h3>
+                            <h3>
+                                Flock Settings
+                            </h3>
 
                             <p>
                                 Keep your flock size accurate.
@@ -3905,7 +3906,9 @@ if (
 
                         <div class="pm-settings-row-info">
 
-                            <strong>Current flock</strong>
+                            <strong>
+                                Current flock
+                            </strong>
 
                             <span>
                                 Number of birds currently being managed.
@@ -3926,7 +3929,9 @@ if (
 
                         <div class="pm-settings-row-info">
 
-                            <strong>Set flock size</strong>
+                            <strong>
+                                Set flock size
+                            </strong>
 
                             <span>
                                 Update the total number of birds.
@@ -3981,7 +3986,9 @@ if (
 
                         <div>
 
-                            <h3>Feeding Schedule</h3>
+                            <h3>
+                                Feeding Schedule
+                            </h3>
 
                             <p>
                                 Set your regular morning and afternoon feeding times.
@@ -4059,7 +4066,9 @@ if (
 
                         <div>
 
-                            <h3>Feed Alarm</h3>
+                            <h3>
+                                Feed Alarm
+                            </h3>
 
                             <p>
                                 Control the feeding reminder inside Poultry Manager.
@@ -4074,13 +4083,16 @@ if (
 
                         <div class="pm-settings-row-info">
 
-                            <strong>Alarm status</strong>
+                            <strong>
+                                Alarm status
+                            </strong>
 
                             <span id="pmSettingsAlarmDescription">
                                 Feed alarm is currently disabled.
                             </span>
 
                         </div>
+
 
                         <div
                             id="pmSettingsAlarmBadge"
@@ -4127,10 +4139,12 @@ if (
 
                         <div>
 
-                            <h3>Notifications</h3>
+                            <h3>
+                                Notifications
+                            </h3>
 
                             <p>
-                                Notification setup can be completed later.
+                                Manage background notifications for Poultry Manager.
                             </p>
 
                         </div>
@@ -4142,13 +4156,16 @@ if (
 
                         <div class="pm-settings-row-info">
 
-                            <strong>Push notifications</strong>
+                            <strong>
+                                Push notifications
+                            </strong>
 
-                            <span>
-                                Allow Poultry Manager to request notification permission.
+                            <span id="pmSettingsNotificationStatus">
+                                Check notification permission and enable background notifications.
                             </span>
 
                         </div>
+
 
                         <div
                             id="pmSettingsNotificationBadge"
@@ -4157,7 +4174,7 @@ if (
 
                             <span class="pm-settings-badge-dot"></span>
 
-                            <span>
+                            <span id="pmSettingsNotificationBadgeText">
                                 Available
                             </span>
 
@@ -4173,16 +4190,9 @@ if (
                             id="pmSettingsNotificationsButton"
                             class="pm-settings-action-button pm-settings-secondary"
                         >
-                            Notification Settings
+                            Enable Notifications
                         </button>
 
-                    </div>
-
-                    <div
-                        id="pmSettingsNotificationStatus"
-                        class="pm-settings-status"
-                    >
-                        Background notification work can remain parked while the core app is developed.
                     </div>
 
                 </section>
@@ -4202,7 +4212,9 @@ if (
 
                         <div>
 
-                            <h3>App Preferences</h3>
+                            <h3>
+                                App Preferences
+                            </h3>
 
                             <p>
                                 Personalize the appearance of Poultry Manager.
@@ -4217,13 +4229,16 @@ if (
 
                         <div class="pm-settings-row-info">
 
-                            <strong>Appearance</strong>
+                            <strong>
+                                Appearance
+                            </strong>
 
                             <span>
                                 Choose how Poultry Manager looks on your device.
                             </span>
 
                         </div>
+
 
                         <select
                             id="pmSettingsTheme"
@@ -4259,7 +4274,9 @@ if (
 
                         <div>
 
-                            <h3>Data Backup</h3>
+                            <h3>
+                                Data Backup
+                            </h3>
 
                             <p>
                                 Protect your Poultry Manager data.
@@ -4274,10 +4291,12 @@ if (
 
                         <div class="pm-settings-row-info">
 
-                            <strong>Manual backup</strong>
+                            <strong>
+                                Manual backup
+                            </strong>
 
                             <span>
-                                Export your current Poultry Manager data.
+                                Export or restore your Poultry Manager data.
                             </span>
 
                         </div>
@@ -4311,6 +4330,13 @@ if (
                         id="pmSettingsBackupStatus"
                         class="pm-settings-status"
                     ></div>
+
+                    <input
+                        type="file"
+                        id="pmSettingsRestoreInput"
+                        accept=".json"
+                        hidden
+                    >
 
                 </section>
 
@@ -4366,6 +4392,7 @@ if (
 
                             </div>
 
+
                             <div class="pm-settings-badge enabled">
 
                                 <span class="pm-settings-badge-dot"></span>
@@ -4396,41 +4423,6 @@ if (
 
 
     /* =====================================================
-       MOVE EXISTING BACKUP SECTION INTO SETTINGS
-       ===================================================== */
-
-    const existingBackupInput =
-        document.getElementById(
-            "importData"
-        );
-
-
-    const existingExportButton =
-        document.getElementById(
-            "exportData"
-        );
-
-
-    const existingBackupSection =
-        existingBackupInput
-            ? existingBackupInput.closest(
-                ".section"
-            )
-            : null;
-
-
-    if (
-        existingBackupSection &&
-        existingBackupSection !== settingsView
-    ) {
-
-        existingBackupSection.style.display =
-            "none";
-
-    }
-
-
-    /* =====================================================
        SETTINGS ELEMENTS
        ===================================================== */
 
@@ -4439,147 +4431,105 @@ if (
             "pmSettingsFlockValue"
         );
 
-
     const settingsFlockInput =
         document.getElementById(
             "pmSettingsFlockInput"
         );
-
 
     const settingsFlockSave =
         document.getElementById(
             "pmSettingsFlockSave"
         );
 
-
     const settingsFlockStatus =
         document.getElementById(
             "pmSettingsFlockStatus"
         );
-
 
     const settingsMorning =
         document.getElementById(
             "pmSettingsMorning"
         );
 
-
     const settingsAfternoon =
         document.getElementById(
             "pmSettingsAfternoon"
         );
-
 
     const settingsScheduleSave =
         document.getElementById(
             "pmSettingsScheduleSave"
         );
 
-
     const settingsScheduleStatus =
         document.getElementById(
             "pmSettingsScheduleStatus"
         );
-
 
     const settingsAlarmButton =
         document.getElementById(
             "pmSettingsAlarmButton"
         );
 
-
     const settingsAlarmDescription =
         document.getElementById(
             "pmSettingsAlarmDescription"
         );
-
 
     const settingsAlarmBadge =
         document.getElementById(
             "pmSettingsAlarmBadge"
         );
 
-
     const settingsAlarmBadgeText =
         document.getElementById(
             "pmSettingsAlarmBadgeText"
         );
-
-
-    const settingsTheme =
-        document.getElementById(
-            "pmSettingsTheme"
-        );
-
 
     const settingsNotificationsButton =
         document.getElementById(
             "pmSettingsNotificationsButton"
         );
 
-
     const settingsNotificationStatus =
         document.getElementById(
             "pmSettingsNotificationStatus"
         );
 
+    const settingsNotificationBadge =
+        document.getElementById(
+            "pmSettingsNotificationBadge"
+        );
+
+    const settingsNotificationBadgeText =
+        document.getElementById(
+            "pmSettingsNotificationBadgeText"
+        );
+
+    const settingsTheme =
+        document.getElementById(
+            "pmSettingsTheme"
+        );
 
     const settingsExport =
         document.getElementById(
             "pmSettingsExport"
         );
 
-
     const settingsRestore =
         document.getElementById(
             "pmSettingsRestore"
         );
 
+    const settingsRestoreInput =
+        document.getElementById(
+            "pmSettingsRestoreInput"
+        );
 
     const settingsBackupStatus =
         document.getElementById(
             "pmSettingsBackupStatus"
         );
-
-
-       /* =====================================================
-       DASHBOARD VIEW
-       ===================================================== */
-
-    /*
-     * Everything directly inside .app is part of the
-     * Dashboard unless it is the header or Settings view.
-     *
-     * This keeps the entire Dashboard together, including:
-     * Farm Overview, Quick Actions, Production, Feed,
-     * Flock, Alarm, History, etc.
-     */
-
-    const dashboardElements =
-        Array.from(
-            app.children
-        ).filter(
-            element =>
-                element !== header &&
-                element !== settingsView
-        );
-
-    function setDashboardVisibility(
-        visible
-    ) {
-
-        dashboardElements.forEach(
-            element => {
-
-                element.style.display =
-                    visible
-                        ? ""
-                        : "none";
-
-            }
-        );
-
-    }
 
 
     /* =====================================================
@@ -4588,9 +4538,8 @@ if (
 
     function showDashboard() {
 
-        setDashboardVisibility(
-            true
-        );
+        dashboardView.style.display =
+            "";
 
         settingsView.classList.remove(
             "active"
@@ -4604,12 +4553,10 @@ if (
             "active"
         );
 
-
         localStorage.setItem(
             SETTINGS_VIEW_KEY,
             "dashboard"
         );
-
 
         window.scrollTo({
             top: 0,
@@ -4621,9 +4568,8 @@ if (
 
     function showSettings() {
 
-        setDashboardVisibility(
-            false
-        );
+        dashboardView.style.display =
+            "none";
 
         settingsView.classList.add(
             "active"
@@ -4637,15 +4583,12 @@ if (
             "active"
         );
 
-
         localStorage.setItem(
             SETTINGS_VIEW_KEY,
             "settings"
         );
 
-
         refreshSettings();
-
 
         window.scrollTo({
             top: 0,
@@ -4678,7 +4621,6 @@ if (
                 "flockCount"
             );
 
-
         if (
             stored !== null &&
             stored !== ""
@@ -4690,7 +4632,6 @@ if (
                     10
                 );
 
-
             if (
                 Number.isFinite(
                     number
@@ -4702,35 +4643,6 @@ if (
             }
 
         }
-
-
-        const dashboardValue =
-            document.getElementById(
-                "chickenCount"
-            );
-
-
-        if (dashboardValue) {
-
-            const number =
-                parseInt(
-                    dashboardValue.textContent,
-                    10
-                );
-
-
-            if (
-                Number.isFinite(
-                    number
-                )
-            ) {
-
-                return number;
-
-            }
-
-        }
-
 
         return 0;
 
@@ -4741,7 +4653,6 @@ if (
 
         const flock =
             getCurrentFlockCount();
-
 
         if (settingsFlockValue) {
 
@@ -4769,7 +4680,6 @@ if (
                         10
                     );
 
-
                 if (
                     !Number.isFinite(
                         value
@@ -4788,45 +4698,18 @@ if (
                 }
 
 
+                localStorage.setItem(
+                    "flockCount",
+                    String(value)
+                );
+
+
                 /*
-                 * Use the existing dashboard
-                 * flock control so all existing
-                 * production calculations
-                 * remain synchronized.
+                 * Keep the Dashboard display and all
+                 * production calculations synchronized.
                  */
 
-                const dashboardInput =
-                    document.getElementById(
-                        "flockInput"
-                    );
-
-
-                const dashboardSetButton =
-                    document.getElementById(
-                        "setFlockButton"
-                    );
-
-
-                if (
-                    dashboardInput &&
-                    dashboardSetButton
-                ) {
-
-                    dashboardInput.value =
-                        value;
-
-                    dashboardSetButton.click();
-
-                }
-
-                else {
-
-                    localStorage.setItem(
-                        "flockCount",
-                        String(value)
-                    );
-
-                }
+                updateFlockDisplay();
 
 
                 settingsFlockStatus.textContent =
@@ -4853,120 +4736,30 @@ if (
 
     function loadScheduleIntoSettings() {
 
-        const dashboardMorning =
-            document.getElementById(
-                "morningFeedTime"
-            );
-
-
-        const dashboardAfternoon =
-            document.getElementById(
-                "afternoonFeedTime"
-            );
-
-
-        if (dashboardMorning) {
-
-            settingsMorning.value =
-                dashboardMorning.value || "";
-
-        }
-
-
-        if (dashboardAfternoon) {
-
-            settingsAfternoon.value =
-                dashboardAfternoon.value || "";
-
-        }
-
-    }
-
-
-    function saveSettingsSchedule() {
-
         const morning =
-            settingsMorning.value;
-
+            localStorage.getItem(
+                "morningFeedTime"
+            ) || "07:00";
 
         const afternoon =
-            settingsAfternoon.value;
+            localStorage.getItem(
+                "afternoonFeedTime"
+            ) || "14:00";
 
 
-        if (
-            !morning ||
-            !afternoon
-        ) {
+        if (settingsMorning) {
 
-            settingsScheduleStatus.textContent =
-                "Set both feeding times before saving.";
-
-            settingsScheduleStatus.className =
-                "pm-settings-status error";
-
-            return;
+            settingsMorning.value =
+                morning;
 
         }
 
+        if (settingsAfternoon) {
 
-        const dashboardMorning =
-            document.getElementById(
-                "morningFeedTime"
-            );
-
-
-        const dashboardAfternoon =
-            document.getElementById(
-                "afternoonFeedTime"
-            );
-
-
-        const dashboardSave =
-            document.getElementById(
-                "saveScheduleButton"
-            );
-
-
-        if (
-            dashboardMorning &&
-            dashboardAfternoon
-        ) {
-
-            dashboardMorning.value =
-                morning;
-
-            dashboardAfternoon.value =
+            settingsAfternoon.value =
                 afternoon;
 
         }
-
-
-        if (dashboardSave) {
-
-            dashboardSave.click();
-
-        }
-
-        else {
-
-            localStorage.setItem(
-                "morningFeedTime",
-                morning
-            );
-
-            localStorage.setItem(
-                "afternoonFeedTime",
-                afternoon
-            );
-
-        }
-
-
-        settingsScheduleStatus.textContent =
-            "Feeding schedule saved.";
-
-        settingsScheduleStatus.className =
-            "pm-settings-status success";
 
     }
 
@@ -4975,7 +4768,76 @@ if (
 
         settingsScheduleSave.addEventListener(
             "click",
-            saveSettingsSchedule
+            () => {
+
+                const morning =
+                    settingsMorning.value;
+
+                const afternoon =
+                    settingsAfternoon.value;
+
+
+                if (
+                    !morning ||
+                    !afternoon
+                ) {
+
+                    settingsScheduleStatus.textContent =
+                        "Set both feeding times before saving.";
+
+                    settingsScheduleStatus.className =
+                        "pm-settings-status error";
+
+                    return;
+
+                }
+
+
+                /*
+                 * Save directly.
+                 *
+                 * The Dashboard no longer owns the
+                 * feeding schedule controls.
+                 */
+
+                localStorage.setItem(
+                    "morningFeedTime",
+                    morning
+                );
+
+                localStorage.setItem(
+                    "afternoonFeedTime",
+                    afternoon
+                );
+
+
+                updateNextFeed();
+
+
+                settingsScheduleStatus.textContent =
+                    "Feeding schedule saved.";
+
+                settingsScheduleStatus.className =
+                    "pm-settings-status success";
+
+
+                setTimeout(
+                    () => {
+
+                        if (
+                            settingsScheduleStatus
+                        ) {
+
+                            settingsScheduleStatus.textContent =
+                                "";
+
+                        }
+
+                    },
+                    3000
+                );
+
+            }
         );
 
     }
@@ -5048,38 +4910,75 @@ if (
 
         settingsAlarmButton.addEventListener(
             "click",
-            () => {
+            async () => {
 
-                const dashboardAlarmButton =
-                    document.getElementById(
-                        "alarmButton"
-                    );
+                const enabled =
+                    getAlarmState();
 
 
-                if (dashboardAlarmButton) {
+                if (!enabled) {
 
-                    dashboardAlarmButton.click();
+                    if (
+                        "Notification" in
+                        window
+                    ) {
+
+                        try {
+
+                            const permission =
+                                await Notification.requestPermission();
+
+                            if (
+                                permission !==
+                                "granted"
+                            ) {
+
+                                return;
+
+                            }
+
+                        }
+
+                        catch (error) {
+
+                            console.error(
+                                "Alarm notification permission failed:",
+                                error
+                            );
+
+                            return;
+
+                        }
+
+                    }
 
                 }
 
-                else {
 
-                    const newState =
-                        !getAlarmState();
-
-
-                    localStorage.setItem(
-                        "alarmEnabled",
-                        String(newState)
-                    );
-
-                }
-
-
-                setTimeout(
-                    refreshAlarmSettings,
-                    100
+                localStorage.setItem(
+                    "alarmEnabled",
+                    String(
+                        !enabled
+                    )
                 );
+
+
+                refreshAlarmSettings();
+
+
+                /*
+                 * Keep the alarm checker working with
+                 * the new Settings-owned state.
+                 */
+
+                if (
+                    typeof updateAlarmDisplay ===
+                    "function"
+                ) {
+
+                    updateAlarmDisplay();
+
+                }
 
             }
         );
@@ -5091,36 +4990,194 @@ if (
        NOTIFICATION SETTINGS
        ===================================================== */
 
-    if (settingsNotificationsButton) {
+    function refreshNotificationSettings() {
+
+        if (
+            !settingsNotificationBadge ||
+            !settingsNotificationBadgeText
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            !("Notification" in window)
+        ) {
+
+            settingsNotificationBadge.classList.remove(
+                "enabled"
+            );
+
+            settingsNotificationBadgeText.textContent =
+                "Not supported";
+
+            if (
+                settingsNotificationsButton
+            ) {
+
+                settingsNotificationsButton.textContent =
+                    "Notifications Not Supported";
+
+            }
+
+            return;
+
+        }
+
+
+        if (
+            Notification.permission ===
+            "granted"
+        ) {
+
+            settingsNotificationBadge.classList.add(
+                "enabled"
+            );
+
+            settingsNotificationBadgeText.textContent =
+                "Enabled";
+
+            if (
+                settingsNotificationsButton
+            ) {
+
+                settingsNotificationsButton.textContent =
+                    "Notifications Enabled";
+
+            }
+
+            return;
+
+        }
+
+
+        if (
+            Notification.permission ===
+            "denied"
+        ) {
+
+            settingsNotificationBadge.classList.remove(
+                "enabled"
+            );
+
+            settingsNotificationBadgeText.textContent =
+                "Blocked";
+
+            if (
+                settingsNotificationsButton
+            ) {
+
+                settingsNotificationsButton.textContent =
+                    "Notifications Blocked";
+
+            }
+
+            return;
+
+        }
+
+
+        settingsNotificationBadge.classList.remove(
+            "enabled"
+        );
+
+        settingsNotificationBadgeText.textContent =
+            "Available";
+
+        if (
+            settingsNotificationsButton
+        ) {
+
+            settingsNotificationsButton.textContent =
+                "Enable Notifications";
+
+        }
+
+    }
+
+
+    if (
+        settingsNotificationsButton
+    ) {
 
         settingsNotificationsButton.addEventListener(
             "click",
-            () => {
+            async () => {
 
-                const existingNotificationButton =
-                    document.getElementById(
-                        "enableNotifications"
-                    );
-
+                /*
+                 * Use the existing push notification
+                 * system directly. There is no hidden
+                 * Dashboard notification button anymore.
+                 */
 
                 if (
-                    existingNotificationButton
+                    typeof enablePushNotifications ===
+                    "function"
                 ) {
 
-                    existingNotificationButton.click();
-
-
                     settingsNotificationStatus.textContent =
-                        "Notification permission request started.";
+                        "Starting notification setup...";
+
+                    try {
+
+                        await enablePushNotifications();
+
+                        settingsNotificationStatus.textContent =
+                            "Notification setup completed.";
+
+                    }
+
+                    catch (error) {
+
+                        console.error(
+                            "Settings notification setup failed:",
+                            error
+                        );
+
+                        settingsNotificationStatus.textContent =
+                            "Notification setup could not be completed.";
+
+                    }
+
+                }
+
+                else if (
+                    "Notification" in window
+                ) {
+
+                    const permission =
+                        await Notification.requestPermission();
+
+                    if (
+                        permission ===
+                        "granted"
+                    ) {
+
+                        settingsNotificationStatus.textContent =
+                            "Notifications enabled.";
+
+                    }
+
+                    else {
+
+                        settingsNotificationStatus.textContent =
+                            "Notification permission was not granted.";
+
+                    }
 
                 }
 
                 else {
 
                     settingsNotificationStatus.textContent =
-                        "Notification controls are not currently available.";
+                        "Notifications are not supported by this browser.";
 
                 }
+
+
+                refreshNotificationSettings();
 
             }
         );
@@ -5154,11 +5211,9 @@ if (
                 const theme =
                     settingsTheme.value;
 
-
                 saveTheme(
                     theme
                 );
-
 
                 applyTheme(
                     theme
@@ -5171,38 +5226,103 @@ if (
 
 
     /* =====================================================
-       BACKUP
+       BACKUP HELPERS
        ===================================================== */
+
+    function exportPoultryManagerBackup() {
+
+        const data =
+            getPoultryManagerData();
+
+
+        const backup = {
+
+            app:
+                "Poultry Manager",
+
+            version:
+                "1.0",
+
+            createdAt:
+                new Date().toISOString(),
+
+            data:
+                data
+
+        };
+
+
+        const file =
+            new Blob(
+                [
+                    JSON.stringify(
+                        backup,
+                        null,
+                        2
+                    )
+                ],
+                {
+                    type:
+                        "application/json"
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(
+                file
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.href =
+            url;
+
+        link.download =
+            "poultry-manager-backup.json";
+
+
+        document.body.appendChild(
+            link
+        );
+
+        link.click();
+
+        document.body.removeChild(
+            link
+        );
+
+
+        URL.revokeObjectURL(
+            url
+        );
+
+
+        if (
+            settingsBackupStatus
+        ) {
+
+            settingsBackupStatus.textContent =
+                "Backup exported successfully.";
+
+            settingsBackupStatus.className =
+                "pm-settings-status success";
+
+        }
+
+    }
+
 
     if (settingsExport) {
 
         settingsExport.addEventListener(
             "click",
-            () => {
-
-                if (existingExportButton) {
-
-                    existingExportButton.click();
-
-                    settingsBackupStatus.textContent =
-                        "Backup exported successfully.";
-
-                    settingsBackupStatus.className =
-                        "pm-settings-status success";
-
-                }
-
-                else {
-
-                    settingsBackupStatus.textContent =
-                        "Backup export is unavailable.";
-
-                    settingsBackupStatus.className =
-                        "pm-settings-status error";
-
-                }
-
-            }
+            exportPoultryManagerBackup
         );
 
     }
@@ -5214,21 +5334,170 @@ if (
             "click",
             () => {
 
-                if (existingBackupInput) {
+                if (
+                    settingsRestoreInput
+                ) {
 
-                    existingBackupInput.click();
+                    settingsRestoreInput.click();
+
+                }
+
+            }
+        );
+
+    }
+
+
+    if (settingsRestoreInput) {
+
+        settingsRestoreInput.addEventListener(
+            "change",
+            event => {
+
+                const file =
+                    event.target.files[0];
+
+
+                if (!file) {
+
+                    return;
 
                 }
 
-                else {
 
-                    settingsBackupStatus.textContent =
-                        "Restore is unavailable.";
+                const reader =
+                    new FileReader();
 
-                    settingsBackupStatus.className =
-                        "pm-settings-status error";
 
-                }
+                reader.onload =
+                    () => {
+
+                        try {
+
+                            const backup =
+                                JSON.parse(
+                                    reader.result
+                                );
+
+
+                            if (
+                                !backup ||
+                                backup.app !==
+                                    "Poultry Manager" ||
+                                !backup.data
+                            ) {
+
+                                throw new Error(
+                                    "Invalid backup file."
+                                );
+
+                            }
+
+
+                            const confirmed =
+                                confirm(
+                                    "Restore this backup? Your current Poultry Manager data will be replaced."
+                                );
+
+
+                            if (!confirmed) {
+
+                                settingsRestoreInput.value =
+                                    "";
+
+                                return;
+
+                            }
+
+
+                            automaticBackupPaused =
+                                true;
+
+
+                            localStorage.clear();
+
+
+                            Object.entries(
+                                backup.data
+                            ).forEach(
+                                ([key, value]) => {
+
+                                    localStorage.setItem(
+                                        key,
+                                        value
+                                    );
+
+                                }
+                            );
+
+
+                            automaticBackupPaused =
+                                false;
+
+
+                            createAutomaticBackup();
+
+
+                            if (
+                                settingsBackupStatus
+                            ) {
+
+                                settingsBackupStatus.textContent =
+                                    "Backup restored. Reloading...";
+
+                                settingsBackupStatus.className =
+                                    "pm-settings-status success";
+
+                            }
+
+
+                            setTimeout(
+                                () => {
+
+                                    location.reload();
+
+                                },
+                                800
+                            );
+
+                        }
+
+                        catch (error) {
+
+                            console.error(
+                                "Backup restore failed:",
+                                error
+                            );
+
+
+                            automaticBackupPaused =
+                                false;
+
+
+                            if (
+                                settingsBackupStatus
+                            ) {
+
+                                settingsBackupStatus.textContent =
+                                    "Invalid backup file.";
+
+                                settingsBackupStatus.className =
+                                    "pm-settings-status error";
+
+                            }
+
+                        }
+
+
+                        settingsRestoreInput.value =
+                            "";
+
+                    };
+
+
+                reader.readAsText(
+                    file
+                );
 
             }
         );
@@ -5248,6 +5517,8 @@ if (
 
         refreshAlarmSettings();
 
+        refreshNotificationSettings();
+
 
         if (settingsTheme) {
 
@@ -5255,24 +5526,6 @@ if (
                 getStoredTheme();
 
         }
-
-    }
-
-
-    /* =====================================================
-       MOVE BACKUP STATUS INTO SETTINGS
-       ===================================================== */
-
-    const existingBackupStatus =
-        document.getElementById(
-            "backupStatus"
-        );
-
-
-    if (existingBackupStatus) {
-
-        existingBackupStatus.style.display =
-            "none";
 
     }
 
@@ -5289,14 +5542,6 @@ if (
             SETTINGS_VIEW_KEY
         );
 
-
-    /*
-     * Always open on Dashboard when
-     * the application is first launched.
-     *
-     * Settings can be reopened instantly
-     * using the navigation.
-     */
 
     if (
         lastView === "settings"
