@@ -1,214 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Poultry Manager</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 
 <body>
 
-    <div class="app">
-        
-        <!-- =====================================================
-     FARM OVERVIEW
-     ===================================================== -->
 
-<section class="farm-overview-section">
-
-    <div class="farm-overview-header">
-
-        <div>
-            <span class="farm-overview-eyebrow">
-                FARM OVERVIEW
-            </span>
-
-            <h2>
-                Your flock at a glance
-            </h2>
-
-            <p>
-                A quick look at today's poultry activity.
-            </p>
-        </div>
-
-    </div>
+<div class="app">
 
 
-    <div class="farm-overview-grid">
+    <!-- =====================================================
+         APP HEADER
+         ===================================================== -->
+
+    <header class="app-header">
+
+        <h1>
+            Poultry Manager
+        </h1>
+
+        <p id="headerDate"></p>
+
+    </header>
 
 
-        <!-- FLOCK -->
 
-        <div class="farm-overview-card">
+    <!-- =====================================================
+         DASHBOARD — FARM OVERVIEW
+         ===================================================== -->
 
-            <div class="farm-overview-card-top">
+    <section class="farm-overview-section section">
 
-                <span class="farm-overview-icon">
-                    🐔
-                </span>
-
-                <span class="farm-overview-label">
-                    Flock
-                </span>
-
-            </div>
-
-            <strong
-                id="farmOverviewFlock"
-                class="farm-overview-value"
-            >
-                0
-            </strong>
-
-            <span class="farm-overview-description">
-                birds
-            </span>
-
-        </div>
-
-
-        <!-- EGGS -->
-
-        <div class="farm-overview-card">
-
-            <div class="farm-overview-card-top">
-
-                <span class="farm-overview-icon">
-                    🥚
-                </span>
-
-                <span class="farm-overview-label">
-                    Today's Eggs
-                </span>
-
-            </div>
-
-            <strong
-                id="farmOverviewEggs"
-                class="farm-overview-value"
-            >
-                0
-            </strong>
-
-            <span class="farm-overview-description">
-                eggs collected
-            </span>
-
-        </div>
-
-
-        <!-- LAYING RATE -->
-
-        <div class="farm-overview-card">
-
-            <div class="farm-overview-card-top">
-
-                <span class="farm-overview-icon">
-                    📈
-                </span>
-
-                <span class="farm-overview-label">
-                    Laying Rate
-                </span>
-
-            </div>
-
-            <strong
-                id="farmOverviewLayingRate"
-                class="farm-overview-value"
-            >
-                0%
-            </strong>
-
-            <span class="farm-overview-description">
-                today's production
-            </span>
-
-        </div>
-
-
-        <!-- FEED -->
-
-        <div class="farm-overview-card">
-
-            <div class="farm-overview-card-top">
-
-                <span class="farm-overview-icon">
-                    🌾
-                </span>
-
-                <span class="farm-overview-label">
-                    Feed
-                </span>
-
-            </div>
-
-            <strong
-                id="farmOverviewFeed"
-                class="farm-overview-value"
-            >
-                0 kg
-            </strong>
-
-            <span class="farm-overview-description">
-                remaining
-            </span>
-
-        </div>
-
-
-        <!-- NEXT FEED -->
-
-        <div class="farm-overview-card farm-overview-card-wide">
-
-            <div class="farm-overview-card-top">
-
-                <span class="farm-overview-icon">
-                    ⏰
-                </span>
-
-                <span class="farm-overview-label">
-                    Next Feeding
-                </span>
-
-            </div>
-
-            <strong
-                id="farmOverviewNextFeed"
-                class="farm-overview-value"
-            >
-                Not scheduled
-            </strong>
-
-            <span class="farm-overview-description">
-                upcoming feeding time
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <!-- =================================================
-         QUICK ACTIONS
-         ================================================= -->
-
-    <div class="quick-actions">
-
-        <div class="quick-actions-header">
+        <div class="farm-overview-header">
 
             <div>
 
-                <h3>
-                    Quick Actions
-                </h3>
+                <span class="section-eyebrow">
+                    FARM OVERVIEW
+                </span>
+
+                <h2>
+                    Your flock at a glance
+                </h2>
 
                 <p>
-                    Manage your flock quickly.
+                    A quick look at what is happening on your farm today.
                 </p>
 
             </div>
@@ -216,610 +69,716 @@
         </div>
 
 
-        <div class="quick-actions-grid">
+        <div class="farm-overview-grid">
 
+
+            <!-- FLOCK -->
+
+            <div class="farm-overview-card">
+
+                <div class="farm-overview-card-label">
+                    Flock
+                </div>
+
+                <div
+                    id="farmOverviewFlock"
+                    class="farm-overview-card-value"
+                >
+                    0
+                </div>
+
+                <div class="farm-overview-card-subtext">
+                    birds
+                </div>
+
+            </div>
+
+
+            <!-- TODAY'S EGGS -->
+
+            <div class="farm-overview-card">
+
+                <div class="farm-overview-card-label">
+                    Today's Eggs
+                </div>
+
+                <div
+                    id="farmOverviewEggs"
+                    class="farm-overview-card-value"
+                >
+                    0
+                </div>
+
+                <div class="farm-overview-card-subtext">
+                    eggs
+                </div>
+
+            </div>
+
+
+            <!-- LAYING RATE -->
+
+            <div class="farm-overview-card">
+
+                <div class="farm-overview-card-label">
+                    Laying Rate
+                </div>
+
+                <div
+                    id="farmOverviewLayingRate"
+                    class="farm-overview-card-value"
+                >
+                    0%
+                </div>
+
+                <div class="farm-overview-card-subtext">
+                    today
+                </div>
+
+            </div>
+
+
+            <!-- FEED -->
+
+            <div class="farm-overview-card">
+
+                <div class="farm-overview-card-label">
+                    Feed
+                </div>
+
+                <div
+                    id="farmOverviewFeed"
+                    class="farm-overview-card-value"
+                >
+                    0 kg
+                </div>
+
+                <div class="farm-overview-card-subtext">
+                    available
+                </div>
+
+            </div>
+
+
+            <!-- NEXT FEED -->
+
+            <div class="farm-overview-card farm-overview-card-wide">
+
+                <div class="farm-overview-card-label">
+                    Next Feeding
+                </div>
+
+                <div
+                    id="farmOverviewNextFeed"
+                    class="farm-overview-card-value"
+                >
+                    --
+                </div>
+
+                <div class="farm-overview-card-subtext">
+                    scheduled feeding
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="quick-actions">
 
             <button
                 type="button"
                 id="quickAddEggs"
-                class="quick-action-button"
             >
-
-                <span class="quick-action-icon">
-                    🥚
-                </span>
-
-                <span>
-
-                    <strong>
-                        Add Eggs
-                    </strong>
-
-                    <small>
-                        Record today's production
-                    </small>
-
-                </span>
-
+                Add Eggs
             </button>
-
 
             <button
                 type="button"
                 id="quickFeed"
-                class="quick-action-button"
             >
-
-                <span class="quick-action-icon">
-                    🌾
-                </span>
-
-                <span>
-
-                    <strong>
-                        Record Feed
-                    </strong>
-
-                    <small>
-                        Track feed usage
-                    </small>
-
-                </span>
-
+                Manage Feed
             </button>
-
 
             <button
                 type="button"
                 id="quickFlock"
-                class="quick-action-button"
             >
-
-                <span class="quick-action-icon">
-                    🐔
-                </span>
-
-                <span>
-
-                    <strong>
-                        Manage Flock
-                    </strong>
-
-                    <small>
-                        Update your birds
-                    </small>
-
-                </span>
-
+                Manage Flock
             </button>
-
 
             <button
                 type="button"
                 id="quickHistory"
-                class="quick-action-button"
             >
-
-                <span class="quick-action-icon">
-                    📊
-                </span>
-
-                <span>
-
-                    <strong>
-                        View History
-                    </strong>
-
-                    <small>
-                        Review farm records
-                    </small>
-
-                </span>
-
+                View History
             </button>
 
         </div>
 
-    </div>
+    </section>
 
-</section>
 
-        <!-- HEADER -->
-        <header class="app-header">
+
+    <!-- =====================================================
+         DASHBOARD — OVERVIEW
+         ===================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <h2>
+                Overview
+            </h2>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+            <div class="card">
+
+                <span>
+                    Flock
+                </span>
+
+                <strong id="birdCount">
+                    5
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Today's Eggs
+                </span>
+
+                <strong id="overviewEggCount">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Laying Rate
+                </span>
+
+                <strong id="overviewLayingRate">
+                    0%
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Feed
+                </span>
+
+                <strong id="overviewFeedAmount">
+                    0 kg
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD — PRODUCTION SUMMARY
+         ===================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <h2>
+                Production Summary
+            </h2>
+
+        </div>
+
+
+        <div class="dashboard-grid">
+
+
+            <div class="card">
+
+                <span>
+                    7-Day Eggs
+                </span>
+
+                <strong id="sevenDayEggs">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Average Laying Rate
+                </span>
+
+                <strong id="averageLayingRate">
+                    0%
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Best Production Day
+                </span>
+
+                <strong id="bestProductionDay">
+                    --
+                </strong>
+
+            </div>
+
+
+            <div class="card">
+
+                <span>
+                    Best Production
+                </span>
+
+                <strong id="bestProductionEggs">
+                    0 eggs
+                </strong>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD — PRODUCTION TREND
+         ===================================================== -->
+
+    <section class="section trend-card">
+
+        <div class="section-header">
+
+            <h2>
+                Production Trend
+            </h2>
+
+        </div>
+
+
+        <div class="trend-labels">
+
+            <span id="trendMaxLabel">
+                0
+            </span>
+
+            <span id="trendMidLabel">
+                0
+            </span>
+
+        </div>
+
+
+        <div
+            id="productionTrendChart"
+            class="production-trend-chart"
+        ></div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD — PRODUCTION ANALYTICS
+         ===================================================== -->
+
+    <section class="section analytics-section">
+
+        <div class="section-header">
+
+            <h2>
+                Production Analytics
+            </h2>
+
+        </div>
+
+
+        <div class="analytics-grid">
+
+
+            <div class="analytics-card">
+
+                <span>
+                    Eggs Per Hen
+                </span>
+
+                <strong id="analyticsEggsPerHen">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="analytics-card">
+
+                <span>
+                    Average
+                </span>
+
+                <strong id="analyticsAverage">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="analytics-card">
+
+                <span>
+                    Highest Day
+                </span>
+
+                <strong id="analyticsHighestDay">
+                    0
+                </strong>
+
+                <small id="analyticsHighestDayDate">
+                    --
+                </small>
+
+            </div>
+
+
+            <div class="analytics-card">
+
+                <span>
+                    Lowest Day
+                </span>
+
+                <strong id="analyticsLowestDay">
+                    0
+                </strong>
+
+                <small id="analyticsLowestDayDate">
+                    --
+                </small>
+
+            </div>
+
+
+            <div class="analytics-card">
+
+                <span>
+                    Consistency
+                </span>
+
+                <strong id="analyticsConsistency">
+                    0%
+                </strong>
+
+            </div>
+
+
+            <div class="analytics-card">
+
+                <span>
+                    Change
+                </span>
+
+                <strong id="analyticsChange">
+                    0%
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+        <div
+            id="analyticsInsight"
+            class="analytics-insight"
+        ></div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD — EGG PRODUCTION
+         ===================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <h2>
+                Egg Production
+            </h2>
+
+        </div>
+
+
+        <div class="egg-production-summary">
+
             <div>
-                <h1>Poultry Manager</h1>
-                <p id="headerDate"></p>
-            </div>
-        </header>
 
+                <span>
+                    Today's Eggs
+                </span>
 
-        <!-- OVERVIEW -->
-        <section class="section">
-
-            <div class="section-title">
-                <h2>Overview</h2>
-            </div>
-
-            <div class="overview-grid">
-
-                <div class="overview-card">
-                    <span class="overview-label">Flock</span>
-                    <strong id="birdCount">0</strong>
-                    <small>birds</small>
-                </div>
-
-                <div class="overview-card">
-                    <span class="overview-label">Today's Eggs</span>
-                    <strong id="overviewEggCount">0</strong>
-                    <small>eggs</small>
-                </div>
-
-                <div class="overview-card">
-                    <span class="overview-label">Laying Rate</span>
-                    <strong id="overviewLayingRate">0%</strong>
-                    <small>today</small>
-                </div>
-
-                <div class="overview-card">
-                    <span class="overview-label">Feed Stock</span>
-                    <strong id="overviewFeedAmount">0 kg</strong>
-                    <small>remaining</small>
-                </div>
+                <strong id="eggCount">
+                    0
+                </strong>
 
             </div>
 
-        </section>
 
+            <div>
 
-        <!-- PRODUCTION SUMMARY -->
-        <section class="section">
+                <span>
+                    Laying Rate
+                </span>
 
-            <div class="section-title">
-                <h2>Production Summary</h2>
-            </div>
-
-            <div class="summary-grid">
-
-                <div class="summary-card">
-                    <span>7-Day Eggs</span>
-                    <strong id="sevenDayEggs">0</strong>
-                </div>
-
-                <div class="summary-card">
-                    <span>Average Laying Rate</span>
-                    <strong id="averageLayingRate">0%</strong>
-                </div>
-
-                <div class="summary-card">
-                    <span>Best Production Day</span>
-                    <strong id="bestProductionDay">—</strong>
-                </div>
-
-                <div class="summary-card">
-                    <span>Best Day Eggs</span>
-                    <strong id="bestProductionEggs">0</strong>
-                </div>
+                <strong id="layingRate">
+                    0%
+                </strong>
 
             </div>
 
-        </section>
-
-
-        <!-- PRODUCTION TREND -->
-        <section class="section trend-card">
-
-            <div class="section-title">
-                <div>
-                    <h2>7-Day Production Trend</h2>
-                    <p>Egg production across the last seven calendar days.</p>
-                </div>
-            </div>
-
-            <div class="trend-chart-wrapper">
-
-                <div class="trend-y-axis">
-                    <span id="trendMaxLabel">0</span>
-                    <span id="trendMidLabel">0</span>
-                    <span>0</span>
-                </div>
-
-                <div class="trend-chart-area">
-
-                    <div class="trend-grid-lines">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-
-                    <div id="productionTrendChart" class="production-trend-chart"></div>
-
-                </div>
-
-            </div>
-
-            <div class="trend-legend">
-                <span class="trend-legend-dot"></span>
-                <span>Eggs produced</span>
-            </div>
-
-        </section>
-
-
-        <!-- PRODUCTION ANALYTICS -->
-   <section class="section analytics-section">
-    <div class="section-title">
-        <h2>Production Analytics</h2>
-        <p>Understand your flock's recent egg production.</p>
-    </div>
-
-    <div class="analytics-grid">
-
-        <div class="analytics-card">
-            <span class="analytics-label">Eggs per Hen</span>
-            <strong id="analyticsEggsPerHen">0.00</strong>
-            <small>7-day period</small>
         </div>
 
-        <div class="analytics-card">
-            <span class="analytics-label">Daily Average</span>
-            <strong id="analyticsAverage">0.00</strong>
-            <small>eggs per day</small>
+
+        <div class="button-row">
+
+            <button
+                type="button"
+                id="addEggButton"
+            >
+                Add Egg
+            </button>
+
+            <button
+                type="button"
+                id="removeEggButton"
+            >
+                Remove Egg
+            </button>
+
         </div>
 
-        <div class="analytics-card">
-            <span class="analytics-label">Highest Day</span>
-            <strong id="analyticsHighestDay">0</strong>
-            <small id="analyticsHighestDayDate">No data</small>
+
+        <button
+            type="button"
+            id="viewHistoryButton"
+        >
+            View History
+        </button>
+
+
+        <div
+            id="eggHistoryList"
+            class="history-list"
+        ></div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD — FEED MANAGEMENT
+         ===================================================== -->
+
+    <section class="section feed-management-section">
+
+        <div class="section-header">
+
+            <h2>
+                Feed Management
+            </h2>
+
         </div>
 
-        <div class="analytics-card">
-            <span class="analytics-label">Lowest Day</span>
-            <strong id="analyticsLowestDay">0</strong>
-            <small id="analyticsLowestDayDate">No data</small>
-        </div>
 
-        <div class="analytics-card">
-            <span class="analytics-label">Consistency</span>
-            <strong id="analyticsConsistency">0%</strong>
-            <small>days producing eggs</small>
-        </div>
-
-        <div class="analytics-card">
-            <span class="analytics-label">Production Change</span>
-            <strong id="analyticsChange">0%</strong>
-            <small>recent vs earlier</small>
-        </div>
-
-    </div>
-
-    <div class="analytics-insight">
-        <div class="analytics-insight-icon">📊</div>
-
-        <div>
-            <strong>Production Insight</strong>
-            <p id="analyticsInsight">
-                Start recording eggs to see production insights.
-            </p>
-        </div>
-    </div>
-</section>
-
-            
+        <div class="feed-management-summary">
 
 
-        <!-- EGG PRODUCTION -->
-        <section class="section">
+            <div class="feed-summary-card">
 
-            <div class="section-title">
-                <div>
-                    <h2>Egg Production</h2>
-                    <p>Record today's eggs.</p>
-                </div>
-            </div>
+                <span>
+                    Feed Stock
+                </span>
 
-            <div class="egg-main-card">
+                <strong id="feedAmount">
+                    0 kg
+                </strong>
 
-                <div class="egg-number">
-                    <span id="eggCount">0</span>
-                    <small>eggs today</small>
-                </div>
-
-                <div class="laying-rate">
-                    <span id="layingRate">0%</span>
-                    <small>laying rate</small>
-                </div>
-
-                <div class="egg-actions">
-
-                    <button id="addEggButton" class="primary-button">
-                        + Add Egg
-                    </button>
-
-                    <button id="removeEggButton" class="secondary-button">
-                        − Remove Egg
-                    </button>
-
-                </div>
+                <span
+                    id="feedStatusBadge"
+                    class="feed-status-badge"
+                >
+                    --
+                </span>
 
             </div>
 
 
-            <!-- HISTORY -->
+            <div class="feed-summary-card">
 
-            <div class="subsection">
+                <span>
+                    Stock Level
+                </span>
 
-                <div class="subsection-header">
-                    <h3>Egg History</h3>
-                    <button id="viewHistoryButton" class="text-button">
-                        View All History
-                    </button>
-                </div>
-
-                <div id="eggHistoryList" class="history-list"></div>
-
-            </div>
-
-        </section>
-
-
-     
-      <!-- FEED MANAGEMENT -->
-<section class="section feed-management-section">
-
-    <div class="section-title">
-        <div>
-            <h2>Feed Management</h2>
-            <p>Monitor stock, consumption and feeding activity.</p>
-        </div>
-    </div>
-
-
-    <!-- FEED OVERVIEW -->
-
-    <div class="feed-dashboard">
-
-        <div class="feed-hero-card">
-
-            <div class="feed-hero-top">
-
-                <div>
-                    <span class="feed-eyebrow">
-                        CURRENT STOCK
-                    </span>
-
-                    <strong id="feedAmount">
-                        0.0 kg
-                    </strong>
-
-                    <small>
-                        available feed
-                    </small>
-                </div>
+                <strong id="feedStockPercentage">
+                    0%
+                </strong>
 
                 <div
-                    id="feedStatusBadge"
-                    class="feed-status-badge feed-status-neutral"
-                >
-                    No usage data
-                </div>
-
-            </div>
-
-            <div class="feed-stock-progress">
-
-                <div class="feed-progress-header">
-                    <span>Stock level</span>
-                    <span id="feedStockPercentage">
-                        —
-                    </span>
-                </div>
-
-                <div class="feed-progress-track">
-                    <div
-                        id="feedStockProgress"
-                        class="feed-progress-fill"
-                    ></div>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="feed-metric-card">
-
-            <span class="feed-metric-label">
-                Used Today
-            </span>
-
-            <strong id="feedUsedToday">
-                0.0 kg
-            </strong>
-
-            <small>
-                recorded consumption
-            </small>
-
-        </div>
-
-
-        <div class="feed-metric-card">
-
-            <span class="feed-metric-label">
-                Daily Average
-            </span>
-
-            <strong id="feedDailyAverage">
-                —
-            </strong>
-
-            <small>
-                based on recorded usage
-            </small>
-
-        </div>
-
-
-        <div class="feed-metric-card">
-
-            <span class="feed-metric-label">
-                Days Remaining
-            </span>
-
-            <strong id="feedDaysRemaining">
-                —
-            </strong>
-
-            <small id="feedDaysRemainingText">
-                record usage to calculate
-            </small>
-
-        </div>
-
-    </div>
-
-
-    <!-- FEED ACTIONS -->
-
-    <div class="feed-action-panel">
-
-        <div class="feed-action-header">
-            <div>
-                <h3>Feed Inventory</h3>
-                <p>
-                    Add new stock or record feed consumed by the flock.
-                </p>
-            </div>
-        </div>
-
-        <div class="feed-action-grid">
-
-            <div class="feed-action-box">
-
-                <div class="feed-action-icon">
-                    +
-                </div>
-
-                <div class="feed-action-content">
-
-                    <strong>
-                        Add Feed
-                    </strong>
-
-                    <span>
-                        Increase your current stock.
-                    </span>
-
-                    <div class="feed-input-row">
-
-                        <input
-                            id="feedInput"
-                            type="number"
-                            min="0"
-                            step="0.1"
-                            placeholder="Amount in kg"
-                        >
-
-                        <button
-                            id="addFeedButton"
-                            class="primary-button"
-                        >
-                            Add Feed
-                        </button>
-
-                    </div>
-
-                </div>
+                    id="feedStockProgress"
+                    class="feed-stock-progress"
+                ></div>
 
             </div>
 
 
-            <div class="feed-action-box">
+            <div class="feed-summary-card">
 
-                <div class="feed-action-icon feed-use-icon">
-                    −
-                </div>
+                <span>
+                    Used Today
+                </span>
 
-                <div class="feed-action-content">
-
-                    <strong>
-                        Record Usage
-                    </strong>
-
-                    <span>
-                        Record feed consumed by your flock.
-                    </span>
-
-                    <div class="feed-input-row">
-
-                        <input
-                            id="useFeedInput"
-                            type="number"
-                            min="0"
-                            step="0.1"
-                            placeholder="Amount in kg"
-                        >
-
-                        <button
-                            id="useFeedButton"
-                            class="secondary-button"
-                        >
-                            Record Usage
-                        </button>
-
-
-                    </div>
-
-<button
-    id="resetFeedTodayButton"
-    class="feed-reset-button"
->
-    Reset Today's Usage
-</button>
-
-                </div>
+                <strong id="feedUsedToday">
+                    0 kg
+                </strong>
 
             </div>
 
+
+            <div class="feed-summary-card">
+
+                <span>
+                    Daily Average
+                </span>
+
+                <strong id="feedDailyAverage">
+                    0 kg
+                </strong>
+
+            </div>
+
+
+            <div class="feed-summary-card">
+
+                <span>
+                    Days Remaining
+                </span>
+
+                <strong id="feedDaysRemaining">
+                    0
+                </strong>
+
+                <small id="feedDaysRemainingText">
+                    --
+                </small>
+
+            </div>
+
+
         </div>
 
-    </div>
+
+        <!-- ADD FEED -->
+
+        <div class="feed-control">
+
+            <input
+                id="feedInput"
+                type="number"
+                min="0"
+                step="0.1"
+                placeholder="Feed amount (kg)"
+            >
+
+            <button
+                type="button"
+                id="addFeedButton"
+            >
+                Add Feed
+            </button>
+
+        </div>
 
 
-    <!-- CONSUMPTION ANALYTICS -->
+        <!-- USE FEED -->
 
-    <div class="feed-consumption-card">
+        <div class="feed-control">
 
-        <div class="feed-card-header">
+            <input
+                id="useFeedInput"
+                type="number"
+                min="0"
+                step="0.1"
+                placeholder="Feed used (kg)"
+            >
+
+            <button
+                type="button"
+                id="useFeedButton"
+            >
+                Use Feed
+            </button>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="resetFeedTodayButton"
+        >
+            Reset Today's Feed Usage
+        </button>
+
+
+        <!-- FEED HISTORY / ANALYTICS -->
+
+        <div class="feed-analytics">
 
             <div>
-                <h3>Consumption Overview</h3>
 
-                <p>
-                    Your recorded feed usage over the last seven days.
-                </p>
-            </div>
-
-            <div class="feed-period-label">
-                Last 7 days
-            </div>
-
-        </div>
-
-
-        <div class="feed-consumption-summary">
-
-            <div>
                 <span>
                     7-Day Usage
                 </span>
 
                 <strong id="feedSevenDayUsage">
-                    0.0 kg
+                    0 kg
                 </strong>
+
             </div>
 
+
             <div>
+
                 <span>
                     Usage Days
                 </span>
@@ -827,71 +786,50 @@
                 <strong id="feedUsageDays">
                     0
                 </strong>
+
             </div>
 
+
             <div>
+
                 <span>
-                    Per Bird / Day
+                    Feed Per Bird
                 </span>
 
                 <strong id="feedPerBird">
-                    —
+                    0 g
                 </strong>
+
             </div>
 
         </div>
 
 
-        <div class="feed-chart-wrapper">
-
-            <div
-                id="feedConsumptionChart"
-                class="feed-consumption-chart"
-            ></div>
-
-        </div>
-
-    </div>
+        <div
+            id="feedConsumptionChart"
+            class="feed-consumption-chart"
+        ></div>
 
 
-    <!-- FEED ACTIVITY -->
+        <button
+            type="button"
+            id="viewFeedHistoryButton"
+        >
+            View Feed History
+        </button>
 
-    <div class="subsection feed-activity-section">
-
-        <div class="subsection-header">
-
-            <div>
-                <h3>Recent Feed Activity</h3>
-            </div>
-
-            <button
-                id="viewFeedHistoryButton"
-                class="text-button"
-            >
-                View All
-            </button>
-
-        </div>
 
         <div
             id="feedHistoryList"
-            class="feed-history-list"
+            class="history-list"
         ></div>
 
-    </div>
 
+        <!-- FEED SCHEDULE -->
 
-    <!-- FEED SCHEDULE -->
+        <div class="feed-schedule">
 
-    <div class="subsection">
-
-        <div class="subsection-header">
-            <h3>Feed Schedule</h3>
-        </div>
-
-        <div class="schedule-grid">
-
-            <div class="schedule-item">
+            <div class="feed-schedule-field">
 
                 <label for="morningFeedTime">
                     Morning Feed
@@ -904,7 +842,8 @@
 
             </div>
 
-            <div class="schedule-item">
+
+            <div class="feed-schedule-field">
 
                 <label for="afternoonFeedTime">
                     Afternoon Feed
@@ -917,174 +856,226 @@
 
             </div>
 
+
+            <button
+                type="button"
+                id="saveScheduleButton"
+            >
+                Save Schedule
+            </button>
+
+
+            <div id="scheduleStatus"></div>
+
         </div>
 
-        <button
-            id="saveScheduleButton"
-            class="primary-button"
-        >
-            Save Schedule
-        </button>
 
-        <p
-            id="scheduleStatus"
-            class="status-message"
-        ></p>
+        <div class="next-feed">
 
+            <span>
+                Next Feed
+            </span>
 
-        <div class="next-feed-card">
-
-            <div>
-                <span>Next Feed</span>
-                <small id="nextFeedCountdown">
-                    —
-                </small>
-            </div>
-
-            <strong id="nextFeed">
-                —
+            <strong id="nextFeedCountdown">
+                --
             </strong>
 
+            <div id="nextFeed">
+                --
+            </div>
+
         </div>
 
-    </div>
-
-</section>
+    </section>
 
 
-        <!-- FLOCK MANAGEMENT -->
-        <section class="section">
 
-            <div class="section-title">
-                <div>
-                    <h2>Flock Management</h2>
-                    <p>Keep your flock size accurate.</p>
-                </div>
-            </div>
+    <!-- =====================================================
+         DASHBOARD — FLOCK MANAGEMENT
+         ===================================================== -->
 
-            <div class="flock-card">
+    <section class="section">
 
-                <div class="flock-number">
-                    <span id="chickenCount">0</span>
-                    <small>birds</small>
-                </div>
+        <div class="section-header">
 
-                <div class="flock-actions">
+            <h2>
+                Flock Management
+            </h2>
 
-                    <button id="addChicken" class="primary-button">
-                        + Add Bird
-                    </button>
+        </div>
 
-                    <button id="removeChicken" class="secondary-button">
-                        − Remove Bird
-                    </button>
 
-                </div>
+        <div class="flock-management">
 
-                <div class="flock-set">
+            <div>
 
-                    <input
-                        id="flockInput"
-                        type="number"
-                        min="0"
-                        placeholder="Set total flock"
-                    >
+                <span>
+                    Current Flock
+                </span>
 
-                    <button id="setFlockButton" class="secondary-button">
-                        Set Flock
-                    </button>
-
-                </div>
+                <strong id="chickenCount">
+                    5
+                </strong>
 
             </div>
 
-        </section>
 
+            <div class="button-row">
 
-        <!-- ALARM -->
-        <section class="section">
+                <button
+                    type="button"
+                    id="addChicken"
+                >
+                    Add Chicken
+                </button>
 
-            <div class="section-title">
-                <div>
-                    <h2>Feed Alarm</h2>
-                    <p>Get reminded when feeding time arrives.</p>
-                </div>
-            </div>
-
-            <div class="alarm-card">
-
-                <div>
-                    <strong id="alarmStatus">Alarm Off</strong>
-                    <p id="alarmMessage">Feed alarm is currently disabled.</p>
-                </div>
-
-                <button id="alarmButton" class="primary-button">
-                    Enable Alarm
+                <button
+                    type="button"
+                    id="removeChicken"
+                >
+                    Remove Chicken
                 </button>
 
             </div>
 
-        </section>
 
+            <div class="flock-input-row">
 
-        <!-- NOTIFICATIONS -->
-        <section class="section">
+                <input
+                    id="flockInput"
+                    type="number"
+                    min="0"
+                    placeholder="Flock size"
+                >
 
-            <div class="section-title">
-                <div>
-                    <h2>Notifications</h2>
-                    <p>Allow Poultry Manager to send notifications.</p>
-                </div>
+                <button
+                    type="button"
+                    id="setFlockButton"
+                >
+                    Set Flock
+                </button>
+
             </div>
 
-            <button id="enableNotifications" class="primary-button">
-                Enable Notifications
-            </button>
-
-        </section>
-
-    </div>
-<section class="section">
-    <div class="section-title">
-        <div>
-            <h2>Data Backup</h2>
-            <p>Protect your Poultry Manager data.</p>
         </div>
-    </div>
 
-    <div class="backup-actions">
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD — FEED ALARM
+         ===================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <h2>
+                Feed Alarm
+            </h2>
+
+        </div>
+
+
+        <div id="alarmStatus"></div>
+
+        <div id="alarmMessage"></div>
+
 
         <button
-            id="exportData"
-            class="primary-button"
+            type="button"
+            id="alarmButton"
         >
-            Export Backup
+            Enable Alarm
         </button>
 
-        <label
-            for="importData"
-            class="secondary-button"
+    </section>
+
+
+
+    <!-- =====================================================
+         DASHBOARD — NOTIFICATIONS
+         ===================================================== -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <h2>
+                Notifications
+            </h2>
+
+        </div>
+
+
+        <button
+            type="button"
+            id="enableNotifications"
         >
-            Restore Backup
-        </label>
+            Enable Notifications
+        </button>
 
-        <input
-            type="file"
-            id="importData"
-            accept=".json"
-            hidden
-        >
+    </section>
 
-    </div>
 
-    <p
-        id="backupStatus"
-        class="status-text"
-    ></p>
 
-</section>
+    <!-- =====================================================
+         DATA BACKUP
+         
+         Kept inside .app so the existing Dashboard /
+         Settings visibility system can control it.
+         The Settings system already hides this status
+         and provides its own Backup controls.
+         ===================================================== -->
 
-    <script src="main.js?v=21"></script>
+    <section class="section">
+
+        <div class="section-header">
+
+            <h2>
+                Data Backup
+            </h2>
+
+        </div>
+
+
+        <div class="backup-controls">
+
+            <button
+                type="button"
+                id="exportData"
+            >
+                Export Data
+            </button>
+
+
+            <button
+                type="button"
+                id="importData"
+            >
+                Import Data
+            </button>
+
+        </div>
+
+
+        <div id="backupStatus"></div>
+
+    </section>
+
+
+</div>
+
+
+
+<!-- =========================================================
+     APPLICATION JAVASCRIPT
+     ========================================================= -->
+
+<script src="main.js?v=21"></script>
+
 
 </body>
+
 </html>
