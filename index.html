@@ -12,6 +12,317 @@
 <body>
 
     <div class="app">
+        
+        <!-- =====================================================
+     FARM OVERVIEW
+     ===================================================== -->
+
+<section class="farm-overview-section">
+
+    <div class="farm-overview-header">
+
+        <div>
+            <span class="farm-overview-eyebrow">
+                FARM OVERVIEW
+            </span>
+
+            <h2>
+                Your flock at a glance
+            </h2>
+
+            <p>
+                A quick look at today's poultry activity.
+            </p>
+        </div>
+
+    </div>
+
+
+    <div class="farm-overview-grid">
+
+
+        <!-- FLOCK -->
+
+        <div class="farm-overview-card">
+
+            <div class="farm-overview-card-top">
+
+                <span class="farm-overview-icon">
+                    🐔
+                </span>
+
+                <span class="farm-overview-label">
+                    Flock
+                </span>
+
+            </div>
+
+            <strong
+                id="farmOverviewFlock"
+                class="farm-overview-value"
+            >
+                0
+            </strong>
+
+            <span class="farm-overview-description">
+                birds
+            </span>
+
+        </div>
+
+
+        <!-- EGGS -->
+
+        <div class="farm-overview-card">
+
+            <div class="farm-overview-card-top">
+
+                <span class="farm-overview-icon">
+                    🥚
+                </span>
+
+                <span class="farm-overview-label">
+                    Today's Eggs
+                </span>
+
+            </div>
+
+            <strong
+                id="farmOverviewEggs"
+                class="farm-overview-value"
+            >
+                0
+            </strong>
+
+            <span class="farm-overview-description">
+                eggs collected
+            </span>
+
+        </div>
+
+
+        <!-- LAYING RATE -->
+
+        <div class="farm-overview-card">
+
+            <div class="farm-overview-card-top">
+
+                <span class="farm-overview-icon">
+                    📈
+                </span>
+
+                <span class="farm-overview-label">
+                    Laying Rate
+                </span>
+
+            </div>
+
+            <strong
+                id="farmOverviewLayingRate"
+                class="farm-overview-value"
+            >
+                0%
+            </strong>
+
+            <span class="farm-overview-description">
+                today's production
+            </span>
+
+        </div>
+
+
+        <!-- FEED -->
+
+        <div class="farm-overview-card">
+
+            <div class="farm-overview-card-top">
+
+                <span class="farm-overview-icon">
+                    🌾
+                </span>
+
+                <span class="farm-overview-label">
+                    Feed
+                </span>
+
+            </div>
+
+            <strong
+                id="farmOverviewFeed"
+                class="farm-overview-value"
+            >
+                0 kg
+            </strong>
+
+            <span class="farm-overview-description">
+                remaining
+            </span>
+
+        </div>
+
+
+        <!-- NEXT FEED -->
+
+        <div class="farm-overview-card farm-overview-card-wide">
+
+            <div class="farm-overview-card-top">
+
+                <span class="farm-overview-icon">
+                    ⏰
+                </span>
+
+                <span class="farm-overview-label">
+                    Next Feeding
+                </span>
+
+            </div>
+
+            <strong
+                id="farmOverviewNextFeed"
+                class="farm-overview-value"
+            >
+                Not scheduled
+            </strong>
+
+            <span class="farm-overview-description">
+                upcoming feeding time
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         QUICK ACTIONS
+         ================================================= -->
+
+    <div class="quick-actions">
+
+        <div class="quick-actions-header">
+
+            <div>
+
+                <h3>
+                    Quick Actions
+                </h3>
+
+                <p>
+                    Manage your flock quickly.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="quick-actions-grid">
+
+
+            <button
+                type="button"
+                id="quickAddEggs"
+                class="quick-action-button"
+            >
+
+                <span class="quick-action-icon">
+                    🥚
+                </span>
+
+                <span>
+
+                    <strong>
+                        Add Eggs
+                    </strong>
+
+                    <small>
+                        Record today's production
+                    </small>
+
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                id="quickFeed"
+                class="quick-action-button"
+            >
+
+                <span class="quick-action-icon">
+                    🌾
+                </span>
+
+                <span>
+
+                    <strong>
+                        Record Feed
+                    </strong>
+
+                    <small>
+                        Track feed usage
+                    </small>
+
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                id="quickFlock"
+                class="quick-action-button"
+            >
+
+                <span class="quick-action-icon">
+                    🐔
+                </span>
+
+                <span>
+
+                    <strong>
+                        Manage Flock
+                    </strong>
+
+                    <small>
+                        Update your birds
+                    </small>
+
+                </span>
+
+            </button>
+
+
+            <button
+                type="button"
+                id="quickHistory"
+                class="quick-action-button"
+            >
+
+                <span class="quick-action-icon">
+                    📊
+                </span>
+
+                <span>
+
+                    <strong>
+                        View History
+                    </strong>
+
+                    <small>
+                        Review farm records
+                    </small>
+
+                </span>
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
 
         <!-- HEADER -->
         <header class="app-header">
