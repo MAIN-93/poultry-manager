@@ -1931,3 +1931,26 @@ input:focus {
     outline: 2px solid #fca5a5;
     outline-offset: 2px;
 }
+
+/* =========================================================
+   DATA BACKUP
+   ========================================================= */
+
+.backup-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.backup-actions .secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.status-text {
+    margin-top: 12px;
+    font-size: 14px;
+}
