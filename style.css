@@ -2856,7 +2856,7 @@ html[data-theme="dark"] .pm-settings-action-button.pm-settings-secondary {
     display: grid;
 
     grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+        repeat(3, minmax(0, 1fr));
 
     gap: 12px;
 }
