@@ -5319,3 +5319,201 @@ if (
 
 
 })();
+
+
+/* =========================================================
+   POULTRY MANAGER — APP SHELL POLISH
+   ========================================================= */
+
+(function initializePoultryManagerAppShell() {
+
+    "use strict";
+
+
+    const app =
+        document.querySelector(".app");
+
+
+    const dashboardButton =
+        document.getElementById(
+            "pmDashboardButton"
+        );
+
+
+    const settingsButton =
+        document.getElementById(
+            "pmSettingsButton"
+        );
+
+
+    if (
+        !app ||
+        !dashboardButton ||
+        !settingsButton
+    ) {
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       VIEW TRANSITION
+       ===================================================== */
+
+    function animateViewChange() {
+
+        app.classList.remove(
+            "pm-switching"
+        );
+
+
+        requestAnimationFrame(() => {
+
+            app.classList.add(
+                "pm-switching"
+            );
+
+        });
+
+
+        setTimeout(() => {
+
+            app.classList.remove(
+                "pm-switching"
+            );
+
+        }, 250);
+
+    }
+
+
+    dashboardButton.addEventListener(
+        "click",
+        animateViewChange
+    );
+
+
+    settingsButton.addEventListener(
+        "click",
+        animateViewChange
+    );
+
+
+    /* =====================================================
+       SETTINGS SAVE FEEDBACK
+       ===================================================== */
+
+    function addSavedFeedback(
+        button,
+        messageElement
+    ) {
+
+        if (
+            !button ||
+            !messageElement
+        ) {
+
+            return;
+
+        }
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                setTimeout(() => {
+
+                    if (
+                        messageElement.classList.contains(
+                            "success"
+                        )
+                    ) {
+
+                        messageElement.animate(
+                            [
+                                {
+                                    opacity: 0.45
+                                },
+                                {
+                                    opacity: 1
+                                }
+                            ],
+                            {
+                                duration: 220
+                            }
+                        );
+
+                    }
+
+                }, 120);
+
+            }
+        );
+
+    }
+
+
+    addSavedFeedback(
+        document.getElementById(
+            "pmSettingsFlockSave"
+        ),
+        document.getElementById(
+            "pmSettingsFlockStatus"
+        )
+    );
+
+
+    addSavedFeedback(
+        document.getElementById(
+            "pmSettingsScheduleSave"
+        ),
+        document.getElementById(
+            "pmSettingsScheduleStatus"
+        )
+    );
+
+
+    /* =====================================================
+       PREVENT DOUBLE TAP FEEDBACK
+       ===================================================== */
+
+    const actionButtons =
+        document.querySelectorAll(
+            ".pm-settings-action-button"
+        );
+
+
+    actionButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    button.classList.add(
+                        "pm-button-pressed"
+                    );
+
+
+                    setTimeout(() => {
+
+                        button.classList.remove(
+                            "pm-button-pressed"
+                        );
+
+                    }, 180);
+
+                }
+            );
+
+        }
+    );
+
+
+    console.log(
+        "Poultry Manager App Shell initialized."
+    );
+
+})();
