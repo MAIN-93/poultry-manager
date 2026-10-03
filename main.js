@@ -2324,24 +2324,35 @@ function loadFeedSchedule() {
 }
 
 
-if (
-    saveScheduleButton
-) {
+if (saveScheduleButton) {
 
     saveScheduleButton.addEventListener(
         "click",
-        () => {
+        async () => {
 
             const morning =
                 morningFeedTime
                     ? morningFeedTime.value
-                    : "07:00";
+                    : "";
 
             const afternoon =
                 afternoonFeedTime
                     ? afternoonFeedTime.value
-                    : "14:00";
+                    : "";
 
+
+            if (!morning || !afternoon) {
+
+                if (scheduleStatus) {
+                    scheduleStatus.textContent =
+                        "Please set both feeding times.";
+                }
+
+                return;
+            }
+
+
+            /* Save locally */
 
             localStorage.setItem(
                 "morningFeedTime",
@@ -2354,27 +2365,82 @@ if (
             );
 
 
-            if (
-                scheduleStatus
-            ) {
+            /* Send schedule to server */
 
-                scheduleStatus.textContent =
-                    "Feed schedule saved.";
+            try {
 
-                setTimeout(
-                    () => {
+                const response =
+                    await fetch(
+                        "https://poultry-manager-hppo.onrender.com/schedule",
+                        {
+                            method: "POST",
 
-                        scheduleStatus.textContent =
-                            "";
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-                    },
-                    2500
+                            body: JSON.stringify({
+                                morning:
+                                    morning,
+
+                                afternoon:
+                                    afternoon
+                            })
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Server could not save schedule."
+                    );
+                }
+
+
+                if (scheduleStatus) {
+
+                    scheduleStatus.textContent =
+                        "Feed schedule saved.";
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Schedule sync failed:",
+                    error
                 );
+
+
+                if (scheduleStatus) {
+
+                    scheduleStatus.textContent =
+                        "Schedule saved on this device.";
+
+                }
 
             }
 
 
             updateNextFeed();
+
+
+            setTimeout(
+                () => {
+
+                    if (scheduleStatus) {
+
+                        scheduleStatus.textContent =
+                            "";
+
+                    }
+
+                },
+                3000
+            );
 
         }
     );
