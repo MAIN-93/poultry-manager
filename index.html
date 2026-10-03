@@ -733,7 +733,45 @@
         </section>
 
     </div>
+<section class="section">
+    <div class="section-title">
+        <div>
+            <h2>Data Backup</h2>
+            <p>Protect your Poultry Manager data.</p>
+        </div>
+    </div>
 
+    <div class="backup-actions">
+
+        <button
+            id="exportData"
+            class="primary-button"
+        >
+            Export Backup
+        </button>
+
+        <label
+            for="importData"
+            class="secondary-button"
+        >
+            Restore Backup
+        </label>
+
+        <input
+            type="file"
+            id="importData"
+            accept=".json"
+            hidden
+        >
+
+    </div>
+
+    <p
+        id="backupStatus"
+        class="status-text"
+    ></p>
+
+</section>
 
     <script src="main.js?v=18"></script>
 
