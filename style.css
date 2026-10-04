@@ -193,76 +193,110 @@ input {
 }
 
 
-/* =========================
+
+/* =========================================
    PRODUCTION SUMMARY
-========================= */
+========================================= */
 
 .summary-grid {
     display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-    gap: 15px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
 }
 
 .summary-card {
-    background: var(--card);
+    position: relative;
+    overflow: hidden;
 
+    background: var(--card);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 16px;
 
     padding: 20px;
 
     box-shadow: var(--shadow);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.summary-card::after {
+    content: "";
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+
+    background: var(--primary);
+
+    opacity: 0.75;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .summary-card span {
     display: block;
 
     color: var(--muted);
-    font-size: 12px;
 
-    margin-bottom: 8px;
+    font-size: 12px;
+    font-weight: 600;
+
+    line-height: 1.4;
+
+    margin-bottom: 9px;
 }
 
 .summary-card strong {
     display: block;
 
-    font-size: 21px;
-    line-height: 1.2;
+    color: var(--text);
+
+    font-size: 24px;
+    font-weight: 750;
+
+    line-height: 1.15;
+
+    letter-spacing: -0.02em;
 }
 
 
-/* =========================
-   TREND CARD
-========================= */
+
+./* =========================================
+   7-DAY PRODUCTION TREND
+========================================= */
 
 .trend-card {
     background: var(--card);
 
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 18px;
 
     padding: 24px;
 
     box-shadow: var(--shadow);
 }
 
-
-/* =========================
-   TREND CHART
-========================= */
-
 .trend-chart-wrapper {
     display: flex;
 
     width: 100%;
-    min-height: 260px;
+    min-height: 280px;
+
+    margin-top: 8px;
 }
 
 .trend-y-axis {
-    width: 35px;
+    width: 36px;
 
     display: flex;
     flex-direction: column;
@@ -270,22 +304,24 @@ input {
     align-items: flex-end;
 
     padding:
-        4px
+        5px
         8px
-        29px
+        38px
         0;
 
     color: var(--muted);
+
     font-size: 11px;
+    font-weight: 600;
 }
 
 .trend-chart-area {
     position: relative;
 
     flex: 1;
-
     min-width: 0;
-    height: 260px;
+
+    height: 280px;
 
     border-bottom: 1px solid var(--border);
 }
@@ -308,6 +344,8 @@ input {
     width: 100%;
 
     border-top: 1px dashed var(--border);
+
+    opacity: 0.75;
 }
 
 .production-trend-chart {
@@ -325,8 +363,8 @@ input {
     gap: 10px;
 
     padding:
+        12px
         8px
-        6px
         0;
 }
 
@@ -344,7 +382,7 @@ input {
 .trend-bar-container {
     width: 100%;
 
-    height: calc(100% - 30px);
+    height: calc(100% - 48px);
 
     display: flex;
     justify-content: center;
@@ -354,44 +392,55 @@ input {
 .trend-bar {
     position: relative;
 
-    width: min(48px, 65%);
+    width: min(48px, 68%);
 
-    min-height: 3px;
+    min-height: 4px;
 
     border-radius:
-        8px
-        8px
-        3px
-        3px;
+        9px
+        9px
+        4px
+        4px;
 
     background: var(--primary);
 
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.08);
+
     transition:
-        height 0.25s ease,
-        opacity 0.2s ease;
+        height 0.3s ease,
+        opacity 0.2s ease,
+        transform 0.2s ease;
 }
 
 .trend-bar:hover {
-    opacity: 0.8;
+    opacity: 0.82;
+    transform: translateY(-2px);
 }
 
 .trend-bar.zero {
-    height: 3px !important;
-    opacity: 0.18;
+    height: 4px !important;
+
+    opacity: 0.2;
+
+    box-shadow: none;
 }
 
 .trend-bar-value {
     position: absolute;
 
-    bottom: calc(100% + 5px);
+    bottom: calc(100% + 6px);
+
     left: 50%;
 
     transform: translateX(-50%);
 
-    font-size: 11px;
-    font-weight: 700;
-
     color: var(--text);
+
+    font-size: 11px;
+    font-weight: 750;
+
+    line-height: 1;
 
     white-space: nowrap;
 }
@@ -399,19 +448,44 @@ input {
 .trend-day {
     width: 100%;
 
+    min-width: 0;
+
     text-align: center;
 
-    margin-top: 8px;
+    margin-top: 10px;
 
     color: var(--muted);
-    font-size: 11px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    line-height: 1.2;
 
     white-space: nowrap;
 }
 
+.trend-day span {
+    display: block;
+}
+
+.trend-day small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--text);
+
+    font-size: 9px;
+    font-weight: 750;
+
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
 .trend-day.today {
     color: var(--text);
-    font-weight: 700;
+
+    font-weight: 750;
 }
 
 .trend-legend {
@@ -420,9 +494,10 @@ input {
 
     gap: 7px;
 
-    margin-top: 14px;
+    margin-top: 16px;
 
     color: var(--muted);
+
     font-size: 12px;
 }
 
@@ -442,6 +517,10 @@ input {
    PRODUCTION ANALYTICS
 ========================= */
 
+/* =========================================
+   PRODUCTION ANALYTICS
+========================================= */
+
 .analytics-section {
     margin-top: 28px;
 }
@@ -456,20 +535,33 @@ input {
 }
 
 .analytics-card {
+    position: relative;
+
     background: var(--card);
 
     border: 1px solid var(--border);
     border-radius: 16px;
 
-    padding: 18px;
+    padding: 19px;
 
-    min-height: 112px;
+    min-height: 118px;
 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
     box-shadow: var(--shadow);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.analytics-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .analytics-label {
@@ -477,30 +569,112 @@ input {
 
     color: var(--muted);
 
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12px;
+    font-weight: 650;
+
+    line-height: 1.35;
 }
 
 .analytics-card strong {
     display: block;
 
-    margin-top: 8px;
+    margin-top: 9px;
 
     color: var(--text);
 
-    font-size: 24px;
+    font-size: 25px;
+    font-weight: 750;
+
     line-height: 1.1;
-    font-weight: 700;
+
+    letter-spacing: -0.02em;
 }
 
 .analytics-card small {
     display: block;
 
-    margin-top: 6px;
+    margin-top: 7px;
 
     color: var(--muted);
 
-    font-size: 12px;
+    font-size: 11px;
+
+    line-height: 1.35;
+}
+
+/* Production change states */
+
+.analytics-positive {
+    color: var(--success) !important;
+}
+
+.analytics-negative {
+    color: var(--danger) !important;
+}
+
+.analytics-neutral {
+    color: var(--text) !important;
+}
+
+/* Insight */
+
+.analytics-insight {
+    margin-top: 18px;
+
+    padding: 18px 20px;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 16px;
+
+    background: var(--card);
+
+    box-shadow: var(--shadow);
+
+    display: flex;
+    align-items: flex-start;
+
+    gap: 14px;
+}
+
+.analytics-insight-icon {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    border-radius: 12px;
+
+    background: var(--secondary);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+}
+
+.analytics-insight strong {
+    display: block;
+
+    color: var(--text);
+
+    font-size: 15px;
+    font-weight: 750;
+
+    margin-bottom: 5px;
+}
+
+.analytics-insight p {
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.55;
 }
 
 
@@ -979,19 +1153,108 @@ input:focus {
             repeat(2, minmax(0, 1fr));
     }
 
+@media (max-width: 560px) {
+
     .summary-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .summary-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .summary-card strong {
+        font-size: 20px;
+    }
+
+    .summary-card span {
+        font-size: 11px;
+    }
+
+    .trend-card {
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .trend-chart-wrapper {
+        min-height: 230px;
+    }
+
+    .trend-chart-area {
+        height: 230px;
+    }
+
+    .trend-y-axis {
+        width: 30px;
+        padding-right: 6px;
+        font-size: 10px;
+    }
+
+    .production-trend-chart {
+        gap: 4px;
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+    .trend-bar {
+        width: min(34px, 70%);
+    }
+
+    .trend-bar-value {
+        font-size: 10px;
+    }
+
+    .trend-day {
+        font-size: 9px;
+    }
+
+    .trend-day small {
+        font-size: 8px;
     }
 
     .analytics-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .analytics-card {
+        min-height: 105px;
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    .analytics-card strong {
+        font-size: 21px;
+    }
+
+    .analytics-label {
+        font-size: 11px;
+    }
+
+    .analytics-card small {
+        font-size: 10px;
+    }
+
+    .analytics-insight {
+        padding: 16px;
+        gap: 11px;
+    }
+
+    .analytics-insight-icon {
+        width: 38px;
+        height: 38px;
+        flex-basis: 38px;
+        font-size: 18px;
+    }
+
+    .analytics-insight p {
+        font-size: 12px;
+        line-height: 1.5;
     }
 
 }
-
-
 @media (max-width: 560px) {
 
     .section {
