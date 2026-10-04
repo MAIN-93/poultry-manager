@@ -2927,10 +2927,9 @@ function updateNotificationButton() {
       /* =========================================================
    PUSH NOTIFICATIONS
    ========================================================= */
+async function enablePushNotifications(){
 
-async function enablePushNotifications() {
-
-    try {
+    {
 
         if (!("Notification" in window)) {
 
