@@ -5204,6 +5204,17 @@ function showSettings() {
 
 }
 
+   dashboardButton.addEventListener(
+    "click",
+    showDashboard
+);
+
+
+settingsButton.addEventListener(
+    "click",
+    showSettings
+);
+
 
     /* =====================================================
        FLOCK SETTINGS
