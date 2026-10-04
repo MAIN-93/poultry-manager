@@ -5083,8 +5083,8 @@ if (
         );
 
 
-  /* =====================================================
-   DASHBOARD + SETTINGS VIEW SWITCHING
+/* =====================================================
+   DASHBOARD / SETTINGS VIEW CONTROL
    ===================================================== */
 
 const dashboardView =
@@ -5097,11 +5097,16 @@ function setDashboardVisibility(
     visible
 ) {
 
-    if (
-        !dashboardView
-    ) {
+    if (!dashboardView) {
+
+        console.error(
+            "Poultry Manager: #pmDashboardView not found."
+        );
+
         return;
+
     }
+
 
     dashboardView.style.display =
         visible
@@ -5112,7 +5117,7 @@ function setDashboardVisibility(
 
 
 /* =====================================================
-   SHOW DASHBOARD
+   VIEW SWITCHING
    ===================================================== */
 
 function showDashboard() {
@@ -5121,9 +5126,8 @@ function showDashboard() {
         true
     );
 
-    if (
-        settingsView
-    ) {
+
+    if (settingsView) {
 
         settingsView.classList.remove(
             "active"
@@ -5133,6 +5137,7 @@ function showDashboard() {
             "none";
 
     }
+
 
     dashboardButton.classList.add(
         "active"
@@ -5157,19 +5162,14 @@ function showDashboard() {
 }
 
 
-/* =====================================================
-   SHOW SETTINGS
-   ===================================================== */
-
 function showSettings() {
 
     setDashboardVisibility(
         false
     );
 
-    if (
-        settingsView
-    ) {
+
+    if (settingsView) {
 
         settingsView.classList.add(
             "active"
@@ -5177,7 +5177,9 @@ function showSettings() {
 
         settingsView.style.display =
             "";
+
     }
+
 
     dashboardButton.classList.remove(
         "active"
@@ -5200,11 +5202,12 @@ function showSettings() {
     window.scrollTo({
         top: 0,
         behavior: "smooth"
-    );
+    });
 
 }
 
-   dashboardButton.addEventListener(
+
+dashboardButton.addEventListener(
     "click",
     showDashboard
 );
