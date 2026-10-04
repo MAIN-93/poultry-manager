@@ -3085,7 +3085,7 @@ async function enablePushNotifications(){
 
 }
 
-}
+
 
 
 if (enableNotifications) {
