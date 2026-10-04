@@ -2196,12 +2196,19 @@ function updateFeedManagement() {
 
 
 /* =========================================================
-   ADD FEED + UNDO LAST ADDITION
+   ADD FEED + UNDO LAST ADDITION + RESET FEED STOCK
    ========================================================= */
 
 let undoLastFeedButton =
     null;
 
+let resetFeedStockButton =
+    null;
+
+
+/* =========================================================
+   CREATE UNDO BUTTON
+   ========================================================= */
 
 function createUndoLastFeedButton() {
 
@@ -2246,6 +2253,78 @@ function createUndoLastFeedButton() {
 }
 
 
+/* =========================================================
+   CREATE RESET STOCK BUTTON
+   ========================================================= */
+
+function createResetFeedStockButton() {
+
+    if (
+        !addFeedButton ||
+        resetFeedStockButton
+    ) {
+
+        return;
+
+    }
+
+    resetFeedStockButton =
+        document.createElement(
+            "button"
+        );
+
+    resetFeedStockButton.type =
+        "button";
+
+    resetFeedStockButton.className =
+        "feed-reset-button";
+
+    resetFeedStockButton.textContent =
+        "🗑 Reset Feed Stock";
+
+    resetFeedStockButton.setAttribute(
+        "aria-label",
+        "Reset entire feed stock"
+    );
+
+    resetFeedStockButton.addEventListener(
+        "click",
+        resetFeedStock
+    );
+
+
+    /*
+     * Put the reset button directly
+     * after the Undo button.
+     */
+
+    if (
+        undoLastFeedButton
+    ) {
+
+        undoLastFeedButton.insertAdjacentElement(
+            "afterend",
+            resetFeedStockButton
+        );
+
+    }
+
+    else {
+
+        addFeedButton.insertAdjacentElement(
+            "afterend",
+            resetFeedStockButton
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE UNDO BUTTON
+   ========================================================= */
+
 function updateUndoLastFeedButton() {
 
     if (
@@ -2269,26 +2348,42 @@ function updateUndoLastFeedButton() {
             Number(lastAddition.stockAfter)
         ) < 0.000001;
 
+
     undoLastFeedButton.disabled =
         !canUndo;
 
+
     undoLastFeedButton.title =
         canUndo
-            ? `Undo ${Number(lastAddition.amount).toFixed(1)} kg feed addition`
+            ? `Undo ${Number(
+                lastAddition.amount
+            ).toFixed(
+                1
+            )} kg feed addition`
             : "Add feed first to enable undo";
+
 
     undoLastFeedButton.textContent =
         canUndo
-            ? `↶ Undo Last Addition (${Number(lastAddition.amount).toFixed(1)} kg)`
+            ? `↶ Undo Last Addition (${Number(
+                lastAddition.amount
+            ).toFixed(
+                1
+            )} kg)`
             : "↶ Undo Last Addition";
 
 }
 
 
+/* =========================================================
+   UNDO LAST FEED ADDITION
+   ========================================================= */
+
 function undoLastFeedAddition() {
 
     const lastAddition =
         getLastFeedAddition();
+
 
     if (
         !lastAddition
@@ -2298,19 +2393,24 @@ function undoLastFeedAddition() {
 
     }
 
+
     const currentStock =
         getFeedAmount();
 
     const expectedStock =
-        Number(lastAddition.stockAfter);
+        Number(
+            lastAddition.stockAfter
+        );
 
     const amount =
-        Number(lastAddition.amount);
+        Number(
+            lastAddition.amount
+        );
+
 
     /*
-     * Only undo when the stock has not changed since
-     * the addition. This prevents an old addition from
-     * accidentally removing feed that has already been used.
+     * Only allow the undo when the stock
+     * has not changed since the addition.
      */
 
     if (
@@ -2321,6 +2421,7 @@ function undoLastFeedAddition() {
     ) {
 
         clearLastFeedAddition();
+
         updateUndoLastFeedButton();
 
         alert(
@@ -2331,10 +2432,14 @@ function undoLastFeedAddition() {
 
     }
 
+
     const confirmed =
         confirm(
-            `Undo the last feed addition of ${amount.toFixed(1)} kg?`
+            `Undo the last feed addition of ${amount.toFixed(
+                1
+            )} kg?`
         );
+
 
     if (
         !confirmed
@@ -2344,6 +2449,7 @@ function undoLastFeedAddition() {
 
     }
 
+
     saveFeedAmount(
         Math.max(
             0,
@@ -2352,7 +2458,9 @@ function undoLastFeedAddition() {
         )
     );
 
+
     clearLastFeedAddition();
+
 
     if (
         feedInput
@@ -2363,13 +2471,117 @@ function undoLastFeedAddition() {
 
     }
 
+
     updateFeedManagement();
 
 }
 
 
+/* =========================================================
+   RESET ENTIRE FEED STOCK
+   ========================================================= */
+
+function resetFeedStock() {
+
+    const currentStock =
+        getFeedAmount();
+
+
+    /*
+     * If there is already no feed,
+     * there is nothing to reset.
+     */
+
+    if (
+        currentStock <= 0
+    ) {
+
+        alert(
+            "Your feed stock is already at 0.0 kg."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            `Reset your entire feed stock?\n\nCurrent stock: ${currentStock.toFixed(
+                1
+            )} kg\n\nThis will set your current feed inventory to 0.0 kg. Your feed usage history and analytics will remain محفوظ.`
+        );
+
+
+    if (
+        !confirmed
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * Clear the current inventory.
+     */
+
+    saveFeedAmount(
+        0
+    );
+
+
+    /*
+     * The previous additions can no longer
+     * safely be undone after a full reset.
+     */
+
+    localStorage.removeItem(
+        "feedAdditionHistory"
+    );
+
+
+    /*
+     * Clear any value still sitting
+     * inside the Add Feed input.
+     */
+
+    if (
+        feedInput
+    ) {
+
+        feedInput.value =
+            "";
+
+    }
+
+
+    /*
+     * Refresh the complete feed dashboard.
+     */
+
+    updateFeedManagement();
+
+
+    alert(
+        "Feed stock has been reset to 0.0 kg."
+    );
+
+}
+
+
+/* =========================================================
+   INITIALIZE FEED BUTTONS
+   ========================================================= */
+
 createUndoLastFeedButton();
 
+createResetFeedStockButton();
+
+
+/* =========================================================
+   ADD FEED
+   ========================================================= */
 
 if (
     addFeedButton
@@ -2384,6 +2596,7 @@ if (
                     feedInput.value
                 );
 
+
             if (
                 !Number.isFinite(
                     amount
@@ -2395,6 +2608,7 @@ if (
 
             }
 
+
             const current =
                 getFeedAmount();
 
@@ -2402,9 +2616,11 @@ if (
                 current +
                 amount;
 
+
             saveFeedAmount(
                 updatedStock
             );
+
 
             recordFeedAddition(
                 amount,
@@ -2412,8 +2628,10 @@ if (
                 updatedStock
             );
 
+
             feedInput.value =
                 "";
+
 
             updateFeedManagement();
 
@@ -2440,6 +2658,7 @@ if (
                     useFeedInput.value
                 );
 
+
             if (
                 !Number.isFinite(
                     amount
@@ -2451,8 +2670,10 @@ if (
 
             }
 
+
             const current =
                 getFeedAmount();
+
 
             if (
                 current <= 0
@@ -2462,30 +2683,37 @@ if (
 
             }
 
+
             const actualUsage =
                 Math.min(
                     amount,
                     current
                 );
 
+
             saveFeedAmount(
                 current -
                 actualUsage
             );
 
+
             recordFeedUsage(
                 actualUsage
             );
 
+
             /*
-             * Feed usage changes the stock after the addition,
-             * so the previous addition is no longer safely undoable.
+             * Feed usage changes the stock,
+             * so the previous addition can
+             * no longer be safely undone.
              */
 
             clearLastFeedAddition();
 
+
             useFeedInput.value =
                 "";
+
 
             updateFeedManagement();
 
@@ -2545,9 +2773,8 @@ if (
 
 
             /*
-             * Return today's
-             * recorded usage
-             * back to stock.
+             * Return today's recorded
+             * usage back to stock.
              */
 
             saveFeedAmount(
@@ -2557,15 +2784,16 @@ if (
 
 
             /*
-             * Remove today's
-             * usage record.
+             * Remove today's usage record.
              */
 
             delete history[today];
 
+
             saveFeedUsageHistory(
                 history
             );
+
 
             clearLastFeedAddition();
 
@@ -2581,9 +2809,8 @@ if (
 
 
             /*
-             * Recalculate
-             * the entire feed
-             * dashboard.
+             * Recalculate the entire
+             * feed dashboard.
              */
 
             updateFeedManagement();
