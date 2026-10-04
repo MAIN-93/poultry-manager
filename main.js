@@ -2927,9 +2927,9 @@ function updateNotificationButton() {
       /* =========================================================
    PUSH NOTIFICATIONS
    ========================================================= */
-async function enablePushNotifications(){
+async function enablePushNotifications() {
 
-    {
+    try {
 
         if (!("Notification" in window)) {
 
@@ -2939,7 +2939,6 @@ async function enablePushNotifications(){
 
         }
 
-
         /* Ask for notification permission */
 
         const permission =
@@ -2948,20 +2947,20 @@ async function enablePushNotifications(){
         if (permission !== "granted") {
 
             if (enableNotifications) {
+
                 enableNotifications.textContent =
                     "Notifications Blocked";
+
             }
 
             return;
 
         }
 
-
         /* Register service worker */
 
         const registration =
             await navigator.serviceWorker.ready;
-
 
         /* Get VAPID public key */
 
@@ -2978,22 +2977,18 @@ async function enablePushNotifications(){
 
         }
 
-
         const keyData =
             await keyResponse.json();
-
 
         const applicationServerKey =
             urlBase64ToUint8Array(
                 keyData.publicKey
             );
 
-
         /* Check for an existing subscription */
 
         let subscription =
             await registration.pushManager.getSubscription();
-
 
         /* Create subscription if needed */
 
@@ -3010,7 +3005,6 @@ async function enablePushNotifications(){
                 });
 
         }
-
 
         /* Send subscription to server */
 
@@ -3032,7 +3026,6 @@ async function enablePushNotifications(){
                 }
             );
 
-
         if (!subscribeResponse.ok) {
 
             throw new Error(
@@ -3041,7 +3034,6 @@ async function enablePushNotifications(){
 
         }
 
-
         /* Success */
 
         localStorage.setItem(
@@ -3049,14 +3041,12 @@ async function enablePushNotifications(){
             "true"
         );
 
-
         if (enableNotifications) {
 
             enableNotifications.textContent =
                 "Notifications Enabled";
 
         }
-
 
         /* Small confirmation */
 
@@ -3084,10 +3074,6 @@ async function enablePushNotifications(){
     }
 
 }
-
-
-
-
 if (enableNotifications) {
 
     enableNotifications.addEventListener(
