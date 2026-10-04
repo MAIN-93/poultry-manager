@@ -1310,149 +1310,6 @@ function updateProductionAnalytics() {
 }
 
 
-    /* Consistency */
-
-    let consistency =
-        0;
-
-    const producingDays =
-        records.filter(
-            record =>
-                record.eggs > 0
-        ).length;
-
-    if (
-        producingDays > 0
-    ) {
-
-        consistency =
-            Math.round(
-                (
-                    producingDays /
-                    7
-                ) *
-                100
-            );
-
-    }
-
-    if (analyticsConsistency) {
-
-        analyticsConsistency.textContent =
-            `${consistency}%`;
-
-    }
-
-
-    /* Production Change */
-
-    const firstHalf =
-        records
-            .slice(
-                0,
-                3
-            )
-            .reduce(
-                (
-                    sum,
-                    record
-                ) =>
-                    sum +
-                    record.eggs,
-                0
-            );
-
-    const secondHalf =
-        records
-            .slice(
-                4
-            )
-            .reduce(
-                (
-                    sum,
-                    record
-                ) =>
-                    sum +
-                    record.eggs,
-                0
-            );
-
-    let productionChange =
-        0;
-
-    if (
-        firstHalf > 0
-    ) {
-
-        productionChange =
-            Math.round(
-                (
-                    (
-                        secondHalf -
-                        firstHalf
-                    ) /
-                    firstHalf
-                ) *
-                100
-            );
-
-    }
-
-    if (analyticsChange) {
-
-        analyticsChange.textContent =
-            `${
-                productionChange >= 0
-                    ? "+"
-                    : ""
-            }${productionChange}%`;
-
-    }
-
-
-    /* Insight */
-
-    if (analyticsInsight) {
-
-        if (
-            totalEggs === 0
-        ) {
-
-            analyticsInsight.textContent =
-                "Start recording eggs to see production insights.";
-
-        }
-
-        else if (
-            productionChange > 0
-        ) {
-
-            analyticsInsight.textContent =
-                "Egg production has increased compared with the earlier part of the seven-day period.";
-
-        }
-
-        else if (
-            productionChange < 0
-        ) {
-
-            analyticsInsight.textContent =
-                "Egg production has decreased compared with the earlier part of the seven-day period.";
-
-        }
-
-        else {
-
-            analyticsInsight.textContent =
-                "Egg production has remained relatively stable across the seven-day period.";
-
-        }
-
-    }
-
-}
-
-
 /* =========================================================
    FEED ANALYTICS
    ========================================================= */
@@ -3018,7 +2875,17 @@ function checkFeedAlarm() {
 
 function updateNotificationButton() {
 
+    /*
+     * The old Dashboard notification button was removed.
+     * Notifications are now controlled from Settings.
+     *
+     * Keep this function safe in case the old button
+     * does not exist in the Dashboard.
+     */
 
+    if (!enableNotifications) {
+        return;
+    }
 
     if (!("Notification" in window)) {
 
@@ -3028,72 +2895,34 @@ function updateNotificationButton() {
         return;
     }
 
-    if (Notification.permission === "granted") {
+    if (
+        Notification.permission ===
+        "granted"
+    ) {
 
-        if (enableNotifications) {
+        enableNotifications.textContent =
+            "Notifications Enabled";
 
-    enableNotifications.textContent =
-        "Notifications Enabled";
+    }
 
-}
+    else if (
+        Notification.permission ===
+        "denied"
+    ) {
 
-    } else if (Notification.permission === "denied") {
+        enableNotifications.textContent =
+            "Notifications Blocked";
 
-        if (enableNotifications) {
+    }
 
-    enableNotifications.textContent =
-        "Notifications Blocked";
-
-}
-
-    } else {
+    else {
 
         enableNotifications.textContent =
             "Enable Notifications";
 
     }
+
 }
-
-
-function urlBase64ToUint8Array(base64String) {
-
-    const padding =
-        "=".repeat(
-            (4 - base64String.length % 4) % 4
-        );
-
-    const base64 =
-        (base64String + padding)
-            .replace(/-/g, "+")
-            .replace(/_/g, "/");
-
-    const rawData =
-        window.atob(base64);
-
-    return Uint8Array.from(
-        [...rawData].map(
-            char => char.charCodeAt(0)
-        )
-    );
-}
-
-
-async function enablePushNotifications() {
-
-    if (!enableNotifications) {
-        return;
-    }
-
-    if (!("Notification" in window)) {
-
-        alert(
-            "Notifications are not supported by this browser."
-        );
-
-        return;
-    }
-
-    try {
 
         /* Ask for notification permission */
 
@@ -6122,7 +5951,7 @@ if (
 
     }
 
-    /* =====================================================
+          /* =====================================================
        ADD FLOCK
        ===================================================== */
 
