@@ -6071,6 +6071,8 @@ settingsButton.addEventListener(
 })();
 
 
+    }
+
 /* =========================================================
    POULTRY MANAGER — LIVE FARM OVERVIEW
    ========================================================= */
@@ -6118,227 +6120,122 @@ settingsButton.addEventListener(
         !nextFeedElement
     ) {
 
+        console.error(
+            "Poultry Manager: Farm Overview elements not found."
+        );
+
         return;
 
     }
 
 
     /* =====================================================
-       FIND CURRENT VALUES
+       FLOCK
        ===================================================== */
 
-    function getFlock() {
+    function readFlock() {
 
-        const stored =
+        return Number(
             localStorage.getItem(
                 "flockCount"
-            );
-
-
-        if (
-            stored !== null &&
-            stored !== ""
-        ) {
-
-            const value =
-                parseInt(
-                    stored,
-                    10
-                );
-
-
-            if (
-                Number.isFinite(value)
-            ) {
-
-                return value;
-
-            }
-
-        }
-
-
-        const dashboard =
-            document.getElementById(
-                "chickenCount"
-            );
-
-
-        if (dashboard) {
-
-            const value =
-                parseInt(
-                    dashboard.textContent,
-                    10
-                );
-
-
-            if (
-                Number.isFinite(value)
-            ) {
-
-                return value;
-
-            }
-
-        }
-
-
-        return 0;
+            )
+        ) || 0;
 
     }
 
 
-    function getEggs() {
+    /* =====================================================
+       TODAY'S EGGS
+       ===================================================== */
 
-        const possibleKeys = [
+    function readTodayEggs() {
 
-            "eggsToday",
-            "todayEggs",
-            "eggCount"
+        try {
 
-        ];
+            const history =
+                JSON.parse(
+                    localStorage.getItem(
+                        "eggHistory"
+                    )
+                ) || {};
 
 
-        for (
-            const key of possibleKeys
-        ) {
+            const todayRecord =
+                history[today];
 
-            const stored =
-                localStorage.getItem(
-                    key
-                );
 
+            /*
+               Normal format:
+               "2026-10-03": 2
+            */
 
             if (
-                stored !== null &&
-                stored !== ""
+                typeof todayRecord ===
+                "number"
             ) {
 
-                const value =
-                    parseInt(
-                        stored,
-                        10
-                    );
-
-
-                if (
-                    Number.isFinite(value)
-                ) {
-
-                    return value;
-
-                }
+                return Math.max(
+                    0,
+                    todayRecord
+                );
 
             }
 
-        }
 
-
-        const dashboard =
-            document.getElementById(
-                "todayEggs"
-            );
-
-
-        if (dashboard) {
-
-            const value =
-                parseInt(
-                    dashboard.textContent,
-                    10
-                );
-
+            /*
+               Also support the newer
+               object-style history format:
+               "2026-10-03": {
+                   eggs: 2,
+                   flock: 5
+               }
+            */
 
             if (
-                Number.isFinite(value)
+                todayRecord &&
+                typeof todayRecord ===
+                "object"
             ) {
 
-                return value;
+                return Math.max(
+                    0,
+                    Number(
+                        todayRecord.eggs
+                    ) || 0
+                );
 
             }
 
-        }
-
-
-        return 0;
-
-    }
-
-
-    function getLayingRate() {
-
-        const flock =
-            getFlock();
-
-
-        const eggs =
-            getEggs();
-
-
-        if (
-            flock <= 0
-        ) {
 
             return 0;
 
         }
 
+        catch (error) {
 
-        return Math.round(
-            (eggs / flock) * 100
-        );
+            console.error(
+                "Poultry Manager: Could not read egg history.",
+                error
+            );
+
+            return 0;
+
+        }
 
     }
 
 
-    function getFeedRemaining() {
+    /* =====================================================
+       FEED STOCK
+       ===================================================== */
 
-        const possibleKeys = [
+    function readFeed() {
 
-            "feedInventory",
-            "feedAmount",
-            "feedStock",
-            "feedKg"
-
-        ];
-
-
-        for (
-            const key of possibleKeys
-        ) {
-
-            const stored =
-                localStorage.getItem(
-                    key
-                );
-
-
-            if (
-                stored !== null &&
-                stored !== ""
-            ) {
-
-                const value =
-                    parseFloat(
-                        stored
-                    );
-
-
-                if (
-                    Number.isFinite(value)
-                ) {
-
-                    return value;
-
-                }
-
-            }
-
-        }
-
-
-        return 0;
+        return Number(
+            localStorage.getItem(
+                "feed"
+            )
+        ) || 0;
 
     }
 
@@ -6347,7 +6244,7 @@ settingsButton.addEventListener(
        NEXT FEEDING
        ===================================================== */
 
-    function getNextFeed() {
+    function readNextFeed() {
 
         const morning =
             localStorage.getItem(
@@ -6364,6 +6261,7 @@ settingsButton.addEventListener(
         const times = [
 
             morning,
+
             afternoon
 
         ].filter(
@@ -6389,8 +6287,12 @@ settingsButton.addEventListener(
             now.getMinutes();
 
 
-        let closestTime = null;
-        let closestDifference = Infinity;
+        let closestTime =
+            null;
+
+
+        let closestDifference =
+            Infinity;
 
 
         times.forEach(
@@ -6401,17 +6303,29 @@ settingsButton.addEventListener(
 
 
                 const hours =
-                    parseInt(
-                        parts[0],
-                        10
+                    Number(
+                        parts[0]
                     );
 
 
                 const minutes =
-                    parseInt(
-                        parts[1],
-                        10
+                    Number(
+                        parts[1]
                     );
+
+
+                if (
+                    !Number.isFinite(
+                        hours
+                    ) ||
+                    !Number.isFinite(
+                        minutes
+                    )
+                ) {
+
+                    return;
+
+                }
 
 
                 const feedMinutes =
@@ -6428,7 +6342,8 @@ settingsButton.addEventListener(
                     difference < 0
                 ) {
 
-                    difference += 1440;
+                    difference +=
+                        1440;
 
                 }
 
@@ -6441,6 +6356,7 @@ settingsButton.addEventListener(
                     closestDifference =
                         difference;
 
+
                     closestTime =
                         time;
 
@@ -6450,14 +6366,16 @@ settingsButton.addEventListener(
         );
 
 
-        if (!closestTime) {
+        if (
+            !closestTime
+        ) {
 
             return "Not scheduled";
 
         }
 
 
-        const [hours, minutes] =
+        const parts =
             closestTime.split(":");
 
 
@@ -6466,8 +6384,8 @@ settingsButton.addEventListener(
 
 
         date.setHours(
-            parseInt(hours, 10),
-            parseInt(minutes, 10),
+            Number(parts[0]),
+            Number(parts[1]),
             0,
             0
         );
@@ -6485,25 +6403,43 @@ settingsButton.addEventListener(
 
 
     /* =====================================================
-       UPDATE OVERVIEW
+       UPDATE FARM OVERVIEW
        ===================================================== */
 
     function updateFarmOverview() {
 
         const flock =
-            getFlock();
+            readFlock();
 
 
         const eggs =
-            getEggs();
-
-
-        const layingRate =
-            getLayingRate();
+            readTodayEggs();
 
 
         const feed =
-            getFeedRemaining();
+            readFeed();
+
+
+        let layingRate =
+            0;
+
+
+        if (
+            flock > 0
+        ) {
+
+            layingRate =
+                Math.min(
+                    100,
+                    Math.round(
+                        (
+                            eggs /
+                            flock
+                        ) * 100
+                    )
+                );
+
+        }
 
 
         flockElement.textContent =
@@ -6523,23 +6459,33 @@ settingsButton.addEventListener(
 
 
         nextFeedElement.textContent =
-            getNextFeed();
+            readNextFeed();
 
     }
 
 
-    /* =====================================================
-       KEEP OVERVIEW IN SYNC
-       ===================================================== */
+    /*
+       Initial update
+    */
 
     updateFarmOverview();
 
+
+    /*
+       Keep Overview live.
+    */
 
     setInterval(
         updateFarmOverview,
         1000
     );
 
+
+    /*
+       Make it available to
+       Quick Actions and other
+       future dashboard features.
+    */
 
     window.updateFarmOverview =
         updateFarmOverview;
