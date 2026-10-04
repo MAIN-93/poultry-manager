@@ -5083,129 +5083,126 @@ if (
         );
 
 
-    /* =====================================================
-       DASHBOARD SECTIONS
-       ===================================================== */
+  /* =====================================================
+   DASHBOARD + SETTINGS VIEW SWITCHING
+   ===================================================== */
 
-    const dashboardSections =
-        Array.from(
-            app.children
-        ).filter(
-            element =>
-                element.classList.contains(
-                    "section"
-                )
-        );
+const dashboardView =
+    document.getElementById(
+        "pmDashboardView"
+    );
 
 
-    function setDashboardVisibility(
-        visible
+function setDashboardVisibility(
+    visible
+) {
+
+    if (
+        !dashboardView
     ) {
-
-        dashboardSections.forEach(
-            section => {
-
-                if (
-                    section ===
-                    settingsView
-                ) {
-                    return;
-                }
-
-                section.style.display =
-                    visible
-                        ? ""
-                        : "none";
-
-            }
-        );
-
+        return;
     }
 
+    dashboardView.style.display =
+        visible
+            ? ""
+            : "none";
 
-    /* =====================================================
-       VIEW SWITCHING
-       ===================================================== */
+}
 
-    function showDashboard() {
 
-        setDashboardVisibility(
-            true
-        );
+/* =====================================================
+   SHOW DASHBOARD
+   ===================================================== */
+
+function showDashboard() {
+
+    setDashboardVisibility(
+        true
+    );
+
+    if (
+        settingsView
+    ) {
 
         settingsView.classList.remove(
             "active"
         );
 
-        dashboardButton.classList.add(
-            "active"
-        );
-
-        settingsButton.classList.remove(
-            "active"
-        );
-
-
-        localStorage.setItem(
-            SETTINGS_VIEW_KEY,
-            "dashboard"
-        );
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
+        settingsView.style.display =
+            "none";
 
     }
 
+    dashboardButton.classList.add(
+        "active"
+    );
 
-    function showSettings() {
+    settingsButton.classList.remove(
+        "active"
+    );
 
-        setDashboardVisibility(
-            false
-        );
+
+    localStorage.setItem(
+        SETTINGS_VIEW_KEY,
+        "dashboard"
+    );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =====================================================
+   SHOW SETTINGS
+   ===================================================== */
+
+function showSettings() {
+
+    setDashboardVisibility(
+        false
+    );
+
+    if (
+        settingsView
+    ) {
 
         settingsView.classList.add(
             "active"
         );
 
-        dashboardButton.classList.remove(
-            "active"
-        );
-
-        settingsButton.classList.add(
-            "active"
-        );
-
-
-        localStorage.setItem(
-            SETTINGS_VIEW_KEY,
-            "settings"
-        );
-
-
-        refreshSettings();
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
+        settingsView.style.display =
+            "";
     }
 
+    dashboardButton.classList.remove(
+        "active"
+    );
 
-    dashboardButton.addEventListener(
-        "click",
-        showDashboard
+    settingsButton.classList.add(
+        "active"
     );
 
 
-    settingsButton.addEventListener(
-        "click",
-        showSettings
+    localStorage.setItem(
+        SETTINGS_VIEW_KEY,
+        "settings"
     );
+
+
+    refreshSettings();
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    );
+
+}
 
 
     /* =====================================================
