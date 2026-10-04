@@ -979,192 +979,128 @@ function getLastSevenDays() {
 
 
 function updateProductionSummary() {
+    const records = getLastSevenDays();
+    const flock = getFlockCount();
 
-    const records =
-        getLastSevenDays();
+    const totalEggs = records.reduce(
+        (sum, record) => sum + record.eggs,
+        0
+    );
 
-    const flock =
-        getFlockCount();
+    const averageDaily = totalEggs / records.length;
 
-    const totalEggs =
-        records.reduce(
-            (
-                sum,
-                record
-            ) =>
-                sum +
-                record.eggs,
-            0
-        );
+    const averageRate = flock > 0
+        ? (averageDaily / flock) * 100
+        : 0;
 
-    const averageDaily =
-        totalEggs / 7;
-
-    const averageRate =
-        flock > 0
-            ? (
-                averageDaily /
-                flock
-            ) *
-            100
-            : 0;
-
-    const bestRecord =
-        records.reduce(
-            (
-                best,
-                record
-            ) =>
-                record.eggs >
-                best.eggs
-                    ? record
-                    : best,
-            records[0]
-        );
-
+    const bestRecord = records.reduce(
+        (best, record) => {
+            if (record.eggs > best.eggs) return record;
+            if (record.eggs === best.eggs &&
+                record.dateKey === today) return record;
+            return best;
+        },
+        records[0]
+    );
 
     if (sevenDayEggs) {
-
-        sevenDayEggs.textContent =
-            totalEggs;
-
+        sevenDayEggs.textContent = totalEggs;
     }
 
     if (averageLayingRate) {
-
         averageLayingRate.textContent =
-            `${Math.min(
-                100,
-                averageRate
-            ).toFixed(0)}%`;
-
+            `${Math.min(100, averageRate).toFixed(0)}%`;
     }
 
     if (bestProductionDay) {
-
         bestProductionDay.textContent =
             bestRecord.eggs > 0
-                ? formatDate(
-                    bestRecord.dateKey
-                )
+                ? formatDate(bestRecord.dateKey)
                 : "—";
-
     }
 
     if (bestProductionEggs) {
-
-        bestProductionEggs.textContent =
-            bestRecord.eggs;
-
+        bestProductionEggs.textContent = bestRecord.eggs;
     }
-
 }
-
 
 /* =========================================================
    PRODUCTION TREND
    ========================================================= */
 
 function renderProductionTrend() {
+    if (!productionTrendChart) return;
 
-    if (!productionTrendChart) {
-        return;
-    }
+    const records = getLastSevenDays();
 
-    const records =
-        getLastSevenDays();
+    const maxEggs = Math.max(
+        ...records.map(record => record.eggs),
+        1
+    );
 
-    const maxEggs =
-        Math.max(
-            ...records.map(
-                record =>
-                    record.eggs
-            ),
-            1
-        );
+    /*
+     * Give the chart a little breathing room when numbers
+     * are very small. This prevents a 1-egg day from looking
+     * almost identical to a 2-egg day.
+     */
+    const chartMax = maxEggs <= 5
+        ? Math.max(5, maxEggs)
+        : Math.ceil(maxEggs * 1.15);
 
-    const midValue =
-        Math.ceil(
-            maxEggs / 2
-        );
+    const midValue = Math.ceil(chartMax / 2);
 
     if (trendMaxLabel) {
-
-        trendMaxLabel.textContent =
-            maxEggs;
-
+        trendMaxLabel.textContent = chartMax;
     }
 
     if (trendMidLabel) {
-
-        trendMidLabel.textContent =
-            midValue;
-
+        trendMidLabel.textContent = midValue;
     }
 
-    productionTrendChart.innerHTML =
-        records
-            .map(
-                record => {
-
-                    const height =
-                        (
-                            record.eggs /
-                            maxEggs
-                        ) *
-                        100;
-
-                    const zeroClass =
-                        record.eggs === 0
-                            ? " zero"
-                            : "";
-
-                    const todayClass =
-                        record.dateKey === today
-                            ? " today"
-                            : "";
-
-                    return `
-                        <div
-                            class="trend-column"
-                        >
-
-                            <div
-                                class="trend-bar-container"
-                            >
-
-                                <div
-                                    class="trend-bar${zeroClass}"
-                                    style="height:${Math.max(
-                                        3,
-                                        height
-                                    )}%"
-                                >
-
-                                    <span
-                                        class="trend-bar-value"
-                                    >
-                                        ${record.eggs}
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-                            <div
-                                class="trend-day${todayClass}"
-                            >
-                                ${formatDate(
-                                    record.dateKey
-                                )}
-                            </div>
-
-                        </div>
-                    `;
-
-                }
+    productionTrendChart.innerHTML = records.map(record => {
+        const height = record.eggs > 0
+            ? Math.max(
+                8,
+                (record.eggs / chartMax) * 100
             )
-            .join("");
+            : 3;
+
+        const zeroClass =
+            record.eggs === 0 ? " zero" : "";
+
+        const todayClass =
+            record.dateKey === today ? " today" : "";
+
+        return `
+            <div class="trend-column">
+
+                <div class="trend-bar-container">
+
+                    <div
+                        class="trend-bar${zeroClass}"
+                        style="height:${height}%"
+                        title="${record.eggs} egg${record.eggs === 1 ? "" : "s"}"
+                    >
+                        <span class="trend-bar-value">
+                            ${record.eggs}
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="trend-day${todayClass}">
+                    <span>${formatDate(record.dateKey)}</span>
+                    ${
+                        record.dateKey === today
+                            ? `<small>Today</small>`
+                            : ""
+                    }
+                </div>
+
+            </div>
+        `;
+    }).join("");
+}
 
 }
 
@@ -1174,109 +1110,205 @@ function renderProductionTrend() {
    ========================================================= */
 
 function updateProductionAnalytics() {
+    const records = getLastSevenDays();
 
-    const records =
-        getLastSevenDays();
+    const totalEggs = records.reduce(
+        (sum, record) => sum + record.eggs,
+        0
+    );
 
-    const totalEggs =
-        records.reduce(
-            (
-                sum,
-                record
-            ) =>
-                sum +
-                record.eggs,
-            0
-        );
-
-    const flock =
-        getFlockCount();
+    const flock = getFlockCount();
 
     const averageDailyEggs =
-        totalEggs / 7;
+        totalEggs / records.length;
 
-    const eggsPerHen =
-        flock > 0
-            ? averageDailyEggs /
-              flock
-            : 0;
+    const eggsPerHen = flock > 0
+        ? averageDailyEggs / flock
+        : 0;
 
-    const highestRecord =
-        records.reduce(
-            (
-                highest,
-                record
-            ) =>
-                record.eggs >
-                highest.eggs
-                    ? record
-                    : highest,
-            records[0]
-        );
+    /*
+     * Highest production day
+     */
+    const highestRecord = records.reduce(
+        (highest, record) => {
+            if (record.eggs > highest.eggs) {
+                return record;
+            }
 
-    const lowestRecord =
-        records.reduce(
-            (
-                lowest,
-                record
-            ) =>
-                record.eggs <
-                lowest.eggs
-                    ? record
-                    : lowest,
-            records[0]
-        );
+            if (
+                record.eggs === highest.eggs &&
+                record.dateKey === today
+            ) {
+                return record;
+            }
 
+            return highest;
+        },
+        records[0]
+    );
+
+    /*
+     * Lowest production day.
+     * Zero is valid production data, so we deliberately
+     * do NOT treat zero as "no data".
+     */
+    const lowestRecord = records.reduce(
+        (lowest, record) => {
+            return record.eggs < lowest.eggs
+                ? record
+                : lowest;
+        },
+        records[0]
+    );
 
     if (analyticsEggsPerHen) {
-
         analyticsEggsPerHen.textContent =
             eggsPerHen.toFixed(2);
-
     }
 
     if (analyticsAverage) {
-
         analyticsAverage.textContent =
             averageDailyEggs.toFixed(2);
-
     }
 
     if (analyticsHighestDay) {
-
         analyticsHighestDay.textContent =
             highestRecord.eggs;
-
     }
 
     if (analyticsHighestDayDate) {
-
         analyticsHighestDayDate.textContent =
-            highestRecord.eggs > 0
-                ? formatFullDate(
-                    highestRecord.dateKey
-                )
-                : "No data";
-
+            formatFullDate(highestRecord.dateKey);
     }
 
     if (analyticsLowestDay) {
-
         analyticsLowestDay.textContent =
             lowestRecord.eggs;
-
     }
 
     if (analyticsLowestDayDate) {
-
         analyticsLowestDayDate.textContent =
-            lowestRecord.eggs > 0
-                ? formatFullDate(
-                    lowestRecord.dateKey
-                )
-                : "No data";
-
+            formatFullDate(lowestRecord.dateKey);
     }
+
+    /*
+     * Production consistency
+     */
+    const producingDays = records.filter(
+        record => record.eggs > 0
+    ).length;
+
+    const consistency =
+        Math.round(
+            (producingDays / records.length) * 100
+        );
+
+    if (analyticsConsistency) {
+        analyticsConsistency.textContent =
+            `${consistency}%`;
+    }
+
+    /*
+     * Compare the first three days with the
+     * most recent three days.
+     */
+    const earlierDays = records.slice(0, 3);
+    const recentDays = records.slice(-3);
+
+    const earlierTotal = earlierDays.reduce(
+        (sum, record) => sum + record.eggs,
+        0
+    );
+
+    const recentTotal = recentDays.reduce(
+        (sum, record) => sum + record.eggs,
+        0
+    );
+
+    let productionChange = 0;
+
+    if (earlierTotal > 0) {
+        productionChange = Math.round(
+            ((recentTotal - earlierTotal) /
+                earlierTotal) * 100
+        );
+    } else if (recentTotal > 0) {
+        productionChange = 100;
+    }
+
+    if (analyticsChange) {
+        analyticsChange.textContent =
+            `${productionChange >= 0 ? "+" : ""}${productionChange}%`;
+
+        analyticsChange.classList.remove(
+            "analytics-positive",
+            "analytics-negative",
+            "analytics-neutral"
+        );
+
+        if (productionChange > 0) {
+            analyticsChange.classList.add(
+                "analytics-positive"
+            );
+        } else if (productionChange < 0) {
+            analyticsChange.classList.add(
+                "analytics-negative"
+            );
+        } else {
+            analyticsChange.classList.add(
+                "analytics-neutral"
+            );
+        }
+    }
+
+    /*
+     * Production insight
+     */
+    if (!analyticsInsight) return;
+
+    if (totalEggs === 0) {
+
+        analyticsInsight.textContent =
+            "Start recording eggs to build your production history and unlock farm insights.";
+
+        return;
+    }
+
+    if (productionChange >= 20) {
+
+        analyticsInsight.textContent =
+            `Production is trending upward. Your most recent three days produced ${recentTotal} eggs compared with ${earlierTotal} eggs in the earlier period.`;
+
+        return;
+    }
+
+    if (productionChange <= -20) {
+
+        analyticsInsight.textContent =
+            `Production has declined recently. Your most recent three days produced ${recentTotal} eggs compared with ${earlierTotal} eggs earlier in the week.`;
+
+        return;
+    }
+
+    if (consistency >= 85) {
+
+        analyticsInsight.textContent =
+            `Your flock has been producing consistently, with eggs recorded on ${producingDays} of the last seven days.`;
+
+        return;
+    }
+
+    if (consistency >= 50) {
+
+        analyticsInsight.textContent =
+            `Your flock has produced eggs on ${producingDays} of the last seven days. Keep recording daily production to build a clearer trend.`;
+
+        return;
+    }
+
+    analyticsInsight.textContent =
+        "Production history is still developing. Keep recording eggs each day to get more reliable insights.";
+}
 
 
     /* Consistency */
