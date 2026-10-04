@@ -2924,6 +2924,23 @@ function updateNotificationButton() {
 
 }
 
+      /* =========================================================
+   PUSH NOTIFICATIONS
+   ========================================================= */
+
+async function enablePushNotifications() {
+
+    try {
+
+        if (!("Notification" in window)) {
+
+            throw new Error(
+                "Notifications are not supported."
+            );
+
+        }
+
+
         /* Ask for notification permission */
 
         const permission =
@@ -2931,10 +2948,13 @@ function updateNotificationButton() {
 
         if (permission !== "granted") {
 
-            enableNotifications.textContent =
-                "Notifications Blocked";
+            if (enableNotifications) {
+                enableNotifications.textContent =
+                    "Notifications Blocked";
+            }
 
             return;
+
         }
 
 
@@ -2952,13 +2972,17 @@ function updateNotificationButton() {
             );
 
         if (!keyResponse.ok) {
+
             throw new Error(
                 "Could not get VAPID public key."
             );
+
         }
+
 
         const keyData =
             await keyResponse.json();
+
 
         const applicationServerKey =
             urlBase64ToUint8Array(
@@ -3026,8 +3050,13 @@ function updateNotificationButton() {
             "true"
         );
 
-        enableNotifications.textContent =
-            "Notifications Enabled";
+
+        if (enableNotifications) {
+
+            enableNotifications.textContent =
+                "Notifications Enabled";
+
+        }
 
 
         /* Small confirmation */
@@ -3054,6 +3083,8 @@ function updateNotificationButton() {
         );
 
     }
+
+}
 
 }
 
@@ -5811,10 +5842,7 @@ if (
             "quickFeed"
         );
 
-    const quickFlock =
-        document.getElementById(
-            "quickFlock"
-        );
+    
 
     const quickHistory =
         document.getElementById(
@@ -5951,35 +5979,7 @@ if (
 
     }
 
-          /* =====================================================
-       ADD FLOCK
-       ===================================================== */
-
-    if (quickFlock) {
-
-        quickFlock.addEventListener(
-            "click",
-            () => {
-
-                const flockSection =
-                    document.querySelector(
-                        ".flock-card"
-                    );
-
-                const flockInput =
-                    document.getElementById(
-                        "flockInput"
-                    );
-
-                goToDashboardSection(
-                    flockSection,
-                    flockInput
-                );
-
-            }
-        );
-
-    }
+    
 
     /* =====================================================
        VIEW HISTORY
