@@ -2506,15 +2506,21 @@ function resetFeedStock() {
 
 
     const confirmed =
+
         confirm(
+
             `Reset your entire feed stock?\n\nCurrent stock: ${currentStock.toFixed(
+
                 1
-            )} kg\n\nThis will set your current feed inventory to 0.0 kg. Your feed usage history and analytics will remain محفوظ.`
+
+            )} kg\n\nThis will set your current feed inventory to 0.0 kg. Your feed usage history and analytics will remain intact.`
+
         );
 
-
     if (
+
         !confirmed
+
     ) {
 
         return;
