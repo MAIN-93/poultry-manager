@@ -1,4018 +1,2937 @@
-/* ============================================================
-   POULTRY MANAGER
-   COMPLETE UI SYSTEM
-   STYLE.CSS — PART 1 OF 2
-
-   Designed to match the current main.js architecture.
-   ============================================================ */
-
-
-/* ============================================================
-   1. DESIGN TOKENS
-   ============================================================ */
-
 :root {
-    --pm-bg: #f5f7f6;
-    --pm-surface: #ffffff;
-    --pm-surface-2: #f8faf9;
-    --pm-surface-3: #eef3ef;
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
 
-    --pm-text: #101713;
-    --pm-text-2: #26322b;
-    --pm-muted: #69766e;
-    --pm-muted-2: #8b968f;
+    --primary: #111827;
+    --primary-hover: #1f2937;
 
-    --pm-border: #e1e7e3;
-    --pm-border-strong: #ccd6d0;
+    --secondary: #f3f4f6;
+    --secondary-hover: #e5e7eb;
 
-    --pm-primary: #176b3a;
-    --pm-primary-dark: #0f522c;
-    --pm-primary-light: #e9f7ee;
-    --pm-primary-soft: #f2faf5;
+    --success: #15803d;
+    --success-light: #dcfce7;
 
-    --pm-green: #20a05a;
-    --pm-green-soft: #eaf8ef;
+    --shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
 
-    --pm-blue: #3478d4;
-    --pm-blue-soft: #edf5ff;
-
-    --pm-orange: #d98b18;
-    --pm-orange-soft: #fff7e7;
-
-    --pm-purple: #7655c9;
-    --pm-purple-soft: #f4f0ff;
-
-    --pm-red: #d94b4b;
-    --pm-red-soft: #fff0f0;
-
-    --pm-yellow: #e4aa23;
-    --pm-yellow-soft: #fff9e8;
-
-    --pm-shadow-xs:
-        0 1px 3px rgba(15, 23, 42, 0.04);
-
-    --pm-shadow-sm:
-        0 4px 14px rgba(15, 23, 42, 0.06);
-
-    --pm-shadow-md:
-        0 10px 28px rgba(15, 23, 42, 0.08);
-
-    --pm-shadow-lg:
-        0 18px 45px rgba(15, 23, 42, 0.10);
-
-    --pm-radius-xs: 8px;
-    --pm-radius-sm: 12px;
-    --pm-radius-md: 16px;
-    --pm-radius-lg: 20px;
-    --pm-radius-xl: 26px;
-
-    --pm-transition:
-        180ms cubic-bezier(.2, .8, .2, 1);
-
-    --pm-transition-slow:
-        280ms cubic-bezier(.2, .8, .2, 1);
-
-    --pm-max-width: 1180px;
+    --radius: 18px;
 }
 
+/* =========================
+   GLOBAL
+========================= */
 
-/* ============================================================
-   DARK THEME
-   ============================================================ */
-
-html[data-theme="dark"] {
-    --pm-bg: #0a0f0c;
-    --pm-surface: #111814;
-    --pm-surface-2: #151d18;
-    --pm-surface-3: #1a241e;
-
-    --pm-text: #f2f7f4;
-    --pm-text-2: #d2ddd6;
-    --pm-muted: #98a69e;
-    --pm-muted-2: #748179;
-
-    --pm-border: #26332b;
-    --pm-border-strong: #34443a;
-
-    --pm-primary: #4ed47e;
-    --pm-primary-dark: #35bb67;
-    --pm-primary-light: #102c1b;
-    --pm-primary-soft: #102319;
-
-    --pm-green: #4ed47e;
-    --pm-green-soft: #102c1b;
-
-    --pm-blue: #67a8f5;
-    --pm-blue-soft: #10243c;
-
-    --pm-orange: #f1b94b;
-    --pm-orange-soft: #30230d;
-
-    --pm-purple: #aa91ef;
-    --pm-purple-soft: #261c40;
-
-    --pm-red: #ff7777;
-    --pm-red-soft: #321517;
-
-    --pm-yellow: #f1c34c;
-    --pm-yellow-soft: #30250d;
-
-    --pm-shadow-xs:
-        0 1px 3px rgba(0, 0, 0, 0.24);
-
-    --pm-shadow-sm:
-        0 5px 18px rgba(0, 0, 0, 0.24);
-
-    --pm-shadow-md:
-        0 12px 32px rgba(0, 0, 0, 0.30);
-
-    --pm-shadow-lg:
-        0 20px 48px rgba(0, 0, 0, 0.36);
-}
-
-
-/* ============================================================
-   2. RESET
-   ============================================================ */
-
-*,
-*::before,
-*::after {
+* {
     box-sizing: border-box;
 }
 
 html {
-    margin: 0;
-    padding: 0;
-    min-height: 100%;
-    background: var(--pm-bg);
-    color-scheme: light;
     scroll-behavior: smooth;
-}
-
-html[data-theme="dark"] {
-    color-scheme: dark;
 }
 
 body {
     margin: 0;
-    padding: 0;
-    min-height: 100vh;
-
-    background:
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(23, 107, 58, 0.035),
-            transparent 28%
-        ),
-        var(--pm-bg);
-
-    color: var(--pm-text);
+    background: var(--bg);
+    color: var(--text);
 
     font-family:
         -apple-system,
         BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
         "Segoe UI",
         Roboto,
         Helvetica,
         Arial,
         sans-serif;
 
-    font-size: 15px;
-    line-height: 1.5;
-
     -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-
-    overflow-x: hidden;
-
-    transition:
-        background-color var(--pm-transition-slow),
-        color var(--pm-transition-slow);
-}
-
-html[data-theme="dark"] body {
-    background:
-        radial-gradient(
-            circle at 100% 0%,
-            rgba(78, 212, 126, 0.035),
-            transparent 28%
-        ),
-        var(--pm-bg);
 }
 
 button,
-input,
-select,
-textarea {
+input {
     font: inherit;
 }
 
 button {
-    -webkit-tap-highlight-color: transparent;
-}
-
-button,
-a {
-    touch-action: manipulation;
-}
-
-img,
-svg,
-canvas {
-    max-width: 100%;
-}
-
-
-/* ============================================================
-   3. APP CONTAINER
-   ============================================================ */
-
-#app,
-.app,
-.pm-app,
-main {
-    width: 100%;
-}
-
-.app-container,
-.app-shell,
-.pm-app-shell {
-    width: min(100%, var(--pm-max-width));
-    margin: 0 auto;
-    padding:
-        0 22px
-        calc(100px + env(safe-area-inset-bottom));
-}
-
-
-/* ============================================================
-   4. HEADER
-   ============================================================ */
-
-.app-header,
-.pm-header,
-header {
-    width: 100%;
-    max-width: var(--pm-max-width);
-    margin: 0 auto;
-
-    padding:
-        26px 22px
-        16px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.app-title,
-.pm-title,
-header h1 {
-    margin: 0;
-
-    color: var(--pm-text);
-
-    font-size: clamp(24px, 4vw, 31px);
-    line-height: 1.1;
-    font-weight: 800;
-    letter-spacing: -0.04em;
-}
-
-.app-subtitle,
-.pm-subtitle {
-    margin: 6px 0 0;
-
-    color: var(--pm-muted);
-
-    font-size: 13px;
-    font-weight: 500;
-}
-
-#currentDate,
-.current-date,
-.pm-current-date {
-    color: var(--pm-muted);
-
-    font-size: 12px;
-    font-weight: 600;
-
-    white-space: nowrap;
-}
-
-
-/* ============================================================
-   5. MAIN NAVIGATION
-   ============================================================ */
-
-#pmNavigation,
-.pm-navigation,
-.main-navigation,
-.nav-tabs {
-    width: min(
-        calc(100% - 44px),
-        var(--pm-max-width)
-    );
-
-    margin: 4px auto 24px;
-
-    padding: 5px;
-
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-
-    background: var(--pm-surface-3);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 15px;
-
-    box-shadow: var(--pm-shadow-xs);
-
-    position: relative;
-    z-index: 20;
-}
-
-#pmNavigation button,
-.pm-navigation button,
-.main-navigation button,
-.nav-tabs button,
-.dashboard-button,
-.settings-button {
-    min-height: 46px;
-
-    border: 0;
-    border-radius: 11px;
-
-    background: transparent;
-
-    color: var(--pm-muted);
-
-    font-size: 14px;
-    font-weight: 700;
-
     cursor: pointer;
-
-    transition:
-        background var(--pm-transition),
-        color var(--pm-transition),
-        box-shadow var(--pm-transition),
-        transform var(--pm-transition);
 }
 
-#pmNavigation button:hover,
-.pm-navigation button:hover,
-.main-navigation button:hover,
-.nav-tabs button:hover {
-    color: var(--pm-text);
-    background: var(--pm-surface);
+input {
+    outline: none;
 }
 
-#pmNavigation button:active,
-.pm-navigation button:active,
-.main-navigation button:active,
-.nav-tabs button:active {
-    transform: scale(.985);
+/* =========================
+   APP
+========================= */
+
+.app {
+    min-height: 100vh;
 }
 
-#pmNavigation button.active,
-.pm-navigation button.active,
-.main-navigation button.active,
-.nav-tabs button.active,
-.dashboard-button.active,
-.settings-button.active {
-    background: var(--pm-surface);
+/* =========================
+   HEADER
+========================= */
 
-    color: var(--pm-primary);
-
-    box-shadow:
-        0 2px 7px rgba(15, 23, 42, .07),
-        inset 0 0 0 1px var(--pm-border);
-
-    font-weight: 800;
+.app-header {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 20px;
 }
 
-
-/* ============================================================
-   6. DASHBOARD VIEW
-   ============================================================ */
-
-#pmDashboardView {
-    width: 100%;
-    max-width: var(--pm-max-width);
+.app-header > div {
+    width: min(1180px, 100%);
     margin: 0 auto;
-
-    padding:
-        0 22px
-        calc(80px + env(safe-area-inset-bottom));
 }
 
-#pmDashboardView > section,
-#pmDashboardView > .section {
-    margin-bottom: 22px;
-}
-
-#pmDashboardView > section:last-child,
-#pmDashboardView > .section:last-child {
-    margin-bottom: 0;
-}
-
-
-/* ============================================================
-   7. SECTION HEADINGS
-   ============================================================ */
-
-.section-header,
-.pm-section-header {
-    margin-bottom: 12px;
-
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 14px;
-}
-
-.section-title,
-.pm-section-title,
-.section-header h2 {
+.app-header h1 {
     margin: 0;
 
-    color: var(--pm-text);
-
-    font-size: 18px;
+    font-size: 26px;
     line-height: 1.2;
-    font-weight: 800;
-    letter-spacing: -0.025em;
+    letter-spacing: -0.5px;
 }
 
-.section-description,
-.pm-section-description {
-    margin: 4px 0 0;
+.app-header p {
+    margin: 5px 0 0;
 
-    color: var(--pm-muted);
-
-    font-size: 12px;
-    line-height: 1.45;
+    color: var(--muted);
+    font-size: 14px;
 }
 
+/* =========================
+   SECTIONS
+========================= */
 
-/* ============================================================
-   8. UNIVERSAL CARD SYSTEM
-   ============================================================ */
-
-.pm-card,
-.card,
-.section-card,
-.dashboard-card {
-    position: relative;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: var(--pm-radius-lg);
-
-    box-shadow: var(--pm-shadow-sm);
-
-    transition:
-        transform var(--pm-transition),
-        box-shadow var(--pm-transition),
-        border-color var(--pm-transition),
-        background var(--pm-transition);
+.section {
+    width: min(1180px, calc(100% - 32px));
+    margin: 28px auto 0;
 }
 
-.pm-card:hover,
-.card:hover,
-.section-card:hover,
-.dashboard-card:hover {
-    border-color: var(--pm-border-strong);
-    box-shadow: var(--pm-shadow-md);
+.section:last-child {
+    margin-bottom: 50px;
 }
 
-.card-header,
-.pm-card-header {
-    padding: 18px 18px 0;
-}
-
-.card-body,
-.pm-card-body {
-    padding: 18px;
-}
-
-.card-title,
-.pm-card-title {
-    margin: 0;
-
-    color: var(--pm-text);
-
-    font-size: 15px;
-    font-weight: 800;
-}
-
-.card-subtitle,
-.pm-card-subtitle {
-    margin: 4px 0 0;
-
-    color: var(--pm-muted);
-
-    font-size: 12px;
-}
-
-
-/* ============================================================
-   9. FARM OVERVIEW
-   ============================================================ */
-
-.farm-overview,
-#farmOverview,
-.farm-overview-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(5, minmax(0, 1fr));
-
-    gap: 12px;
-}
-
-.farm-overview-card,
-.farm-overview-item {
-    min-width: 0;
-
-    padding: 17px;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: var(--pm-radius-md);
-
-    box-shadow: var(--pm-shadow-xs);
-
-    transition:
-        transform var(--pm-transition),
-        box-shadow var(--pm-transition),
-        border-color var(--pm-transition);
-}
-
-.farm-overview-card:hover,
-.farm-overview-item:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--pm-shadow-sm);
-}
-
-.farm-overview-label {
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: var(--pm-muted);
-
-    font-size: 11px;
-    line-height: 1.25;
-    font-weight: 700;
-
-    text-transform: uppercase;
-    letter-spacing: .055em;
-}
-
-.farm-overview-value {
-    display: block;
-
-    color: var(--pm-text);
-
-    font-size: 24px;
-    line-height: 1;
-    font-weight: 850;
-
-    letter-spacing: -0.04em;
-
-    font-variant-numeric: tabular-nums;
-}
-
-.farm-overview-unit {
-    margin-left: 3px;
-
-    color: var(--pm-muted);
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
-
-/* ============================================================
-   10. QUICK ACTIONS
-   ============================================================ */
-
-.quick-actions,
-#quickActions {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-
-    gap: 12px;
-}
-
-.quick-action,
-.quick-action-button,
-#quickAddEggs,
-#quickFeed,
-#quickHistory {
-    min-height: 76px;
-
-    padding: 14px 16px;
-
+.section-title {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
+    justify-content: space-between;
+    align-items: flex-start;
 
-    border: 1px solid var(--pm-border);
-    border-radius: var(--pm-radius-md);
+    gap: 16px;
 
-    background: var(--pm-surface);
-
-    color: var(--pm-text);
-
-    box-shadow: var(--pm-shadow-xs);
-
-    cursor: pointer;
-
-    text-align: left;
-
-    transition:
-        transform var(--pm-transition),
-        border-color var(--pm-transition),
-        background var(--pm-transition),
-        box-shadow var(--pm-transition);
+    margin-bottom: 18px;
 }
 
-.quick-action:hover,
-.quick-action-button:hover,
-#quickAddEggs:hover,
-#quickFeed:hover,
-#quickHistory:hover {
-    transform: translateY(-2px);
-
-    border-color:
-        color-mix(
-            in srgb,
-            var(--pm-primary) 30%,
-            var(--pm-border)
-        );
-
-    box-shadow: var(--pm-shadow-sm);
-
-    background: var(--pm-primary-soft);
-}
-
-.quick-action:active,
-.quick-action-button:active,
-#quickAddEggs:active,
-#quickFeed:active,
-#quickHistory:active {
-    transform: scale(.985);
-}
-
-.quick-action-icon {
-    width: 40px;
-    height: 40px;
-
-    flex: 0 0 40px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 12px;
-
-    background: var(--pm-primary-light);
-
-    color: var(--pm-primary);
+.section-title h2 {
+    margin: 0;
 
     font-size: 19px;
-    font-weight: 800;
+    line-height: 1.25;
+
+    letter-spacing: -0.3px;
 }
 
-.quick-action-title {
-    display: block;
+.section-title p {
+    margin: 5px 0 0;
 
-    color: var(--pm-text);
-
+    color: var(--muted);
     font-size: 13px;
-    font-weight: 800;
 }
 
-.quick-action-description {
+/* =========================
+   OVERVIEW
+========================= */
+
+.overview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.overview-card {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 20px;
+
+    box-shadow: var(--shadow);
+}
+
+.overview-label {
     display: block;
 
-    margin-top: 2px;
+    color: var(--muted);
+    font-size: 13px;
 
-    color: var(--pm-muted);
-
-    font-size: 11px;
+    margin-bottom: 8px;
 }
 
+.overview-card strong {
+    display: block;
 
-/* ============================================================
-   11. PRODUCTION SUMMARY
-   ============================================================ */
+    font-size: 30px;
+    line-height: 1;
 
-.production-summary,
+    letter-spacing: -1px;
+}
+
+.overview-card small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* =========================
+   PRODUCTION SUMMARY
+========================= */
+
 .summary-grid {
     display: grid;
 
     grid-template-columns:
         repeat(4, minmax(0, 1fr));
 
-    gap: 12px;
+    gap: 15px;
 }
 
 .summary-card {
-    min-width: 0;
+    background: var(--card);
 
-    padding: 17px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
 
-    background: var(--pm-surface);
+    padding: 20px;
 
-    border: 1px solid var(--pm-border);
-
-    border-radius: var(--pm-radius-md);
-
-    box-shadow: var(--pm-shadow-xs);
+    box-shadow: var(--shadow);
 }
 
-.summary-card-label {
-    color: var(--pm-muted);
+.summary-card span {
+    display: block;
 
-    font-size: 11px;
-    font-weight: 700;
+    color: var(--muted);
+    font-size: 12px;
 
-    text-transform: uppercase;
-    letter-spacing: .045em;
+    margin-bottom: 8px;
 }
 
-.summary-card-value {
-    margin-top: 7px;
+.summary-card strong {
+    display: block;
 
-    color: var(--pm-text);
-
-    font-size: 25px;
-    line-height: 1.05;
-    font-weight: 850;
-
-    letter-spacing: -.04em;
-
-    font-variant-numeric: tabular-nums;
+    font-size: 21px;
+    line-height: 1.2;
 }
 
-.summary-card-detail {
-    margin-top: 4px;
+/* =========================
+   TREND CARD
+========================= */
 
-    color: var(--pm-muted);
+.trend-card {
+    background: var(--card);
 
-    font-size: 11px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 24px;
+
+    box-shadow: var(--shadow);
 }
 
+/* =========================
+   TREND CHART
+========================= */
 
-/* ============================================================
-   12. PRODUCTION TREND
-   ============================================================ */
+.trend-chart-wrapper {
+    display: flex;
 
-.production-trend,
-#productionTrend {
-    padding: 18px;
+    width: 100%;
+    min-height: 260px;
 }
 
-.trend-header {
-    margin-bottom: 16px;
+.trend-y-axis {
+    width: 35px;
 
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: space-between;
+    align-items: flex-end;
+
+    padding:
+        4px
+        8px
+        29px
+        0;
+
+    color: var(--muted);
+    font-size: 11px;
 }
 
-.trend-title {
-    margin: 0;
+.trend-chart-area {
+    position: relative;
 
-    color: var(--pm-text);
+    flex: 1;
 
-    font-size: 15px;
-    font-weight: 800;
+    min-width: 0;
+    height: 260px;
+
+    border-bottom: 1px solid var(--border);
 }
 
-.trend-labels {
+.trend-grid-lines {
+    position: absolute;
+
+    inset: 0;
+
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    justify-content: space-between;
 
-    color: var(--pm-muted);
-
-    font-size: 10px;
-    font-weight: 700;
+    pointer-events: none;
 }
 
-#productionTrendChart {
+.trend-grid-lines span {
     display: block;
 
     width: 100%;
-    height: 220px;
 
-    border-radius: 12px;
+    border-top: 1px dashed var(--border);
 }
 
+.production-trend-chart {
+    position: absolute;
 
-/* ============================================================
-   13. ANALYTICS
-   ============================================================ */
+    inset: 0;
 
-.analytics-grid,
-.production-analytics-grid {
     display: grid;
 
     grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+        repeat(7, minmax(0, 1fr));
 
-    gap: 12px;
-}
-
-.analytics-card {
-    min-width: 0;
-
-    padding: 16px;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: var(--pm-radius-md);
-
-    box-shadow: var(--pm-shadow-xs);
-}
-
-.analytics-card-label {
-    color: var(--pm-muted);
-
-    font-size: 11px;
-    font-weight: 700;
-
-    text-transform: uppercase;
-    letter-spacing: .04em;
-}
-
-.analytics-card-value {
-    margin-top: 7px;
-
-    color: var(--pm-text);
-
-    font-size: 22px;
-    line-height: 1.1;
-    font-weight: 850;
-
-    letter-spacing: -.035em;
-
-    font-variant-numeric: tabular-nums;
-}
-
-.analytics-card-detail {
-    margin-top: 5px;
-
-    color: var(--pm-muted);
-
-    font-size: 11px;
-}
-
-.analytics-insight,
-#analyticsInsight {
-    margin-top: 14px;
-
-    padding: 14px 15px;
-
-    background: var(--pm-primary-soft);
-
-    border: 1px solid
-        color-mix(
-            in srgb,
-            var(--pm-primary) 18%,
-            var(--pm-border)
-        );
-
-    border-radius: 13px;
-
-    color: var(--pm-text-2);
-
-    font-size: 12px;
-    line-height: 1.55;
-}
-
-
-/* ============================================================
-   14. EGG PRODUCTION
-   ============================================================ */
-
-.egg-production,
-#eggProduction {
-    padding: 20px;
-}
-
-.egg-production-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-}
-
-.egg-count-display {
-    display: flex;
-    align-items: baseline;
-    gap: 7px;
-}
-
-.egg-number,
-#eggCount {
-    color: var(--pm-text);
-
-    font-size: 48px;
-    line-height: .95;
-    font-weight: 900;
-
-    letter-spacing: -.06em;
-
-    font-variant-numeric: tabular-nums;
-}
-
-.egg-unit {
-    color: var(--pm-muted);
-
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.laying-rate,
-#layingRate {
-    display: inline-flex;
-    align-items: center;
-
-    min-height: 32px;
-
-    padding: 6px 10px;
-
-    border-radius: 999px;
-
-    background: var(--pm-green-soft);
-
-    color: var(--pm-green);
-
-    font-size: 12px;
-    font-weight: 800;
-}
-
-
-/* ============================================================
-   15. BUTTON SYSTEM
-   ============================================================ */
-
-.pm-button,
-button.primary-button,
-.primary-button,
-.action-button {
-    min-height: 42px;
-
-    padding: 0 15px;
-
-    border: 1px solid transparent;
-    border-radius: 11px;
-
-    background: var(--pm-primary);
-
-    color: #ffffff;
-
-    font-size: 13px;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 4px 10px rgba(23, 107, 58, .15);
-
-    transition:
-        transform var(--pm-transition),
-        background var(--pm-transition),
-        box-shadow var(--pm-transition);
-}
-
-.pm-button:hover,
-.primary-button:hover,
-.action-button:hover {
-    background: var(--pm-primary-dark);
-
-    box-shadow:
-        0 7px 16px rgba(23, 107, 58, .20);
-}
-
-.pm-button:active,
-.primary-button:active,
-.action-button:active {
-    transform: scale(.975);
-}
-
-.secondary-button,
-button.secondary-button {
-    min-height: 42px;
-
-    padding: 0 15px;
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 11px;
-
-    background: var(--pm-surface-2);
-
-    color: var(--pm-text-2);
-
-    font-size: 13px;
-    font-weight: 750;
-
-    cursor: pointer;
-
-    transition:
-        background var(--pm-transition),
-        border-color var(--pm-transition),
-        transform var(--pm-transition);
-}
-
-.secondary-button:hover {
-    background: var(--pm-surface-3);
-    border-color: var(--pm-border-strong);
-}
-
-.secondary-button:active {
-    transform: scale(.975);
-}
-
-.danger-button,
-button.danger-button,
-.delete-button {
-    min-height: 42px;
-
-    padding: 0 15px;
-
-    border: 1px solid
-        color-mix(
-            in srgb,
-            var(--pm-red) 20%,
-            var(--pm-border)
-        );
-
-    border-radius: 11px;
-
-    background: var(--pm-red-soft);
-
-    color: var(--pm-red);
-
-    font-size: 13px;
-    font-weight: 800;
-
-    cursor: pointer;
-}
-
-
-/* ============================================================
-   16. EGG ACTIONS
-   ============================================================ */
-
-.egg-actions,
-#eggActions {
-    margin-top: 18px;
-
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
+    align-items: end;
 
     gap: 10px;
+
+    padding:
+        8px
+        6px
+        0;
 }
 
-#addEggButton,
-#removeEggButton {
-    min-height: 46px;
+.trend-column {
+    height: 100%;
 
-    border-radius: 12px;
-
-    font-weight: 800;
-}
-
-#addEggButton {
-    background: var(--pm-primary);
-    color: #fff;
-    border: 1px solid var(--pm-primary);
-}
-
-#removeEggButton {
-    background: var(--pm-surface-2);
-    color: var(--pm-text-2);
-    border: 1px solid var(--pm-border);
-}
-
-#viewHistoryButton {
-    width: 100%;
-    margin-top: 10px;
-}
-
-
-/* ============================================================
-   17. HISTORY SYSTEM
-   ============================================================ */
-
-.history-section,
-#eggHistorySection,
-#feedHistorySection {
-    margin-top: 16px;
-}
-
-.history-header {
-    margin-bottom: 12px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.history-title {
-    margin: 0;
-
-    color: var(--pm-text);
-
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.history-list,
-#eggHistoryList,
-#feedHistoryList {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-}
-
-.history-item,
-.egg-history-item,
-.feed-history-item {
-    min-height: 62px;
-
-    padding: 12px 14px;
-
-    display: flex;
+    justify-content: flex-end;
     align-items: center;
-    justify-content: space-between;
 
-    gap: 14px;
-
-    background: var(--pm-surface-2);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 13px;
-
-    transition:
-        background var(--pm-transition),
-        border-color var(--pm-transition),
-        transform var(--pm-transition);
-}
-
-.history-item:hover,
-.egg-history-item:hover,
-.feed-history-item:hover {
-    background: var(--pm-surface-3);
-    border-color: var(--pm-border-strong);
-    transform: translateX(2px);
-}
-
-.history-item-left {
     min-width: 0;
 }
 
-.history-item-date,
-.egg-history-date,
-.feed-history-date {
-    color: var(--pm-text);
+.trend-bar-container {
+    width: 100%;
 
-    font-size: 13px;
-    font-weight: 800;
+    height: calc(100% - 30px);
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
 }
 
-.history-item-meta,
-.egg-history-meta,
-.feed-history-meta {
-    margin-top: 2px;
+.trend-bar {
+    position: relative;
 
-    color: var(--pm-muted);
+    width: min(48px, 65%);
+
+    min-height: 3px;
+
+    border-radius:
+        8px
+        8px
+        3px
+        3px;
+
+    background: var(--primary);
+
+    transition:
+        height 0.25s ease,
+        opacity 0.2s ease;
+}
+
+.trend-bar:hover {
+    opacity: 0.8;
+}
+
+.trend-bar.zero {
+    height: 3px !important;
+    opacity: 0.18;
+}
+
+.trend-bar-value {
+    position: absolute;
+
+    bottom: calc(100% + 5px);
+    left: 50%;
+
+    transform: translateX(-50%);
 
     font-size: 11px;
+    font-weight: 700;
+
+    color: var(--text);
+
+    white-space: nowrap;
 }
 
-.history-item-value,
-.egg-history-value,
-.feed-history-value {
-    flex: 0 0 auto;
-
-    color: var(--pm-text);
-
-    font-size: 15px;
-    font-weight: 850;
-
-    font-variant-numeric: tabular-nums;
-}
-
-.history-empty,
-.empty-history {
-    padding: 24px 16px;
+.trend-day {
+    width: 100%;
 
     text-align: center;
 
-    color: var(--pm-muted);
+    margin-top: 8px;
 
-    background: var(--pm-surface-2);
-
-    border: 1px dashed var(--pm-border-strong);
-
-    border-radius: 14px;
-
-    font-size: 12px;
-}
-
-
-/* ============================================================
-   18. FEED MANAGEMENT
-   ============================================================ */
-
-.feed-management,
-#feedManagement {
-    padding: 20px;
-}
-
-.feed-hero {
-    padding: 20px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 20px;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--pm-primary-soft),
-            var(--pm-surface)
-        );
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 17px;
-}
-
-.feed-hero-label {
-    color: var(--pm-muted);
-
+    color: var(--muted);
     font-size: 11px;
-    font-weight: 750;
 
-    text-transform: uppercase;
-    letter-spacing: .055em;
+    white-space: nowrap;
 }
 
-.feed-hero-value,
-#feedAmount {
-    margin-top: 5px;
-
-    color: var(--pm-text);
-
-    font-size: 34px;
-    line-height: 1;
-    font-weight: 900;
-
-    letter-spacing: -.05em;
-
-    font-variant-numeric: tabular-nums;
-}
-
-.feed-hero-unit {
-    color: var(--pm-muted);
-
-    font-size: 12px;
+.trend-day.today {
+    color: var(--text);
     font-weight: 700;
 }
 
-.feed-status-badge,
-#feedDaysRemainingText {
-    display: inline-flex;
+.trend-legend {
+    display: flex;
     align-items: center;
 
-    min-height: 30px;
+    gap: 7px;
 
-    padding: 6px 10px;
-
-    border-radius: 999px;
-
-    background: var(--pm-green-soft);
-
-    color: var(--pm-green);
-
-    font-size: 11px;
-    font-weight: 800;
-}
-
-
-/* ============================================================
-   19. FEED METRICS
-   ============================================================ */
-
-.feed-metrics,
-.feed-metric-grid {
     margin-top: 14px;
 
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.trend-legend-dot {
+    width: 8px;
+    height: 8px;
+
+    flex: 0 0 auto;
+
+    border-radius: 50%;
+
+    background: var(--primary);
+}
+
+/* =========================
+   PRODUCTION ANALYTICS
+========================= */
+
+.analytics-section {
+    margin-top: 28px;
+}
+
+.analytics-grid {
     display: grid;
 
     grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.analytics-card {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+
+    padding: 18px;
+
+    min-height: 112px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    box-shadow: var(--shadow);
+}
+
+.analytics-label {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.analytics-card strong {
+    display: block;
+
+    margin-top: 8px;
+
+    color: var(--text);
+
+    font-size: 24px;
+    line-height: 1.1;
+    font-weight: 700;
+}
+
+.analytics-card small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+/* =========================
+   EGG PRODUCTION
+========================= */
+
+.egg-main-card {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 24px;
+
+    box-shadow: var(--shadow);
+}
+
+.egg-number {
+    margin-bottom: 18px;
+}
+
+.egg-number span {
+    display: block;
+
+    font-size: 48px;
+    line-height: 1;
+
+    font-weight: 700;
+    letter-spacing: -2px;
+}
+
+.egg-number small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.laying-rate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #f8fafc;
+
+    padding: 14px 16px;
+
+    border-radius: 12px;
+
+    margin-bottom: 18px;
+}
+
+.laying-rate span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.laying-rate small {
+    color: var(--text);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.egg-actions {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
 
     gap: 10px;
 }
 
-.feed-metric,
-.feed-metric-card {
-    padding: 14px;
+/* =========================
+   BUTTONS
+========================= */
 
-    background: var(--pm-surface-2);
+.primary-button,
+.secondary-button {
+    border: 0;
 
-    border: 1px solid var(--pm-border);
+    border-radius: 11px;
 
-    border-radius: 13px;
+    padding: 12px 15px;
+
+    font-weight: 650;
+
+    transition:
+        background 0.2s ease,
+        transform 0.1s ease;
 }
 
-.feed-metric-label {
-    color: var(--pm-muted);
-
-    font-size: 10px;
-    font-weight: 750;
-
-    text-transform: uppercase;
-    letter-spacing: .045em;
+.primary-button {
+    background: var(--primary);
+    color: #ffffff;
 }
 
-.feed-metric-value {
-    margin-top: 5px;
-
-    color: var(--pm-text);
-
-    font-size: 18px;
-    line-height: 1.1;
-    font-weight: 850;
-
-    font-variant-numeric: tabular-nums;
+.primary-button:hover {
+    background: var(--primary-hover);
 }
 
-
-/* ============================================================
-   20. FEED INPUTS
-   ============================================================ */
-
-.feed-action-panel,
-.feed-input-panel,
-.action-panel {
-    margin-top: 16px;
-
-    padding: 16px;
-
-    background: var(--pm-surface-2);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 15px;
+.secondary-button {
+    background: var(--secondary);
+    color: var(--text);
 }
 
-.feed-action-row,
+.secondary-button:hover {
+    background: var(--secondary-hover);
+}
+
+.primary-button:active,
+.secondary-button:active {
+    transform: scale(0.98);
+}
+
+/* =========================
+   SUBSECTIONS
+========================= */
+
+.subsection {
+    margin-top: 28px;
+
+    padding-top: 22px;
+
+    border-top: 1px solid var(--border);
+}
+
+.subsection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-bottom: 12px;
+}
+
+.subsection-header h3 {
+    margin: 0;
+
+    font-size: 15px;
+}
+
+/* =========================
+   HISTORY
+========================= */
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.history-item {
+    display: grid;
+
+    grid-template-columns:
+        1fr auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px;
+
+    background: #f8fafc;
+
+    border-radius: 10px;
+}
+
+.history-item > div:first-child {
+    min-width: 0;
+}
+
+.history-item strong {
+    display: block;
+
+    font-size: 13px;
+}
+
+.history-item small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.history-item > div:last-child {
+    text-align: right;
+}
+
+.history-item > div:last-child strong {
+    font-size: 13px;
+}
+
+.text-button {
+    border: 0;
+
+    background: none;
+
+    padding: 0;
+
+    color: var(--text);
+
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.text-button:hover {
+    text-decoration: underline;
+}
+
+.empty-state {
+    padding: 20px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    background: #f8fafc;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+}
+
+/* =========================
+   FEED MANAGEMENT
+========================= */
+
+.feed-main-card {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 24px;
+
+    box-shadow: var(--shadow);
+}
+
+.feed-stock {
+    margin-bottom: 20px;
+}
+
+.feed-stock span {
+    display: block;
+
+    font-size: 48px;
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: -2px;
+}
+
+.feed-stock small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+}
+
+.feed-actions {
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
 .input-row {
     display: grid;
 
     grid-template-columns:
-        minmax(0, 1fr) auto;
-
-    gap: 9px;
-
-    margin-bottom: 10px;
-}
-
-.feed-action-row:last-child,
-.input-row:last-child {
-    margin-bottom: 0;
-}
-
-input,
-select,
-textarea,
-.pm-settings-input,
-.pm-input {
-    width: 100%;
-
-    min-height: 44px;
-
-    padding: 0 12px;
-
-    border: 1px solid var(--pm-border-strong);
-
-    border-radius: 11px;
-
-    background: var(--pm-surface);
-
-    color: var(--pm-text);
-
-    outline: none;
-
-    font-size: 13px;
-
-    transition:
-        border-color var(--pm-transition),
-        box-shadow var(--pm-transition),
-        background var(--pm-transition);
-}
-
-textarea {
-    min-height: 100px;
-    padding: 12px;
-    resize: vertical;
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: var(--pm-muted-2);
-}
-
-input:focus,
-select:focus,
-textarea:focus,
-.pm-settings-input:focus,
-.pm-input:focus {
-    border-color: var(--pm-primary);
-
-    box-shadow:
-        0 0 0 3px
-        color-mix(
-            in srgb,
-            var(--pm-primary) 13%,
-            transparent
-        );
-}
-
-input[type="number"] {
-    font-variant-numeric: tabular-nums;
-}
-
-
-/* ============================================================
-   21. FEED PROGRESS
-   ============================================================ */
-
-.feed-progress,
-#feedProgress {
-    margin-top: 15px;
-}
-
-.feed-progress-track {
-    width: 100%;
-    height: 8px;
-
-    overflow: hidden;
-
-    background: var(--pm-surface-3);
-
-    border-radius: 999px;
-}
-
-.feed-progress-bar {
-    height: 100%;
-
-    background:
-        linear-gradient(
-            90deg,
-            var(--pm-primary),
-            var(--pm-green)
-        );
-
-    border-radius: inherit;
-
-    transition: width 300ms ease;
-}
-
-
-/* ============================================================
-   22. FEED CHART
-   ============================================================ */
-
-.feed-consumption,
-#feedConsumption {
-    margin-top: 16px;
-
-    padding: 17px;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 16px;
-}
-
-.feed-consumption-header {
-    margin-bottom: 13px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.feed-consumption-title {
-    color: var(--pm-text);
-
-    font-size: 14px;
-    font-weight: 800;
-}
-
-#feedConsumptionChart {
-    display: block;
-
-    width: 100%;
-    height: 190px;
-}
-
-
-/* ============================================================
-   23. FEED HISTORY / RESET
-   ============================================================ */
-
-.feed-history-actions,
-.history-actions {
-    margin-top: 12px;
-
-    display: flex;
-
-    flex-wrap: wrap;
+        1fr auto;
 
     gap: 8px;
 }
 
-.feed-reset-button,
-#resetFeedTodayButton,
-#resetFeedStockButton {
-    background: var(--pm-red-soft);
+input {
+    width: 100%;
 
-    color: var(--pm-red);
+    border: 1px solid var(--border);
 
-    border: 1px solid
-        color-mix(
-            in srgb,
-            var(--pm-red) 20%,
-            var(--pm-border)
-        );
+    background: #ffffff;
+
+    border-radius: 10px;
+
+    padding: 11px 12px;
+
+    color: var(--text);
 }
 
-.feed-reset-button:hover,
-#resetFeedTodayButton:hover,
-#resetFeedStockButton:hover {
-    background:
-        color-mix(
-            in srgb,
-            var(--pm-red) 13%,
-            var(--pm-surface)
-        );
+input:focus {
+    border-color: #9ca3af;
 }
 
-
-/* ============================================================
-   24. SCHEDULE
-   ============================================================ */
-
-.feed-schedule,
-.schedule-section {
-    padding: 18px;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 17px;
-}
+/* =========================
+   FEED SCHEDULE
+========================= */
 
 .schedule-grid {
     display: grid;
 
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns:
+        1fr 1fr;
 
-    gap: 12px;
+    gap: 10px;
+
+    margin-bottom: 12px;
 }
 
-.schedule-card {
-    padding: 15px;
+.schedule-item label {
+    display: block;
 
-    background: var(--pm-surface-2);
+    color: var(--muted);
 
-    border: 1px solid var(--pm-border);
+    font-size: 12px;
 
-    border-radius: 14px;
+    margin-bottom: 7px;
 }
 
-.schedule-card-title {
-    color: var(--pm-text);
+.status-message {
+    min-height: 18px;
+
+    margin: 8px 0 0;
+
+    color: var(--success);
+
+    font-size: 12px;
+}
+
+.next-feed-card {
+    margin-top: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #f8fafc;
+
+    border-radius: 11px;
+
+    padding: 13px;
+}
+
+.next-feed-card span {
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.next-feed-card strong {
+    font-size: 14px;
+}
+
+/* =========================
+   FLOCK
+========================= */
+
+.flock-card {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 24px;
+
+    box-shadow: var(--shadow);
+}
+
+.flock-number {
+    margin-bottom: 20px;
+}
+
+.flock-number span {
+    display: block;
+
+    font-size: 48px;
+    line-height: 1;
+
+    font-weight: 700;
+
+    letter-spacing: -2px;
+}
+
+.flock-number small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--muted);
 
     font-size: 13px;
-    font-weight: 800;
 }
 
-.schedule-card-description {
-    margin-top: 3px;
+.flock-actions {
+    display: grid;
 
-    color: var(--pm-muted);
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+.flock-set {
+    display: grid;
+
+    grid-template-columns:
+        1fr auto;
+
+    gap: 8px;
+}
+
+/* =========================
+   ALARM
+========================= */
+
+.alarm-card {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+
+    padding: 20px;
+
+    box-shadow: var(--shadow);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 20px;
+}
+
+.alarm-card strong {
+    display: block;
+
+    font-size: 15px;
+}
+
+.alarm-card p {
+    margin: 5px 0 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 850px) {
+
+    .overview-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .summary-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .analytics-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+@media (max-width: 560px) {
+
+    .section {
+        width: min(100% - 20px, 1180px);
+
+        margin-top: 20px;
+    }
+
+    .section:last-child {
+        margin-bottom: 35px;
+    }
+
+    .app-header {
+        padding: 19px 15px;
+    }
+
+    .app-header h1 {
+        font-size: 22px;
+    }
+
+    .overview-grid {
+        gap: 10px;
+    }
+
+    .overview-card {
+        padding: 15px;
+    }
+
+    .overview-card strong {
+        font-size: 25px;
+    }
+
+    .summary-grid {
+        gap: 10px;
+    }
+
+    .summary-card {
+        padding: 15px;
+    }
+
+    .summary-card strong {
+        font-size: 18px;
+    }
+
+    .trend-card,
+    .egg-main-card,
+    .feed-main-card,
+    .flock-card {
+        padding: 18px;
+    }
+
+    .trend-chart-wrapper {
+        min-height: 220px;
+    }
+
+    .trend-chart-area {
+        height: 220px;
+    }
+
+    .production-trend-chart {
+        gap: 5px;
+
+        padding-left: 2px;
+        padding-right: 2px;
+    }
+
+    .trend-bar {
+        width: min(34px, 65%);
+    }
+
+    .trend-day {
+        font-size: 10px;
+    }
+
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-card {
+        min-height: 95px;
+    }
+
+    .egg-number span,
+    .feed-stock span,
+    .flock-number span {
+        font-size: 42px;
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    .egg-actions,
+    .flock-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .input-row,
+    .flock-set {
+        grid-template-columns: 1fr;
+    }
+
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .alarm-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .alarm-card .primary-button {
+        width: 100%;
+    }
+
+    .trend-y-axis {
+        width: 27px;
+
+        padding-right: 5px;
+    }
+
+}
+
+.analytics-insight {
+    margin-top: 18px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    box-shadow: var(--shadow);
+
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.analytics-insight-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--secondary);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.analytics-insight strong {
+    display: block;
+    color: var(--text);
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+
+.analytics-insight p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   PROFESSIONAL FEED MANAGEMENT
+========================================================= */
+
+.feed-management-section {
+    margin-top: 30px;
+}
+
+/* =========================
+   FEED DASHBOARD
+========================= */
+
+.feed-dashboard {
+    display: grid;
+
+    grid-template-columns:
+        2fr
+        1fr
+        1fr
+        1fr;
+
+    gap: 14px;
+}
+
+.feed-hero-card,
+.feed-metric-card,
+.feed-action-panel,
+.feed-consumption-card {
+    background: var(--card);
+
+    border: 1px solid var(--border);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow);
+}
+
+.feed-hero-card {
+    padding: 22px;
+}
+
+.feed-hero-top {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 15px;
+}
+
+.feed-eyebrow {
+    display: block;
+
+    margin-bottom: 9px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+}
+
+.feed-hero-card strong {
+    display: block;
+
+    font-size: 38px;
+    line-height: 1;
+
+    letter-spacing: -1.5px;
+}
+
+.feed-hero-card small {
+    display: block;
+
+    margin-top: 7px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.feed-status-badge {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px 10px;
+
+    border-radius: 999px;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.feed-status-neutral {
+    background: var(--secondary);
+
+    color: var(--muted);
+}
+
+.feed-status-good {
+    background: var(--success-light);
+
+    color: var(--success);
+}
+
+.feed-status-warning {
+    background: #fef3c7;
+
+    color: #92400e;
+}
+
+.feed-status-critical {
+    background: #fee2e2;
+
+    color: #b91c1c;
+}
+
+.feed-status-empty {
+    background: #fee2e2;
+
+    color: #991b1b;
+}
+
+/* =========================
+   STOCK PROGRESS
+========================= */
+
+.feed-stock-progress {
+    margin-top: 25px;
+}
+
+.feed-progress-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+    color: var(--muted);
 
     font-size: 11px;
 }
 
-.schedule-card input,
-.schedule-card select {
+.feed-progress-track {
+    width: 100%;
+    height: 7px;
+
+    overflow: hidden;
+
+    background: var(--secondary);
+
+    border-radius: 999px;
+}
+
+.feed-progress-fill {
+    width: 0%;
+    height: 100%;
+
+    background: var(--primary);
+
+    border-radius: inherit;
+
+    transition:
+        width 0.3s ease,
+        background 0.3s ease;
+}
+
+/* =========================
+   FEED METRICS
+========================= */
+
+.feed-metric-card {
+    min-height: 150px;
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-between;
+}
+
+.feed-metric-label {
+    color: var(--muted);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.feed-metric-card strong {
+    margin-top: 12px;
+
+    color: var(--text);
+
+    font-size: 25px;
+    line-height: 1.1;
+}
+
+.feed-metric-card small {
+    margin-top: 8px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* =========================
+   ACTION PANEL
+========================= */
+
+.feed-action-panel {
+    margin-top: 14px;
+
+    padding: 22px;
+}
+
+.feed-action-header {
+    margin-bottom: 18px;
+}
+
+.feed-action-header h3,
+.feed-card-header h3 {
+    margin: 0;
+
+    font-size: 16px;
+}
+
+.feed-action-header p,
+.feed-card-header p {
+    margin: 5px 0 0;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.feed-action-grid {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1fr;
+
+    gap: 12px;
+}
+
+.feed-action-box {
+    display: flex;
+
+    gap: 14px;
+
+    padding: 16px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    background: #fafafa;
+}
+
+.feed-action-icon {
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: var(--primary);
+
+    color: #ffffff;
+
+    font-size: 21px;
+    font-weight: 500;
+}
+
+.feed-use-icon {
+    background: var(--secondary);
+
+    color: var(--text);
+}
+
+.feed-action-content {
+    min-width: 0;
+
+    flex: 1;
+}
+
+.feed-action-content strong {
+    display: block;
+
+    font-size: 14px;
+}
+
+.feed-action-content > span {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.feed-input-row {
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        auto;
+
+    gap: 8px;
+
+    margin-top: 13px;
+}
+
+.feed-input-row input {
+    min-width: 0;
+}
+
+/* =========================
+   CONSUMPTION
+========================= */
+
+.feed-consumption-card {
+    margin-top: 14px;
+
+    padding: 22px;
+}
+
+.feed-card-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: flex-start;
+
+    gap: 15px;
+}
+
+.feed-period-label {
+    padding: 6px 9px;
+
+    background: var(--secondary);
+
+    border-radius: 8px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+    font-weight: 600;
+
+    white-space: nowrap;
+}
+
+.feed-consumption-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+.feed-consumption-summary > div {
+    padding: 14px;
+
+    background: #f8fafc;
+
+    border-radius: 11px;
+}
+
+.feed-consumption-summary span {
+    display: block;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.feed-consumption-summary strong {
+    display: block;
+
+    margin-top: 6px;
+
+    font-size: 18px;
+}
+
+/* =========================
+   FEED CHART
+========================= */
+
+.feed-chart-wrapper {
+    height: 190px;
+
+    margin-top: 22px;
+
+    padding-top: 10px;
+}
+
+.feed-consumption-chart {
+    width: 100%;
+    height: 100%;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, minmax(0, 1fr));
+
+    align-items: end;
+
+    gap: 10px;
+}
+
+.feed-chart-column {
+    height: 100%;
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.feed-chart-bar-area {
+    width: 100%;
+
+    height: calc(100% - 30px);
+
+    display: flex;
+
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.feed-chart-bar {
+    position: relative;
+
+    width: min(42px, 65%);
+
+    min-height: 3px;
+
+    background: var(--primary);
+
+    border-radius:
+        7px
+        7px
+        3px
+        3px;
+
+    transition: height 0.25s ease;
+}
+
+.feed-chart-bar.zero {
+    opacity: 0.15;
+}
+
+.feed-chart-value {
+    position: absolute;
+
+    left: 50%;
+    bottom: calc(100% + 5px);
+
+    transform: translateX(-50%);
+
+    color: var(--text);
+
+    font-size: 10px;
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+.feed-chart-day {
+    margin-top: 8px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+.feed-chart-day.today {
+    color: var(--text);
+
+    font-weight: 700;
+}
+
+/* =========================
+   FEED HISTORY
+========================= */
+
+.feed-history-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.feed-history-item {
+    display: grid;
+
+    grid-template-columns:
+        1fr auto;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 13px;
+
+    background: #f8fafc;
+
+    border-radius: 10px;
+}
+
+.feed-history-main strong {
+    display: block;
+
+    font-size: 13px;
+}
+
+.feed-history-main small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+.feed-history-amount {
+    text-align: right;
+}
+
+.feed-history-amount strong {
+    display: block;
+
+    font-size: 13px;
+}
+
+.feed-history-amount small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+/* =========================
+   FEED SCHEDULE ENHANCEMENT
+========================= */
+
+.next-feed-card {
+    min-height: 62px;
+}
+
+.next-feed-card > div {
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.next-feed-card small {
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+/* =========================
+   FEED RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+
+    .feed-dashboard {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .feed-hero-card {
+        grid-column: span 2;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    .feed-dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-hero-card {
+        grid-column: auto;
+    }
+
+    .feed-action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-consumption-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-card-header {
+        flex-direction: column;
+    }
+
+    .feed-period-label {
+        align-self: flex-start;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .feed-hero-card,
+    .feed-action-panel,
+    .feed-consumption-card {
+        padding: 18px;
+    }
+
+    .feed-hero-card strong {
+        font-size: 34px;
+    }
+
+    .feed-metric-card {
+        min-height: 125px;
+    }
+
+    .feed-action-box {
+        padding: 14px;
+    }
+
+    .feed-input-row {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-input-row button {
+        width: 100%;
+    }
+
+    .feed-chart-wrapper {
+        height: 170px;
+    }
+
+    .feed-consumption-chart {
+        gap: 5px;
+    }
+
+}
+
+/* =========================================================
+   RESET TODAY'S FEED USAGE
+   ========================================================= */
+
+.feed-reset-button {
     margin-top: 10px;
+    padding: 9px 14px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #6b7280;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
 }
 
-
-/* ============================================================
-   25. SETTINGS VIEW — MAIN FRAME
-   ============================================================ */
-
-#pmSettingsView,
-.pm-settings-view,
-.settings-view {
-    width: min(
-        calc(100% - 44px),
-        var(--pm-max-width)
-    );
-
-    margin: 0 auto;
-
-    padding:
-        4px 0
-        calc(100px + env(safe-area-inset-bottom));
-
-    animation: pmSettingsIn 240ms ease both;
+.feed-reset-button:hover {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
 }
 
-@keyframes pmSettingsIn {
+.feed-reset-button:active {
+    transform: scale(0.98);
+}
+
+.feed-reset-button:focus-visible {
+    outline: 2px solid #fca5a5;
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   DATA BACKUP
+   ========================================================= */
+
+.backup-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.backup-actions .secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.status-text {
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+/* =========================================================
+   POULTRY MANAGER — PROFESSIONAL SETTINGS SYSTEM
+   ========================================================= */
+
+:root {
+    --settings-bg: #f4f6f8;
+    --settings-card: #ffffff;
+    --settings-border: #e5e7eb;
+    --settings-text: #111827;
+    --settings-muted: #6b7280;
+    --settings-soft: #f8fafc;
+    --settings-hover: #f1f5f9;
+    --settings-danger: #dc2626;
+}
+
+/* =========================================================
+   APP NAVIGATION
+   ========================================================= */
+
+.app-navigation {
+    display: flex;
+    gap: 8px;
+    margin-top: 22px;
+    padding: 6px;
+    background: var(--settings-soft);
+    border: 1px solid var(--settings-border);
+    border-radius: 14px;
+    width: fit-content;
+}
+
+.app-navigation button {
+    border: 0;
+    background: transparent;
+    color: var(--settings-muted);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.app-navigation button:hover {
+    background: var(--settings-hover);
+    color: var(--settings-text);
+}
+
+.app-navigation button.active {
+    background: var(--settings-card);
+    color: var(--settings-text);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================================
+   SETTINGS VIEW
+   ========================================================= */
+
+.pm-settings-view {
+    display: none;
+    margin-top: 28px;
+}
+
+.pm-settings-view.active {
+    display: block;
+}
+
+.pm-settings-header {
+    margin-bottom: 28px;
+}
+
+.pm-settings-header h2 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.2;
+    color: var(--settings-text);
+}
+
+.pm-settings-header p {
+    margin: 8px 0 0;
+    color: var(--settings-muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* =========================================================
+   SETTINGS GRID
+   ========================================================= */
+
+.pm-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.pm-settings-card {
+    background: var(--settings-card);
+    border: 1px solid var(--settings-border);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.035);
+}
+
+.pm-settings-card-wide {
+    grid-column: 1 / -1;
+}
+
+.pm-settings-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.pm-settings-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--settings-soft);
+    font-size: 20px;
+}
+
+.pm-settings-card-header h3 {
+    margin: 0;
+    font-size: 17px;
+    color: var(--settings-text);
+}
+
+.pm-settings-card-header p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--settings-muted);
+}
+
+/* =========================================================
+   SETTINGS ROWS
+   ========================================================= */
+
+.pm-settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 0;
+    border-top: 1px solid var(--settings-border);
+}
+
+.pm-settings-row:first-of-type {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.pm-settings-row:last-child {
+    padding-bottom: 0;
+}
+
+.pm-settings-row-info {
+    min-width: 0;
+}
+
+.pm-settings-row-info strong {
+    display: block;
+    font-size: 14px;
+    color: var(--settings-text);
+}
+
+.pm-settings-row-info span {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--settings-muted);
+}
+
+/* =========================================================
+   SETTINGS INPUTS
+   ========================================================= */
+
+.pm-settings-input,
+.pm-settings-select {
+    width: 180px;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 10px 12px;
+    border: 1px solid var(--settings-border);
+    border-radius: 10px;
+    background: var(--settings-card);
+    color: var(--settings-text);
+    font-size: 14px;
+    outline: none;
+}
+
+.pm-settings-input:focus,
+.pm-settings-select:focus {
+    border-color: #9ca3af;
+    box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.06);
+}
+
+/* =========================================================
+   SETTINGS ACTIONS
+   ========================================================= */
+
+.pm-settings-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.pm-settings-action-button {
+    border: 0;
+    min-height: 42px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.pm-settings-action-button:hover {
+    transform: translateY(-1px);
+}
+
+.pm-settings-primary {
+    background: #111827;
+    color: #ffffff;
+}
+
+.pm-settings-secondary {
+    background: var(--settings-soft);
+    color: var(--settings-text);
+    border: 1px solid var(--settings-border);
+}
+
+.pm-settings-danger {
+    background: #fef2f2;
+    color: var(--settings-danger);
+    border: 1px solid #fecaca;
+}
+
+/* =========================================================
+   SETTINGS STATUS
+   ========================================================= */
+
+.pm-settings-status {
+    min-height: 18px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--settings-muted);
+}
+
+.pm-settings-status.success {
+    color: #15803d;
+}
+
+.pm-settings-status.error {
+    color: #dc2626;
+}
+
+/* =========================================================
+   SETTINGS SCHEDULE
+   ========================================================= */
+
+.pm-schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.pm-schedule-field label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--settings-muted);
+}
+
+.pm-schedule-field input {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid var(--settings-border);
+    border-radius: 10px;
+    background: var(--settings-card);
+    color: var(--settings-text);
+}
+
+/* =========================================================
+   SETTINGS STATUS BADGES
+   ========================================================= */
+
+.pm-settings-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: var(--settings-soft);
+    color: var(--settings-muted);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.pm-settings-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #9ca3af;
+}
+
+.pm-settings-badge.enabled .pm-settings-badge-dot {
+    background: #16a34a;
+}
+
+.pm-settings-badge.enabled {
+    color: #15803d;
+    background: #f0fdf4;
+}
+
+/* =========================================================
+   ABOUT SECTION
+   ========================================================= */
+
+.pm-about {
+    display: grid;
+    gap: 18px;
+}
+
+.pm-about-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.pm-about-logo {
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #111827;
+    color: white;
+    font-size: 24px;
+}
+
+.pm-about-brand strong {
+    display: block;
+    font-size: 17px;
+    color: var(--settings-text);
+}
+
+.pm-about-brand span {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--settings-muted);
+}
+
+.pm-about-description {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--settings-muted);
+}
+
+/* =========================================================
+   SETTINGS DIVIDER
+   ========================================================= */
+
+.pm-settings-divider {
+    height: 1px;
+    background: var(--settings-border);
+    margin: 18px 0;
+}
+
+/* =========================================================
+   DARK THEME
+   ========================================================= */
+
+html[data-theme="dark"] {
+    --settings-bg: #0f172a;
+    --settings-card: #111827;
+    --settings-border: #263244;
+    --settings-text: #f8fafc;
+    --settings-muted: #94a3b8;
+    --settings-soft: #172033;
+    --settings-hover: #1e293b;
+    --settings-danger: #f87171;
+}
+
+html[data-theme="dark"] body {
+    background: #0f172a;
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .app {
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .app-header,
+html[data-theme="dark"] .overview-card,
+html[data-theme="dark"] .summary-card,
+html[data-theme="dark"] .egg-main-card,
+html[data-theme="dark"] .flock-card,
+html[data-theme="dark"] .alarm-card,
+html[data-theme="dark"] .section,
+html[data-theme="dark"] .analytics-card,
+html[data-theme="dark"] .analytics-insight,
+html[data-theme="dark"] .feed-hero-card,
+html[data-theme="dark"] .feed-metric-card,
+html[data-theme="dark"] .feed-action-panel,
+html[data-theme="dark"] .feed-action-box,
+html[data-theme="dark"] .feed-consumption-card,
+html[data-theme="dark"] .next-feed-card,
+html[data-theme="dark"] .pm-settings-card {
+    background: #111827;
+    border-color: #263244;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .pm-settings-input,
+html[data-theme="dark"] .pm-settings-select,
+html[data-theme="dark"] .pm-schedule-field input {
+    background: #0f172a;
+    color: #f8fafc;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .secondary-button {
+    background: #172033;
+    color: #f8fafc;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .history-item,
+html[data-theme="dark"] .empty-state,
+html[data-theme="dark"] .feed-consumption-summary > div {
+    background: #172033;
+    border-color: #263244;
+}
+
+html[data-theme="dark"] .app-navigation {
+    background: #172033;
+    border-color: #263244;
+}
+
+html[data-theme="dark"] .app-navigation button.active {
+    background: #111827;
+    color: #f8fafc;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .pm-settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pm-settings-card-wide {
+        grid-column: auto;
+    }
+
+}
+
+@media (max-width: 560px) {
+
+    .app-navigation {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .app-navigation button {
+        flex: 1;
+        padding: 10px 12px;
+    }
+
+    .pm-settings-header h2 {
+        font-size: 24px;
+    }
+
+    .pm-settings-card {
+        padding: 18px;
+        border-radius: 15px;
+    }
+
+    .pm-settings-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pm-settings-input,
+    .pm-settings-select {
+        width: 100%;
+    }
+
+    .pm-schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pm-settings-actions {
+        width: 100%;
+    }
+
+    .pm-settings-action-button {
+        flex: 1;
+    }
+
+}
+
+@media (max-width: 380px) {
+
+    .pm-settings-card {
+        padding: 15px;
+    }
+
+    .pm-settings-actions {
+        flex-direction: column;
+    }
+
+    .pm-settings-action-button {
+        width: 100%;
+    }
+
+}
+
+/* =========================================================
+   POULTRY MANAGER — APP SHELL POLISH
+   ========================================================= */
+
+.app-navigation {
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+    box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.app-navigation button {
+    position: relative;
+    white-space: nowrap;
+}
+
+.app-navigation button.active::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 4px;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+}
+
+/* =========================================================
+   SETTINGS CARD POLISH
+   ========================================================= */
+
+.pm-settings-card {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.pm-settings-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 26px rgba(15, 23, 42, 0.06);
+}
+
+.pm-settings-action-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.pm-settings-action-button:active {
+    transform: scale(0.98);
+}
+
+/* =========================================================
+   SAVE FEEDBACK
+   ========================================================= */
+
+.pm-settings-status.success {
+    animation: pmStatusAppear 0.25s ease;
+}
+
+@keyframes pmStatusAppear {
+
     from {
         opacity: 0;
-        transform: translateY(6px);
+        transform: translateY(-3px);
     }
 
     to {
         opacity: 1;
         transform: translateY(0);
     }
+
 }
 
+/* =========================================================
+   APP VIEW TRANSITION
+   ========================================================= */
 
-/* ============================================================
-   26. SETTINGS HEADER
-   ============================================================ */
-
-.pm-settings-header,
-.settings-header {
-    margin-bottom: 22px;
-
-    padding:
-        8px 2px
-        0;
+.app.pm-switching .section,
+.app.pm-switching .pm-settings-view {
+    animation: pmViewAppear 0.2s ease;
 }
 
-.pm-settings-header h2,
-.settings-header h2,
-#pmSettingsView > h2 {
-    margin: 0;
+@keyframes pmViewAppear {
 
-    color: var(--pm-text);
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
 
-    font-size: 27px;
-    line-height: 1.1;
-    font-weight: 850;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-    letter-spacing: -.04em;
 }
 
-.pm-settings-header p,
-.settings-header p {
-    margin: 6px 0 0;
-
-    color: var(--pm-muted);
-
-    font-size: 13px;
-}
-
-
-/* ============================================================
-   27. SETTINGS GRID
-   ============================================================ */
-
-.pm-settings-grid,
-.settings-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 14px;
-}
-
-
-/* ============================================================
-   28. SETTINGS CARD
-   ============================================================ */
-
-.pm-settings-card,
-.settings-card {
-    min-width: 0;
-
-    overflow: hidden;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: var(--pm-radius-lg);
-
-    box-shadow: var(--pm-shadow-sm);
-
-    transition:
-        border-color var(--pm-transition),
-        box-shadow var(--pm-transition),
-        transform var(--pm-transition);
-}
-
-.pm-settings-card:hover,
-.settings-card:hover {
-    border-color: var(--pm-border-strong);
-
-    box-shadow: var(--pm-shadow-md);
-}
-
-
-/* ============================================================
-   29. SETTINGS CARD HEADER
-   ============================================================ */
-
-.pm-settings-card-header,
-.settings-card-header {
-    padding: 17px 18px;
-
-    display: flex;
-    align-items: center;
-
-    gap: 12px;
-
-    border-bottom: 1px solid var(--pm-border);
-
-    background:
-        linear-gradient(
-            180deg,
-            var(--pm-surface),
-            var(--pm-surface-2)
-        );
-}
-
-.pm-settings-card-icon,
-.settings-card-icon {
-    width: 38px;
-    height: 38px;
-
-    flex: 0 0 38px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 11px;
-
-    background: var(--pm-primary-light);
-
-    color: var(--pm-primary);
-
-    font-size: 17px;
-    font-weight: 800;
-}
-
-.pm-settings-card-title,
-.settings-card-title {
-    margin: 0;
-
-    color: var(--pm-text);
-
-    font-size: 14px;
-    font-weight: 850;
-}
-
-.pm-settings-card-description,
-.settings-card-description {
-    margin: 2px 0 0;
-
-    color: var(--pm-muted);
-
-    font-size: 11px;
-    line-height: 1.4;
-}
-
-
-/* ============================================================
-   30. SETTINGS CONTENT
-   ============================================================ */
-
-.pm-settings-card-body,
-.settings-card-body {
-    padding: 4px 0;
-}
-
-.pm-settings-row,
-.settings-row {
-    min-height: 60px;
-
-    padding: 12px 18px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 18px;
-
-    border-bottom: 1px solid var(--pm-border);
-}
-
-.pm-settings-row:last-child,
-.settings-row:last-child {
-    border-bottom: 0;
-}
-
-.pm-settings-row:hover,
-.settings-row:hover {
-    background: var(--pm-surface-2);
-}
-
-.pm-settings-row-label,
-.settings-row-label {
-    min-width: 0;
-}
-
-.pm-settings-row-title,
-.settings-row-title {
-    color: var(--pm-text);
-
-    font-size: 13px;
-    font-weight: 750;
-}
-
-.pm-settings-row-description,
-.settings-row-description {
-    margin-top: 2px;
-
-    color: var(--pm-muted);
-
-    font-size: 11px;
-    line-height: 1.4;
-}
-
-.pm-settings-row-control,
-.settings-row-control {
-    flex: 0 0 auto;
-
-    display: flex;
-    align-items: center;
-
-    gap: 8px;
-}
-
-
-/* ============================================================
-   31. SETTINGS BUTTONS
-   ============================================================ */
-
-.pm-settings-button,
-.settings-button-action {
-    min-height: 38px;
-
-    padding: 0 12px;
-
-    border-radius: 10px;
-
-    border: 1px solid var(--pm-border);
-
-    background: var(--pm-surface-2);
-
-    color: var(--pm-text-2);
-
-    font-size: 12px;
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition:
-        background var(--pm-transition),
-        border-color var(--pm-transition),
-        color var(--pm-transition),
-        transform var(--pm-transition);
-}
-
-.pm-settings-button:hover,
-.settings-button-action:hover {
-    background: var(--pm-primary-light);
-
-    border-color:
-        color-mix(
-            in srgb,
-            var(--pm-primary) 25%,
-            var(--pm-border)
-        );
-
-    color: var(--pm-primary);
-}
-
-.pm-settings-button:active,
-.settings-button-action:active {
-    transform: scale(.975);
-}
-
-
-/* ============================================================
-   32. SETTINGS STATUS
-   ============================================================ */
-
-.pm-settings-status,
-.settings-status {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 28px;
-
-    padding: 5px 9px;
-
-    border-radius: 999px;
-
-    background: var(--pm-green-soft);
-
-    color: var(--pm-green);
-
-    font-size: 10px;
-    font-weight: 800;
-}
-
-.pm-settings-status.off,
-.settings-status.off,
-.status-off {
-    background: var(--pm-surface-3);
-    color: var(--pm-muted);
-}
-
-
-/* ============================================================
-   33. TOGGLE SWITCH
-   ============================================================ */
-
-.pm-toggle,
-.settings-toggle,
-.toggle {
-    position: relative;
-
-    width: 48px;
-    height: 28px;
-
-    flex: 0 0 48px;
-
-    border: 0;
-
-    border-radius: 999px;
-
-    background: var(--pm-border-strong);
-
-    cursor: pointer;
-
-    transition:
-        background var(--pm-transition),
-        box-shadow var(--pm-transition);
-}
-
-.pm-toggle::after,
-.settings-toggle::after,
-.toggle::after {
-    content: "";
-
-    position: absolute;
-
-    top: 4px;
-    left: 4px;
-
-    width: 20px;
-    height: 20px;
-
-    border-radius: 50%;
-
-    background: #ffffff;
-
+/* =========================================================
+   DARK MODE POLISH
+   ========================================================= */
+
+html[data-theme="dark"] .app-navigation {
     box-shadow:
-        0 2px 5px rgba(0, 0, 0, .18);
-
-    transition:
-        transform var(--pm-transition);
+        0 6px 22px rgba(0, 0, 0, 0.22);
 }
 
-.pm-toggle.active,
-.settings-toggle.active,
-.toggle.active,
-.pm-toggle[aria-checked="true"],
-.settings-toggle[aria-checked="true"],
-.toggle[aria-checked="true"] {
-    background: var(--pm-primary);
-
+html[data-theme="dark"] .pm-settings-card:hover {
     box-shadow:
-        0 0 0 3px
-        color-mix(
-            in srgb,
-            var(--pm-primary) 10%,
-            transparent
-        );
+        0 10px 28px rgba(0, 0, 0, 0.22);
 }
 
-.pm-toggle.active::after,
-.settings-toggle.active::after,
-.toggle.active::after,
-.pm-toggle[aria-checked="true"]::after,
-.settings-toggle[aria-checked="true"]::after,
-.toggle[aria-checked="true"]::after {
-    transform: translateX(20px);
+html[data-theme="dark"] .pm-settings-action-button.pm-settings-secondary {
+    background: #172033;
+    color: #f8fafc;
+    border-color: #334155;
 }
 
-
-/* ============================================================
-   34. SETTINGS FORM GROUPS
-   ============================================================ */
-
-.pm-settings-form,
-.settings-form {
-    padding: 16px 18px;
-}
-
-.pm-settings-field,
-.settings-field {
-    margin-bottom: 14px;
-}
-
-.pm-settings-field:last-child,
-.settings-field:last-child {
-    margin-bottom: 0;
-}
-
-.pm-settings-label,
-.settings-label {
-    display: block;
-
-    margin-bottom: 6px;
-
-    color: var(--pm-text-2);
-
-    font-size: 11px;
-    font-weight: 800;
-}
-
-.pm-settings-help,
-.settings-help {
-    margin-top: 5px;
-
-    color: var(--pm-muted);
-
-    font-size: 10px;
-    line-height: 1.45;
-}
-
-
-/* ============================================================
-   35. BACKUP / RESTORE
-   ============================================================ */
-
-.backup-actions,
-.settings-backup-actions {
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 8px;
-}
-
-.backup-status,
-#backupStatus {
-    margin-top: 10px;
-
-    padding: 10px 12px;
-
-    border-radius: 10px;
-
-    background: var(--pm-primary-soft);
-
-    color: var(--pm-muted);
-
-    font-size: 11px;
-}
-
-
-/* ============================================================
-   36. ABOUT
-   ============================================================ */
-
-.pm-about,
-.about-section {
-    padding: 20px;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--pm-primary-soft),
-            var(--pm-surface)
-        );
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: var(--pm-radius-lg);
-
-    box-shadow: var(--pm-shadow-sm);
-}
-
-.pm-about-title,
-.about-title {
-    margin: 0;
-
-    color: var(--pm-text);
-
-    font-size: 19px;
-    font-weight: 850;
-    letter-spacing: -.025em;
-}
-
-.pm-about-description,
-.about-description {
-    margin: 7px 0 0;
-
-    color: var(--pm-muted);
-
-    font-size: 12px;
-    line-height: 1.6;
-}
-
-.pm-about-version,
-.about-version {
-    display: inline-block;
-
-    margin-top: 12px;
-
-    padding: 5px 9px;
-
-    border-radius: 999px;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    color: var(--pm-muted);
-
-    font-size: 10px;
-    font-weight: 750;
-}
-
-
-/* ============================================================
-   37. VIEW VISIBILITY
-   ============================================================ */
-
-#pmDashboardView[style*="display: none"],
-#pmSettingsView[style*="display: none"] {
-    display: none !important;
-}
-
-#pmDashboardView,
-#pmSettingsView {
-    transition:
-        opacity var(--pm-transition-slow),
-        transform var(--pm-transition-slow);
-}
-
-
-/* ============================================================
-   38. FOCUS / ACCESSIBILITY
-   ============================================================ */
-
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: 3px solid
-        color-mix(
-            in srgb,
-            var(--pm-primary) 25%,
-            transparent
-        );
-
-    outline-offset: 2px;
-}
-
-
-/* ============================================================
-   39. DARK MODE — CORE UI
-   ============================================================ */
-
-html[data-theme="dark"] .pm-navigation,
-html[data-theme="dark"] .nav-tabs,
-html[data-theme="dark"] #pmNavigation {
-    background: #151d18;
-    border-color: var(--pm-border);
-}
-
-html[data-theme="dark"] .farm-overview-card,
-html[data-theme="dark"] .farm-overview-item,
-html[data-theme="dark"] .summary-card,
-html[data-theme="dark"] .analytics-card,
-html[data-theme="dark"] .quick-action,
-html[data-theme="dark"] .quick-action-button,
-html[data-theme="dark"] .pm-card,
-html[data-theme="dark"] .card,
-html[data-theme="dark"] .section-card,
-html[data-theme="dark"] .dashboard-card,
-html[data-theme="dark"] .pm-settings-card,
-html[data-theme="dark"] .settings-card,
-html[data-theme="dark"] .egg-production,
-html[data-theme="dark"] .feed-management,
-html[data-theme="dark"] .feed-consumption,
-html[data-theme="dark"] .schedule-section,
-html[data-theme="dark"] .feed-schedule {
-    background: var(--pm-surface);
-
-    border-color: var(--pm-border);
-
-    box-shadow: var(--pm-shadow-sm);
-}
-
-html[data-theme="dark"] .farm-overview-value,
-html[data-theme="dark"] .summary-card-value,
-html[data-theme="dark"] .analytics-card-value,
-html[data-theme="dark"] .egg-number,
-html[data-theme="dark"] #eggCount,
-html[data-theme="dark"] .feed-hero-value,
-html[data-theme="dark"] #feedAmount,
-html[data-theme="dark"] .feed-metric-value,
-html[data-theme="dark"] .history-item-value,
-html[data-theme="dark"] .egg-history-value,
-html[data-theme="dark"] .feed-history-value,
-html[data-theme="dark"] .section-title,
-html[data-theme="dark"] .pm-section-title,
-html[data-theme="dark"] .card-title,
-html[data-theme="dark"] .pm-card-title,
-html[data-theme="dark"] .pm-settings-card-title,
-html[data-theme="dark"] .settings-card-title,
-html[data-theme="dark"] .pm-settings-row-title,
-html[data-theme="dark"] .settings-row-title {
-    color: #f2f7f4;
-}
-
-html[data-theme="dark"] input,
-html[data-theme="dark"] select,
-html[data-theme="dark"] textarea,
-html[data-theme="dark"] .pm-settings-input,
-html[data-theme="dark"] .pm-input {
-    background: #0d130f;
-
-    color: #f2f7f4;
-
-    border-color: var(--pm-border-strong);
-}
-
-html[data-theme="dark"] .history-item,
-html[data-theme="dark"] .egg-history-item,
-html[data-theme="dark"] .feed-history-item,
-html[data-theme="dark"] .pm-settings-row:hover,
-html[data-theme="dark"] .settings-row:hover,
-html[data-theme="dark"] .feed-action-panel,
-html[data-theme="dark"] .feed-input-panel,
-html[data-theme="dark"] .action-panel,
-html[data-theme="dark"] .schedule-card,
-html[data-theme="dark"] .feed-metric,
-html[data-theme="dark"] .feed-metric-card {
-    background: var(--pm-surface-2);
-
-    border-color: var(--pm-border);
-}
-
-html[data-theme="dark"] .pm-settings-card-header,
-html[data-theme="dark"] .settings-card-header {
-    background:
-        linear-gradient(
-            180deg,
-            #111814,
-            #151d18
-        );
-
-    border-color: var(--pm-border);
-}
-
-html[data-theme="dark"] .secondary-button,
-html[data-theme="dark"] button.secondary-button,
-html[data-theme="dark"] .pm-settings-button,
-html[data-theme="dark"] .settings-button-action {
-    background: var(--pm-surface-2);
-
-    color: var(--pm-text-2);
-
-    border-color: var(--pm-border-strong);
-}
-
-
-/* ============================================================
-   40. RESPONSIVE — TABLET
-   ============================================================ */
-
-@media (max-width: 1000px) {
-
-    .farm-overview,
-    #farmOverview,
-    .farm-overview-grid {
-        grid-template-columns:
-            repeat(3, minmax(0, 1fr));
-    }
-
-    .analytics-grid,
-    .production-analytics-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-    }
-
-    .summary-grid,
-    .production-summary {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-    }
-
-    .feed-metrics,
-    .feed-metric-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-    }
-}
-
-
-/* ============================================================
-   41. RESPONSIVE — MOBILE
-   ============================================================ */
-
-@media (max-width: 700px) {
-
-    .app-header,
-    .pm-header {
-        padding:
-            20px 16px
-            13px;
-    }
-
-    #pmDashboardView {
-        padding:
-            0 16px
-            calc(90px + env(safe-area-inset-bottom));
-    }
-
-    #pmNavigation,
-    .pm-navigation,
-    .main-navigation,
-    .nav-tabs,
-    #pmSettingsView {
-        width: calc(100% - 32px);
-    }
-
-    .farm-overview,
-    #farmOverview,
-    .farm-overview-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-    }
-
-    .quick-actions,
-    #quickActions {
-        grid-template-columns: 1fr;
-    }
-
-    .pm-settings-grid,
-    .settings-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .egg-production-top,
-    .feed-hero {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .schedule-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-/* ============================================================
-   END OF PART 1
-   ============================================================ */
-
-
-/* ============================================================
-   POULTRY MANAGER
-   COMPLETE UI SYSTEM
-   STYLE.CSS — PART 2 OF 2
-   ============================================================ */
-
-
-/* ============================================================
-   42. MOBILE SETTINGS — DETAILED
-   ============================================================ */
+/* =========================================================
+   MOBILE NAVIGATION
+   ========================================================= */
 
 @media (max-width: 560px) {
 
-    .pm-settings-header,
-    .settings-header {
-        margin-bottom: 17px;
+    .app-navigation {
+        position: sticky;
+        top: 8px;
+        margin-top: 16px;
+        padding: 5px;
+        border-radius: 13px;
     }
 
-    .pm-settings-header h2,
-    .settings-header h2,
-    #pmSettingsView > h2 {
-        font-size: 24px;
-    }
-
-    .pm-settings-card-header,
-    .settings-card-header {
-        padding: 15px;
-    }
-
-    .pm-settings-card-body,
-    .settings-card-body {
-        padding: 0;
-    }
-
-    .pm-settings-row,
-    .settings-row {
-        min-height: 64px;
-
-        padding: 12px 15px;
-
-        gap: 12px;
-    }
-
-    .pm-settings-row-control,
-    .settings-row-control {
-        max-width: 48%;
-    }
-
-    .pm-settings-row-control input,
-    .settings-row-control input,
-    .pm-settings-row-control select,
-    .settings-row-control select {
-        min-width: 100px;
-    }
-
-    .pm-settings-card-icon,
-    .settings-card-icon {
-        width: 36px;
-        height: 36px;
-        flex-basis: 36px;
-    }
-
-    .history-item,
-    .egg-history-item,
-    .feed-history-item {
-        min-height: 58px;
-
-        padding: 11px 12px;
-    }
-
-    .history-item-date,
-    .egg-history-date,
-    .feed-history-date {
-        font-size: 12px;
-    }
-
-    .history-item-value,
-    .egg-history-value,
-    .feed-history-value {
-        font-size: 14px;
-    }
-}
-
-
-/* ============================================================
-   43. VERY SMALL PHONES
-   ============================================================ */
-
-@media (max-width: 420px) {
-
-    body {
-        font-size: 14px;
-    }
-
-    .app-header,
-    .pm-header {
-        padding:
-            17px 13px
-            11px;
-    }
-
-    .app-title,
-    .pm-title,
-    header h1 {
-        font-size: 23px;
-    }
-
-    #pmDashboardView {
-        padding-left: 13px;
-        padding-right: 13px;
-    }
-
-    #pmNavigation,
-    .pm-navigation,
-    .main-navigation,
-    .nav-tabs,
-    #pmSettingsView {
-        width: calc(100% - 26px);
-    }
-
-    #pmNavigation button,
-    .pm-navigation button,
-    .main-navigation button,
-    .nav-tabs button {
-        min-height: 43px;
-
+    .app-navigation button {
+        min-height: 42px;
         font-size: 13px;
     }
 
-    .farm-overview-card,
-    .farm-overview-item {
-        padding: 14px;
+    .app-navigation button.active::after {
+        left: 15px;
+        right: 15px;
+    }
+
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .pm-settings-card,
+    .pm-settings-action-button,
+    .app-navigation button {
+        transition: none;
+    }
+
+    .pm-settings-status.success,
+    .app.pm-switching .section,
+    .app.pm-switching .pm-settings-view {
+        animation: none;
+    }
+
+}
+
+/* =========================================================
+   POULTRY MANAGER — FARM OVERVIEW
+   ========================================================= */
+
+.farm-overview-section {
+    margin-top: 28px;
+    margin-bottom: 28px;
+}
+
+.farm-overview-header {
+    margin-bottom: 18px;
+}
+
+.farm-overview-eyebrow {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+}
+
+.farm-overview-header h2 {
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.25;
+    color: var(--text);
+}
+
+.farm-overview-header p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* =========================================================
+   OVERVIEW CARDS
+   ========================================================= */
+
+.farm-overview-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.farm-overview-card {
+    min-width: 0;
+    padding: 18px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow:
+        0 4px 16px rgba(15, 23, 42, 0.035);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.farm-overview-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 24px rgba(15, 23, 42, 0.07);
+}
+
+.farm-overview-card-wide {
+    grid-column: span 2;
+}
+
+.farm-overview-card-top {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 14px;
+}
+
+.farm-overview-icon {
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+    background: var(--settings-soft);
+
+    font-size: 17px;
+}
+
+.farm-overview-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.farm-overview-value {
+    display: block;
+
+    font-size: 27px;
+    line-height: 1.15;
+    font-weight: 800;
+
+    color: var(--text);
+
+    overflow-wrap: anywhere;
+}
+
+.farm-overview-description {
+    display: block;
+    margin-top: 5px;
+
+    font-size: 11px;
+    color: var(--muted);
+}
+
+/* =========================================================
+   QUICK ACTIONS
+   ========================================================= */
+
+.quick-actions {
+    margin-top: 22px;
+    padding: 20px;
+
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+
+    box-shadow:
+        0 4px 18px rgba(15, 23, 42, 0.035);
+}
+
+.quick-actions-header {
+    margin-bottom: 16px;
+}
+
+.quick-actions-header h3 {
+    margin: 0;
+
+    font-size: 17px;
+    color: var(--text);
+}
+
+.quick-actions-header p {
+    margin: 5px 0 0;
+
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.quick-actions-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.quick-action-button {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    min-width: 0;
+    padding: 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+
+    background: var(--settings-soft);
+    color: var(--text);
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.quick-action-button:hover {
+    transform: translateY(-2px);
+
+    background: var(--settings-hover);
+
+    border-color: #d1d5db;
+}
+
+.quick-action-button:active {
+    transform: scale(0.98);
+}
+
+.quick-action-icon {
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: var(--card);
+
+    font-size: 18px;
+}
+
+.quick-action-button strong {
+    display: block;
+
+    font-size: 13px;
+    line-height: 1.3;
+
+    color: var(--text);
+}
+
+.quick-action-button small {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 10px;
+    line-height: 1.35;
+
+    color: var(--muted);
+}
+
+/* =========================================================
+   DARK MODE
+   ========================================================= */
+
+html[data-theme="dark"] .farm-overview-card,
+html[data-theme="dark"] .quick-actions {
+    background: #111827;
+    border-color: #263244;
+}
+
+html[data-theme="dark"] .farm-overview-card:hover {
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+html[data-theme="dark"] .quick-action-button {
+    background: #172033;
+    border-color: #263244;
+}
+
+html[data-theme="dark"] .quick-action-button:hover {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+html[data-theme="dark"] .quick-action-icon {
+    background: #111827;
+}
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 850px) {
+
+    .farm-overview-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .farm-overview-card-wide {
+        grid-column: span 2;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 560px) {
+
+    .farm-overview-section {
+        margin-top: 22px;
+    }
+
+    .farm-overview-header h2 {
+        font-size: 21px;
+    }
+
+    .farm-overview-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+
+    .farm-overview-card {
+        padding: 15px;
+        border-radius: 14px;
+    }
+
+    .farm-overview-card-wide {
+        grid-column: span 2;
+    }
+
+    .farm-overview-value {
+        font-size: 23px;
+    }
+
+    .quick-actions {
+        padding: 16px;
+        border-radius: 15px;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-action-button {
+        width: 100%;
+    }
+
+}
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .farm-overview-grid {
+        gap: 8px;
+    }
+
+    .farm-overview-card {
+        padding: 13px;
     }
 
     .farm-overview-value {
         font-size: 21px;
     }
 
-    .summary-card {
-        padding: 14px;
-    }
-
-    .summary-card-value {
-        font-size: 21px;
-    }
-
-    .analytics-card {
-        padding: 14px;
-    }
-
-    .analytics-card-value {
-        font-size: 20px;
-    }
-
-    .egg-production,
-    #eggProduction,
-    .feed-management,
-    #feedManagement {
-        padding: 15px;
-    }
-
-    .egg-number,
-    #eggCount {
-        font-size: 42px;
-    }
-
-    .feed-hero {
-        padding: 16px;
-    }
-
-    .feed-hero-value,
-    #feedAmount {
-        font-size: 30px;
-    }
-
-    .feed-metrics,
-    .feed-metric-grid {
-        gap: 8px;
-    }
-
-    .feed-metric,
-    .feed-metric-card {
-        padding: 11px;
-    }
-
-    .feed-metric-value {
-        font-size: 16px;
-    }
-
-    .pm-settings-card-header,
-    .settings-card-header {
-        padding: 14px;
-    }
-
-    .pm-settings-row,
-    .settings-row {
-        padding:
-            11px 14px;
-    }
-
-    .pm-settings-row-title,
-    .settings-row-title {
-        font-size: 12px;
-    }
-
-    .pm-settings-row-description,
-    .settings-row-description {
-        font-size: 10px;
-    }
-
-    .pm-settings-row-control,
-    .settings-row-control {
-        max-width: 45%;
-    }
-
-    .pm-settings-button,
-    .settings-button-action {
-        min-height: 36px;
-
-        padding: 0 10px;
-
+    .farm-overview-label {
         font-size: 11px;
     }
-}
-
-
-/* ============================================================
-   44. SETTINGS — FARM MANAGEMENT
-   ============================================================ */
-
-.pm-settings-flock,
-.settings-flock,
-#pmSettingsFlock {
-    padding: 0;
-}
-
-.pm-settings-flock-summary,
-.settings-flock-summary {
-    padding: 18px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--pm-primary-soft),
-            var(--pm-surface)
-        );
-
-    border-bottom: 1px solid var(--pm-border);
-}
-
-.pm-settings-flock-number,
-.settings-flock-number,
-.flock-number {
-    color: var(--pm-text);
-
-    font-size: 34px;
-    line-height: 1;
-    font-weight: 900;
-
-    letter-spacing: -.05em;
-
-    font-variant-numeric: tabular-nums;
-}
-
-.pm-settings-flock-label,
-.settings-flock-label {
-    margin-top: 4px;
-
-    color: var(--pm-muted);
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.flock-controls {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.flock-control-button {
-    width: 38px;
-    height: 38px;
-
-    display: grid;
-    place-items: center;
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 10px;
-
-    background: var(--pm-surface);
-
-    color: var(--pm-text);
-
-    font-size: 18px;
-    font-weight: 800;
-
-    cursor: pointer;
-}
-
-.flock-control-button:hover {
-    background: var(--pm-primary-light);
-    color: var(--pm-primary);
-    border-color: var(--pm-primary);
-}
-
-
-/* ============================================================
-   45. SETTINGS — NOTIFICATION AREA
-   ============================================================ */
-
-.notification-status,
-.push-status,
-#notificationStatus {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.notification-status-dot,
-.push-status-dot {
-    width: 8px;
-    height: 8px;
-
-    flex: 0 0 8px;
-
-    border-radius: 50%;
-
-    background: var(--pm-muted);
-}
-
-.notification-status-dot.active,
-.push-status-dot.active {
-    background: var(--pm-green);
-
-    box-shadow:
-        0 0 0 4px var(--pm-green-soft);
-}
-
-.notification-status-dot.error,
-.push-status-dot.error {
-    background: var(--pm-red);
-
-    box-shadow:
-        0 0 0 4px var(--pm-red-soft);
-}
-
-
-/* ============================================================
-   46. SETTINGS — SCHEDULE EDITOR
-   ============================================================ */
-
-.pm-schedule-editor,
-.settings-schedule-editor {
-    padding: 16px 18px;
-}
-
-.pm-schedule-time-row,
-.schedule-time-row {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 10px;
-
-    margin-top: 10px;
-}
-
-.schedule-time-block {
-    padding: 13px;
-
-    background: var(--pm-surface-2);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 13px;
-}
-
-.schedule-time-label {
-    margin-bottom: 7px;
-
-    color: var(--pm-muted);
-
-    font-size: 10px;
-    font-weight: 800;
-
-    text-transform: uppercase;
-    letter-spacing: .045em;
-}
-
-.schedule-time-value {
-    color: var(--pm-text);
-
-    font-size: 17px;
-    font-weight: 850;
-
-    font-variant-numeric: tabular-nums;
-}
-
-
-/* ============================================================
-   47. SETTINGS — BACKUP AREA
-   ============================================================ */
-
-.backup-card-content {
-    padding: 16px 18px;
-}
-
-.backup-card-content > p {
-    margin: 0 0 13px;
-
-    color: var(--pm-muted);
-
-    font-size: 12px;
-    line-height: 1.55;
-}
-
-.backup-button-row {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1fr;
-
-    gap: 8px;
-}
-
-.backup-button-row button {
-    min-height: 42px;
-}
-
-
-/* ============================================================
-   48. HISTORY — PREMIUM VISUAL TREATMENT
-   ============================================================ */
-
-.history-card,
-.egg-history-card,
-.feed-history-card {
-    overflow: hidden;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: 17px;
-
-    box-shadow: var(--pm-shadow-sm);
-}
-
-.history-card-header,
-.egg-history-header,
-.feed-history-header {
-    padding: 15px 16px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    border-bottom: 1px solid var(--pm-border);
-}
-
-.history-card-title,
-.egg-history-title,
-.feed-history-title {
-    color: var(--pm-text);
-
-    font-size: 14px;
-    font-weight: 850;
-}
-
-.history-card-count,
-.egg-history-count,
-.feed-history-count {
-    min-height: 25px;
-
-    padding: 4px 8px;
-
-    display: inline-flex;
-    align-items: center;
-
-    border-radius: 999px;
-
-    background: var(--pm-primary-light);
-
-    color: var(--pm-primary);
-
-    font-size: 10px;
-    font-weight: 850;
-}
-
-.history-card-body,
-.egg-history-body,
-.feed-history-body {
-    padding: 8px;
-}
-
-
-/* ============================================================
-   49. EGG HISTORY — VALUE BADGES
-   ============================================================ */
-
-.egg-history-value {
-    min-width: 46px;
-
-    padding: 6px 8px;
-
-    text-align: center;
-
-    border-radius: 9px;
-
-    background: var(--pm-primary-light);
-
-    color: var(--pm-primary);
-}
-
-.egg-history-meta strong {
-    color: var(--pm-text-2);
-}
-
-html[data-theme="dark"] .egg-history-meta strong {
-    color: var(--pm-text);
-}
-
-
-/* ============================================================
-   50. FEED HISTORY — VALUE BADGES
-   ============================================================ */
-
-.feed-history-value {
-    min-width: 62px;
-
-    padding: 6px 8px;
-
-    text-align: center;
-
-    border-radius: 9px;
-
-    background: var(--pm-orange-soft);
-
-    color: var(--pm-orange);
-}
-
-
-/* ============================================================
-   51. EMPTY STATES
-   ============================================================ */
-
-.pm-empty-state,
-.empty-state {
-    padding: 30px 18px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    text-align: center;
-
-    background: var(--pm-surface-2);
-
-    border: 1px dashed var(--pm-border-strong);
-
-    border-radius: 15px;
-}
-
-.pm-empty-icon,
-.empty-state-icon {
-    width: 42px;
-    height: 42px;
-
-    margin-bottom: 10px;
-
-    display: grid;
-    place-items: center;
-
-    border-radius: 13px;
-
-    background: var(--pm-primary-light);
-
-    color: var(--pm-primary);
-
-    font-size: 18px;
-}
-
-.pm-empty-title,
-.empty-state-title {
-    color: var(--pm-text);
-
-    font-size: 13px;
-    font-weight: 800;
-}
-
-.pm-empty-description,
-.empty-state-description {
-    max-width: 320px;
-
-    margin-top: 4px;
-
-    color: var(--pm-muted);
-
-    font-size: 11px;
-    line-height: 1.5;
-}
-
-
-/* ============================================================
-   52. STATUS / ALERT MESSAGES
-   ============================================================ */
-
-.pm-message,
-.status-message,
-.success-message,
-.error-message,
-.warning-message,
-.info-message {
-    margin-top: 10px;
-
-    padding: 11px 13px;
-
-    border-radius: 11px;
-
-    font-size: 11px;
-    line-height: 1.45;
-
-    font-weight: 650;
-}
-
-.success-message {
-    background: var(--pm-green-soft);
-    color: var(--pm-green);
-
-    border: 1px solid
-        color-mix(
-            in srgb,
-            var(--pm-green) 18%,
-            var(--pm-border)
-        );
-}
-
-.error-message {
-    background: var(--pm-red-soft);
-    color: var(--pm-red);
-
-    border: 1px solid
-        color-mix(
-            in srgb,
-            var(--pm-red) 18%,
-            var(--pm-border)
-        );
-}
-
-.warning-message {
-    background: var(--pm-orange-soft);
-    color: var(--pm-orange);
-
-    border: 1px solid
-        color-mix(
-            in srgb,
-            var(--pm-orange) 18%,
-            var(--pm-border)
-        );
-}
-
-.info-message {
-    background: var(--pm-blue-soft);
-    color: var(--pm-blue);
-
-    border: 1px solid
-        color-mix(
-            in srgb,
-            var(--pm-blue) 18%,
-            var(--pm-border)
-        );
-}
-
-
-/* ============================================================
-   53. FEED STATUS STATES
-   ============================================================ */
-
-.feed-status-good {
-    background: var(--pm-green-soft);
-    color: var(--pm-green);
-}
-
-.feed-status-warning {
-    background: var(--pm-orange-soft);
-    color: var(--pm-orange);
-}
-
-.feed-status-danger {
-    background: var(--pm-red-soft);
-    color: var(--pm-red);
-}
-
-
-/* ============================================================
-   54. CHART CONTAINERS
-   ============================================================ */
-
-.chart-card,
-.production-chart-card,
-.feed-chart-card {
-    overflow: hidden;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-
-    border-radius: var(--pm-radius-lg);
-
-    box-shadow: var(--pm-shadow-sm);
-}
-
-.chart-card-header {
-    padding: 17px 18px 0;
-}
-
-.chart-card-body {
-    padding: 10px 16px 16px;
-}
-
-
-/* ============================================================
-   55. CANVAS SAFETY
-   ============================================================ */
-
-canvas {
-    image-rendering: auto;
-
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-#productionTrendChart,
-#feedConsumptionChart {
-    background: transparent !important;
-}
-
-
-/* ============================================================
-   56. TEXT SAFETY
-   ============================================================ */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
-    overflow-wrap: break-word;
-}
-
-button {
-    white-space: normal;
-}
-
-.pm-settings-row-title,
-.settings-row-title,
-.pm-settings-row-description,
-.settings-row-description {
-    overflow-wrap: anywhere;
-}
-
-
-/* ============================================================
-   57. DISABLED CONTROLS
-   ============================================================ */
-
-button:disabled,
-input:disabled,
-select:disabled,
-textarea:disabled {
-    opacity: .52;
-
-    cursor: not-allowed;
-
-    box-shadow: none !important;
-}
-
-button:disabled {
-    transform: none !important;
-}
-
-
-/* ============================================================
-   58. LOADING STATE
-   ============================================================ */
-
-.pm-loading,
-.loading-state {
-    position: relative;
-
-    min-height: 40px;
-
-    color: transparent !important;
-
-    overflow: hidden;
-}
-
-.pm-loading::after,
-.loading-state::after {
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            color-mix(
-                in srgb,
-                var(--pm-border) 60%,
-                transparent
-            ),
-            transparent
-        );
-
-    transform: translateX(-100%);
-
-    animation: pmLoading 1.2s infinite;
-}
-
-@keyframes pmLoading {
-    to {
-        transform: translateX(100%);
-    }
-}
-
-
-/* ============================================================
-   59. DARK MODE — SETTINGS
-   ============================================================ */
-
-html[data-theme="dark"] .pm-settings-flock-summary,
-html[data-theme="dark"] .settings-flock-summary {
-    background:
-        linear-gradient(
-            135deg,
-            #102319,
-            #111814
-        );
-}
-
-html[data-theme="dark"] .pm-about,
-html[data-theme="dark"] .about-section {
-    background:
-        linear-gradient(
-            135deg,
-            #102319,
-            #111814
-        );
-}
-
-html[data-theme="dark"] .pm-settings-status,
-html[data-theme="dark"] .settings-status,
-html[data-theme="dark"] .status-off {
-    border: 1px solid var(--pm-border);
-}
-
-html[data-theme="dark"] .pm-toggle::after,
-html[data-theme="dark"] .settings-toggle::after,
-html[data-theme="dark"] .toggle::after {
-    background: #f5f8f6;
-}
-
-
-/* ============================================================
-   60. DARK MODE — HISTORY
-   ============================================================ */
-
-html[data-theme="dark"] .history-card,
-html[data-theme="dark"] .egg-history-card,
-html[data-theme="dark"] .feed-history-card {
-    background: var(--pm-surface);
-    border-color: var(--pm-border);
-}
-
-html[data-theme="dark"] .history-card-header,
-html[data-theme="dark"] .egg-history-header,
-html[data-theme="dark"] .feed-history-header {
-    border-color: var(--pm-border);
-}
-
-html[data-theme="dark"] .history-item:hover,
-html[data-theme="dark"] .egg-history-item:hover,
-html[data-theme="dark"] .feed-history-item:hover {
-    background: #1a241e;
-}
-
-
-/* ============================================================
-   61. DARK MODE — QUICK ACTIONS
-   ============================================================ */
-
-html[data-theme="dark"] .quick-action:hover,
-html[data-theme="dark"] .quick-action-button:hover,
-html[data-theme="dark"] #quickAddEggs:hover,
-html[data-theme="dark"] #quickFeed:hover,
-html[data-theme="dark"] #quickHistory:hover {
-    background: #102319;
-}
-
-
-/* ============================================================
-   62. DARK MODE — INPUTS
-   ============================================================ */
-
-html[data-theme="dark"] input::placeholder,
-html[data-theme="dark"] textarea::placeholder {
-    color: #66736b;
-}
-
-html[data-theme="dark"] input:focus,
-html[data-theme="dark"] select:focus,
-html[data-theme="dark"] textarea:focus,
-html[data-theme="dark"] .pm-settings-input:focus,
-html[data-theme="dark"] .pm-input:focus {
-    background: #0e1511;
-
-    border-color: var(--pm-primary);
-
-    box-shadow:
-        0 0 0 3px rgba(78, 212, 126, .12);
-}
-
-
-/* ============================================================
-   63. DARK MODE — BUTTONS
-   ============================================================ */
-
-html[data-theme="dark"] .pm-button,
-html[data-theme="dark"] .primary-button,
-html[data-theme="dark"] .action-button,
-html[data-theme="dark"] #addEggButton {
-    color: #06100a;
-
-    background: var(--pm-primary);
-
-    border-color: var(--pm-primary);
-
-    box-shadow:
-        0 5px 14px rgba(78, 212, 126, .12);
-}
-
-html[data-theme="dark"] .pm-button:hover,
-html[data-theme="dark"] .primary-button:hover,
-html[data-theme="dark"] .action-button:hover,
-html[data-theme="dark"] #addEggButton:hover {
-    background: #69df91;
-}
-
-html[data-theme="dark"] #removeEggButton {
-    background: var(--pm-surface-2);
-
-    color: var(--pm-text);
-
-    border-color: var(--pm-border-strong);
-}
-
-
-/* ============================================================
-   64. DARK MODE — LARGE NUMBERS
-   ============================================================ */
-
-html[data-theme="dark"] .farm-overview-value,
-html[data-theme="dark"] .summary-card-value,
-html[data-theme="dark"] .analytics-card-value,
-html[data-theme="dark"] .egg-number,
-html[data-theme="dark"] #eggCount,
-html[data-theme="dark"] .feed-hero-value,
-html[data-theme="dark"] #feedAmount,
-html[data-theme="dark"] .feed-metric-value,
-html[data-theme="dark"] .pm-settings-flock-number,
-html[data-theme="dark"] .settings-flock-number,
-html[data-theme="dark"] .flock-number {
-    color: #f7fbf8 !important;
-}
-
-
-/* ============================================================
-   65. DARK MODE — MUTED TEXT
-   ============================================================ */
-
-html[data-theme="dark"] .app-subtitle,
-html[data-theme="dark"] .pm-subtitle,
-html[data-theme="dark"] .section-description,
-html[data-theme="dark"] .pm-section-description,
-html[data-theme="dark"] .card-subtitle,
-html[data-theme="dark"] .pm-card-subtitle,
-html[data-theme="dark"] .summary-card-detail,
-html[data-theme="dark"] .analytics-card-detail,
-html[data-theme="dark"] .history-item-meta,
-html[data-theme="dark"] .egg-history-meta,
-html[data-theme="dark"] .feed-history-meta,
-html[data-theme="dark"] .pm-settings-row-description,
-html[data-theme="dark"] .settings-row-description,
-html[data-theme="dark"] .pm-settings-card-description,
-html[data-theme="dark"] .settings-card-description,
-html[data-theme="dark"] .pm-about-description,
-html[data-theme="dark"] .about-description,
-html[data-theme="dark"] .pm-settings-help,
-html[data-theme="dark"] .settings-help {
-    color: #98a69e;
-}
-
-
-/* ============================================================
-   66. DARK MODE — HISTORY VALUES
-   ============================================================ */
-
-html[data-theme="dark"] .egg-history-value {
-    background: #102c1b;
-    color: #5fe38b;
-}
-
-html[data-theme="dark"] .feed-history-value {
-    background: #30230d;
-    color: #f1b94b;
-}
-
-
-/* ============================================================
-   67. DARK MODE — INSIGHTS
-   ============================================================ */
-
-html[data-theme="dark"] .analytics-insight,
-html[data-theme="dark"] #analyticsInsight {
-    background: #102319;
-
-    color: #d6e4db;
-
-    border-color: #244b32;
-}
-
-
-/* ============================================================
-   68. DARK MODE — STATUS MESSAGES
-   ============================================================ */
-
-html[data-theme="dark"] .success-message {
-    background: #102c1b;
-    color: #63df8d;
-}
-
-html[data-theme="dark"] .error-message {
-    background: #321517;
-    color: #ff8585;
-}
-
-html[data-theme="dark"] .warning-message {
-    background: #30230d;
-    color: #f4c45c;
-}
-
-html[data-theme="dark"] .info-message {
-    background: #10243c;
-    color: #76b4fa;
-}
-
-
-/* ============================================================
-   69. DARK MODE — EMPTY STATES
-   ============================================================ */
-
-html[data-theme="dark"] .pm-empty-state,
-html[data-theme="dark"] .empty-state,
-html[data-theme="dark"] .history-empty,
-html[data-theme="dark"] .empty-history {
-    background: #151d18;
-    border-color: #34443a;
-}
-
-html[data-theme="dark"] .pm-empty-title,
-html[data-theme="dark"] .empty-state-title {
-    color: #f2f7f4;
-}
-
-
-/* ============================================================
-   70. DARK MODE — NAVIGATION ACTIVE STATE
-   ============================================================ */
-
-html[data-theme="dark"] #pmNavigation button.active,
-html[data-theme="dark"] .pm-navigation button.active,
-html[data-theme="dark"] .main-navigation button.active,
-html[data-theme="dark"] .nav-tabs button.active,
-html[data-theme="dark"] .dashboard-button.active,
-html[data-theme="dark"] .settings-button.active {
-    background: #111814;
-
-    color: #5fe38b;
-
-    box-shadow:
-        0 2px 8px rgba(0, 0, 0, .25),
-        inset 0 0 0 1px #26332b;
-}
-
-
-/* ============================================================
-   71. DARK MODE — ICON CONTAINERS
-   ============================================================ */
-
-html[data-theme="dark"] .quick-action-icon,
-html[data-theme="dark"] .pm-settings-card-icon,
-html[data-theme="dark"] .settings-card-icon,
-html[data-theme="dark"] .pm-empty-icon,
-html[data-theme="dark"] .empty-state-icon {
-    background: #102c1b;
-    color: #5fe38b;
-}
-
-
-/* ============================================================
-   72. DARK MODE — SCROLLBAR
-   ============================================================ */
-
-html[data-theme="dark"] {
-    scrollbar-color: #34443a #0a0f0c;
-}
-
-html[data-theme="dark"] ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-html[data-theme="dark"] ::-webkit-scrollbar-track {
-    background: #0a0f0c;
-}
-
-html[data-theme="dark"] ::-webkit-scrollbar-thumb {
-    background: #34443a;
-
-    border-radius: 999px;
-
-    border: 2px solid #0a0f0c;
-}
-
-
-/* ============================================================
-   73. LIGHT MODE — SCROLLBAR
-   ============================================================ */
-
-html:not([data-theme="dark"]) {
-    scrollbar-color: #cbd5cf #f5f7f6;
-}
-
-html:not([data-theme="dark"]) ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-html:not([data-theme="dark"]) ::-webkit-scrollbar-track {
-    background: #f5f7f6;
-}
-
-html:not([data-theme="dark"]) ::-webkit-scrollbar-thumb {
-    background: #cbd5cf;
-
-    border-radius: 999px;
-
-    border: 2px solid #f5f7f6;
-}
-
-
-/* ============================================================
-   74. SAFE AREA — iPHONE
-   ============================================================ */
-
-@supports (padding: max(0px)) {
-
-    #pmDashboardView,
-    #pmSettingsView {
-        padding-bottom:
-            max(
-                90px,
-                calc(90px + env(safe-area-inset-bottom))
-            );
-    }
-}
-
-
-/* ============================================================
-   75. iOS FORM BEHAVIOR
-   ============================================================ */
-
-input,
-select,
-textarea {
-    -webkit-appearance: none;
-    appearance: none;
-
-    border-radius: 11px;
-}
-
-select {
-    background-image:
-        linear-gradient(
-            45deg,
-            transparent 50%,
-            var(--pm-muted) 50%
-        ),
-        linear-gradient(
-            135deg,
-            var(--pm-muted) 50%,
-            transparent 50%
-        );
-
-    background-position:
-        calc(100% - 16px) 19px,
-        calc(100% - 11px) 19px;
-
-    background-size:
-        5px 5px,
-        5px 5px;
 
-    background-repeat: no-repeat;
-
-    padding-right: 34px;
-}
-
-html[data-theme="dark"] select {
-    background-color: #0d130f;
-}
-
-
-/* ============================================================
-   76. TOUCH DEVICE POLISH
-   ============================================================ */
-
-@media (hover: none) {
-
-    .pm-card:hover,
-    .card:hover,
-    .section-card:hover,
-    .dashboard-card:hover,
-    .farm-overview-card:hover,
-    .farm-overview-item:hover,
-    .quick-action:hover,
-    .quick-action-button:hover,
-    .summary-card:hover,
-    .analytics-card:hover,
-    .pm-settings-card:hover,
-    .settings-card:hover {
-        transform: none;
-    }
-
-    button,
-    .quick-action,
-    .quick-action-button {
-        -webkit-tap-highlight-color: transparent;
-    }
-}
-
-
-/* ============================================================
-   77. REDUCED MOTION
-   ============================================================ */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        scroll-behavior: auto !important;
-
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-
-        transition-duration: .01ms !important;
-    }
-}
-
-
-/* ============================================================
-   78. PRINT
-   ============================================================ */
-
-@media print {
-
-    body {
-        background: #ffffff !important;
-        color: #000000 !important;
-    }
-
-    #pmNavigation,
-    .pm-navigation,
-    .main-navigation,
-    .nav-tabs,
-    button {
-        display: none !important;
-    }
-
-    #pmDashboardView,
-    #pmSettingsView {
-        width: 100% !important;
-        max-width: none !important;
-
-        padding: 0 !important;
-    }
-
-    .pm-card,
-    .card,
-    .section-card,
-    .dashboard-card,
-    .pm-settings-card,
-    .settings-card {
-        box-shadow: none !important;
-
-        break-inside: avoid;
-    }
-}
-
-
-/* ============================================================
-   79. FINAL LIGHT-MODE CONTRAST SAFETY
-   ============================================================ */
-
-html:not([data-theme="dark"]) .farm-overview-value,
-html:not([data-theme="dark"]) .summary-card-value,
-html:not([data-theme="dark"]) .analytics-card-value,
-html:not([data-theme="dark"]) .egg-number,
-html:not([data-theme="dark"]) #eggCount,
-html:not([data-theme="dark"]) .feed-hero-value,
-html:not([data-theme="dark"]) #feedAmount,
-html:not([data-theme="dark"]) .feed-metric-value,
-html:not([data-theme="dark"]) .flock-number {
-    color: #101713 !important;
-}
-
-
-/* ============================================================
-   80. FINAL DARK-MODE CONTRAST SAFETY
-   ============================================================ */
-
-html[data-theme="dark"] .farm-overview-value,
-html[data-theme="dark"] .summary-card-value,
-html[data-theme="dark"] .analytics-card-value,
-html[data-theme="dark"] .egg-number,
-html[data-theme="dark"] #eggCount,
-html[data-theme="dark"] .feed-hero-value,
-html[data-theme="dark"] #feedAmount,
-html[data-theme="dark"] .feed-metric-value,
-html[data-theme="dark"] .flock-number {
-    color: #f7fbf8 !important;
-}
-
-
-/* ============================================================
-   81. SETTINGS / DASHBOARD COLLISION PROTECTION
-   ============================================================ */
-
-#pmDashboardView {
-    position: relative;
-
-    width: 100%;
-
-    visibility: visible;
-}
-
-#pmSettingsView {
-    position: relative;
-
-    width: min(
-        calc(100% - 44px),
-        var(--pm-max-width)
-    );
-
-    margin-left: auto;
-    margin-right: auto;
-
-    visibility: visible;
-}
-
-/*
-   JavaScript controls display:
-   Dashboard -> visible
-   Settings -> visible
-
-   These rules intentionally do NOT use position:absolute
-   or fixed positioning for either main view.
-*/
-
-#pmDashboardView section,
-#pmSettingsView section {
-    position: relative;
-}
-
-
-/* ============================================================
-   82. SETTINGS FULL-WIDTH CARD SUPPORT
-   ============================================================ */
-
-.pm-settings-card.full-width,
-.settings-card.full-width,
-.pm-settings-grid > .full-width,
-.settings-grid > .full-width {
-    grid-column: 1 / -1;
-}
-
-
-/* ============================================================
-   83. SETTINGS ACTION FOOTER
-   ============================================================ */
-
-.settings-actions,
-.pm-settings-actions {
-    padding: 15px 18px;
-
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 8px;
-
-    border-top: 1px solid var(--pm-border);
-
-    background: var(--pm-surface-2);
-}
-
-.settings-actions button,
-.pm-settings-actions button {
-    flex: 1 1 130px;
-}
-
-
-/* ============================================================
-   84. SMALL LABEL / VALUE PAIRS
-   ============================================================ */
-
-.pm-stat-pair,
-.stat-pair {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-
-    padding: 9px 0;
-
-    border-bottom: 1px solid var(--pm-border);
-}
-
-.pm-stat-pair:last-child,
-.stat-pair:last-child {
-    border-bottom: 0;
-}
-
-.pm-stat-pair-label,
-.stat-pair-label {
-    color: var(--pm-muted);
-
-    font-size: 11px;
-}
-
-.pm-stat-pair-value,
-.stat-pair-value {
-    color: var(--pm-text);
-
-    font-size: 12px;
-    font-weight: 800;
-
-    font-variant-numeric: tabular-nums;
-}
-
-
-/* ============================================================
-   85. SMALL BADGES
-   ============================================================ */
-
-.pm-badge,
-.badge {
-    display: inline-flex;
-    align-items: center;
-
-    min-height: 24px;
-
-    padding: 4px 8px;
-
-    border-radius: 999px;
-
-    font-size: 10px;
-    font-weight: 800;
-}
-
-.pm-badge-green {
-    background: var(--pm-green-soft);
-    color: var(--pm-green);
 }
-
-.pm-badge-blue {
-    background: var(--pm-blue-soft);
-    color: var(--pm-blue);
-}
-
-.pm-badge-orange {
-    background: var(--pm-orange-soft);
-    color: var(--pm-orange);
-}
-
-.pm-badge-red {
-    background: var(--pm-red-soft);
-    color: var(--pm-red);
-}
-
-
-/* ============================================================
-   86. HORIZONTAL DIVIDERS
-   ============================================================ */
-
-.pm-divider,
-.settings-divider {
-    height: 1px;
-
-    margin: 4px 0;
-
-    background: var(--pm-border);
-}
-
-
-/* ============================================================
-   87. FINAL WIDTH / OVERFLOW SAFETY
-   ============================================================ */
-
-#pmDashboardView,
-#pmSettingsView,
-.pm-settings-card,
-.settings-card,
-.pm-card,
-.card,
-.section-card,
-.dashboard-card {
-    min-width: 0;
-
-    overflow-wrap: break-word;
-}
-
-.pm-settings-row-control,
-.settings-row-control,
-.feed-action-row,
-.input-row {
-    min-width: 0;
-}
-
-
-/* ============================================================
-   88. FINAL DARK MODE SURFACE SAFETY
-   ============================================================ */
-
-html[data-theme="dark"] .pm-surface,
-html[data-theme="dark"] .surface,
-html[data-theme="dark"] .pm-card,
-html[data-theme="dark"] .card {
-    color: var(--pm-text);
-}
-
-html[data-theme="dark"] .pm-settings-row,
-html[data-theme="dark"] .settings-row {
-    color: var(--pm-text);
-}
-
-
-/* ============================================================
-   89. FINAL LIGHT MODE SURFACE SAFETY
-   ============================================================ */
-
-html:not([data-theme="dark"]) .pm-surface,
-html:not([data-theme="dark"]) .surface,
-html:not([data-theme="dark"]) .pm-card,
-html:not([data-theme="dark"]) .card {
-    color: var(--pm-text);
-}
-
-
-/* ============================================================
-   90. END OF POULTRY MANAGER STYLE SYSTEM
-   ============================================================ */
