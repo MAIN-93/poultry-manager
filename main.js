@@ -1,183 +1,163 @@
 /* =========================================================
    POULTRY MANAGER
-   COMPLETE PRODUCTION MANAGEMENT SYSTEM
-   =========================================================
-
-   VERSION
-   ---------------------------------------------------------
-   Poultry Manager — Production Architecture Rebuild
-
-   PURPOSE
-   ---------------------------------------------------------
-   This file is the central application controller for the
-   Poultry Manager web application.
-
-   DESIGN PRINCIPLES
-   ---------------------------------------------------------
-   1. One source of truth for application data.
-   2. Safe localStorage handling.
-   3. Existing saved data is preserved.
-   4. Dashboard and Settings are separate views.
-   5. No duplicated feature systems.
-   6. No unnecessary global variables.
-   7. Optional DOM elements never crash the application.
-   8. Works on mobile and desktop.
-   9. Designed for GitHub Pages + Render backend.
-   10. Existing Poultry Manager storage keys are preserved.
-
+   Main Application Script
+   Clean unified architecture
    ========================================================= */
 
-
-/* =========================================================
-   1. APPLICATION CONFIGURATION
-   ========================================================= */
-
-(function () {
-
+(() => {
     "use strict";
 
+    /* =======================================================
+       APP CONFIGURATION
+       ======================================================= */
+
     const APP = {
-
         name: "Poultry Manager",
+        version: "3.0.0",
 
-        version: "2.0.0",
+        backend: "https://poultry-manager-hppo.onrender.com",
 
         storage: {
             flock: "flockCount",
             eggs: "eggHistory",
             feed: "feed",
-            feedAdditions: "feedAdditionHistory",
             feedUsage: "feedUsageHistory",
-            schedule: "feedSchedule",
+            feedAdditions: "feedAdditionHistory",
+            schedule: "feedingSchedule",
             alarm: "feedAlarmEnabled",
-            notifications: "poultryManagerNotificationsEnabled",
+            notifications: "notificationsEnabled",
             theme: "poultryManagerTheme",
-            lastView: "poultryManagerLastView",
-            automaticBackup: "poultryManagerAutomaticBackup",
-            backupData: "poultryManagerAutomaticBackupData",
-            lastBackup: "poultryManagerLastBackup"
-        },
-
-        backend: {
-            base:
-                "https://poultry-manager-hppo.onrender.com",
-
-            vapid:
-                "/vapid-public-key",
-
-            subscribe:
-                "/subscribe",
-
-            schedule:
-                "/schedule",
-
-            testPush:
-                "/send-test"
-        },
-
-        limits: {
-
-            eggHistoryVisible: 3,
-
-            eggMaximumPerDay: 999,
-
-            flockMaximum: 100000,
-
-            feedMaximum: 100000,
-
-            feedMinimum: 0,
-
-            feedDecimals: 1,
-
-            usageDecimals: 1,
-
-            backupDebounce: 1500,
-
-            chartDays: 7
-
+            automaticBackup: "automaticBackupEnabled",
+            lastBackup: "poultryManagerLastBackup",
+            settingsView: "poultryManagerView"
         },
 
         defaults: {
-
-            flock: 0,
-
+            flock: 5,
             feed: 0,
-
             morningFeed: "07:00",
-
-            afternoonFeed: "14:00",
-
-            theme: "light",
-
-            view: "dashboard",
-
-            alarm: false,
-
-            automaticBackup: true
-
+            afternoonFeed: "18:00",
+            alarm: true,
+            notifications: false,
+            automaticBackup: true,
+            theme: "light"
         }
-
     };
 
+    const STORAGE = APP.storage;
 
-    /* =====================================================
-       2. SMALL UTILITY FUNCTIONS
-       ===================================================== */
+    /* =======================================================
+       BASIC HELPERS
+       ======================================================= */
 
-    function $(id) {
-        return document.getElementById(id);
+    const $ = (selector, root = document) => {
+        return root.querySelector(selector);
+    };
+
+    const $$ = (selector, root = document) => {
+        return Array.from(root.querySelectorAll(selector));
+    };
+
+    function todayKey(date = new Date()) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
     }
 
+    function formatDate(dateString) {
+        if (!dateString) return "";
 
-    function $all(selector) {
-        return Array.from(
-            document.querySelectorAll(selector)
-        );
-    }
+        const date = new Date(`${dateString}T00:00:00`);
 
-
-    function exists(element) {
-        return !!element;
-    }
-
-
-    function clampNumber(value, minimum, maximum) {
-
-        const number = Number(value);
-
-        if (!Number.isFinite(number)) {
-            return minimum;
+        if (Number.isNaN(date.getTime())) {
+            return dateString;
         }
 
-        return Math.min(
-            maximum,
-            Math.max(minimum, number)
-        );
+        return date.toLocaleDateString(undefined, {
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        });
     }
 
+    function formatShortDate(dateString) {
+        if (!dateString) return "";
 
-    function roundNumber(value, decimals = 1) {
+        const date = new Date(`${dateString}T00:00:00`);
 
-        const factor = Math.pow(10, decimals);
+        if (Number.isNaN(date.getTime())) {
+            return dateString;
+        }
 
-        return Math.round(
-            (Number(value) || 0) * factor
-        ) / factor;
+        return date.toLocaleDateString(undefined, {
+            day: "numeric",
+            month: "short"
+        });
     }
 
+    function formatNumber(value, decimals = 0) {
+        const number = Number(value) || 0;
+
+        return number.toLocaleString(undefined, {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        });
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
 
     function safeNumber(value, fallback = 0) {
-
         const number = Number(value);
 
-        return Number.isFinite(number)
-            ? number
-            : fallback;
+        return Number.isFinite(number) ? number : fallback;
     }
 
+    function readJSON(key, fallback) {
+        try {
+            const raw = localStorage.getItem(key);
+
+            if (raw === null) {
+                return fallback;
+            }
+
+            return JSON.parse(raw);
+        } catch (error) {
+            console.warn(`Poultry Manager: failed reading ${key}`, error);
+            return fallback;
+        }
+    }
+
+    function writeJSON(key, value) {
+        try {
+            localStorage.setItem(key, JSON.stringify(value));
+            return true;
+        } catch (error) {
+            console.error(`Poultry Manager: failed writing ${key}`, error);
+            return false;
+        }
+    }
+
+    function removeStorage(key) {
+        try {
+            localStorage.removeItem(key);
+        } catch (error) {
+            console.warn(`Poultry Manager: failed removing ${key}`, error);
+        }
+    }
+
+    function getStorageNumber(key, fallback = 0) {
+        return safeNumber(localStorage.getItem(key), fallback);
+    }
+
+    function setStorageNumber(key, value) {
+        localStorage.setItem(key, String(Math.max(0, safeNumber(value))));
+    }
 
     function escapeHTML(value) {
-
         return String(value ?? "")
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")
@@ -186,8004 +166,3365 @@
             .replace(/'/g, "&#039;");
     }
 
-
-    function sleep(milliseconds) {
-
-        return new Promise(resolve => {
-            setTimeout(resolve, milliseconds);
-        });
-
-    }
-
-
-    function formatKg(value) {
-
-        return `${roundNumber(value, 1).toFixed(1)} kg`;
-
-    }
-
-
-    function formatEggs(value) {
-
-        const eggs = Math.max(
-            0,
-            Math.round(safeNumber(value))
-        );
-
-        return `${eggs} egg${eggs === 1 ? "" : "s"}`;
-
-    }
-
-
-    function percentage(value) {
-
-        const number = clampNumber(
-            value,
-            0,
-            100
-        );
-
-        return `${Math.round(number)}%`;
-
-    }
-
-
-    function notify(message) {
-
-        if (!message) return;
-
-        /*
-         * Keep feedback lightweight.
-         *
-         * If a future toast system is added to the HTML,
-         * this function can use it automatically.
-         */
-
-        let toast =
-            document.getElementById(
-                "pmToast"
-            );
-
-        if (!toast) {
-
-            toast =
-                document.createElement(
-                    "div"
-                );
-
-            toast.id = "pmToast";
-
-            toast.className =
-                "pm-toast";
-
-            document.body.appendChild(
-                toast
-            );
-
-        }
-
-        toast.textContent =
-            message;
-
-        toast.classList.add(
-            "show"
-        );
-
-        clearTimeout(
-            toast.__hideTimer
-        );
-
-        toast.__hideTimer =
-            setTimeout(() => {
-
-                toast.classList.remove(
-                    "show"
-                );
-
-            }, 2600);
-
-    }
-
-
-    function confirmAction(message) {
-
-        try {
-
-            return window.confirm(
-                message
-            );
-
-        } catch {
-
-            return false;
-
-        }
-
-    }
-
-
-    function scrollToElement(
-        element,
-        offset = 80
-    ) {
-
-        if (!element) return;
-
-        const rect =
-            element.getBoundingClientRect();
-
-        const position =
-            window.scrollY +
-            rect.top -
-            offset;
-
-        window.scrollTo({
-
-            top: Math.max(
-                0,
-                position
-            ),
-
-            behavior: "smooth"
-
-        });
-
-    }
-
-
-    /* =====================================================
-       3. DATE SYSTEM
-       ===================================================== */
-
-    function getTodayKey() {
-
-        const now =
-            new Date();
-
-        const year =
-            now.getFullYear();
-
-        const month =
-            String(
-                now.getMonth() + 1
-            ).padStart(2, "0");
-
-        const day =
-            String(
-                now.getDate()
-            ).padStart(2, "0");
-
-        return `${year}-${month}-${day}`;
-
-    }
-
-
-    function getDateKeyFromDate(date) {
-
-        if (!(date instanceof Date)) {
-            date = new Date(date);
-        }
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-            return "";
-        }
-
-        const year =
-            date.getFullYear();
-
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0");
-
-        const day =
-            String(
-                date.getDate()
-            ).padStart(2, "0");
-
-        return `${year}-${month}-${day}`;
-
-    }
-
-
-    function parseDateKey(key) {
-
-        if (
-            typeof key !== "string" ||
-            !/^\d{4}-\d{2}-\d{2}$/.test(key)
-        ) {
-            return null;
-        }
-
-        const parts =
-            key.split("-")
-                .map(Number);
-
-        const date =
-            new Date(
-                parts[0],
-                parts[1] - 1,
-                parts[2]
-            );
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-            return null;
-        }
-
-        return date;
-
-    }
-
-
-    function formatDate(
-        key,
-        options = {}
-    ) {
-
-        const date =
-            parseDateKey(key);
-
-        if (!date) {
-            return key || "";
-        }
-
-        return date.toLocaleDateString(
-            undefined,
-            {
-                month:
-                    options.month ||
-                    "short",
-
-                day:
-                    options.day ||
-                    "numeric",
-
-                year:
-                    options.year ||
-                    undefined
-            }
-        );
-
-    }
-
-
-    function formatFullDate(key) {
-
-        const date =
-            parseDateKey(key);
-
-        if (!date) {
-            return key || "";
-        }
-
-        return date.toLocaleDateString(
-            undefined,
-            {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-                year: "numeric"
-            }
-        );
-
-    }
-
-
-    function getLastNDates(
-        count
-    ) {
-
-        const dates = [];
-
-        const now =
-            new Date();
-
-        for (
-            let index = count - 1;
-            index >= 0;
-            index--
-        ) {
-
-            const date =
-                new Date(now);
-
-            date.setDate(
-                now.getDate() - index
-            );
-
-            dates.push(
-                getDateKeyFromDate(
-                    date
-                )
-            );
-
-        }
-
-        return dates;
-
-    }
-
-
-    function isToday(key) {
-
-        return key ===
-            getTodayKey();
-
-    }
-
-
-    function getDayDifference(
-        olderKey,
-        newerKey
-    ) {
-
-        const older =
-            parseDateKey(
-                olderKey
-            );
-
-        const newer =
-            parseDateKey(
-                newerKey
-            );
-
-        if (!older || !newer) {
-            return 0;
-        }
-
-        return Math.round(
-            (
-                newer.getTime() -
-                older.getTime()
-            ) /
-            86400000
-        );
-
-    }
-
-
-    /* =====================================================
-       4. SAFE LOCAL STORAGE
-       ===================================================== */
-
-    function readStorage(
-        key,
-        fallback = null
-    ) {
-
-        try {
-
-            const value =
-                localStorage.getItem(
-                    key
-                );
-
-            return value === null
-                ? fallback
-                : value;
-
-        } catch (error) {
-
-            console.error(
-                "Poultry Manager storage read error:",
-                error
-            );
-
-            return fallback;
-
-        }
-
-    }
-
-
-    function writeStorage(
-        key,
-        value
-    ) {
-
-        try {
-
-            localStorage.setItem(
-                key,
-                value
-            );
-
-            scheduleAutomaticBackup();
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Poultry Manager storage write error:",
-                error
-            );
-
-            return false;
-
-        }
-
-    }
-
-
-    function removeStorage(key) {
-
-        try {
-
-            localStorage.removeItem(
-                key
-            );
-
-            scheduleAutomaticBackup();
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Poultry Manager storage remove error:",
-                error
-            );
-
-            return false;
-
-        }
-
-    }
-
-
-    function readJSON(
-        key,
-        fallback
-    ) {
-
-        const raw =
-            readStorage(
-                key,
-                null
-            );
-
-        if (raw === null) {
-            return fallback;
-        }
-
-        try {
-
-            return JSON.parse(
-                raw
-            );
-
-        } catch (error) {
-
-            console.warn(
-                `Invalid JSON in ${key}. Using fallback.`,
-                error
-            );
-
-            return fallback;
-
-        }
-
-    }
-
-
-    function writeJSON(
-        key,
-        value
-    ) {
-
-        try {
-
-            return writeStorage(
-                key,
-                JSON.stringify(
-                    value
-                )
-            );
-
-        } catch (error) {
-
-            console.error(
-                "JSON storage error:",
-                error
-            );
-
-            return false;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       5. FLOCK DATA
-       ===================================================== */
+    /* =======================================================
+       STATE
+       ======================================================= */
 
     function getFlockCount() {
-
-        return clampNumber(
-            readStorage(
-                APP.storage.flock,
-                APP.defaults.flock
-            ),
-            0,
-            APP.limits.flockMaximum
+        const value = getStorageNumber(
+            STORAGE.flock,
+            APP.defaults.flock
         );
 
+        return Math.max(0, Math.round(value));
     }
 
+    function setFlockCount(value) {
+        const flock = Math.max(0, Math.round(safeNumber(value)));
 
-    function saveFlockCount(
-        value
-    ) {
+        setStorageNumber(STORAGE.flock, flock);
 
-        const flock =
-            Math.round(
-                clampNumber(
-                    value,
-                    0,
-                    APP.limits.flockMaximum
-                )
-            );
-
-        writeStorage(
-            APP.storage.flock,
-            String(flock)
-        );
+        refreshAll();
 
         return flock;
-
     }
-
-
-    /* =====================================================
-       6. EGG HISTORY NORMALIZATION
-       ===================================================== */
-
-    function getRawEggHistory() {
-
-        const history =
-            readJSON(
-                APP.storage.eggs,
-                {}
-            );
-
-        if (
-            !history ||
-            typeof history !== "object" ||
-            Array.isArray(history)
-        ) {
-
-            return {};
-
-        }
-
-        return history;
-
-    }
-
-
-    /*
-     * Older versions of Poultry Manager could store:
-     *
-     * "2026-10-03": 2
-     *
-     * Newer versions can store:
-     *
-     * "2026-10-03": {
-     *     eggs: 2,
-     *     flock: 5
-     * }
-     *
-     * Both are supported.
-     */
-
-    function normalizeEggRecord(
-        value
-    ) {
-
-        if (
-            typeof value ===
-            "number"
-        ) {
-
-            return {
-
-                eggs: Math.max(
-                    0,
-                    Math.round(value)
-                ),
-
-                flock:
-                    getFlockCount()
-
-            };
-
-        }
-
-
-        if (
-            value &&
-            typeof value ===
-            "object"
-        ) {
-
-            return {
-
-                eggs: Math.max(
-                    0,
-                    Math.round(
-                        safeNumber(
-                            value.eggs
-                        )
-                    )
-                ),
-
-                flock: Math.max(
-                    0,
-                    Math.round(
-                        safeNumber(
-                            value.flock,
-                            getFlockCount()
-                        )
-                    )
-                )
-
-            };
-
-        }
-
-
-        return {
-
-            eggs: 0,
-
-            flock:
-                getFlockCount()
-
-        };
-
-    }
-
 
     function getEggHistory() {
-
-        const raw =
-            getRawEggHistory();
-
-        const normalized =
-            {};
-
-        Object.keys(raw)
-            .forEach(key => {
-
-                normalized[key] =
-                    normalizeEggRecord(
-                        raw[key]
-                    );
-
-            });
-
-        return normalized;
-
-    }
-
-
-    function saveEggHistory(
-        history
-    ) {
-
-        const clean =
-            {};
+        const history = readJSON(STORAGE.eggs, {});
 
         if (
             history &&
-            typeof history ===
-            "object"
+            typeof history === "object" &&
+            !Array.isArray(history)
         ) {
-
-            Object.keys(history)
-                .forEach(key => {
-
-                    if (
-                        !/^\d{4}-\d{2}-\d{2}$/
-                            .test(key)
-                    ) {
-                        return;
-                    }
-
-                    clean[key] =
-                        normalizeEggRecord(
-                            history[key]
-                        );
-
-                });
-
+            return history;
         }
 
-        writeJSON(
-            APP.storage.eggs,
-            clean
-        );
-
-        return clean;
-
+        return {};
     }
 
-
-    function getEggRecord(
-        dateKey
-    ) {
-
-        const history =
-            getEggHistory();
-
-        return normalizeEggRecord(
-            history[dateKey]
-        );
-
+    function saveEggHistory(history) {
+        writeJSON(STORAGE.eggs, history);
     }
-
-
-    function getEggCountForDate(
-        dateKey
-    ) {
-
-        return getEggRecord(
-            dateKey
-        ).eggs;
-
-    }
-
 
     function getTodayEggs() {
+        const history = getEggHistory();
 
-        return getEggCountForDate(
-            getTodayKey()
+        return Math.max(
+            0,
+            Math.round(safeNumber(history[todayKey()], 0))
         );
-
     }
 
+    function getEggsForDate(dateString) {
+        const history = getEggHistory();
 
-    function saveTodayEggs(
-        eggs
-    ) {
-
-        const today =
-            getTodayKey();
-
-        const history =
-            getEggHistory();
-
-        history[today] = {
-
-            eggs: Math.max(
-                0,
-                Math.min(
-                    APP.limits.eggMaximumPerDay,
-                    Math.round(
-                        safeNumber(eggs)
-                    )
-                )
-            ),
-
-            flock:
-                getFlockCount()
-
-        };
-
-        saveEggHistory(
-            history
+        return Math.max(
+            0,
+            Math.round(safeNumber(history[dateString], 0))
         );
-
-        return history[today].eggs;
-
     }
 
-
-    function addEggs(
-        amount = 1
-    ) {
-
-        const quantity =
-            Math.max(
-                1,
-                Math.round(
-                    safeNumber(
-                        amount,
-                        1
-                    )
-                )
-            );
-
-        const current =
-            getTodayEggs();
-
-        const next =
-            Math.min(
-                APP.limits.eggMaximumPerDay,
-                current + quantity
-            );
-
-        saveTodayEggs(
-            next
-        );
-
-        refreshProduction();
-
-        notify(
-            `${quantity} egg${quantity === 1 ? "" : "s"} added.`
-        );
-
-        return next;
-
-    }
-
-
-    function removeEggs(
-        amount = 1
-    ) {
-
-        const quantity =
-            Math.max(
-                1,
-                Math.round(
-                    safeNumber(
-                        amount,
-                        1
-                    )
-                )
-            );
-
-        const current =
-            getTodayEggs();
-
-        if (current <= 0) {
-
-            notify(
-                "There are no eggs recorded for today."
-            );
-
-            return 0;
-
-        }
-
-        const next =
-            Math.max(
-                0,
-                current - quantity
-            );
-
-        saveTodayEggs(
-            next
-        );
-
-        refreshProduction();
-
-        notify(
-            `${quantity} egg${quantity === 1 ? "" : "s"} removed.`
-        );
-
-        return next;
-
-    }
-
-
-    /* =====================================================
-       7. LAYING RATE
-       ===================================================== */
-
-    function getLayingRateForDate(
-        dateKey
-    ) {
-
-        const flock =
-            getEggRecord(
-                dateKey
-            ).flock ||
-            getFlockCount();
-
-        const eggs =
-            getEggCountForDate(
-                dateKey
-            );
+    function getTodayLayingRate() {
+        const flock = getFlockCount();
 
         if (flock <= 0) {
             return 0;
         }
 
-        return clampNumber(
-            (eggs / flock) * 100,
+        return clamp(
+            Math.round((getTodayEggs() / flock) * 100),
             0,
             100
         );
-
     }
 
+    /* =======================================================
+       EGG MANAGEMENT
+       ======================================================= */
 
-    function getTodayLayingRate() {
+    function addEggs(amount = 1) {
+        const quantity = Math.max(0, Math.round(safeNumber(amount)));
 
-        return getLayingRateForDate(
-            getTodayKey()
+        if (quantity <= 0) {
+            return;
+        }
+
+        const history = getEggHistory();
+        const key = todayKey();
+
+        history[key] = Math.max(
+            0,
+            Math.round(safeNumber(history[key], 0)) + quantity
         );
 
+        saveEggHistory(history);
+
+        refreshAll();
     }
 
+    function removeEggs(amount = 1) {
+        const quantity = Math.max(0, Math.round(safeNumber(amount)));
 
-    /* =====================================================
-       8. PRODUCTION SUMMARY
-       ===================================================== */
+        if (quantity <= 0) {
+            return;
+        }
 
-    function getProductionStats(
-        days = 7
-    ) {
+        const history = getEggHistory();
+        const key = todayKey();
 
-        const dates =
-            getLastNDates(
-                days
+        const current = Math.max(
+            0,
+            Math.round(safeNumber(history[key], 0))
+        );
+
+        history[key] = Math.max(0, current - quantity);
+
+        if (history[key] === 0) {
+            delete history[key];
+        }
+
+        saveEggHistory(history);
+
+        refreshAll();
+    }
+
+    function getEggHistoryEntries() {
+        const history = getEggHistory();
+
+        return Object.keys(history)
+            .filter(key => /^\d{4}-\d{2}-\d{2}$/.test(key))
+            .map(date => ({
+                date,
+                eggs: Math.max(
+                    0,
+                    Math.round(safeNumber(history[date], 0))
+                )
+            }))
+            .sort((a, b) => b.date.localeCompare(a.date));
+    }
+
+    /* =======================================================
+       FEED STATE
+       ======================================================= */
+
+    function getFeedAmount() {
+        return Math.max(
+            0,
+            safeNumber(
+                localStorage.getItem(STORAGE.feed),
+                APP.defaults.feed
+            )
+        );
+    }
+
+    function setFeedAmount(value) {
+        const amount = Math.max(0, safeNumber(value));
+
+        setStorageNumber(STORAGE.feed, amount);
+
+        refreshFeedUI();
+        refreshFarmOverview();
+    }
+
+    function getFeedUsageHistory() {
+        const history = readJSON(
+            STORAGE.feedUsage,
+            {}
+        );
+
+        if (
+            history &&
+            typeof history === "object" &&
+            !Array.isArray(history)
+        ) {
+            return history;
+        }
+
+        return {};
+    }
+
+    function saveFeedUsageHistory(history) {
+        writeJSON(STORAGE.feedUsage, history);
+    }
+
+    function getTodayFeedUsage() {
+        const history = getFeedUsageHistory();
+
+        return Math.max(
+            0,
+            safeNumber(history[todayKey()], 0)
+        );
+    }
+
+    function getFeedAdditionHistory() {
+        const history = readJSON(
+            STORAGE.feedAdditions,
+            []
+        );
+
+        return Array.isArray(history) ? history : [];
+    }
+
+    function saveFeedAdditionHistory(history) {
+        writeJSON(STORAGE.feedAdditions, history);
+    }
+
+    /* =======================================================
+       FEED MANAGEMENT
+       ======================================================= */
+
+    function addFeed(amount) {
+        const quantity = safeNumber(amount);
+
+        if (quantity <= 0) {
+            return false;
+        }
+
+        const previousStock = getFeedAmount();
+        const newStock = previousStock + quantity;
+
+        setFeedAmount(newStock);
+
+        const history = getFeedAdditionHistory();
+
+        history.push({
+            id: Date.now(),
+            amount: quantity,
+            previousStock,
+            resultingStock: newStock,
+            date: todayKey(),
+            timestamp: new Date().toISOString()
+        });
+
+        saveFeedAdditionHistory(history);
+
+        refreshFeedUI();
+        refreshFarmOverview();
+
+        return true;
+    }
+
+    function undoLastFeedAddition() {
+        const history = getFeedAdditionHistory();
+
+        if (!history.length) {
+            alert("There is no feed addition to undo.");
+            return false;
+        }
+
+        const last = history[history.length - 1];
+
+        const currentStock = getFeedAmount();
+
+        /*
+         * Only undo if the stock has not changed after
+         * the addition. This prevents accidentally removing
+         * feed that has already been used.
+         */
+        const expectedStock = safeNumber(
+            last.resultingStock,
+            currentStock
+        );
+
+        if (Math.abs(currentStock - expectedStock) > 0.0001) {
+            alert(
+                "The last feed addition cannot be undone because the feed stock has changed since then."
             );
 
-        const records =
-            dates.map(
-                date => {
+            return false;
+        }
 
-                    const eggs =
-                        getEggCountForDate(
-                            date
-                        );
+        setFeedAmount(
+            Math.max(
+                0,
+                safeNumber(last.previousStock, 0)
+            )
+        );
 
-                    const flock =
-                        getEggRecord(
-                            date
-                        ).flock ||
-                        getFlockCount();
+        history.pop();
 
-                    const rate =
-                        flock > 0
-                            ? (
-                                eggs /
-                                flock
-                            ) * 100
-                            : 0;
+        saveFeedAdditionHistory(history);
 
-                    return {
+        refreshFeedUI();
+        refreshFarmOverview();
 
-                        date,
+        return true;
+    }
 
-                        eggs,
+    function recordFeedUsage(amount) {
+        const quantity = safeNumber(amount);
 
-                        flock,
+        if (quantity <= 0) {
+            return false;
+        }
 
-                        rate:
-                            clampNumber(
-                                rate,
-                                0,
-                                100
-                            )
+        const currentStock = getFeedAmount();
 
-                    };
+        if (quantity > currentStock + 0.0001) {
+            alert(
+                `You only have ${formatNumber(currentStock, 2)} kg of feed available.`
+            );
 
+            return false;
+        }
+
+        const newStock = Math.max(
+            0,
+            currentStock - quantity
+        );
+
+        setFeedAmount(newStock);
+
+        const history = getFeedUsageHistory();
+        const key = todayKey();
+
+        history[key] =
+            Math.max(
+                0,
+                safeNumber(history[key], 0)
+            ) + quantity;
+
+        saveFeedUsageHistory(history);
+
+        refreshFeedUI();
+        refreshFarmOverview();
+        refreshProduction();
+
+        return true;
+    }
+
+    function resetTodayFeedUsage() {
+        const history = getFeedUsageHistory();
+        const key = todayKey();
+
+        const used = Math.max(
+            0,
+            safeNumber(history[key], 0)
+        );
+
+        if (used <= 0) {
+            alert("There is no feed usage recorded for today.");
+            return false;
+        }
+
+        setFeedAmount(
+            getFeedAmount() + used
+        );
+
+        delete history[key];
+
+        saveFeedUsageHistory(history);
+
+        refreshFeedUI();
+        refreshFarmOverview();
+
+        return true;
+    }
+
+    function resetFeedStock() {
+        const confirmed = confirm(
+            "Reset the entire feed stock to 0 kg?\n\nYour feed usage history will be preserved."
+        );
+
+        if (!confirmed) {
+            return false;
+        }
+
+        setFeedAmount(0);
+
+        /*
+         * Reset only addition history because the current
+         * inventory has now been manually reset.
+         */
+        saveFeedAdditionHistory([]);
+
+        refreshFeedUI();
+        refreshFarmOverview();
+
+        return true;
+    }
+
+    /* =======================================================
+       FEED CALCULATIONS
+       ======================================================= */
+
+    function getFeedUsageEntries() {
+        const history = getFeedUsageHistory();
+
+        return Object.keys(history)
+            .filter(key => /^\d{4}-\d{2}-\d{2}$/.test(key))
+            .map(date => ({
+                date,
+                amount: Math.max(
+                    0,
+                    safeNumber(history[date], 0)
+                )
+            }))
+            .sort((a, b) => b.date.localeCompare(a.date));
+    }
+
+    function getLastSevenDates() {
+        const dates = [];
+
+        for (let i = 6; i >= 0; i--) {
+            const date = new Date();
+
+            date.setHours(12, 0, 0, 0);
+            date.setDate(date.getDate() - i);
+
+            dates.push(todayKey(date));
+        }
+
+        return dates;
+    }
+
+    function getSevenDayEggTotal() {
+        return getLastSevenDates().reduce(
+            (total, date) =>
+                total + getEggsForDate(date),
+            0
+        );
+    }
+
+    function getAverageLayingRate() {
+        const flock = getFlockCount();
+
+        if (flock <= 0) {
+            return 0;
+        }
+
+        const dates = getLastSevenDates();
+
+        const totalEggs = dates.reduce(
+            (total, date) =>
+                total + getEggsForDate(date),
+            0
+        );
+
+        return clamp(
+            Math.round(
+                (totalEggs / (flock * 7)) * 100
+            ),
+            0,
+            100
+        );
+    }
+
+    function getBestProductionDay() {
+        const entries = getLastSevenDates().map(date => ({
+            date,
+            eggs: getEggsForDate(date)
+        }));
+
+        entries.sort((a, b) => b.eggs - a.eggs);
+
+        return entries[0] || {
+            date: todayKey(),
+            eggs: 0
+        };
+    }
+
+    function getLowestProductionDay() {
+        const entries = getLastSevenDates().map(date => ({
+            date,
+            eggs: getEggsForDate(date)
+        }));
+
+        entries.sort((a, b) => a.eggs - b.eggs);
+
+        return entries[0] || {
+            date: todayKey(),
+            eggs: 0
+        };
+    }
+
+    function getFeedSevenDayTotal() {
+        const history = getFeedUsageHistory();
+
+        return getLastSevenDates().reduce(
+            (total, date) =>
+                total + safeNumber(history[date], 0),
+            0
+        );
+    }
+
+    function getFeedDailyAverage() {
+        return getFeedSevenDayTotal() / 7;
+    }
+
+    function getFeedDaysRemaining() {
+        const average = getFeedDailyAverage();
+
+        if (average <= 0) {
+            return null;
+        }
+
+        return getFeedAmount() / average;
+    }
+
+    /* =======================================================
+       FARM OVERVIEW
+       ======================================================= */
+
+    function refreshFarmOverview() {
+        const flock = getFlockCount();
+        const eggs = getTodayEggs();
+        const rate = getTodayLayingRate();
+        const feed = getFeedAmount();
+
+        const flockElement = $("#farmOverviewFlock");
+        const eggsElement = $("#farmOverviewEggs");
+        const rateElement = $("#farmOverviewLayingRate");
+        const feedElement = $("#farmOverviewFeed");
+        const nextFeedElement = $("#farmOverviewNextFeed");
+
+        if (flockElement) {
+            flockElement.textContent = formatNumber(flock);
+        }
+
+        if (eggsElement) {
+            eggsElement.textContent = formatNumber(eggs);
+        }
+
+        if (rateElement) {
+            rateElement.textContent = `${rate}%`;
+        }
+
+        if (feedElement) {
+            feedElement.textContent =
+                `${formatNumber(feed, 2)} kg`;
+        }
+
+        if (nextFeedElement) {
+            nextFeedElement.textContent =
+                getNextFeedDisplay();
+        }
+    }
+
+    /* =======================================================
+       QUICK ACTIONS
+       ======================================================= */
+
+    function setupQuickActions() {
+        const addEggButton = $("#quickAddEggs");
+        const feedButton = $("#quickFeed");
+        const historyButton = $("#quickHistory");
+
+        if (addEggButton) {
+            addEggButton.addEventListener(
+                "click",
+                () => addEggs(1)
+            );
+        }
+
+        if (feedButton) {
+            feedButton.addEventListener(
+                "click",
+                () => {
+                    const target =
+                        $("#feedInput") ||
+                        $(".feed-input") ||
+                        $("#feedManagement");
+
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+
+                        setTimeout(() => {
+                            try {
+                                target.focus();
+                            } catch (_) {}
+                        }, 350);
+                    }
                 }
             );
+        }
 
+        if (historyButton) {
+            historyButton.addEventListener(
+                "click",
+                () => {
+                    const target =
+                        $("#eggHistoryList") ||
+                        $("#eggProduction") ||
+                        $(".egg-history");
 
-        const totalEggs =
-            records.reduce(
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+                    }
+                }
+            );
+        }
+    }
+
+    /* =======================================================
+       EGG UI
+       ======================================================= */
+
+    function refreshEggUI() {
+        const eggs = getTodayEggs();
+        const flock = getFlockCount();
+        const rate = getTodayLayingRate();
+
+        const eggCount = $("#eggCount");
+        const layingRate = $("#layingRate");
+
+        if (eggCount) {
+            eggCount.textContent = formatNumber(eggs);
+        }
+
+        if (layingRate) {
+            layingRate.textContent = `${rate}%`;
+        }
+
+        const historyList = $("#eggHistoryList");
+
+        if (historyList) {
+            renderEggHistory(historyList);
+        }
+
+        /*
+         * Keep the flock-based display accurate even if
+         * there are more eggs recorded than birds.
+         */
+        if (flock <= 0 && layingRate) {
+            layingRate.textContent = "0%";
+        }
+    }
+
+    function renderEggHistory(container) {
+        const entries = getEggHistoryEntries();
+
+        if (!entries.length) {
+            container.innerHTML = `
+                <div class="pm-empty-state">
+                    <div class="pm-empty-state-icon">🥚</div>
+                    <strong>No egg history yet</strong>
+                    <span>Your recorded production will appear here.</span>
+                </div>
+            `;
+
+            return;
+        }
+
+        const flock = getFlockCount();
+
+        container.innerHTML = entries
+            .map(entry => {
+                const rate = flock > 0
+                    ? clamp(
+                        Math.round(
+                            (entry.eggs / flock) * 100
+                        ),
+                        0,
+                        100
+                    )
+                    : 0;
+
+                const isToday =
+                    entry.date === todayKey();
+
+                return `
+                    <div class="egg-history-item">
+                        <div class="egg-history-date">
+                            <strong>
+                                ${isToday ? "Today" : escapeHTML(formatDate(entry.date))}
+                            </strong>
+                            <span>${escapeHTML(entry.date)}</span>
+                        </div>
+
+                        <div class="egg-history-result">
+                            <strong>${formatNumber(entry.eggs)} eggs</strong>
+                            <span>${rate}% laying rate</span>
+                        </div>
+                    </div>
+                `;
+            })
+            .join("");
+    }
+
+    /* =======================================================
+       FEED UI
+       ======================================================= */
+
+    function refreshFeedUI() {
+        const stock = getFeedAmount();
+        const todayUsage = getTodayFeedUsage();
+        const average = getFeedDailyAverage();
+        const remaining = getFeedDaysRemaining();
+        const flock = getFlockCount();
+
+        const feedAmount = $("#feedAmount");
+        const feedUsedToday = $("#feedUsedToday");
+        const feedDailyAverage = $("#feedDailyAverage");
+        const feedDaysRemaining = $("#feedDaysRemaining");
+        const feedDaysRemainingText =
+            $("#feedDaysRemainingText");
+        const feedUsageDays = $("#feedUsageDays");
+        const feedPerBird = $("#feedPerBird");
+        const feedSevenDayUsage =
+            $("#feedSevenDayUsage");
+
+        if (feedAmount) {
+            feedAmount.textContent =
+                formatNumber(stock, 2);
+        }
+
+        if (feedUsedToday) {
+            feedUsedToday.textContent =
+                `${formatNumber(todayUsage, 2)} kg`;
+        }
+
+        if (feedDailyAverage) {
+            feedDailyAverage.textContent =
+                `${formatNumber(average, 2)} kg`;
+        }
+
+        if (feedDaysRemaining) {
+            feedDaysRemaining.textContent =
+                remaining === null
+                    ? "—"
+                    : formatNumber(remaining, 1);
+        }
+
+        if (feedDaysRemainingText) {
+            feedDaysRemainingText.textContent =
+                remaining === null
+                    ? "Not enough usage data yet"
+                    : `${formatNumber(remaining, 1)} days remaining`;
+        }
+
+        if (feedSevenDayUsage) {
+            feedSevenDayUsage.textContent =
+                `${formatNumber(getFeedSevenDayTotal(), 2)} kg`;
+        }
+
+        if (feedUsageDays) {
+            const days = getFeedUsageEntries().length;
+
+            feedUsageDays.textContent =
+                `${formatNumber(days)} recorded day${days === 1 ? "" : "s"}`;
+        }
+
+        if (feedPerBird) {
+            const perBird =
+                flock > 0
+                    ? todayUsage / flock
+                    : 0;
+
+            feedPerBird.textContent =
+                `${formatNumber(perBird * 1000, 0)} g`;
+        }
+
+        renderFeedHistory(
+            $("#feedHistoryList")
+        );
+
+        renderFeedUsageChart();
+    }
+
+    function renderFeedHistory(container) {
+        if (!container) {
+            return;
+        }
+
+        const entries = getFeedUsageEntries();
+
+        if (!entries.length) {
+            container.innerHTML = `
+                <div class="pm-empty-state">
+                    <div class="pm-empty-state-icon">🌾</div>
+                    <strong>No feed usage history yet</strong>
+                    <span>Recorded feed usage will appear here.</span>
+                </div>
+            `;
+
+            return;
+        }
+
+        container.innerHTML = entries
+            .map(entry => `
+                <div class="feed-history-item">
+                    <div>
+                        <strong>
+                            ${escapeHTML(formatDate(entry.date))}
+                        </strong>
+                        <span>${escapeHTML(entry.date)}</span>
+                    </div>
+
+                    <strong>
+                        ${formatNumber(entry.amount, 2)} kg
+                    </strong>
+                </div>
+            `)
+            .join("");
+    }
+
+    /* =======================================================
+       PRODUCTION SUMMARY
+       ======================================================= */
+
+    function refreshProduction() {
+        const total = getSevenDayEggTotal();
+        const averageRate = getAverageLayingRate();
+        const best = getBestProductionDay();
+
+        const sevenDayEggs =
+            $("#sevenDayEggs");
+
+        const averageLayingRate =
+            $("#averageLayingRate");
+
+        const bestProductionDay =
+            $("#bestProductionDay");
+
+        const bestProductionEggs =
+            $("#bestProductionEggs");
+
+        if (sevenDayEggs) {
+            sevenDayEggs.textContent =
+                formatNumber(total);
+        }
+
+        if (averageLayingRate) {
+            averageLayingRate.textContent =
+                `${averageRate}%`;
+        }
+
+        if (bestProductionDay) {
+            bestProductionDay.textContent =
+                best.eggs > 0
+                    ? formatShortDate(best.date)
+                    : "—";
+        }
+
+        if (bestProductionEggs) {
+            bestProductionEggs.textContent =
+                best.eggs > 0
+                    ? `${formatNumber(best.eggs)} eggs`
+                    : "No production yet";
+        }
+
+        refreshAnalytics();
+        renderProductionTrend();
+    }
+
+    /* =======================================================
+       PRODUCTION ANALYTICS
+       ======================================================= */
+
+    function refreshAnalytics() {
+        const flock = getFlockCount();
+        const dates = getLastSevenDates();
+
+        const eggs = dates.map(date => ({
+            date,
+            eggs: getEggsForDate(date)
+        }));
+
+        const total = eggs.reduce(
+            (sum, item) => sum + item.eggs,
+            0
+        );
+
+        const average =
+            dates.length > 0
+                ? total / dates.length
+                : 0;
+
+        const eggsPerHen =
+            flock > 0
+                ? total / (flock * 7)
+                : 0;
+
+        const highest =
+            [...eggs].sort(
+                (a, b) => b.eggs - a.eggs
+            )[0] || {
+                date: todayKey(),
+                eggs: 0
+            };
+
+        const lowest =
+            [...eggs].sort(
+                (a, b) => a.eggs - b.eggs
+            )[0] || {
+                date: todayKey(),
+                eggs: 0
+            };
+
+        const values = eggs.map(
+            item => item.eggs
+        );
+
+        const mean =
+            values.length
+                ? values.reduce(
+                    (sum, value) => sum + value,
+                    0
+                ) / values.length
+                : 0;
+
+        const variance =
+            values.length
+                ? values.reduce(
+                    (sum, value) =>
+                        sum +
+                        Math.pow(value - mean, 2),
+                    0
+                ) / values.length
+                : 0;
+
+        const standardDeviation =
+            Math.sqrt(variance);
+
+        const consistency =
+            mean > 0
+                ? clamp(
+                    Math.round(
+                        100 -
+                        (standardDeviation / mean) * 100
+                    ),
+                    0,
+                    100
+                )
+                : 0;
+
+        const firstHalf =
+            eggs.slice(0, 3).reduce(
                 (sum, item) =>
                     sum + item.eggs,
                 0
             );
 
-
-        const averageRate =
-            records.length > 0
-                ? records.reduce(
-                    (sum, item) =>
-                        sum + item.rate,
-                    0
-                ) / records.length
-                : 0;
-
-
-        const best =
-            records.reduce(
-                (current, item) =>
-                    item.eggs >
-                    current.eggs
-                        ? item
-                        : current,
-                records[0] || {
-                    eggs: 0,
-                    date: getTodayKey()
-                }
-            );
-
-
-        const lowest =
-            records.reduce(
-                (current, item) =>
-                    item.eggs <
-                    current.eggs
-                        ? item
-                        : current,
-                records[0] || {
-                    eggs: 0,
-                    date: getTodayKey()
-                }
-            );
-
-
-        const eggsPerHen =
-            records.length > 0
-                ? totalEggs /
-                    records.length /
-                    Math.max(
-                        1,
-                        getFlockCount()
-                    )
-                : 0;
-
-
-        return {
-
-            dates,
-
-            records,
-
-            totalEggs,
-
-            averageRate,
-
-            best,
-
-            lowest,
-
-            eggsPerHen
-
-        };
-
-    }
-
-
-    /* =====================================================
-       9. PRODUCTION INSIGHT ENGINE
-       ===================================================== */
-
-    function getProductionInsight() {
-
-        const stats =
-            getProductionStats(
-                APP.limits.chartDays
-            );
-
-        const today =
-            stats.records[
-                stats.records.length - 1
-            ] || {
-                eggs: 0,
-                rate: 0
-            };
-
-
-        const previous =
-            stats.records[
-                stats.records.length - 2
-            ] || {
-                eggs: 0,
-                rate: 0
-            };
-
-
-        const difference =
-            today.eggs -
-            previous.eggs;
-
-
-        if (
-            getFlockCount() <= 0
-        ) {
-
-            return {
-
-                text:
-                    "Add your flock size in Settings to unlock production insights.",
-
-                type:
-                    "neutral"
-
-            };
-
-        }
-
-
-        if (
-            today.eggs === 0
-        ) {
-
-            return {
-
-                text:
-                    "No eggs have been recorded today yet. Keep monitoring the flock.",
-
-                type:
-                    "neutral"
-
-            };
-
-        }
-
-
-        if (
-            today.rate >= 90
-        ) {
-
-            return {
-
-                text:
-                    "Excellent production today. Your flock is performing at a very strong laying rate.",
-
-                type:
-                    "positive"
-
-            };
-
-        }
-
-
-        if (
-            today.rate >= 70
-        ) {
-
-            return {
-
-                text:
-                    "Good production today. Keep feed, water, lighting and flock conditions consistent.",
-
-                type:
-                    "positive"
-
-            };
-
-        }
-
-
-        if (
-            difference > 0
-        ) {
-
-            return {
-
-                text:
-                    "Production is improving compared with the previous day.",
-
-                type:
-                    "positive"
-
-            };
-
-        }
-
-
-        if (
-            difference < 0
-        ) {
-
-            return {
-
-                text:
-                    "Production is lower than the previous day. Check feed intake, water and flock conditions.",
-
-                type:
-                    "warning"
-
-            };
-
-        }
-
-
-        return {
-
-            text:
-                "Production is currently stable. Continue monitoring the flock daily.",
-
-            type:
-                "neutral"
-
-        };
-
-    }
-
-
-    /* =====================================================
-       10. FEED STOCK
-       ===================================================== */
-
-    function getFeedAmount() {
-
-        return roundNumber(
-            clampNumber(
-                readStorage(
-                    APP.storage.feed,
-                    APP.defaults.feed
-                ),
-                APP.limits.feedMinimum,
-                APP.limits.feedMaximum
-            ),
-            APP.limits.feedDecimals
-        );
-
-    }
-
-
-    function saveFeedAmount(
-        amount
-    ) {
-
-        const feed =
-            roundNumber(
-                clampNumber(
-                    amount,
-                    APP.limits.feedMinimum,
-                    APP.limits.feedMaximum
-                ),
-                APP.limits.feedDecimals
-            );
-
-        writeStorage(
-            APP.storage.feed,
-            String(feed)
-        );
-
-        return feed;
-
-    }
-
-
-    /* =====================================================
-       11. FEED ADDITION HISTORY
-       ===================================================== */
-
-    function getFeedAdditionHistory() {
-
-        const history =
-            readJSON(
-                APP.storage.feedAdditions,
-                []
-            );
-
-        if (
-            !Array.isArray(history)
-        ) {
-            return [];
-        }
-
-        return history
-            .filter(item =>
-                item &&
-                typeof item ===
-                "object"
-            )
-            .map(item => ({
-
-                id:
-                    String(
-                        item.id ||
-                        `${Date.now()}-${Math.random()}`
-                    ),
-
-                amount:
-                    roundNumber(
-                        Math.max(
-                            0,
-                            safeNumber(
-                                item.amount
-                            )
-                        ),
-                        1
-                    ),
-
-                date:
-                    item.date ||
-                    getTodayKey(),
-
-                timestamp:
-                    safeNumber(
-                        item.timestamp,
-                        Date.now()
-                    ),
-
-                stockAfter:
-                    roundNumber(
-                        Math.max(
-                            0,
-                            safeNumber(
-                                item.stockAfter
-                            )
-                        ),
-                        1
-                    )
-
-            }))
-            .sort(
-                (a, b) =>
-                    b.timestamp -
-                    a.timestamp
-            );
-
-    }
-
-
-    function saveFeedAdditionHistory(
-        history
-    ) {
-
-        const clean =
-            Array.isArray(history)
-                ? history.slice(0, 100)
-                : [];
-
-        writeJSON(
-            APP.storage.feedAdditions,
-            clean
-        );
-
-        return clean;
-
-    }
-
-
-    function getLastFeedAddition() {
-
-        const history =
-            getFeedAdditionHistory();
-
-        return history[0] || null;
-
-    }
-
-
-    function recordFeedAddition(
-        amount,
-        stockAfter
-    ) {
-
-        const history =
-            getFeedAdditionHistory();
-
-        history.unshift({
-
-            id:
-                `${Date.now()}-${Math.random()
-                    .toString(36)
-                    .slice(2, 8)}`,
-
-            amount:
-                roundNumber(
-                    amount,
-                    1
-                ),
-
-            date:
-                getTodayKey(),
-
-            timestamp:
-                Date.now(),
-
-            stockAfter:
-                roundNumber(
-                    stockAfter,
-                    1
-                )
-
-        });
-
-        saveFeedAdditionHistory(
-            history
-        );
-
-    }
-
-
-    function clearFeedAdditionHistory() {
-
-        removeStorage(
-            APP.storage.feedAdditions
-        );
-
-    }
-
-
-    /* =====================================================
-       12. FEED USAGE HISTORY
-       ===================================================== */
-
-    function getFeedUsageHistory() {
-
-        const history =
-            readJSON(
-                APP.storage.feedUsage,
-                {}
-            );
-
-        if (
-            !history ||
-            typeof history !==
-            "object" ||
-            Array.isArray(history)
-        ) {
-
-            return {};
-
-        }
-
-        const clean =
-            {};
-
-        Object.keys(history)
-            .forEach(key => {
-
-                clean[key] =
-                    roundNumber(
-                        Math.max(
-                            0,
-                            safeNumber(
-                                history[key]
-                            )
-                        ),
-                        1
-                    );
-
-            });
-
-        return clean;
-
-    }
-
-
-    function saveFeedUsageHistory(
-        history
-    ) {
-
-        writeJSON(
-            APP.storage.feedUsage,
-            history || {}
-        );
-
-    }
-
-
-    function getFeedUsageForDate(
-        dateKey
-    ) {
-
-        const history =
-            getFeedUsageHistory();
-
-        return roundNumber(
-            history[dateKey] || 0,
-            1
-        );
-
-    }
-
-
-    function saveFeedUsageForDate(
-        dateKey,
-        amount
-    ) {
-
-        const history =
-            getFeedUsageHistory();
-
-        const value =
-            roundNumber(
-                Math.max(
-                    0,
-                    safeNumber(
-                        amount
-                    )
-                ),
-                1
-            );
-
-        if (value <= 0) {
-
-            delete history[
-                dateKey
-            ];
-
-        } else {
-
-            history[
-                dateKey
-            ] = value;
-
-        }
-
-        saveFeedUsageHistory(
-            history
-        );
-
-        return value;
-
-    }
-
-
-    function getTodayFeedUsage() {
-
-        return getFeedUsageForDate(
-            getTodayKey()
-        );
-
-    }
-
-
-    function resetTodayFeedUsage() {
-
-        const today =
-            getTodayKey();
-
-        const usage =
-            getTodayFeedUsage();
-
-        if (usage <= 0) {
-
-            notify(
-                "Today's feed usage is already 0.0 kg."
-            );
-
-            return;
-
-        }
-
-
-        const confirmed =
-            confirmAction(
-                `Reset today's feed usage?\n\nCurrent usage: ${usage.toFixed(
-                    1
-                )} kg\n\nThis will return the recorded amount to your current feed stock.`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        saveFeedUsageForDate(
-            today,
-            0
-        );
-
-
-        saveFeedAmount(
-            getFeedAmount() +
-            usage
-        );
-
-
-        clearFeedAdditionHistory();
-
-        refreshFeed();
-
-        notify(
-            "Today's feed usage has been reset."
-        );
-
-    }
-
-
-    /* =====================================================
-       13. ADD FEED
-       ===================================================== */
-
-    function addFeed(
-        amount
-    ) {
-
-        const quantity =
-            roundNumber(
-                Math.max(
-                    0,
-                    safeNumber(
-                        amount
-                    )
-                ),
-                1
-            );
-
-
-        if (
-            quantity <= 0
-        ) {
-
-            notify(
-                "Enter a feed amount greater than 0."
-            );
-
-            return;
-
-        }
-
-
-        const current =
-            getFeedAmount();
-
-
-        const next =
-            roundNumber(
-                current +
-                quantity,
-                1
-            );
-
-
-        saveFeedAmount(
-            next
-        );
-
-
-        recordFeedAddition(
-            quantity,
-            next
-        );
-
-
-        refreshFeed();
-
-
-        notify(
-            `${quantity.toFixed(
-                1
-            )} kg of feed added.`
-        );
-
-    }
-
-
-    /* =====================================================
-       14. UNDO LAST FEED ADDITION
-       ===================================================== */
-
-    function undoLastFeedAddition() {
-
-        const last =
-            getLastFeedAddition();
-
-
-        if (!last) {
-
-            notify(
-                "There is no feed addition to undo."
-            );
-
-            return;
-
-        }
-
-
-        const current =
-            getFeedAmount();
-
-
-        /*
-         * Only undo the addition if the stock still matches
-         * the stock level recorded immediately after it.
-         *
-         * This prevents an old addition from being undone
-         * after feed has already been used or another addition
-         * has occurred.
-         */
-
-        const expected =
-            roundNumber(
-                last.stockAfter,
-                1
-            );
-
-
-        if (
-            Math.abs(
-                current -
-                expected
-            ) > 0.01
-        ) {
-
-            notify(
-                "The last feed addition can no longer be undone because the stock has changed."
-            );
-
-            return;
-
-        }
-
-
-        const confirmed =
-            confirmAction(
-                `Undo the last feed addition?\n\nAdded: ${last.amount.toFixed(
-                    1
-                )} kg\nCurrent stock: ${current.toFixed(
-                    1
-                )} kg`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        const next =
-            roundNumber(
-                Math.max(
-                    0,
-                    current -
-                    last.amount
-                ),
-                1
-            );
-
-
-        saveFeedAmount(
-            next
-        );
-
-
-        const history =
-            getFeedAdditionHistory()
-                .filter(
-                    item =>
-                        item.id !==
-                        last.id
-                );
-
-
-        saveFeedAdditionHistory(
-            history
-        );
-
-
-        refreshFeed();
-
-
-        notify(
-            "Last feed addition was undone."
-        );
-
-    }
-
-
-    /* =====================================================
-       15. RESET ENTIRE FEED STOCK
-       ===================================================== */
-
-    function resetFeedStock() {
-
-        const current =
-            getFeedAmount();
-
-
-        if (
-            current <= 0
-        ) {
-
-            notify(
-                "Feed stock is already 0.0 kg."
-            );
-
-            return;
-
-        }
-
-
-        const confirmed =
-            confirmAction(
-                `Reset your entire feed stock?\n\nCurrent stock: ${current.toFixed(
-                    1
-                )} kg\n\nThis will set your current feed inventory to 0.0 kg.\n\nYour feed usage history and analytics will remain intact.`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        saveFeedAmount(
-            0
-        );
-
-
-        /*
-         * Old additions must not remain undoable after a full
-         * stock reset.
-         */
-
-        clearFeedAdditionHistory();
-
-
-        const input =
-            $("feedInput");
-
-        if (input) {
-            input.value = "";
-        }
-
-
-        refreshFeed();
-
-
-        notify(
-            "Feed stock has been reset to 0.0 kg."
-        );
-
-    }
-
-
-    /* =====================================================
-       16. RECORD FEED USAGE
-       ===================================================== */
-
-    function recordFeedUsage(
-        amount
-    ) {
-
-        const quantity =
-            roundNumber(
-                Math.max(
-                    0,
-                    safeNumber(
-                        amount
-                    )
-                ),
-                1
-            );
-
-
-        if (
-            quantity <= 0
-        ) {
-
-            notify(
-                "Enter a feed usage amount greater than 0."
-            );
-
-            return;
-
-        }
-
-
-        const currentStock =
-            getFeedAmount();
-
-
-        if (
-            currentStock <= 0
-        ) {
-
-            notify(
-                "There is no feed available in stock."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            quantity >
-            currentStock
-        ) {
-
-            notify(
-                `Only ${currentStock.toFixed(
-                    1
-                )} kg is currently available.`
-            );
-
-            return;
-
-        }
-
-
-        const nextStock =
-            roundNumber(
-                currentStock -
-                quantity,
-                1
-            );
-
-
-        saveFeedAmount(
-            nextStock
-        );
-
-
-        const today =
-            getTodayKey();
-
-
-        const currentUsage =
-            getFeedUsageForDate(
-                today
-            );
-
-
-        saveFeedUsageForDate(
-            today,
-            currentUsage +
-            quantity
-        );
-
-
-        clearFeedAdditionHistory();
-
-
-        const input =
-            $("useFeedInput");
-
-        if (input) {
-            input.value = "";
-        }
-
-
-        refreshFeed();
-
-
-        notify(
-            `${quantity.toFixed(
-                1
-            )} kg feed usage recorded.`
-        );
-
-    }
-
-
-    /* =====================================================
-       17. FEED ANALYTICS
-       ===================================================== */
-
-    function getFeedStats(
-        days = 7
-    ) {
-
-        const dates =
-            getLastNDates(
-                days
-            );
-
-
-        const usageHistory =
-            getFeedUsageHistory();
-
-
-        const records =
-            dates.map(
-                date => ({
-
-                    date,
-
-                    usage:
-                        roundNumber(
-                            usageHistory[
-                                date
-                            ] || 0,
-                            1
-                        )
-
-                })
-            );
-
-
-        const totalUsage =
-            records.reduce(
-                (sum, record) =>
-                    sum +
-                    record.usage,
+        const secondHalf =
+            eggs.slice(-3).reduce(
+                (sum, item) =>
+                    sum + item.eggs,
                 0
             );
 
+        let change = 0;
 
-        const averageUsage =
-            records.length
-                ? totalUsage /
-                    records.length
-                : 0;
+        if (firstHalf > 0) {
+            change =
+                ((secondHalf - firstHalf) /
+                    firstHalf) *
+                100;
+        }
 
+        const eggsPerHenElement =
+            $("#analyticsEggsPerHen");
 
-        const flock =
-            getFlockCount();
+        const averageElement =
+            $("#analyticsAverage");
 
+        const highestElement =
+            $("#analyticsHighestDay");
 
-        const feedPerBird =
-            flock > 0
-                ? averageUsage /
-                    flock
-                : 0;
+        const highestDateElement =
+            $("#analyticsHighestDayDate");
 
+        const lowestElement =
+            $("#analyticsLowestDay");
 
-        const usageDays =
-            records.filter(
-                record =>
-                    record.usage > 0
-            ).length;
+        const lowestDateElement =
+            $("#analyticsLowestDayDate");
 
+        const consistencyElement =
+            $("#analyticsConsistency");
 
-        return {
+        const changeElement =
+            $("#analyticsChange");
 
-            dates,
+        const insightElement =
+            $("#analyticsInsight");
 
-            records,
+        if (eggsPerHenElement) {
+            eggsPerHenElement.textContent =
+                `${formatNumber(eggsPerHen, 2)}`;
+        }
 
-            totalUsage:
-                roundNumber(
-                    totalUsage,
-                    1
-                ),
+        if (averageElement) {
+            averageElement.textContent =
+                `${formatNumber(average, 1)} eggs`;
+        }
 
-            averageUsage:
-                roundNumber(
-                    averageUsage,
-                    1
-                ),
+        if (highestElement) {
+            highestElement.textContent =
+                formatNumber(highest.eggs);
+        }
 
-            feedPerBird:
-                roundNumber(
-                    feedPerBird,
-                    3
-                ),
+        if (highestDateElement) {
+            highestDateElement.textContent =
+                formatShortDate(highest.date);
+        }
 
-            usageDays
+        if (lowestElement) {
+            lowestElement.textContent =
+                formatNumber(lowest.eggs);
+        }
 
-        };
+        if (lowestDateElement) {
+            lowestDateElement.textContent =
+                formatShortDate(lowest.date);
+        }
 
+        if (consistencyElement) {
+            consistencyElement.textContent =
+                `${consistency}%`;
+        }
+
+        if (changeElement) {
+            const sign =
+                change > 0 ? "+" : "";
+
+            changeElement.textContent =
+                `${sign}${formatNumber(change, 0)}%`;
+        }
+
+        if (insightElement) {
+            let insight =
+                "Keep recording daily production to build a useful trend.";
+
+            if (total === 0) {
+                insight =
+                    "No eggs have been recorded during the last 7 days.";
+            } else if (consistency >= 85) {
+                insight =
+                    "Production has been very consistent over the last 7 days.";
+            } else if (change >= 20) {
+                insight =
+                    "Production is trending upward. Keep monitoring the flock.";
+            } else if (change <= -20) {
+                insight =
+                    "Production has dropped recently. Check feed, water, stress and flock condition.";
+            } else if (averageRate >= 80) {
+                insight =
+                    "The flock is maintaining a strong laying rate.";
+            }
+
+            insightElement.textContent = insight;
+        }
     }
 
+    /* =======================================================
+       PRODUCTION TREND
+       ======================================================= */
 
-    /* =====================================================
-       18. FEED STOCK STATUS
-       ===================================================== */
+    function renderProductionTrend() {
+        const chart = $("#productionTrendChart");
 
-    function getFeedStatus() {
+        if (!chart) {
+            return;
+        }
 
-        const stock =
-            getFeedAmount();
+        const dates = getLastSevenDates();
+        const values = dates.map(
+            date => getEggsForDate(date)
+        );
 
+        const max = Math.max(
+            ...values,
+            1
+        );
 
-        const stats =
-            getFeedStats(
-                7
+        const mid = Math.ceil(max / 2);
+
+        const maxLabel =
+            $("#trendMaxLabel");
+
+        const midLabel =
+            $("#trendMidLabel");
+
+        if (maxLabel) {
+            maxLabel.textContent =
+                formatNumber(max);
+        }
+
+        if (midLabel) {
+            midLabel.textContent =
+                formatNumber(mid);
+        }
+
+        /*
+         * If the existing chart markup has been created
+         * by the CSS/HTML, update bars safely.
+         */
+        const bars =
+            $$(".production-trend-bar", chart);
+
+        if (bars.length) {
+            values.forEach((value, index) => {
+                const bar = bars[index];
+
+                if (!bar) {
+                    return;
+                }
+
+                const height =
+                    max > 0
+                        ? (value / max) * 100
+                        : 0;
+
+                bar.style.height =
+                    `${Math.max(height, value > 0 ? 4 : 0)}%`;
+
+                bar.setAttribute(
+                    "title",
+                    `${formatNumber(value)} eggs`
+                );
+            });
+        }
+    }
+
+    /* =======================================================
+       FEED USAGE CHART
+       ======================================================= */
+
+    function renderFeedUsageChart() {
+        const chart =
+            $("#feedConsumptionChart");
+
+        if (!chart) {
+            return;
+        }
+
+        const history =
+            getFeedUsageHistory();
+
+        const dates =
+            getLastSevenDates();
+
+        const values =
+            dates.map(
+                date =>
+                    Math.max(
+                        0,
+                        safeNumber(history[date], 0)
+                    )
             );
 
+        const max =
+            Math.max(...values, 0.1);
 
-        const average =
-            stats.averageUsage;
+        const bars =
+            $$(".feed-consumption-bar", chart);
 
+        if (bars.length) {
+            values.forEach((value, index) => {
+                const bar = bars[index];
 
-        let daysRemaining =
-            0;
+                if (!bar) {
+                    return;
+                }
 
+                const height =
+                    (value / max) * 100;
 
-        if (
-            average > 0
-        ) {
+                bar.style.height =
+                    `${Math.max(
+                        height,
+                        value > 0 ? 4 : 0
+                    )}%`;
 
-            daysRemaining =
-                stock /
-                average;
-
+                bar.setAttribute(
+                    "title",
+                    `${formatNumber(value, 2)} kg`
+                );
+            });
         }
-
-
-        let status =
-            "healthy";
-
-
-        if (
-            stock <= 0
-        ) {
-
-            status =
-                "empty";
-
-        } else if (
-            daysRemaining <= 2
-        ) {
-
-            status =
-                "critical";
-
-        } else if (
-            daysRemaining <= 5
-        ) {
-
-            status =
-                "warning";
-
-        }
-
-
-        return {
-
-            stock,
-
-            average,
-
-            daysRemaining:
-
-                Number.isFinite(
-                    daysRemaining
-                )
-                    ? daysRemaining
-                    : 0,
-
-            status
-
-        };
-
     }
 
+    /* =======================================================
+       FEED CONTROL EVENTS
+       ======================================================= */
 
-    /* =====================================================
-       19. FEED SCHEDULE
-       ===================================================== */
+    function setupFeedControls() {
+        const addButton =
+            $("#addFeedButton");
+
+        const useButton =
+            $("#useFeedButton");
+
+        const addInput =
+            $("#feedInput");
+
+        const useInput =
+            $("#useFeedInput");
+
+        const resetStock =
+            $("#resetFeedTodayButton");
+
+        if (addButton && addInput) {
+            addButton.addEventListener(
+                "click",
+                () => {
+                    const value =
+                        safeNumber(
+                            addInput.value,
+                            0
+                        );
+
+                    if (addFeed(value)) {
+                        addInput.value = "";
+                    }
+                }
+            );
+        }
+
+        if (useButton && useInput) {
+            useButton.addEventListener(
+                "click",
+                () => {
+                    const value =
+                        safeNumber(
+                            useInput.value,
+                            0
+                        );
+
+                    if (recordFeedUsage(value)) {
+                        useInput.value = "";
+                    }
+                }
+            );
+        }
+
+        if (resetStock) {
+            resetStock.addEventListener(
+                "click",
+                resetFeedStock
+            );
+        }
+
+        const resetToday =
+            $("#resetTodayFeedUsageButton") ||
+            $(".feed-reset-today-button");
+
+        if (resetToday) {
+            resetToday.addEventListener(
+                "click",
+                resetTodayFeedUsage
+            );
+        }
+
+        const undoButton =
+            $("#undoLastFeedAdditionButton") ||
+            $(".undo-feed-button");
+
+        if (undoButton) {
+            undoButton.addEventListener(
+                "click",
+                undoLastFeedAddition
+            );
+        }
+
+        [addInput, useInput]
+            .filter(Boolean)
+            .forEach(input => {
+                input.addEventListener(
+                    "keydown",
+                    event => {
+                        if (
+                            event.key === "Enter"
+                        ) {
+                            event.preventDefault();
+
+                            const button =
+                                input === addInput
+                                    ? addButton
+                                    : useButton;
+
+                            if (button) {
+                                button.click();
+                            }
+                        }
+                    }
+                );
+            });
+    }
+
+    /* =======================================================
+       EGG CONTROL EVENTS
+       ======================================================= */
+
+    function setupEggControls() {
+        const addButton =
+            $("#addEggButton");
+
+        const removeButton =
+            $("#removeEggButton");
+
+        const historyButton =
+            $("#viewHistoryButton");
+
+        if (addButton) {
+            addButton.addEventListener(
+                "click",
+                () => addEggs(1)
+            );
+        }
+
+        if (removeButton) {
+            removeButton.addEventListener(
+                "click",
+                () => removeEggs(1)
+            );
+        }
+
+        if (historyButton) {
+            historyButton.addEventListener(
+                "click",
+                () => {
+                    const target =
+                        $("#eggHistoryList");
+
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+                    }
+                }
+            );
+        }
+    }
+
+    /* =======================================================
+       SCHEDULE
+       ======================================================= */
 
     function getFeedSchedule() {
-
         const saved =
             readJSON(
-                APP.storage.schedule,
+                STORAGE.schedule,
                 null
             );
 
-
         if (
             saved &&
-            typeof saved ===
-            "object"
+            typeof saved === "object"
         ) {
-
             return {
-
                 morning:
-                    typeof saved.morning ===
-                    "string"
-                        ? saved.morning
-                        : APP.defaults
-                            .morningFeed,
+                    saved.morning ||
+                    APP.defaults.morningFeed,
 
                 afternoon:
-                    typeof saved.afternoon ===
-                    "string"
-                        ? saved.afternoon
-                        : APP.defaults
-                            .afternoonFeed
-
+                    saved.afternoon ||
+                    APP.defaults.afternoonFeed
             };
-
         }
 
-
         return {
-
-            morning:
-                APP.defaults
-                    .morningFeed,
-
-            afternoon:
-                APP.defaults
-                    .afternoonFeed
-
+            morning: APP.defaults.morningFeed,
+            afternoon: APP.defaults.afternoonFeed
         };
-
     }
-
-
-    function isValidTime(
-        value
-    ) {
-
-        return (
-            typeof value ===
-            "string" &&
-            /^\d{2}:\d{2}$/.test(
-                value
-            )
-        );
-
-    }
-
 
     function saveFeedSchedule(
         morning,
-        afternoon,
-        sync = true
+        afternoon
     ) {
-
         const schedule = {
-
             morning:
-                isValidTime(
-                    morning
-                )
-                    ? morning
-                    : APP.defaults
-                        .morningFeed,
+                morning ||
+                APP.defaults.morningFeed,
 
             afternoon:
-                isValidTime(
-                    afternoon
-                )
-                    ? afternoon
-                    : APP.defaults
-                        .afternoonFeed
-
+                afternoon ||
+                APP.defaults.afternoonFeed
         };
 
-
         writeJSON(
-            APP.storage.schedule,
+            STORAGE.schedule,
             schedule
         );
 
+        syncScheduleToBackend(
+            schedule
+        );
 
-        updateNextFeed();
-
-
-        if (sync) {
-
-            syncScheduleToServer(
-                schedule
-            );
-
-        }
-
+        refreshFarmOverview();
 
         return schedule;
-
     }
 
-
-    async function syncScheduleToServer(
+    async function syncScheduleToBackend(
         schedule
     ) {
-
         try {
-
-            const response =
-                await fetch(
-                    APP.backend.base +
-                    APP.backend.schedule,
-                    {
-
-                        method:
-                            "POST",
-
-                        headers: {
-
-                            "Content-Type":
-                                "application/json"
-
-                        },
-
-                        body:
-                            JSON.stringify(
-                                schedule
-                            )
-
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    `Schedule sync failed: ${response.status}`
-                );
-
-            }
-
-
-            console.log(
-                "Poultry Manager: schedule synced."
+            await fetch(
+                `${APP.backend}/schedule`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify(
+                        schedule
+                    )
+                }
             );
-
-
         } catch (error) {
-
-            /*
-             * Schedule still remains locally saved.
-             * Render may simply be sleeping on the free plan.
-             */
-
             console.warn(
                 "Poultry Manager: schedule sync unavailable.",
                 error
             );
-
         }
-
     }
 
-
-    /* =====================================================
-       20. NEXT FEED CALCULATION
-       ===================================================== */
-
-    function getMinutesFromTime(
-        time
-    ) {
-
-        if (
-            !isValidTime(
-                time
-            )
-        ) {
-
-            return null;
-
-        }
-
-
-        const [
-            hours,
-            minutes
-        ] =
-            time
-                .split(":")
-                .map(Number);
-
-
-        return (
-            hours * 60 +
-            minutes
-        );
-
-    }
-
-
-    function getNextFeedInfo() {
-
+    function getNextFeedTime() {
         const schedule =
             getFeedSchedule();
 
+        const now = new Date();
 
-        const now =
-            new Date();
-
-
-        const currentMinutes =
-            now.getHours() * 60 +
-            now.getMinutes();
-
-
-        const morningMinutes =
-            getMinutesFromTime(
-                schedule.morning
-            );
-
-
-        const afternoonMinutes =
-            getMinutesFromTime(
+        const candidates =
+            [
+                schedule.morning,
                 schedule.afternoon
+            ]
+            .filter(Boolean)
+            .map(time => {
+                const [
+                    hours,
+                    minutes
+                ] = time.split(":").map(Number);
+
+                const date =
+                    new Date(now);
+
+                date.setHours(
+                    hours || 0,
+                    minutes || 0,
+                    0,
+                    0
+                );
+
+                if (date <= now) {
+                    date.setDate(
+                        date.getDate() + 1
+                    );
+                }
+
+                return date;
+            })
+            .sort(
+                (a, b) =>
+                    a.getTime() -
+                    b.getTime()
             );
 
+        return candidates[0] || null;
+    }
 
-        const options = [];
-
-
-        if (
-            morningMinutes !== null &&
-            morningMinutes >
-            currentMinutes
-        ) {
-
-            options.push({
-
-                type:
-                    "morning",
-
-                time:
-                    schedule.morning,
-
-                minutes:
-                    morningMinutes
-
-            });
-
-        }
-
-
-        if (
-            afternoonMinutes !== null &&
-            afternoonMinutes >
-            currentMinutes
-        ) {
-
-            options.push({
-
-                type:
-                    "afternoon",
-
-                time:
-                    schedule.afternoon,
-
-                minutes:
-                    afternoonMinutes
-
-            });
-
-        }
-
-
-        if (
-            options.length === 0
-        ) {
-
-            if (
-                morningMinutes !==
-                null
-            ) {
-
-                options.push({
-
-                    type:
-                        "morning",
-
-                    time:
-                        schedule.morning,
-
-                    minutes:
-                        morningMinutes +
-                        1440
-
-                });
-
-            }
-
-
-            if (
-                afternoonMinutes !==
-                null
-            ) {
-
-                options.push({
-
-                    type:
-                        "afternoon",
-
-                    time:
-                        schedule.afternoon,
-
-                    minutes:
-                        afternoonMinutes +
-                        1440
-
-                });
-
-            }
-
-        }
-
-
-        options.sort(
-            (a, b) =>
-                a.minutes -
-                b.minutes
-        );
-
-
+    function getNextFeedDisplay() {
         const next =
-            options[0];
-
+            getNextFeedTime();
 
         if (!next) {
-
-            return null;
-
+            return "Not scheduled";
         }
 
+        const sameDay =
+            todayKey(next) ===
+            todayKey();
 
-        let difference =
-            next.minutes -
-            currentMinutes;
-
-
-        if (
-            difference < 0
-        ) {
-
-            difference +=
-                1440;
-
-        }
-
-
-        return {
-
-            ...next,
-
-            minutesUntil:
-                difference
-
-        };
-
+        return next.toLocaleTimeString(
+            undefined,
+            {
+                hour: "numeric",
+                minute: "2-digit"
+            }
+        ) +
+            (sameDay
+                ? ""
+                : " tomorrow");
     }
 
-
-    function formatCountdown(
-        minutes
-    ) {
-
-        const safe =
-            Math.max(
-                0,
-                Math.round(
-                    safeNumber(
-                        minutes
-                    )
-                )
-            );
-
-
-        if (
-            safe < 60
-        ) {
-
-            return `${safe} min`;
-
-        }
-
-
-        const hours =
-            Math.floor(
-                safe / 60
-            );
-
-
-        const remaining =
-            safe % 60;
-
-
-        if (
-            remaining === 0
-        ) {
-
-            return `${hours} hr`;
-
-        }
-
-
-        return `${hours} hr ${remaining} min`;
-
-    }
-
-
-    /* =====================================================
-       21. FEED ALARM
-       ===================================================== */
+    /* =======================================================
+       FEED ALARM
+       ======================================================= */
 
     function isFeedAlarmEnabled() {
+        const saved =
+            localStorage.getItem(
+                STORAGE.alarm
+            );
 
-        return (
-            readStorage(
-                APP.storage.alarm,
-                APP.defaults.alarm
-            ) === "true"
-        );
+        if (saved === null) {
+            return APP.defaults.alarm;
+        }
 
+        return saved === "true";
     }
-
 
     function setFeedAlarmEnabled(
         enabled
     ) {
-
-        writeStorage(
-            APP.storage.alarm,
-            enabled
-                ? "true"
-                : "false"
+        localStorage.setItem(
+            STORAGE.alarm,
+            String(Boolean(enabled))
         );
 
-        updateAlarmUI();
-
+        checkFeedAlarm();
     }
 
-
-    function updateAlarmUI() {
-
-        const enabled =
-            isFeedAlarmEnabled();
-
-
-        const alarmButton =
-            $("feedAlarmButton");
-
-
-        if (alarmButton) {
-
-            alarmButton.textContent =
-                enabled
-                    ? "Disable Feed Alarm"
-                    : "Enable Feed Alarm";
-
-        }
-
-
-        const settingsToggle =
-            $("pmAlarmToggle");
-
-
-        if (settingsToggle) {
-
-            settingsToggle.checked =
-                enabled;
-
-        }
-
-    }
-
-
-    let lastAlarmMinute = null;
-
+    let lastAlarmKey = "";
 
     function checkFeedAlarm() {
-
-        if (
-            !isFeedAlarmEnabled()
-        ) {
-
+        if (!isFeedAlarmEnabled()) {
             return;
-
         }
-
-
-        const now =
-            new Date();
-
-
-        const currentTime =
-            `${String(
-                now.getHours()
-            ).padStart(2, "0")}:${String(
-                now.getMinutes()
-            ).padStart(2, "0")}`;
-
 
         const schedule =
             getFeedSchedule();
 
+        const now = new Date();
 
-        if (
-            currentTime !==
-            schedule.morning &&
-            currentTime !==
-            schedule.afternoon
-        ) {
+        const currentHour =
+            String(
+                now.getHours()
+            ).padStart(2, "0");
 
+        const currentMinute =
+            String(
+                now.getMinutes()
+            ).padStart(2, "0");
+
+        const currentTime =
+            `${currentHour}:${currentMinute}`;
+
+        const matching =
+            [
+                schedule.morning,
+                schedule.afternoon
+            ].includes(
+                currentTime
+            );
+
+        if (!matching) {
             return;
-
         }
-
 
         const alarmKey =
-            `${getTodayKey()}-${currentTime}`;
+            `${todayKey()}-${currentTime}`;
 
-
-        if (
-            lastAlarmMinute ===
-            alarmKey
-        ) {
-
+        if (lastAlarmKey === alarmKey) {
             return;
-
         }
 
+        lastAlarmKey = alarmKey;
 
-        lastAlarmMinute =
-            alarmKey;
-
-
-        showFeedAlarmMessage();
-
-
-        sendFeedNotification(
-            "🐔 Feeding Time",
-            "It is time to feed your flock."
-        );
-
+        triggerFeedAlarm();
     }
 
+    function triggerFeedAlarm() {
+        try {
+            if (
+                "Notification" in window &&
+                Notification.permission ===
+                    "granted"
+            ) {
+                new Notification(
+                    "Poultry Manager",
+                    {
+                        body:
+                            "It is time to check the flock feed schedule."
+                    }
+                );
+            }
+        } catch (error) {
+            console.warn(
+                "Notification could not be displayed.",
+                error
+            );
+        }
 
-    function showFeedAlarmMessage() {
+        /*
+         * Also attempt the service-worker notification
+         * when available.
+         */
+        try {
+            if (
+                navigator.serviceWorker &&
+                navigator.serviceWorker.controller
+            ) {
+                navigator.serviceWorker.controller.postMessage({
+                    type: "FEED_ALARM"
+                });
+            }
+        } catch (_) {}
+    }
 
-        notify(
-            "🐔⏰ It’s feeding time!"
+    /* =======================================================
+       NOTIFICATIONS
+       ======================================================= */
+
+    function notificationsSupported() {
+        return (
+            "Notification" in window &&
+            "serviceWorker" in navigator
         );
+    }
 
-        const button =
-            $("feedAlarmButton");
+    async function enableNotifications() {
+        if (!notificationsSupported()) {
+            throw new Error(
+                "Notifications are not supported by this browser."
+            );
+        }
 
+        const permission =
+            await Notification.requestPermission();
 
-        if (button) {
-
-            button.classList.add(
-                "pm-alarm-active"
+        if (permission !== "granted") {
+            localStorage.setItem(
+                STORAGE.notifications,
+                "false"
             );
 
+            throw new Error(
+                "Notification permission was not granted."
+            );
+        }
 
-            setTimeout(
-                () => {
+        await registerServiceWorker();
 
-                    button.classList.remove(
-                        "pm-alarm-active"
+        try {
+            const registration =
+                await navigator.serviceWorker.ready;
+
+            let subscription =
+                await registration.pushManager.getSubscription();
+
+            if (!subscription) {
+                const keyResponse =
+                    await fetch(
+                        `${APP.backend}/vapid-public-key`
                     );
 
-                },
-                5000
-            );
+                if (!keyResponse.ok) {
+                    throw new Error(
+                        "Unable to get notification key."
+                    );
+                }
 
+                const keyData =
+                    await keyResponse.json();
+
+                const publicKey =
+                    keyData.publicKey ||
+                    keyData.key ||
+                    keyData.vapidPublicKey;
+
+                if (!publicKey) {
+                    throw new Error(
+                        "Notification public key unavailable."
+                    );
+                }
+
+                subscription =
+                    await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey:
+                            urlBase64ToUint8Array(
+                                publicKey
+                            )
+                    });
+            }
+
+            await fetch(
+                `${APP.backend}/subscribe`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+                    body: JSON.stringify(
+                        subscription
+                    )
+                }
+            );
+        } catch (error) {
+            console.warn(
+                "Push subscription setup failed.",
+                error
+            );
         }
 
+        localStorage.setItem(
+            STORAGE.notifications,
+            "true"
+        );
+
+        refreshSettings();
+
+        return true;
     }
-
-
-    /* =====================================================
-       22. PUSH NOTIFICATIONS
-       ===================================================== */
 
     function urlBase64ToUint8Array(
         base64String
     ) {
-
         const padding =
             "=".repeat(
-                (
-                    4 -
-                    (
-                        base64String.length %
-                        4
-                    )
-                ) % 4
+                (4 -
+                    (base64String.length %
+                        4)) %
+                    4
             );
-
 
         const base64 =
             (
                 base64String +
                 padding
             )
-                .replace(
-                    /-/g,
-                    "+"
-                )
-                .replace(
-                    /_/g,
-                    "/"
-                );
-
+                .replace(/-/g, "+")
+                .replace(/_/g, "/");
 
         const rawData =
-            window.atob(
-                base64
-            );
+            window.atob(base64);
 
-
-        const outputArray =
-            new Uint8Array(
-                rawData.length
-            );
-
-
-        for (
-            let index = 0;
-            index < rawData.length;
-            ++index
-        ) {
-
-            outputArray[index] =
-                rawData.charCodeAt(
-                    index
-                );
-
-        }
-
-
-        return outputArray;
-
+        return Uint8Array.from(
+            [...rawData].map(
+                character =>
+                    character.charCodeAt(0)
+            )
+        );
     }
 
+    async function sendTestNotification() {
+        try {
+            const response =
+                await fetch(
+                    `${APP.backend}/send-test`,
+                    {
+                        method: "POST"
+                    }
+                );
 
-    async function registerServiceWorker() {
+            if (!response.ok) {
+                throw new Error(
+                    "Test notification failed."
+                );
+            }
 
-        if (
-            !("serviceWorker" in
-                navigator)
-        ) {
-
-            console.warn(
-                "Service workers are not supported."
+            alert(
+                "Test notification sent."
+            );
+        } catch (error) {
+            alert(
+                "Could not send the test notification."
             );
 
-            return null;
+            console.error(error);
+        }
+    }
 
+    /* =======================================================
+       SERVICE WORKER
+       ======================================================= */
+
+    let serviceWorkerRegistration = null;
+
+    async function registerServiceWorker() {
+        if (
+            !("serviceWorker" in navigator)
+        ) {
+            return null;
         }
 
+        if (serviceWorkerRegistration) {
+            return serviceWorkerRegistration;
+        }
 
         try {
-
-            /*
-             * Relative registration is important because the
-             * app may live at:
-             *
-             * /poultry-manager/
-             *
-             * rather than at the domain root.
-             */
-
-            const swURL =
+            const swUrl =
                 new URL(
                     "sw.js",
                     window.location.href
                 );
 
+            serviceWorkerRegistration =
+                await navigator.serviceWorker.register(
+                    swUrl.href
+                );
 
-            const registration =
-                await navigator.serviceWorker
-                    .register(
-                        swURL.href
-                    );
-
-
-            console.log(
-                "Poultry Manager service worker registered:",
-                registration.scope
-            );
-
-
-            return registration;
-
+            return serviceWorkerRegistration;
         } catch (error) {
-
-            console.error(
-                "Service worker registration failed:",
-                error
-            );
-
-            return null;
-
-        }
-
-    }
-
-
-    async function getVapidPublicKey() {
-
-        const response =
-            await fetch(
-                APP.backend.base +
-                APP.backend.vapid
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Unable to retrieve notification key."
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        return (
-            data.publicKey ||
-            data.key ||
-            data.vapidPublicKey
-        );
-
-    }
-
-
-    async function enablePushNotifications() {
-
-        if (
-            !("Notification" in
-                window)
-        ) {
-
-            notify(
-                "This browser does not support notifications."
-            );
-
-            return false;
-
-        }
-
-
-        if (
-            !("serviceWorker" in
-                navigator)
-        ) {
-
-            notify(
-                "This browser does not support service workers."
-            );
-
-            return false;
-
-        }
-
-
-        try {
-
-            const permission =
-                await Notification.requestPermission();
-
-
-            if (
-                permission !==
-                "granted"
-            ) {
-
-                notify(
-                    "Notification permission was not granted."
-                );
-
-                return false;
-
-            }
-
-
-            const registration =
-                await registerServiceWorker();
-
-
-            if (!registration) {
-
-                return false;
-
-            }
-
-
-            const vapidKey =
-                await getVapidPublicKey();
-
-
-            if (!vapidKey) {
-
-                throw new Error(
-                    "VAPID public key was not returned."
-                );
-
-            }
-
-
-            let subscription =
-                await registration.pushManager
-                    .getSubscription();
-
-
-            if (!subscription) {
-
-                subscription =
-                    await registration.pushManager
-                        .subscribe({
-
-                            userVisibleOnly:
-                                true,
-
-                            applicationServerKey:
-                                urlBase64ToUint8Array(
-                                    vapidKey
-                                )
-
-                        });
-
-            }
-
-
-            const response =
-                await fetch(
-                    APP.backend.base +
-                    APP.backend.subscribe,
-                    {
-
-                        method:
-                            "POST",
-
-                        headers: {
-
-                            "Content-Type":
-                                "application/json"
-
-                        },
-
-                        body:
-                            JSON.stringify(
-                                subscription
-                            )
-
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    `Subscription failed: ${response.status}`
-                );
-
-            }
-
-
-            writeStorage(
-                APP.storage.notifications,
-                "true"
-            );
-
-
-            updateNotificationUI();
-
-
-            notify(
-                "Push notifications are enabled."
-            );
-
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Push notification setup failed:",
-                error
-            );
-
-
-            notify(
-                "Notification setup could not be completed."
-            );
-
-
-            return false;
-
-        }
-
-    }
-
-
-    function sendFeedNotification(
-        title,
-        body
-    ) {
-
-        /*
-         * The server handles scheduled push delivery.
-         *
-         * This local function intentionally does not try to
-         * manufacture browser notifications without permission.
-         */
-
-        if (
-            !("Notification" in
-                window)
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            Notification.permission !==
-            "granted"
-        ) {
-
-            return;
-
-        }
-
-
-        /*
-         * If the page is currently open, provide immediate
-         * feedback locally as well.
-         */
-
-        try {
-
-            new Notification(
-                title,
-                {
-                    body
-                }
-            );
-
-        } catch (error) {
-
             console.warn(
-                "Local notification unavailable:",
+                "Poultry Manager: service worker registration failed.",
                 error
             );
 
-        }
-
-    }
-
-
-    function updateNotificationUI() {
-
-        const toggle =
-            $("pmNotificationsToggle");
-
-
-        if (!toggle) {
-            return;
-        }
-
-
-        toggle.checked =
-            readStorage(
-                APP.storage.notifications,
-                "false"
-            ) === "true";
-
-    }
-
-
-    /* =====================================================
-       23. DASHBOARD DOM REFERENCES
-       ===================================================== */
-
-    function getDashboardElements() {
-
-        return {
-
-            farmFlock:
-                $("farmOverviewFlock"),
-
-            farmEggs:
-                $("farmOverviewEggs"),
-
-            farmRate:
-                $("farmOverviewLayingRate"),
-
-            farmFeed:
-                $("farmOverviewFeed"),
-
-            farmNextFeed:
-                $("farmOverviewNextFeed"),
-
-
-            eggCount:
-                $("eggCount"),
-
-            layingRate:
-                $("layingRate"),
-
-            eggHistory:
-                $("eggHistoryList"),
-
-
-            sevenDayEggs:
-                $("sevenDayEggs"),
-
-            averageLayingRate:
-                $("averageLayingRate"),
-
-            bestProductionDay:
-                $("bestProductionDay"),
-
-            bestProductionEggs:
-                $("bestProductionEggs"),
-
-
-            trendMaxLabel:
-                $("trendMaxLabel"),
-
-            trendMidLabel:
-                $("trendMidLabel"),
-
-            trendChart:
-                $("productionTrendChart"),
-
-
-            analyticsEggsPerHen:
-                $("analyticsEggsPerHen"),
-
-            analyticsAverage:
-                $("analyticsAverage"),
-
-            analyticsHighestDay:
-                $("analyticsHighestDay"),
-
-            analyticsHighestDayDate:
-                $("analyticsHighestDayDate"),
-
-            analyticsLowestDay:
-                $("analyticsLowestDay"),
-
-            analyticsLowestDayDate:
-                $("analyticsLowestDayDate"),
-
-            analyticsConsistency:
-                $("analyticsConsistency"),
-
-            analyticsChange:
-                $("analyticsChange"),
-
-            analyticsInsight:
-                $("analyticsInsight"),
-
-
-            feedAmount:
-                $("feedAmount"),
-
-            feedUsedToday:
-                $("feedUsedToday"),
-
-            feedDailyAverage:
-                $("feedDailyAverage"),
-
-            feedDaysRemaining:
-                $("feedDaysRemaining"),
-
-            feedDaysRemainingText:
-                $("feedDaysRemainingText"),
-
-            feedSevenDayUsage:
-                $("feedSevenDayUsage"),
-
-            feedUsageDays:
-                $("feedUsageDays"),
-
-            feedPerBird:
-                $("feedPerBird"),
-
-            feedChart:
-                $("feedConsumptionChart"),
-
-            feedHistory:
-                $("feedHistoryList"),
-
-
-            feedInput:
-                $("feedInput"),
-
-            useFeedInput:
-                $("useFeedInput"),
-
-            addFeedButton:
-                $("addFeedButton"),
-
-            useFeedButton:
-                $("useFeedButton"),
-
-            resetFeedTodayButton:
-                $("resetFeedTodayButton"),
-
-            viewFeedHistoryButton:
-                $("viewFeedHistoryButton"),
-
-
-            addEggButton:
-                $("addEggButton"),
-
-            removeEggButton:
-                $("removeEggButton"),
-
-            viewHistoryButton:
-                $("viewHistoryButton"),
-
-
-            feedAlarmButton:
-                $("feedAlarmButton")
-
-        };
-
-    }
-
-
-    /* =====================================================
-       24. FARM OVERVIEW
-       ===================================================== */
-
-    function updateFarmOverview() {
-
-        const elements =
-            getDashboardElements();
-
-
-        const flock =
-            getFlockCount();
-
-
-        const eggs =
-            getTodayEggs();
-
-
-        const rate =
-            getTodayLayingRate();
-
-
-        const feed =
-            getFeedAmount();
-
-
-        const next =
-            getNextFeedInfo();
-
-
-        if (
-            elements.farmFlock
-        ) {
-
-            elements.farmFlock.textContent =
-                String(
-                    Math.round(
-                        flock
-                    )
-                );
-
-        }
-
-
-        if (
-            elements.farmEggs
-        ) {
-
-            elements.farmEggs.textContent =
-                String(
-                    Math.round(
-                        eggs
-                    )
-                );
-
-        }
-
-
-        if (
-            elements.farmRate
-        ) {
-
-            elements.farmRate.textContent =
-                percentage(
-                    rate
-                );
-
-        }
-
-
-        if (
-            elements.farmFeed
-        ) {
-
-            elements.farmFeed.textContent =
-                formatKg(
-                    feed
-                );
-
-        }
-
-
-        if (
-            elements.farmNextFeed
-        ) {
-
-            if (next) {
-
-                elements.farmNextFeed.textContent =
-                    `${next.time} · ${formatCountdown(
-                        next.minutesUntil
-                    )}`;
-
-            } else {
-
-                elements.farmNextFeed.textContent =
-                    "Not scheduled";
-
-            }
-
-        }
-
-    }
-
-
-    /* =====================================================
-       25. EGG DISPLAY
-       ===================================================== */
-
-    let showAllEggHistory = false;
-
-
-    function updateEggProductionDisplay() {
-
-        const elements =
-            getDashboardElements();
-
-
-        const eggs =
-            getTodayEggs();
-
-
-        const rate =
-            getTodayLayingRate();
-
-
-        if (
-            elements.eggCount
-        ) {
-
-            elements.eggCount.textContent =
-                String(
-                    eggs
-                );
-
-        }
-
-
-        if (
-            elements.layingRate
-        ) {
-
-            elements.layingRate.textContent =
-                percentage(
-                    rate
-                );
-
-        }
-
-    }
-
-
-    function updateEggHistoryDisplay() {
-
-        const elements =
-            getDashboardElements();
-
-
-        const list =
-            elements.eggHistory;
-
-
-        if (!list) {
-            return;
-        }
-
-
-        const history =
-            getEggHistory();
-
-
-        const dates =
-            Object.keys(
-                history
-            )
-            .filter(
-                key =>
-                    /^\d{4}-\d{2}-\d{2}$/
-                        .test(key)
-            )
-            .sort(
-                (a, b) =>
-                    b.localeCompare(a)
-            );
-
-
-        const visible =
-            showAllEggHistory
-                ? dates
-                : dates.slice(
-                    0,
-                    APP.limits
-                        .eggHistoryVisible
-                );
-
-
-        if (
-            visible.length === 0
-        ) {
-
-            list.innerHTML = `
-                <div class="pm-empty-state">
-                    No egg production history yet.
-                </div>
-            `;
-
-            updateHistoryButton(
-                dates.length
-            );
-
-            return;
-
-        }
-
-
-        list.innerHTML =
-            visible.map(
-                date => {
-
-                    const record =
-                        normalizeEggRecord(
-                            history[date]
-                        );
-
-
-                    const flock =
-                        record.flock ||
-                        getFlockCount();
-
-
-                    const rate =
-                        flock > 0
-                            ? (
-                                record.eggs /
-                                flock
-                            ) * 100
-                            : 0;
-
-
-                    const label =
-                        isToday(date)
-                            ? "Today"
-                            : formatDate(
-                                date
-                            );
-
-
-                    return `
-                        <div class="egg-history-item">
-                            <div class="egg-history-date">
-                                ${escapeHTML(
-                                    label
-                                )}
-                            </div>
-
-                            <div class="egg-history-value">
-                                ${record.eggs}
-                                egg${record.eggs === 1 ? "" : "s"}
-                                •
-                                ${Math.round(
-                                    clampNumber(
-                                        rate,
-                                        0,
-                                        100
-                                    )
-                                )}%
-                            </div>
-                        </div>
-                    `;
-
-                }
-            )
-            .join("");
-
-
-        updateHistoryButton(
-            dates.length
-        );
-
-    }
-
-
-    function updateHistoryButton(
-        total
-    ) {
-
-        const button =
-            $("viewHistoryButton");
-
-
-        if (!button) {
-            return;
-        }
-
-
-        if (
-            total <=
-            APP.limits
-                .eggHistoryVisible
-        ) {
-
-            button.style.display =
-                "none";
-
-            return;
-
-        }
-
-
-        button.style.display =
-            "";
-
-
-        button.textContent =
-            showAllEggHistory
-                ? "Show Less"
-                : "View All History";
-
-    }
-
-
-    /* =====================================================
-       26. PRODUCTION SUMMARY DISPLAY
-       ===================================================== */
-
-    function updateProductionSummary() {
-
-        const elements =
-            getDashboardElements();
-
-
-        const stats =
-            getProductionStats(
-                7
-            );
-
-
-        if (
-            elements.sevenDayEggs
-        ) {
-
-            elements.sevenDayEggs.textContent =
-                String(
-                    stats.totalEggs
-                );
-
-        }
-
-
-        if (
-            elements.averageLayingRate
-        ) {
-
-            elements.averageLayingRate.textContent =
-                percentage(
-                    stats.averageRate
-                );
-
-        }
-
-
-        if (
-            elements.bestProductionDay
-        ) {
-
-            elements.bestProductionDay.textContent =
-                isToday(
-                    stats.best.date
-                )
-                    ? "Today"
-                    : formatDate(
-                        stats.best.date
-                    );
-
-        }
-
-
-        if (
-            elements.bestProductionEggs
-        ) {
-
-            elements.bestProductionEggs.textContent =
-                formatEggs(
-                    stats.best.eggs
-                );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       27. PRODUCTION TREND
-       ===================================================== */
-
-    function updateProductionTrend() {
-
-        const elements =
-            getDashboardElements();
-
-
-        const canvas =
-            elements.trendChart;
-
-
-        if (!canvas) {
-            return;
-        }
-
-
-        const stats =
-            getProductionStats(
-                7
-            );
-
-
-        const values =
-            stats.records.map(
-                item =>
-                    item.eggs
-            );
-
-
-        const maximum =
-            Math.max(
-                1,
-                ...values
-            );
-
-
-        const middle =
-            Math.round(
-                maximum / 2
-            );
-
-
-        if (
-            elements.trendMaxLabel
-        ) {
-
-            elements.trendMaxLabel.textContent =
-                String(
-                    maximum
-                );
-
-        }
-
-
-        if (
-            elements.trendMidLabel
-        ) {
-
-            elements.trendMidLabel.textContent =
-                String(
-                    middle
-                );
-
-        }
-
-
-        drawSimpleChart(
-            canvas,
-            stats.records,
-            "eggs"
-        );
-
-    }
-
-
-    /* =====================================================
-       28. PRODUCTION ANALYTICS
-       ===================================================== */
-
-    function updateProductionAnalytics() {
-
-        const elements =
-            getDashboardElements();
-
-
-        const stats =
-            getProductionStats(
-                7
-            );
-
-
-        const today =
-            stats.records[
-                stats.records.length - 1
-            ] || {
-                eggs: 0
-            };
-
-
-        const previous =
-            stats.records[
-                stats.records.length - 2
-            ] || {
-                eggs: 0
-            };
-
-
-        const change =
-            today.eggs -
-            previous.eggs;
-
-
-        const consistency =
-            calculateProductionConsistency(
-                stats.records
-            );
-
-
-        if (
-            elements.analyticsEggsPerHen
-        ) {
-
-            elements.analyticsEggsPerHen.textContent =
-                stats.eggsPerHen
-                    .toFixed(2);
-
-        }
-
-
-        if (
-            elements.analyticsAverage
-        ) {
-
-            elements.analyticsAverage.textContent =
-                `${stats.averageRate.toFixed(
-                    0
-                )}%`;
-
-        }
-
-
-        if (
-            elements.analyticsHighestDay
-        ) {
-
-            elements.analyticsHighestDay.textContent =
-                String(
-                    stats.best.eggs
-                );
-
-        }
-
-
-        if (
-            elements.analyticsHighestDayDate
-        ) {
-
-            elements.analyticsHighestDayDate.textContent =
-                isToday(
-                    stats.best.date
-                )
-                    ? "Today"
-                    : formatDate(
-                        stats.best.date
-                    );
-
-        }
-
-
-        if (
-            elements.analyticsLowestDay
-        ) {
-
-            elements.analyticsLowestDay.textContent =
-                String(
-                    stats.lowest.eggs
-                );
-
-        }
-
-
-        if (
-            elements.analyticsLowestDayDate
-        ) {
-
-            elements.analyticsLowestDayDate.textContent =
-                isToday(
-                    stats.lowest.date
-                )
-                    ? "Today"
-                    : formatDate(
-                        stats.lowest.date
-                    );
-
-        }
-
-
-        if (
-            elements.analyticsConsistency
-        ) {
-
-            elements.analyticsConsistency.textContent =
-                `${consistency}%`;
-
-        }
-
-
-        if (
-            elements.analyticsChange
-        ) {
-
-            const prefix =
-                change > 0
-                    ? "+"
-                    : "";
-
-            elements.analyticsChange.textContent =
-                `${prefix}${change}`;
-
-        }
-
-
-        if (
-            elements.analyticsInsight
-        ) {
-
-            const insight =
-                getProductionInsight();
-
-
-            elements.analyticsInsight.textContent =
-                insight.text;
-
-            elements.analyticsInsight.dataset.type =
-                insight.type;
-
-        }
-
-    }
-
-
-    function calculateProductionConsistency(
-        records
-    ) {
-
-        const values =
-            records
-                .map(
-                    record =>
-                        safeNumber(
-                            record.eggs
-                        )
-                );
-
-
-        if (
-            values.length < 2
-        ) {
-
-            return 100;
-
-        }
-
-
-        const average =
-            values.reduce(
-                (sum, value) =>
-                    sum + value,
-                0
-            ) /
-            values.length;
-
-
-        if (
-            average <= 0
-        ) {
-
-            return 0;
-
-        }
-
-
-        const variance =
-            values.reduce(
-                (sum, value) =>
-                    sum +
-                    Math.pow(
-                        value -
-                        average,
-                        2
-                    ),
-                0
-            ) /
-            values.length;
-
-
-        const standardDeviation =
-            Math.sqrt(
-                variance
-            );
-
-
-        const coefficient =
-            standardDeviation /
-            average;
-
-
-        return Math.round(
-            clampNumber(
-                100 -
-                (
-                    coefficient *
-                    100
-                ),
-                0,
-                100
-            )
-        );
-
-    }
-
-
-    /* =====================================================
-       29. CANVAS CHART ENGINE
-       ===================================================== */
-
-    function prepareCanvas(
-        canvas
-    ) {
-
-        if (
-            !canvas ||
-            !canvas.getContext
-        ) {
-
-            return null;
-
-        }
-
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-
-        const width =
-            Math.max(
-                260,
-                Math.round(
-                    rect.width ||
-                    canvas.clientWidth ||
-                    320
-                )
-            );
-
-
-        const height =
-            Math.max(
-                150,
-                Math.round(
-                    rect.height ||
-                    canvas.clientHeight ||
-                    200
-                )
-            );
-
-
-        const ratio =
-            window.devicePixelRatio ||
-            1;
-
-
-        canvas.width =
-            width * ratio;
-
-
-        canvas.height =
-            height * ratio;
-
-
-        const context =
-            canvas.getContext(
-                "2d"
-            );
-
-
-        if (!context) {
             return null;
         }
-
-
-        context.setTransform(
-            ratio,
-            0,
-            0,
-            ratio,
-            0,
-            0
-        );
-
-
-        return {
-
-            context,
-
-            width,
-
-            height
-
-        };
-
     }
 
-
-    function drawSimpleChart(
-        canvas,
-        records,
-        property
-    ) {
-
-        const prepared =
-            prepareCanvas(
-                canvas
-            );
-
-
-        if (!prepared) {
-            return;
-        }
-
-
-        const {
-            context,
-            width,
-            height
-        } =
-            prepared;
-
-
-        context.clearRect(
-            0,
-            0,
-            width,
-            height
-        );
-
-
-        const padding = {
-
-            top: 18,
-
-            right: 14,
-
-            bottom: 32,
-
-            left: 28
-
-        };
-
-
-        const chartWidth =
-            width -
-            padding.left -
-            padding.right;
-
-
-        const chartHeight =
-            height -
-            padding.top -
-            padding.bottom;
-
-
-        const values =
-            records.map(
-                record =>
-                    Math.max(
-                        0,
-                        safeNumber(
-                            record[
-                                property
-                            ]
-                        )
-                    )
-            );
-
-
-        const maxValue =
-            Math.max(
-                1,
-                ...values
-            );
-
-
-        /*
-         * Grid.
-         */
-
-        context.beginPath();
-
-        for (
-            let row = 0;
-            row <= 4;
-            row++
-        ) {
-
-            const y =
-                padding.top +
-                (
-                    chartHeight *
-                    row /
-                    4
-                );
-
-
-            context.moveTo(
-                padding.left,
-                y
-            );
-
-
-            context.lineTo(
-                width -
-                padding.right,
-                y
-            );
-
-        }
-
-
-        context.strokeStyle =
-            "rgba(128,128,128,0.20)";
-
-        context.lineWidth =
-            1;
-
-        context.stroke();
-
-
-        /*
-         * No data.
-         */
-
-        if (
-            values.every(
-                value =>
-                    value === 0
-            )
-        ) {
-
-            context.fillStyle =
-                "rgba(128,128,128,0.70)";
-
-            context.font =
-                "13px system-ui";
-
-            context.textAlign =
-                "center";
-
-            context.fillText(
-                "No production data yet",
-                width / 2,
-                height / 2
-            );
-
-            return;
-
-        }
-
-
-        const points =
-            values.map(
-                (value, index) => {
-
-                    const x =
-                        records.length <= 1
-                            ? padding.left +
-                                chartWidth / 2
-                            : padding.left +
-                                (
-                                    chartWidth *
-                                    index /
-                                    (
-                                        records.length -
-                                        1
-                                    )
-                                );
-
-
-                    const y =
-                        padding.top +
-                        chartHeight -
-                        (
-                            value /
-                            maxValue
-                        ) *
-                        chartHeight;
-
-
-                    return {
-
-                        x,
-
-                        y,
-
-                        value
-
-                    };
-
-                }
-            );
-
-
-        /*
-         * Area.
-         */
-
-        context.beginPath();
-
-        context.moveTo(
-            points[0].x,
-            padding.top +
-            chartHeight
-        );
-
-
-        points.forEach(
-            point => {
-
-                context.lineTo(
-                    point.x,
-                    point.y
-                );
-
-            }
-        );
-
-
-        context.lineTo(
-            points[
-                points.length - 1
-            ].x,
-            padding.top +
-            chartHeight
-        );
-
-
-        context.closePath();
-
-
-        context.fillStyle =
-            "rgba(100,100,100,0.08)";
-
-        context.fill();
-
-
-        /*
-         * Line.
-         */
-
-        context.beginPath();
-
-        points.forEach(
-            (point, index) => {
-
-                if (
-                    index === 0
-                ) {
-
-                    context.moveTo(
-                        point.x,
-                        point.y
-                    );
-
-                } else {
-
-                    context.lineTo(
-                        point.x,
-                        point.y
-                    );
-
-                }
-
-            }
-        );
-
-
-        context.strokeStyle =
-            "currentColor";
-
-        context.lineWidth =
-            2;
-
-        context.stroke();
-
-
-        /*
-         * Points and labels.
-         */
-
-        points.forEach(
-            (point, index) => {
-
-                context.beginPath();
-
-                context.arc(
-                    point.x,
-                    point.y,
-                    3,
-                    0,
-                    Math.PI * 2
-                );
-
-
-                context.fillStyle =
-                    "currentColor";
-
-                context.fill();
-
-
-                const record =
-                    records[index];
-
-
-                const label =
-                    isToday(
-                        record.date
-                    )
-                        ? "Today"
-                        : formatDate(
-                            record.date,
-                            {
-                                month: "short",
-                                day: "numeric"
-                            }
-                        );
-
-
-                context.font =
-                    "10px system-ui";
-
-                context.textAlign =
-                    "center";
-
-                context.fillStyle =
-                    "rgba(128,128,128,0.85)";
-
-
-                context.fillText(
-                    label,
-                    point.x,
-                    height - 10
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       30. FEED MANAGEMENT DISPLAY
-       ===================================================== */
-
-    function updateFeedDisplay() {
-
-        const elements =
-            getDashboardElements();
-
-
-        const feed =
-            getFeedAmount();
-
-
-        const usage =
-            getTodayFeedUsage();
-
-
-        const stats =
-            getFeedStats(
-                7
-            );
-
-
-        const status =
-            getFeedStatus();
-
-
-        if (
-            elements.feedAmount
-        ) {
-
-            elements.feedAmount.textContent =
-                formatKg(
-                    feed
-                );
-
-        }
-
-
-        if (
-            elements.feedUsedToday
-        ) {
-
-            elements.feedUsedToday.textContent =
-                formatKg(
-                    usage
-                );
-
-        }
-
-
-        if (
-            elements.feedDailyAverage
-        ) {
-
-            elements.feedDailyAverage.textContent =
-                formatKg(
-                    stats.averageUsage
-                );
-
-        }
-
-
-        if (
-            elements.feedDaysRemaining
-        ) {
-
-            elements.feedDaysRemaining.textContent =
-                status.daysRemaining > 0
-                    ? status.daysRemaining
-                        .toFixed(1)
-                    : "0";
-
-        }
-
-
-        if (
-            elements.feedDaysRemainingText
-        ) {
-
-            if (
-                status.stock <= 0
-            ) {
-
-                elements.feedDaysRemainingText.textContent =
-                    "Out of feed";
-
-            } else if (
-                status.daysRemaining <= 2
-            ) {
-
-                elements.feedDaysRemainingText.textContent =
-                    "Feed is critically low";
-
-            } else if (
-                status.daysRemaining <= 5
-            ) {
-
-                elements.feedDaysRemainingText.textContent =
-                    "Feed is running low";
-
-            } else {
-
-                elements.feedDaysRemainingText.textContent =
-                    "Stock level is healthy";
-
-            }
-
-        }
-
-
-        if (
-            elements.feedSevenDayUsage
-        ) {
-
-            elements.feedSevenDayUsage.textContent =
-                formatKg(
-                    stats.totalUsage
-                );
-
-        }
-
-
-        if (
-            elements.feedUsageDays
-        ) {
-
-            elements.feedUsageDays.textContent =
-                String(
-                    stats.usageDays
-                );
-
-        }
-
-
-        if (
-            elements.feedPerBird
-        ) {
-
-            elements.feedPerBird.textContent =
-                `${stats.feedPerBird.toFixed(
-                    3
-                )} kg`;
-
-        }
-
-
-        updateFeedStatusClasses(
-            status
-        );
-
-
-        updateFeedChart();
-
-        updateFeedHistory();
-
-    }
-
-
-    function updateFeedStatusClasses(
-        status
-    ) {
-
-        const targets =
-            $all(
-                ".feed-status, .feed-stock-status"
-            );
-
-
-        targets.forEach(
-            element => {
-
-                element.dataset.status =
-                    status.status;
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       31. FEED CHART
-       ===================================================== */
-
-    function updateFeedChart() {
-
-        const canvas =
-            $("feedConsumptionChart");
-
-
-        if (!canvas) {
-            return;
-        }
-
-
-        const stats =
-            getFeedStats(
-                7
-            );
-
-
-        drawSimpleChart(
-            canvas,
-            stats.records,
-            "usage"
-        );
-
-    }
-
-
-    /* =====================================================
-       32. FEED HISTORY
-       ===================================================== */
-
-    let showAllFeedHistory = false;
-
-
-    function updateFeedHistory() {
-
-        const list =
-            $("feedHistoryList");
-
-
-        if (!list) {
-            return;
-        }
-
-
-        const history =
-            getFeedUsageHistory();
-
-
-        const dates =
-            Object.keys(
-                history
-            )
-            .filter(
-                key =>
-                    /^\d{4}-\d{2}-\d{2}$/
-                        .test(key)
-            )
-            .sort(
-                (a, b) =>
-                    b.localeCompare(a)
-            );
-
-
-        const visible =
-            showAllFeedHistory
-                ? dates
-                : dates.slice(
-                    0,
-                    7
-                );
-
-
-        if (
-            visible.length === 0
-        ) {
-
-            list.innerHTML = `
-                <div class="pm-empty-state">
-                    No feed usage recorded yet.
-                </div>
-            `;
-
-        } else {
-
-            list.innerHTML =
-                visible.map(
-                    date => {
-
-                        const usage =
-                            history[
-                                date
-                            ] || 0;
-
-
-                        const label =
-                            isToday(date)
-                                ? "Today"
-                                : formatDate(
-                                    date
-                                );
-
-
-                        return `
-                            <div class="feed-history-item">
-                                <div class="feed-history-date">
-                                    ${escapeHTML(
-                                        label
-                                    )}
-                                </div>
-
-                                <div class="feed-history-value">
-                                    ${usage.toFixed(
-                                        1
-                                    )} kg
-                                </div>
-                            </div>
-                        `;
-
-                    }
-                )
-                .join("");
-
-        }
-
-
-        const button =
-            $("viewFeedHistoryButton");
-
-
-        if (
-            button
-        ) {
-
-            if (
-                dates.length <= 7
-            ) {
-
-                button.style.display =
-                    "none";
-
-            } else {
-
-                button.style.display =
-                    "";
-
-                button.textContent =
-                    showAllFeedHistory
-                        ? "Show Less"
-                        : "View All Feed History";
-
-            }
-
-        }
-
-    }
-
-
-    /* =====================================================
-       33. COMPLETE PRODUCTION REFRESH
-       ===================================================== */
-
-    function refreshProduction() {
-
-        updateEggProductionDisplay();
-
-        updateEggHistoryDisplay();
-
-        updateProductionSummary();
-
-        updateProductionTrend();
-
-        updateProductionAnalytics();
-
-        updateFarmOverview();
-
-        updateQuickActionState();
-
-    }
-
-
-    /* =====================================================
-       34. COMPLETE FEED REFRESH
-       ===================================================== */
-
-    function refreshFeed() {
-
-        updateFeedDisplay();
-
-        updateFarmOverview();
-
-        updateNextFeed();
-
-        updateQuickActionState();
-
-    }
-
-
-    /* =====================================================
-       35. NEXT FEED UI
-       ===================================================== */
-
-    function updateNextFeed() {
-
-        const info =
-            getNextFeedInfo();
-
-
-        const elements =
-            getDashboardElements();
-
-
-        if (
-            elements.farmNextFeed
-        ) {
-
-            if (info) {
-
-                elements.farmNextFeed.textContent =
-                    `${info.time} · ${formatCountdown(
-                        info.minutesUntil
-                    )}`;
-
-            } else {
-
-                elements.farmNextFeed.textContent =
-                    "Not scheduled";
-
-            }
-
-        }
-
-
-        const dashboardNext =
-            $("nextFeedDisplay");
-
-
-        if (
-            dashboardNext
-        ) {
-
-            if (info) {
-
-                dashboardNext.textContent =
-                    `${info.time} · ${formatCountdown(
-                        info.minutesUntil
-                    )}`;
-
-            } else {
-
-                dashboardNext.textContent =
-                    "Not scheduled";
-
-            }
-
-        }
-
-    }
-
-
-    /* =====================================================
-       36. QUICK ACTIONS
-       ===================================================== */
-
-    function initializeQuickActions() {
-
-        const addEgg =
-            $("quickAddEggs");
-
-
-        const feed =
-            $("quickFeed");
-
-
-        const history =
-            $("quickHistory");
-
-
-        if (
-            addEgg
-        ) {
-
-            addEgg.addEventListener(
-                "click",
-                () => {
-
-                    addEggs(1);
-
-                    const eggSection =
-                        $("eggCount");
-
-                    scrollToElement(
-                        eggSection
-                            ?.closest(
-                                ".section"
-                            ) ||
-                        eggSection
-                    );
-
-                }
-            );
-
-        }
-
-
-        if (
-            feed
-        ) {
-
-            feed.addEventListener(
-                "click",
-                () => {
-
-                    const feedInput =
-                        $("feedInput");
-
-
-                    const feedSection =
-                        feedInput
-                            ?.closest(
-                                ".section"
-                            ) ||
-                        feedInput;
-
-
-                    scrollToElement(
-                        feedSection
-                    );
-
-
-                    setTimeout(
-                        () => {
-
-                            if (
-                                feedInput
-                            ) {
-
-                                feedInput.focus();
-
-                            }
-
-                        },
-                        450
-                    );
-
-                }
-            );
-
-        }
-
-
-        if (
-            history
-        ) {
-
-            history.addEventListener(
-                "click",
-                () => {
-
-                    const historyList =
-                        $("eggHistoryList");
-
-
-                    const section =
-                        historyList
-                            ?.closest(
-                                ".section"
-                            ) ||
-                        historyList;
-
-
-                    scrollToElement(
-                        section
-                    );
-
-                }
-            );
-
-        }
-
-    }
-
-
-    function updateQuickActionState() {
-
-        const button =
-            $("quickAddEggs");
-
-
-        if (!button) {
-            return;
-        }
-
-
-        const flock =
-            getFlockCount();
-
-
-        if (
-            flock <= 0
-        ) {
-
-            button.dataset.disabled =
-                "true";
-
-            button.title =
-                "Set your flock size first.";
-
-        } else {
-
-            button.dataset.disabled =
-                "false";
-
-            button.title =
-                "Record one egg.";
-
-        }
-
-    }
-
-
-    /* =====================================================
-       37. EGG BUTTON EVENTS
-       ===================================================== */
-
-    function initializeEggControls() {
-
-        const elements =
-            getDashboardElements();
-
-
-        if (
-            elements.addEggButton
-        ) {
-
-            elements.addEggButton.addEventListener(
-                "click",
-                () => {
-
-                    addEggs(1);
-
-                }
-            );
-
-        }
-
-
-        if (
-            elements.removeEggButton
-        ) {
-
-            elements.removeEggButton.addEventListener(
-                "click",
-                () => {
-
-                    removeEggs(1);
-
-                }
-            );
-
-        }
-
-
-        if (
-            elements.viewHistoryButton
-        ) {
-
-            elements.viewHistoryButton.addEventListener(
-                "click",
-                () => {
-
-                    showAllEggHistory =
-                        !showAllEggHistory;
-
-
-                    updateEggHistoryDisplay();
-
-                }
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       38. FEED BUTTON EVENTS
-       ===================================================== */
-
-    function initializeFeedControls() {
-
-        const elements =
-            getDashboardElements();
-
-
-        if (
-            elements.addFeedButton
-        ) {
-
-            elements.addFeedButton.addEventListener(
-                "click",
-                () => {
-
-                    const input =
-                        elements.feedInput;
-
-
-                    const amount =
-                        safeNumber(
-                            input?.value
-                        );
-
-
-                    addFeed(
-                        amount
-                    );
-
-
-                    if (input) {
-                        input.value = "";
-                    }
-
-                }
-            );
-
-        }
-
-
-        if (
-            elements.useFeedButton
-        ) {
-
-            elements.useFeedButton.addEventListener(
-                "click",
-                () => {
-
-                    const input =
-                        elements.useFeedInput;
-
-
-                    const amount =
-                        safeNumber(
-                            input?.value
-                        );
-
-
-                    recordFeedUsage(
-                        amount
-                    );
-
-                }
-            );
-
-        }
-
-
-        if (
-            elements.resetFeedTodayButton
-        ) {
-
-            elements.resetFeedTodayButton.addEventListener(
-                "click",
-                resetTodayFeedUsage
-            );
-
-        }
-
-
-        if (
-            elements.viewFeedHistoryButton
-        ) {
-
-            elements.viewFeedHistoryButton.addEventListener(
-                "click",
-                () => {
-
-                    showAllFeedHistory =
-                        !showAllFeedHistory;
-
-
-                    updateFeedHistory();
-
-                }
-            );
-
-        }
-
-
-        /*
-         * Enter key shortcuts.
-         */
-
-        if (
-            elements.feedInput
-        ) {
-
-            elements.feedInput.addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
-
-                        event.preventDefault();
-
-                        elements.addFeedButton
-                            ?.click();
-
-                    }
-
-                }
-            );
-
-        }
-
-
-        if (
-            elements.useFeedInput
-        ) {
-
-            elements.useFeedInput.addEventListener(
-                "keydown",
-                event => {
-
-                    if (
-                        event.key ===
-                        "Enter"
-                    ) {
-
-                        event.preventDefault();
-
-                        elements.useFeedButton
-                            ?.click();
-
-                    }
-
-                }
-            );
-
-        }
-
-    }
-
-
-    function resetTodayFeedUsage() {
-
-        resetTodayFeedUsageInternal();
-
-    }
-
-
-    function resetTodayFeedUsageInternal() {
-
-        const today =
-            getTodayKey();
-
-
-        const usage =
-            getTodayFeedUsage();
-
-
-        if (
-            usage <= 0
-        ) {
-
-            notify(
-                "Today's feed usage is already 0.0 kg."
-            );
-
-            return;
-
-        }
-
-
-        const confirmed =
-            confirmAction(
-                `Reset today's feed usage?\n\nCurrent usage: ${usage.toFixed(
-                    1
-                )} kg\n\nThe amount will be returned to your current feed stock.`
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        saveFeedUsageForDate(
-            today,
-            0
-        );
-
-
-        saveFeedAmount(
-            getFeedAmount() +
-            usage
-        );
-
-
-        clearFeedAdditionHistory();
-
-
-        refreshFeed();
-
-
-        notify(
-            "Today's feed usage has been reset."
-        );
-
-    }
-
-
-    /* =====================================================
-       39. DYNAMIC FEED MANAGEMENT ACTIONS
-       ===================================================== */
-
-    function ensureFeedActionButtons() {
-
-        const feedInput =
-            $("feedInput");
-
-
-        if (!feedInput) {
-            return;
-        }
-
-
-        const container =
-            feedInput.parentElement;
-
-
-        if (!container) {
-            return;
-        }
-
-
-        if (
-            !document.getElementById(
-                "undoFeedAdditionButton"
-            )
-        ) {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-
-            button.id =
-                "undoFeedAdditionButton";
-
-
-            button.className =
-                "feed-reset-button";
-
-
-            button.textContent =
-                "Undo Last Addition";
-
-
-            button.addEventListener(
-                "click",
-                undoLastFeedAddition
-            );
-
-
-            container.appendChild(
-                button
-            );
-
-        }
-
-
-        if (
-            !document.getElementById(
-                "resetFeedStockButton"
-            )
-        ) {
-
-            const button =
-                document.createElement(
-                    "button"
-                );
-
-
-            button.type =
-                "button";
-
-
-            button.id =
-                "resetFeedStockButton";
-
-
-            button.className =
-                "feed-reset-button";
-
-
-            button.textContent =
-                "Reset Feed Stock";
-
-
-            button.addEventListener(
-                "click",
-                resetFeedStock
-            );
-
-
-            container.appendChild(
-                button
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       40. SETTINGS SYSTEM
-       ===================================================== */
-
-    function createSettingsView() {
-
-        let settingsView =
-            $("pmSettingsView");
-
-
-        if (
-            settingsView
-        ) {
-
-            return settingsView;
-
-        }
-
-
-        settingsView =
-            document.createElement(
-                "main"
-            );
-
-
-        settingsView.id =
-            "pmSettingsView";
-
-
-        settingsView.className =
-            "pm-settings-view";
-
-
-        settingsView.innerHTML = `
-
-            <section class="section pm-settings-section">
-
-                <div class="pm-settings-header">
-
-                    <div>
-
-                        <span class="pm-settings-eyebrow">
-                            FARM CONTROL
-                        </span>
-
-                        <h2>
-                            Settings
-                        </h2>
-
-                        <p>
-                            Manage your flock, feeding,
-                            alarms, notifications and
-                            app preferences.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-card">
-
-                    <div class="pm-settings-card-header">
-
-                        <div>
-
-                            <h3>
-                                Flock Settings
-                            </h3>
-
-                            <p>
-                                Set the number of birds
-                                currently in your flock.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="pm-settings-control-row">
-
-                        <label
-                            for="pmSettingsFlockInput"
-                        >
-                            Flock Size
-                        </label>
-
-                        <input
-                            id="pmSettingsFlockInput"
-                            class="pm-settings-input"
-                            type="number"
-                            min="0"
-                            max="100000"
-                            step="1"
-                            inputmode="numeric"
-                        >
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        id="pmSaveFlockButton"
-                        class="pm-settings-primary-button"
-                    >
-                        Save Flock Settings
-                    </button>
-
-                </div>
-
-
-                <div class="pm-settings-card">
-
-                    <div class="pm-settings-card-header">
-
-                        <div>
-
-                            <h3>
-                                Feeding Schedule
-                            </h3>
-
-                            <p>
-                                Set your regular morning
-                                and afternoon feeding times.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="pm-settings-control-row">
-
-                        <label
-                            for="pmMorningFeedInput"
-                        >
-                            Morning Feeding
-                        </label>
-
-                        <input
-                            id="pmMorningFeedInput"
-                            class="pm-settings-input"
-                            type="time"
-                        >
-
-                    </div>
-
-
-                    <div class="pm-settings-control-row">
-
-                        <label
-                            for="pmAfternoonFeedInput"
-                        >
-                            Afternoon Feeding
-                        </label>
-
-                        <input
-                            id="pmAfternoonFeedInput"
-                            class="pm-settings-input"
-                            type="time"
-                        >
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        id="pmSaveScheduleButton"
-                        class="pm-settings-primary-button"
-                    >
-                        Save Feeding Schedule
-                    </button>
-
-                </div>
-
-
-                <div class="pm-settings-card">
-
-                    <div class="pm-settings-card-header">
-
-                        <div>
-
-                            <h3>
-                                Feed Alarm
-                            </h3>
-
-                            <p>
-                                Get an alert when it is time
-                                for your scheduled feeding.
-                            </p>
-
-                        </div>
-
-                        <label class="pm-toggle">
-
-                            <input
-                                id="pmAlarmToggle"
-                                type="checkbox"
-                            >
-
-                            <span class="pm-toggle-slider"></span>
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-card">
-
-                    <div class="pm-settings-card-header">
-
-                        <div>
-
-                            <h3>
-                                Notifications
-                            </h3>
-
-                            <p>
-                                Enable push notifications
-                                for feeding reminders.
-                            </p>
-
-                        </div>
-
-                        <label class="pm-toggle">
-
-                            <input
-                                id="pmNotificationsToggle"
-                                type="checkbox"
-                            >
-
-                            <span class="pm-toggle-slider"></span>
-
-                        </label>
-
-                    </div>
-
-
-                    <button
-                        type="button"
-                        id="pmEnableNotificationsButton"
-                        class="pm-settings-primary-button"
-                    >
-                        Enable Notifications
-                    </button>
-
-                </div>
-
-
-                <div class="pm-settings-card">
-
-                    <div class="pm-settings-card-header">
-
-                        <div>
-
-                            <h3>
-                                App Preferences
-                            </h3>
-
-                            <p>
-                                Customize how Poultry Manager
-                                looks and behaves.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="pm-settings-control-row">
-
-                        <label
-                            for="pmThemeSelect"
-                        >
-                            Theme
-                        </label>
-
-                        <select
-                            id="pmThemeSelect"
-                            class="pm-settings-input"
-                        >
-
-                            <option value="light">
-                                Light
-                            </option>
-
-                            <option value="dark">
-                                Dark
-                            </option>
-
-                        </select>
-
-                    </div>
-
-
-                    <div class="pm-settings-control-row">
-
-                        <div>
-
-                            <strong>
-                                Automatic Backup
-                            </strong>
-
-                            <p>
-                                Keep a local safety copy
-                                of your app data.
-                            </p>
-
-                        </div>
-
-                        <label class="pm-toggle">
-
-                            <input
-                                id="pmAutomaticBackupToggle"
-                                type="checkbox"
-                            >
-
-                            <span class="pm-toggle-slider"></span>
-
-                        </label>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-card">
-
-                    <div class="pm-settings-card-header">
-
-                        <div>
-
-                            <h3>
-                                Data Backup
-                            </h3>
-
-                            <p>
-                                Export your farm data or
-                                restore a previous backup.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="pm-settings-actions">
-
-                        <button
-                            type="button"
-                            id="pmExportBackupButton"
-                            class="pm-settings-primary-button"
-                        >
-                            Export Backup
-                        </button>
-
-                        <button
-                            type="button"
-                            id="pmImportBackupButton"
-                            class="pm-settings-secondary-button"
-                        >
-                            Restore Backup
-                        </button>
-
-                        <input
-                            id="pmBackupFileInput"
-                            type="file"
-                            accept="application/json,.json"
-                            hidden
-                        >
-
-                    </div>
-
-
-                    <div
-                        id="pmBackupStatus"
-                        class="pm-backup-status"
-                    ></div>
-
-                </div>
-
-
-                <div class="pm-settings-card">
-
-                    <div class="pm-settings-card-header">
-
-                        <div>
-
-                            <h3>
-                                About Poultry Manager
-                            </h3>
-
-                            <p>
-                                A farm management dashboard
-                                designed for practical daily
-                                poultry operations.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="pm-about-details">
-
-                        <div>
-                            <span>
-                                Application
-                            </span>
-
-                            <strong>
-                                Poultry Manager
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>
-                                Version
-                            </span>
-
-                            <strong>
-                                ${escapeHTML(
-                                    APP.version
-                                )}
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>
-                                Storage
-                            </span>
-
-                            <strong>
-                                Local + Cloud Services
-                            </strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        `;
-
-
-        const dashboard =
-            $("pmDashboardView");
-
-
-        if (
-            dashboard
-        ) {
-
-            dashboard.insertAdjacentElement(
-                "afterend",
-                settingsView
-            );
-
-        } else {
-
-            document.body.appendChild(
-                settingsView
-            );
-
-        }
-
-
-        return settingsView;
-
-    }
-
-
-    /* =====================================================
-       41. APP NAVIGATION
-       ===================================================== */
-
-    function createNavigation() {
-
-        let navigation =
-            $("pmAppNavigation");
-
-
-        if (
-            navigation
-        ) {
-
-            return navigation;
-
-        }
-
-
-        const header =
-            document.querySelector(
-                ".app-header"
-            );
-
-
-        if (!header) {
-
-            return null;
-
-        }
-
-
-        navigation =
-            document.createElement(
-                "nav"
-            );
-
-
-        navigation.id =
-            "pmAppNavigation";
-
-
-        navigation.className =
-            "pm-app-navigation";
-
-
-        navigation.innerHTML = `
-
-            <button
-                type="button"
-                id="pmDashboardButton"
-                class="pm-nav-button active"
-            >
-                Dashboard
-            </button>
-
-            <button
-                type="button"
-                id="pmSettingsButton"
-                class="pm-nav-button"
-            >
-                Settings
-            </button>
-
-        `;
-
-
-        header.appendChild(
-            navigation
-        );
-
-
-        return navigation;
-
-    }
-
-
-    function getNavigationButtons() {
-
-        return {
-
-            dashboard:
-                $("pmDashboardButton"),
-
-            settings:
-                $("pmSettingsButton")
-
-        };
-
-    }
-
-
-    function setDashboardVisible(
-        visible
-    ) {
-
-        const dashboard =
-            $("pmDashboardView");
-
-
-        if (!dashboard) {
-            return;
-        }
-
-
-        dashboard.style.display =
-            visible
-                ? ""
-                : "none";
-
-    }
-
-
-    function setSettingsVisible(
-        visible
-    ) {
-
-        const settings =
-            $("pmSettingsView");
-
-
-        if (!settings) {
-            return;
-        }
-
-
-        settings.style.display =
-            visible
-                ? ""
-                : "none";
-
-
-        if (visible) {
-
-            settings.classList.add(
-                "active"
-            );
-
-        } else {
-
-            settings.classList.remove(
-                "active"
-            );
-
-        }
-
-    }
-
-
-    function showDashboard() {
-
-        const buttons =
-            getNavigationButtons();
-
-
-        setDashboardVisible(
-            true
-        );
-
-
-        setSettingsVisible(
-            false
-        );
-
-
-        buttons.dashboard
-            ?.classList
-            .add(
-                "active"
-            );
-
-
-        buttons.settings
-            ?.classList
-            .remove(
-                "active"
-            );
-
-
-        writeStorage(
-            APP.storage.lastView,
-            "dashboard"
-        );
-
-
-        refreshAll();
-
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    }
-
-
-    function showSettings() {
-
-        const buttons =
-            getNavigationButtons();
-
-
-        setDashboardVisible(
-            false
-        );
-
-
-        setSettingsVisible(
-            true
-        );
-
-
-        buttons.dashboard
-            ?.classList
-            .remove(
-                "active"
-            );
-
-
-        buttons.settings
-            ?.classList
-            .add(
-                "active"
-            );
-
-
-        writeStorage(
-            APP.storage.lastView,
-            "settings"
-        );
-
-
-        refreshSettings();
-
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    }
-
-
-    function initializeNavigation() {
-
-        createNavigation();
-
-        createSettingsView();
-
-
-        const buttons =
-            getNavigationButtons();
-
-
-        buttons.dashboard
-            ?.addEventListener(
-                "click",
-                showDashboard
-            );
-
-
-        buttons.settings
-            ?.addEventListener(
-                "click",
-                showSettings
-            );
-
-
-        const savedView =
-            readStorage(
-                APP.storage.lastView,
-                APP.defaults.view
-            );
-
-
-        if (
-            savedView ===
-            "settings"
-        ) {
-
-            showSettings();
-
-        } else {
-
-            showDashboard();
-
-        }
-
-    }
-
-
-    /* =====================================================
-       42. SETTINGS REFRESH
-       ===================================================== */
-
-    function refreshSettings() {
-
-        const flockInput =
-            $("pmSettingsFlockInput");
-
-
-        if (
-            flockInput
-        ) {
-
-            flockInput.value =
-                String(
-                    Math.round(
-                        getFlockCount()
-                    )
-                );
-
-        }
-
-
-        const schedule =
-            getFeedSchedule();
-
-
-        const morning =
-            $("pmMorningFeedInput");
-
-
-        const afternoon =
-            $("pmAfternoonFeedInput");
-
-
-        if (morning) {
-
-            morning.value =
-                schedule.morning;
-
-        }
-
-
-        if (afternoon) {
-
-            afternoon.value =
-                schedule.afternoon;
-
-        }
-
-
-        const themeSelect =
-            $("pmThemeSelect");
-
-
-        if (themeSelect) {
-
-            themeSelect.value =
-                getTheme();
-
-        }
-
-
-        const backupToggle =
-            $("pmAutomaticBackupToggle");
-
-
-        if (backupToggle) {
-
-            backupToggle.checked =
-                isAutomaticBackupEnabled();
-
-        }
-
-
-        updateAlarmUI();
-
-        updateNotificationUI();
-
-        updateBackupStatus();
-
-    }
-
-
-    /* =====================================================
-       43. FLOCK SETTINGS
-       ===================================================== */
-
-    function saveFlockSettings() {
-
-        const input =
-            $("pmSettingsFlockInput");
-
-
-        if (!input) {
-            return;
-        }
-
-
-        const value =
-            safeNumber(
-                input.value
-            );
-
-
-        if (
-            value < 0
-        ) {
-
-            notify(
-                "Flock size cannot be negative."
-            );
-
-            return;
-
-        }
-
-
-        const flock =
-            saveFlockCount(
-                value
-            );
-
-
-        /*
-         * Update today's egg record so the laying rate uses
-         * the current flock size.
-         */
-
-        const today =
-            getTodayKey();
-
-
-        const history =
-            getEggHistory();
-
-
-        if (
-            history[today]
-        ) {
-
-            history[today] = {
-
-                eggs:
-                    getTodayEggs(),
-
-                flock
-
-            };
-
-
-            saveEggHistory(
-                history
-            );
-
-        }
-
-
-        refreshAll();
-
-
-        notify(
-            `Flock size saved: ${flock} bird${flock === 1 ? "" : "s"}.`
-        );
-
-    }
-
-
-    /* =====================================================
-       44. SCHEDULE SETTINGS
-       ===================================================== */
-
-    function saveScheduleSettings() {
-
-        const morning =
-            $("pmMorningFeedInput")
-                ?.value;
-
-
-        const afternoon =
-            $("pmAfternoonFeedInput")
-                ?.value;
-
-
-        if (
-            !isValidTime(
-                morning
-            ) ||
-            !isValidTime(
-                afternoon
-            )
-        ) {
-
-            notify(
-                "Please select both feeding times."
-            );
-
-            return;
-
-        }
-
-
-        saveFeedSchedule(
-            morning,
-            afternoon,
-            true
-        );
-
-
-        notify(
-            "Feeding schedule saved."
-        );
-
-
-        refreshAll();
-
-    }
-
-
-    /* =====================================================
-       45. THEME SYSTEM
-       ===================================================== */
+    /* =======================================================
+       THEME
+       ======================================================= */
 
     function getTheme() {
-
         const saved =
-            readStorage(
-                APP.storage.theme,
-                APP.defaults.theme
+            localStorage.getItem(
+                STORAGE.theme
             );
 
+        if (
+            saved === "dark" ||
+            saved === "light"
+        ) {
+            return saved;
+        }
 
-        return saved === "dark"
-            ? "dark"
-            : "light";
-
+        return APP.defaults.theme;
     }
 
-
-    function applyTheme(
-        theme
-    ) {
-
-        const safeTheme =
+    function applyTheme(theme) {
+        const validTheme =
             theme === "dark"
                 ? "dark"
                 : "light";
 
-
         document.documentElement
             .setAttribute(
                 "data-theme",
-                safeTheme
+                validTheme
             );
 
-
-        writeStorage(
-            APP.storage.theme,
-            safeTheme
+        localStorage.setItem(
+            STORAGE.theme,
+            validTheme
         );
 
+        updateThemeControls(
+            validTheme
+        );
+    }
 
+    function updateThemeControls(
+        theme
+    ) {
         const select =
-            $("pmThemeSelect");
-
+            $("#pmThemeSelect");
 
         if (select) {
-
-            select.value =
-                safeTheme;
-
+            select.value = theme;
         }
 
+        const toggle =
+            $("#pmSettingsThemeToggle");
+
+        if (toggle) {
+            toggle.checked =
+                theme === "dark";
+        }
     }
 
+    /* =======================================================
+       SETTINGS VIEW
+       ======================================================= */
 
-    /* =====================================================
-       46. AUTOMATIC BACKUP
-       ===================================================== */
+    let settingsView = null;
 
-    let automaticBackupTimer =
-        null;
+    function ensureSettingsView() {
+        settingsView =
+            $("#pmSettingsView");
 
+        if (!settingsView) {
+            settingsView =
+                document.createElement("section");
 
-    function isAutomaticBackupEnabled() {
+            settingsView.id =
+                "pmSettingsView";
 
-        const stored =
-            readStorage(
-                APP.storage.automaticBackup,
-                null
-            );
+            settingsView.className =
+                "pm-settings-view";
 
+            settingsView.style.display =
+                "none";
 
-        if (
-            stored === null
-        ) {
+            const dashboard =
+                $("#pmDashboardView");
 
-            return APP.defaults
-                .automaticBackup;
-
+            if (dashboard) {
+                dashboard.insertAdjacentElement(
+                    "afterend",
+                    settingsView
+                );
+            } else {
+                document.body.appendChild(
+                    settingsView
+                );
+            }
         }
 
+        return settingsView;
+    }
 
-        return stored ===
+    function buildSettingsView() {
+        const view =
+            ensureSettingsView();
+
+        if (
+            view.dataset.built === "true"
+        ) {
+            return;
+        }
+
+        view.innerHTML = `
+            <div class="pm-settings-shell">
+
+                <div class="pm-settings-header">
+                    <div>
+                        <span class="pm-eyebrow">
+                            FARM SETTINGS
+                        </span>
+
+                        <h1>
+                            Settings
+                        </h1>
+
+                        <p>
+                            Configure your flock, feeding schedule,
+                            notifications, appearance and backups.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pm-settings-grid">
+
+                    <!-- FLOCK -->
+
+                    <section class="pm-settings-card">
+                        <div class="pm-settings-card-header">
+                            <div class="pm-settings-icon">
+                                🐔
+                            </div>
+
+                            <div>
+                                <h2>Flock</h2>
+                                <p>
+                                    Keep your active flock count accurate.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pm-settings-field">
+                            <label for="pmSettingsFlockInput">
+                                Number of birds
+                            </label>
+
+                            <input
+                                id="pmSettingsFlockInput"
+                                class="pm-settings-input"
+                                type="number"
+                                min="0"
+                                step="1"
+                                inputmode="numeric"
+                            />
+                        </div>
+
+                        <button
+                            id="pmSaveFlockButton"
+                            class="pm-settings-primary-button"
+                            type="button"
+                        >
+                            Save flock size
+                        </button>
+                    </section>
+
+                    <!-- FEED SCHEDULE -->
+
+                    <section class="pm-settings-card">
+                        <div class="pm-settings-card-header">
+                            <div class="pm-settings-icon">
+                                ⏰
+                            </div>
+
+                            <div>
+                                <h2>Feed Schedule</h2>
+                                <p>
+                                    Set your morning and afternoon feeding times.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pm-settings-two-column">
+
+                            <div class="pm-settings-field">
+                                <label for="pmMorningFeedInput">
+                                    Morning
+                                </label>
+
+                                <input
+                                    id="pmMorningFeedInput"
+                                    class="pm-settings-input"
+                                    type="time"
+                                />
+                            </div>
+
+                            <div class="pm-settings-field">
+                                <label for="pmAfternoonFeedInput">
+                                    Afternoon
+                                </label>
+
+                                <input
+                                    id="pmAfternoonFeedInput"
+                                    class="pm-settings-input"
+                                    type="time"
+                                />
+                            </div>
+
+                        </div>
+
+                        <button
+                            id="pmSaveScheduleButton"
+                            class="pm-settings-primary-button"
+                            type="button"
+                        >
+                            Save schedule
+                        </button>
+                    </section>
+
+                    <!-- ALARM -->
+
+                    <section class="pm-settings-card">
+                        <div class="pm-settings-card-header">
+                            <div class="pm-settings-icon">
+                                🔔
+                            </div>
+
+                            <div>
+                                <h2>Feed Alarm</h2>
+                                <p>
+                                    Get an in-app reminder when feeding time arrives.
+                                </p>
+                            </div>
+                        </div>
+
+                        <label class="pm-settings-toggle-row">
+                            <span>
+                                <strong>Enable feed alarm</strong>
+                                <small>
+                                    Uses your saved feeding schedule.
+                                </small>
+                            </span>
+
+                            <input
+                                id="pmAlarmToggle"
+                                type="checkbox"
+                            />
+
+                            <span class="pm-settings-switch"></span>
+                        </label>
+                    </section>
+
+                    <!-- NOTIFICATIONS -->
+
+                    <section class="pm-settings-card">
+                        <div class="pm-settings-card-header">
+                            <div class="pm-settings-icon">
+                                📲
+                            </div>
+
+                            <div>
+                                <h2>Notifications</h2>
+                                <p>
+                                    Enable device push notifications.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div
+                            id="pmNotificationStatus"
+                            class="pm-settings-status"
+                        >
+                            Checking notification status…
+                        </div>
+
+                        <button
+                            id="pmEnableNotificationsButton"
+                            class="pm-settings-primary-button"
+                            type="button"
+                        >
+                            Enable notifications
+                        </button>
+
+                        <button
+                            id="pmTestNotificationButton"
+                            class="pm-settings-secondary-button"
+                            type="button"
+                        >
+                            Send test notification
+                        </button>
+                    </section>
+
+                    <!-- APPEARANCE -->
+
+                    <section class="pm-settings-card">
+                        <div class="pm-settings-card-header">
+                            <div class="pm-settings-icon">
+                                🎨
+                            </div>
+
+                            <div>
+                                <h2>Appearance</h2>
+                                <p>
+                                    Choose how Poultry Manager looks.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pm-settings-field">
+                            <label for="pmThemeSelect">
+                                Theme
+                            </label>
+
+                            <select
+                                id="pmThemeSelect"
+                                class="pm-settings-input"
+                            >
+                                <option value="light">
+                                    Light
+                                </option>
+
+                                <option value="dark">
+                                    Dark
+                                </option>
+                            </select>
+                        </div>
+                    </section>
+
+                    <!-- BACKUP -->
+
+                    <section class="pm-settings-card">
+                        <div class="pm-settings-card-header">
+                            <div class="pm-settings-icon">
+                                💾
+                            </div>
+
+                            <div>
+                                <h2>Backup & Restore</h2>
+                                <p>
+                                    Protect your Poultry Manager data.
+                                </p>
+                            </div>
+                        </div>
+
+                        <label class="pm-settings-toggle-row">
+                            <span>
+                                <strong>Automatic backup</strong>
+                                <small>
+                                    Keep a backup of your farm data locally.
+                                </small>
+                            </span>
+
+                            <input
+                                id="pmAutomaticBackupToggle"
+                                type="checkbox"
+                            />
+
+                            <span class="pm-settings-switch"></span>
+                        </label>
+
+                        <div class="pm-settings-actions">
+
+                            <button
+                                id="pmExportBackupButton"
+                                class="pm-settings-secondary-button"
+                                type="button"
+                            >
+                                Export backup
+                            </button>
+
+                            <button
+                                id="pmImportBackupButton"
+                                class="pm-settings-secondary-button"
+                                type="button"
+                            >
+                                Restore backup
+                            </button>
+
+                            <input
+                                id="pmBackupFileInput"
+                                type="file"
+                                accept=".json,application/json"
+                                hidden
+                            />
+
+                        </div>
+
+                        <div
+                            id="pmBackupStatus"
+                            class="pm-settings-status"
+                        ></div>
+                    </section>
+
+                </div>
+
+                <div class="pm-settings-footer">
+                    <span>
+                        Poultry Manager
+                    </span>
+
+                    <span>
+                        Version ${APP.version}
+                    </span>
+                </div>
+
+            </div>
+        `;
+
+        view.dataset.built =
             "true";
 
+        setupSettingsEvents();
+        refreshSettings();
     }
 
+    /* =======================================================
+       SETTINGS REFRESH
+       ======================================================= */
 
-    function setAutomaticBackupEnabled(
-        enabled
-    ) {
+    function refreshSettings() {
+        const flockInput =
+            $("#pmSettingsFlockInput");
 
-        writeStorage(
-            APP.storage.automaticBackup,
-            enabled
-                ? "true"
-                : "false"
-        );
-
-
-        if (!enabled) {
-
-            clearTimeout(
-                automaticBackupTimer
-            );
-
-        } else {
-
-            scheduleAutomaticBackup();
-
+        if (flockInput) {
+            flockInput.value =
+                getFlockCount();
         }
 
-    }
+        const schedule =
+            getFeedSchedule();
 
+        const morningInput =
+            $("#pmMorningFeedInput");
 
-    function collectBackupData() {
+        const afternoonInput =
+            $("#pmAfternoonFeedInput");
 
-        const data = {
+        if (morningInput) {
+            morningInput.value =
+                schedule.morning;
+        }
 
-            app:
-                APP.name,
+        if (afternoonInput) {
+            afternoonInput.value =
+                schedule.afternoon;
+        }
 
-            version:
-                APP.version,
+        const alarmToggle =
+            $("#pmAlarmToggle");
 
-            exportedAt:
-                new Date()
-                    .toISOString(),
+        if (alarmToggle) {
+            alarmToggle.checked =
+                isFeedAlarmEnabled();
+        }
 
-            storage: {}
+        const automaticBackupToggle =
+            $("#pmAutomaticBackupToggle");
 
-        };
+        if (automaticBackupToggle) {
+            automaticBackupToggle.checked =
+                isAutomaticBackupEnabled();
+        }
 
+        updateNotificationStatus();
 
-        /*
-         * Export all Poultry Manager-related keys.
-         */
+        updateThemeControls(
+            getTheme()
+        );
 
-        Object.keys(
-            localStorage
-        ).forEach(
-            key => {
+        const backupStatus =
+            $("#pmBackupStatus");
 
-                if (
-                    key ===
-                    APP.storage.backupData
-                ) {
-                    return;
-                }
+        if (
+            backupStatus &&
+            !backupStatus.textContent
+        ) {
+            const lastBackup =
+                localStorage.getItem(
+                    STORAGE.lastBackup
+                );
 
-                /*
-                 * Include existing application data.
-                 * This also keeps compatibility with future
-                 * Poultry Manager settings.
-                 */
-
-                if (
-                    key.startsWith(
-                        "poultryManager"
-                    ) ||
-                    key ===
-                        APP.storage.flock ||
-                    key ===
-                        APP.storage.eggs ||
-                    key ===
-                        APP.storage.feed ||
-                    key ===
-                        APP.storage.feedAdditions ||
-                    key ===
-                        APP.storage.feedUsage ||
-                    key ===
-                        APP.storage.schedule ||
-                    key ===
-                        APP.storage.alarm
-                ) {
-
-                    data.storage[key] =
-                        localStorage.getItem(
-                            key
-                        );
-
-                }
-
+            if (lastBackup) {
+                backupStatus.textContent =
+                    `Last automatic backup: ${formatDateTime(lastBackup)}`;
             }
-        );
-
-
-        return data;
-
+        }
     }
 
-
-    function createAutomaticBackup() {
-
-        if (
-            !isAutomaticBackupEnabled()
-        ) {
-
-            return;
-
-        }
-
-
-        try {
-
-            const backup =
-                collectBackupData();
-
-
-            writeJSON(
-                APP.storage.backupData,
-                backup
-            );
-
-
-            /*
-             * Avoid recursively scheduling through
-             * writeJSON by directly storing the timestamp.
-             */
-
-            localStorage.setItem(
-                APP.storage.lastBackup,
-                new Date()
-                    .toISOString()
-            );
-
-
-        } catch (error) {
-
-            console.warn(
-                "Automatic backup failed:",
-                error
-            );
-
-        }
-
-    }
-
-
-    function scheduleAutomaticBackup() {
-
-        if (
-            !isAutomaticBackupEnabled()
-        ) {
-
-            return;
-
-        }
-
-
-        clearTimeout(
-            automaticBackupTimer
-        );
-
-
-        automaticBackupTimer =
-            setTimeout(
-                () => {
-
-                    createAutomaticBackup();
-
-                },
-                APP.limits
-                    .backupDebounce
-            );
-
-    }
-
-
-    function updateBackupStatus() {
-
-        const status =
-            $("pmBackupStatus");
-
-
-        if (!status) {
-            return;
-        }
-
-
-        const last =
-            readStorage(
-                APP.storage.lastBackup,
-                null
-            );
-
-
-        if (!last) {
-
-            status.textContent =
-                "No automatic backup has been created yet.";
-
-            return;
-
-        }
-
-
+    function formatDateTime(value) {
         const date =
-            new Date(
-                last
-            );
-
+            new Date(value);
 
         if (
             Number.isNaN(
                 date.getTime()
             )
         ) {
-
-            status.textContent =
-                "Automatic backup available.";
-
-            return;
-
+            return value;
         }
 
-
-        status.textContent =
-            `Last automatic backup: ${date.toLocaleString()}`;
-
+        return date.toLocaleString(
+            undefined,
+            {
+                dateStyle: "medium",
+                timeStyle: "short"
+            }
+        );
     }
 
+    /* =======================================================
+       SETTINGS EVENTS
+       ======================================================= */
 
-    /* =====================================================
-       47. MANUAL BACKUP EXPORT
-       ===================================================== */
+    function setupSettingsEvents() {
+        const saveFlock =
+            $("#pmSaveFlockButton");
 
-    function exportBackup() {
+        if (saveFlock) {
+            saveFlock.addEventListener(
+                "click",
+                () => {
+                    const input =
+                        $("#pmSettingsFlockInput");
 
-        const data =
-            collectBackupData();
+                    const value =
+                        Math.max(
+                            0,
+                            Math.round(
+                                safeNumber(
+                                    input?.value,
+                                    0
+                                )
+                            )
+                        );
 
+                    setFlockCount(value);
 
-        const json =
-            JSON.stringify(
-                data,
-                null,
-                2
-            );
-
-
-        const blob =
-            new Blob(
-                [json],
-                {
-                    type:
-                        "application/json"
+                    alert(
+                        `Flock size saved: ${value} bird${value === 1 ? "" : "s"}.`
+                    );
                 }
             );
+        }
 
+        const saveSchedule =
+            $("#pmSaveScheduleButton");
 
-        const url =
-            URL.createObjectURL(
-                blob
+        if (saveSchedule) {
+            saveSchedule.addEventListener(
+                "click",
+                () => {
+                    const morning =
+                        $("#pmMorningFeedInput")?.value ||
+                        APP.defaults.morningFeed;
+
+                    const afternoon =
+                        $("#pmAfternoonFeedInput")?.value ||
+                        APP.defaults.afternoonFeed;
+
+                    saveFeedSchedule(
+                        morning,
+                        afternoon
+                    );
+
+                    alert(
+                        "Feed schedule saved."
+                    );
+                }
+            );
+        }
+
+        const alarmToggle =
+            $("#pmAlarmToggle");
+
+        if (alarmToggle) {
+            alarmToggle.addEventListener(
+                "change",
+                () => {
+                    setFeedAlarmEnabled(
+                        alarmToggle.checked
+                    );
+                }
+            );
+        }
+
+        const notificationButton =
+            $("#pmEnableNotificationsButton");
+
+        if (notificationButton) {
+            notificationButton.addEventListener(
+                "click",
+                async () => {
+                    notificationButton.disabled =
+                        true;
+
+                    try {
+                        await enableNotifications();
+
+                        alert(
+                            "Notifications are enabled."
+                        );
+                    } catch (error) {
+                        alert(
+                            error.message ||
+                            "Notifications could not be enabled."
+                        );
+                    } finally {
+                        notificationButton.disabled =
+                            false;
+
+                        updateNotificationStatus();
+                    }
+                }
+            );
+        }
+
+        const testNotificationButton =
+            $("#pmTestNotificationButton");
+
+        if (testNotificationButton) {
+            testNotificationButton.addEventListener(
+                "click",
+                sendTestNotification
+            );
+        }
+
+        const themeSelect =
+            $("#pmThemeSelect");
+
+        if (themeSelect) {
+            themeSelect.addEventListener(
+                "change",
+                () => {
+                    applyTheme(
+                        themeSelect.value
+                    );
+                }
+            );
+        }
+
+        const automaticBackupToggle =
+            $("#pmAutomaticBackupToggle");
+
+        if (automaticBackupToggle) {
+            automaticBackupToggle.addEventListener(
+                "change",
+                () => {
+                    localStorage.setItem(
+                        STORAGE.automaticBackup,
+                        String(
+                            automaticBackupToggle.checked
+                        )
+                    );
+
+                    if (
+                        automaticBackupToggle.checked
+                    ) {
+                        createAutomaticBackup();
+                    }
+
+                    refreshSettings();
+                }
+            );
+        }
+
+        const exportButton =
+            $("#pmExportBackupButton");
+
+        if (exportButton) {
+            exportButton.addEventListener(
+                "click",
+                exportBackup
+            );
+        }
+
+        const importButton =
+            $("#pmImportBackupButton");
+
+        const backupInput =
+            $("#pmBackupFileInput");
+
+        if (
+            importButton &&
+            backupInput
+        ) {
+            importButton.addEventListener(
+                "click",
+                () => backupInput.click()
             );
 
+            backupInput.addEventListener(
+                "change",
+                event => {
+                    const file =
+                        event.target.files?.[0];
 
-        const anchor =
-            document.createElement(
-                "a"
+                    if (file) {
+                        restoreBackupFile(
+                            file
+                        );
+                    }
+
+                    event.target.value = "";
+                }
             );
-
-
-        anchor.href =
-            url;
-
-
-        anchor.download =
-            `poultry-manager-backup-${getTodayKey()}.json`;
-
-
-        document.body.appendChild(
-            anchor
-        );
-
-
-        anchor.click();
-
-
-        anchor.remove();
-
-
-        setTimeout(
-            () => {
-
-                URL.revokeObjectURL(
-                    url
-                );
-
-            },
-            1000
-        );
-
-
-        notify(
-            "Backup exported successfully."
-        );
-
+        }
     }
 
+    function updateNotificationStatus() {
+        const status =
+            $("#pmNotificationStatus");
 
-    /* =====================================================
-       48. BACKUP RESTORE
-       ===================================================== */
+        const button =
+            $("#pmEnableNotificationsButton");
+
+        if (!status) {
+            return;
+        }
+
+        if (!notificationsSupported()) {
+            status.textContent =
+                "Notifications are not supported by this browser.";
+
+            if (button) {
+                button.disabled = true;
+            }
+
+            return;
+        }
+
+        if (
+            Notification.permission ===
+            "granted"
+        ) {
+            status.textContent =
+                "Notifications are enabled on this device.";
+
+            if (button) {
+                button.textContent =
+                    "Notifications enabled";
+            }
+
+            return;
+        }
+
+        if (
+            Notification.permission ===
+            "denied"
+        ) {
+            status.textContent =
+                "Notifications are blocked. Check your browser or device settings.";
+
+            if (button) {
+                button.textContent =
+                    "Notifications blocked";
+            }
+
+            return;
+        }
+
+        status.textContent =
+            "Notifications have not been enabled yet.";
+
+        if (button) {
+            button.disabled = false;
+            button.textContent =
+                "Enable notifications";
+        }
+    }
+
+    /* =======================================================
+       NAVIGATION
+       ======================================================= */
+
+    function ensureNavigation() {
+        let navigation =
+            $("#pmAppNavigation");
+
+        if (!navigation) {
+            navigation =
+                document.createElement("nav");
+
+            navigation.id =
+                "pmAppNavigation";
+
+            navigation.className =
+                "pm-app-navigation";
+
+            navigation.innerHTML = `
+                <button
+                    id="pmDashboardButton"
+                    type="button"
+                    class="pm-nav-button active"
+                >
+                    <span>Dashboard</span>
+                </button>
+
+                <button
+                    id="pmSettingsButton"
+                    type="button"
+                    class="pm-nav-button"
+                >
+                    <span>Settings</span>
+                </button>
+            `;
+
+            const header =
+                $("header");
+
+            if (header) {
+                header.insertAdjacentElement(
+                    "afterend",
+                    navigation
+                );
+            } else {
+                document.body.prepend(
+                    navigation
+                );
+            }
+        }
+
+        return navigation;
+    }
+
+    function setupNavigation() {
+        const navigation =
+            ensureNavigation();
+
+        buildSettingsView();
+
+        const dashboardButton =
+            $("#pmDashboardButton");
+
+        const settingsButton =
+            $("#pmSettingsButton");
+
+        if (dashboardButton) {
+            dashboardButton.addEventListener(
+                "click",
+                showDashboard
+            );
+        }
+
+        if (settingsButton) {
+            settingsButton.addEventListener(
+                "click",
+                showSettings
+            );
+        }
+
+        const savedView =
+            localStorage.getItem(
+                STORAGE.settingsView
+            );
+
+        if (savedView === "settings") {
+            showSettings(
+                false
+            );
+        } else {
+            showDashboard(
+                false
+            );
+        }
+
+        return navigation;
+    }
+
+    function setDashboardVisibility(
+        visible
+    ) {
+        const dashboard =
+            $("#pmDashboardView");
+
+        if (!dashboard) {
+            console.error(
+                "Poultry Manager: #pmDashboardView not found."
+            );
+
+            return;
+        }
+
+        dashboard.style.display =
+            visible ? "" : "none";
+    }
+
+    function showDashboard(
+        scroll = true
+    ) {
+        setDashboardVisibility(
+            true
+        );
+
+        const view =
+            ensureSettingsView();
+
+        view.style.display =
+            "none";
+
+        const dashboardButton =
+            $("#pmDashboardButton");
+
+        const settingsButton =
+            $("#pmSettingsButton");
+
+        dashboardButton?.classList.add(
+            "active"
+        );
+
+        settingsButton?.classList.remove(
+            "active"
+        );
+
+        localStorage.setItem(
+            STORAGE.settingsView,
+            "dashboard"
+        );
+
+        if (scroll) {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    }
+
+    function showSettings(
+        scroll = true
+    ) {
+        setDashboardVisibility(
+            false
+        );
+
+        const view =
+            ensureSettingsView();
+
+        view.style.display =
+            "";
+
+        const dashboardButton =
+            $("#pmDashboardButton");
+
+        const settingsButton =
+            $("#pmSettingsButton");
+
+        dashboardButton?.classList.remove(
+            "active"
+        );
+
+        settingsButton?.classList.add(
+            "active"
+        );
+
+        localStorage.setItem(
+            STORAGE.settingsView,
+            "settings"
+        );
+
+        refreshSettings();
+
+        if (scroll) {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+    }
+
+    /* =======================================================
+       BACKUP
+       ======================================================= */
+
+    function isAutomaticBackupEnabled() {
+        const value =
+            localStorage.getItem(
+                STORAGE.automaticBackup
+            );
+
+        if (value === null) {
+            return APP.defaults.automaticBackup;
+        }
+
+        return value === "true";
+    }
+
+    function collectBackupData() {
+        const storage = {};
+
+        for (
+            let index = 0;
+            index < localStorage.length;
+            index++
+        ) {
+            const key =
+                localStorage.key(index);
+
+            if (!key) {
+                continue;
+            }
+
+            try {
+                storage[key] =
+                    localStorage.getItem(key);
+            } catch (_) {}
+        }
+
+        return storage;
+    }
+
+    function createBackupObject() {
+        return {
+            app: APP.name,
+            version: APP.version,
+            exportedAt:
+                new Date().toISOString(),
+            storage:
+                collectBackupData()
+        };
+    }
+
+    function createAutomaticBackup() {
+        if (
+            !isAutomaticBackupEnabled()
+        ) {
+            return;
+        }
+
+        try {
+            const backup =
+                createBackupObject();
+
+            localStorage.setItem(
+                STORAGE.lastBackup,
+                backup.exportedAt
+            );
+
+            /*
+             * Keep the automatic backup compact:
+             * it is stored separately and does not
+             * recursively trigger another backup.
+             */
+            localStorage.setItem(
+                "poultryManagerAutomaticBackup",
+                JSON.stringify(
+                    backup
+                )
+            );
+
+            refreshSettings();
+        } catch (error) {
+            console.warn(
+                "Automatic backup failed.",
+                error
+            );
+        }
+    }
+
+    function exportBackup() {
+        try {
+            const backup =
+                createBackupObject();
+
+            const blob =
+                new Blob(
+                    [
+                        JSON.stringify(
+                            backup,
+                            null,
+                            2
+                        )
+                    ],
+                    {
+                        type:
+                            "application/json"
+                    }
+                );
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+            link.href = url;
+
+            link.download =
+                `poultry-manager-backup-${todayKey()}.json`;
+
+            document.body.appendChild(
+                link
+            );
+
+            link.click();
+
+            link.remove();
+
+            URL.revokeObjectURL(
+                url
+            );
+
+            const status =
+                $("#pmBackupStatus");
+
+            if (status) {
+                status.textContent =
+                    "Backup exported successfully.";
+            }
+        } catch (error) {
+            console.error(error);
+
+            alert(
+                "The backup could not be exported."
+            );
+        }
+    }
 
     async function restoreBackupFile(
         file
     ) {
-
-        if (!file) {
-            return;
-        }
-
-
         try {
-
             const text =
                 await file.text();
 
-
-            const data =
-                JSON.parse(
-                    text
-                );
-
+            const backup =
+                JSON.parse(text);
 
             if (
-                !data ||
-                data.app !==
-                APP.name ||
-                !data.storage ||
-                typeof data.storage !==
-                "object"
+                !backup ||
+                backup.app !== APP.name
             ) {
-
                 throw new Error(
                     "This is not a valid Poultry Manager backup."
                 );
-
             }
 
+            if (
+                !backup.storage ||
+                typeof backup.storage !==
+                    "object"
+            ) {
+                throw new Error(
+                    "The backup file does not contain valid farm data."
+                );
+            }
 
             const confirmed =
-                confirmAction(
-                    "Restore this Poultry Manager backup?\n\nYour current saved app data will be replaced by the backup.\n\nThe page will reload after restoration."
+                confirm(
+                    "Restore this Poultry Manager backup?\n\nYour current saved data will be replaced."
                 );
-
 
             if (!confirmed) {
                 return;
             }
 
+            /*
+             * Only clear Poultry Manager storage.
+             * Other applications sharing the same origin
+             * should not be touched.
+             */
+            const keysToRemove = [];
 
-            const storage =
-                data.storage;
+            for (
+                let index = 0;
+                index < localStorage.length;
+                index++
+            ) {
+                const key =
+                    localStorage.key(index);
 
+                if (
+                    key &&
+                    (
+                        key === STORAGE.flock ||
+                        key === STORAGE.eggs ||
+                        key === STORAGE.feed ||
+                        key === STORAGE.feedUsage ||
+                        key === STORAGE.feedAdditions ||
+                        key === STORAGE.schedule ||
+                        key === STORAGE.alarm ||
+                        key === STORAGE.notifications ||
+                        key === STORAGE.theme ||
+                        key === STORAGE.automaticBackup ||
+                        key === STORAGE.lastBackup ||
+                        key === "poultryManagerAutomaticBackup" ||
+                        key === STORAGE.settingsView
+                    )
+                ) {
+                    keysToRemove.push(
+                        key
+                    );
+                }
+            }
 
-            Object.keys(
-                storage
+            keysToRemove.forEach(
+                removeStorage
+            );
+
+            Object.entries(
+                backup.storage
             ).forEach(
-                key => {
-
-                    if (
-                        key ===
-                        APP.storage.backupData
-                    ) {
-                        return;
-                    }
-
-
-                    const value =
-                        storage[key];
-
-
-                    if (
-                        typeof value ===
-                        "string"
-                    ) {
-
-                        localStorage.setItem(
-                            key,
-                            value
-                        );
-
-                    }
-
+                ([key, value]) => {
+                    localStorage.setItem(
+                        key,
+                        value
+                    );
                 }
             );
 
-
-            notify(
-                "Backup restored. Reloading Poultry Manager..."
+            applyTheme(
+                getTheme()
             );
 
+            refreshAll();
+            refreshSettings();
 
-            await sleep(
-                800
+            alert(
+                "Backup restored successfully."
             );
-
-
-            window.location.reload();
-
         } catch (error) {
+            console.error(error);
 
-            console.error(
-                "Backup restore error:",
-                error
+            alert(
+                error.message ||
+                "The backup could not be restored."
             );
-
-
-            notify(
-                "The selected backup could not be restored."
-            );
-
         }
-
     }
 
-
-    /* =====================================================
-       49. SETTINGS EVENTS
-       ===================================================== */
-
-    function initializeSettingsControls() {
-
-        const flockButton =
-            $("pmSaveFlockButton");
-
-
-        const scheduleButton =
-            $("pmSaveScheduleButton");
-
-
-        const alarmToggle =
-            $("pmAlarmToggle");
-
-
-        const notificationToggle =
-            $("pmNotificationsToggle");
-
-
-        const notificationButton =
-            $("pmEnableNotificationsButton");
-
-
-        const themeSelect =
-            $("pmThemeSelect");
-
-
-        const backupToggle =
-            $("pmAutomaticBackupToggle");
-
-
-        const exportButton =
-            $("pmExportBackupButton");
-
-
-        const importButton =
-            $("pmImportBackupButton");
-
-
-        const fileInput =
-            $("pmBackupFileInput");
-
-
-        flockButton
-            ?.addEventListener(
-                "click",
-                saveFlockSettings
-            );
-
-
-        scheduleButton
-            ?.addEventListener(
-                "click",
-                saveScheduleSettings
-            );
-
-
-        alarmToggle
-            ?.addEventListener(
-                "change",
-                event => {
-
-                    setFeedAlarmEnabled(
-                        event.target.checked
-                    );
-
-                }
-            );
-
-
-        notificationToggle
-            ?.addEventListener(
-                "change",
-                async event => {
-
-                    if (
-                        event.target.checked
-                    ) {
-
-                        const success =
-                            await enablePushNotifications();
-
-
-                        if (!success) {
-
-                            event.target.checked =
-                                false;
-
-                        }
-
-                    } else {
-
-                        writeStorage(
-                            APP.storage.notifications,
-                            "false"
-                        );
-
-                    }
-
-                }
-            );
-
-
-        notificationButton
-            ?.addEventListener(
-                "click",
-                enablePushNotifications
-            );
-
-
-        themeSelect
-            ?.addEventListener(
-                "change",
-                event => {
-
-                    applyTheme(
-                        event.target.value
-                    );
-
-                    notify(
-                        "Theme updated."
-                    );
-
-                }
-            );
-
-
-        backupToggle
-            ?.addEventListener(
-                "change",
-                event => {
-
-                    setAutomaticBackupEnabled(
-                        event.target.checked
-                    );
-
-
-                    notify(
-                        event.target.checked
-                            ? "Automatic backup enabled."
-                            : "Automatic backup disabled."
-                    );
-
-                }
-            );
-
-
-        exportButton
-            ?.addEventListener(
-                "click",
-                exportBackup
-            );
-
-
-        importButton
-            ?.addEventListener(
-                "click",
-                () => {
-
-                    fileInput?.click();
-
-                }
-            );
-
-
-        fileInput
-            ?.addEventListener(
-                "change",
-                event => {
-
-                    const file =
-                        event.target.files?.[0];
-
-
-                    if (file) {
-
-                        restoreBackupFile(
-                            file
-                        );
-
-                    }
-
-
-                    event.target.value =
-                        "";
-
-                }
-            );
-
-    }
-
-
-    /* =====================================================
-       50. OLD DASHBOARD BACKUP CLEANUP
-       ===================================================== */
-
-    function hideLegacyBackupSection() {
-
-        const possibleSelectors = [
-
-            "#backupSection",
-
-            "#dataBackupSection",
-
-            ".backup-section"
-
-        ];
-
-
-        possibleSelectors.forEach(
-            selector => {
-
-                $all(
-                    selector
-                ).forEach(
-                    element => {
-
-                        /*
-                         * Only hide legacy backup UI.
-                         * The new Settings backup system
-                         * remains visible.
-                         */
-
-                        if (
-                            !element.closest(
-                                "#pmSettingsView"
-                            )
-                        ) {
-
-                            element.style.display =
-                                "none";
-
-                        }
-
-                    }
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       51. APP SHELL POLISH
-       ===================================================== */
-
-    function initializeAppShell() {
-
-        const app =
-            document.querySelector(
-                ".app"
-            );
-
-
-        if (
-            app
-        ) {
-
-            app.classList.add(
-                "pm-app-ready"
-            );
-
-        }
-
-
-        /*
-         * Add light press feedback to interactive controls.
-         */
-
-        $all(
-            "button"
-        ).forEach(
-            button => {
-
-                button.addEventListener(
-                    "pointerdown",
-                    () => {
-
-                        button.classList.add(
-                            "pm-pressed"
-                        );
-
-                    }
-                );
-
-
-                button.addEventListener(
-                    "pointerup",
-                    () => {
-
-                        button.classList.remove(
-                            "pm-pressed"
-                        );
-
-                    }
-                );
-
-
-                button.addEventListener(
-                    "pointercancel",
-                    () => {
-
-                        button.classList.remove(
-                            "pm-pressed"
-                        );
-
-                    }
-                );
-
-
-                button.addEventListener(
-                    "pointerleave",
-                    () => {
-
-                        button.classList.remove(
-                            "pm-pressed"
-                        );
-
-                    }
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       52. RESPONSIVE CHART REFRESH
-       ===================================================== */
-
-    let chartResizeTimer =
-        null;
-
-
-    function initializeChartResize() {
-
-        window.addEventListener(
-            "resize",
-            () => {
-
-                clearTimeout(
-                    chartResizeTimer
-                );
-
-
-                chartResizeTimer =
-                    setTimeout(
-                        () => {
-
-                            updateProductionTrend();
-
-                            updateFeedChart();
-
-                        },
-                        180
-                    );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       53. MIDNIGHT / DAY CHANGE PROTECTION
-       ===================================================== */
+    /* =======================================================
+       DATE / MIDNIGHT HANDLING
+       ======================================================= */
 
     let lastKnownDate =
-        getTodayKey();
+        todayKey();
 
-
-    function checkDateRollover() {
-
+    function handleDateRollover() {
         const currentDate =
-            getTodayKey();
-
+            todayKey();
 
         if (
-            currentDate ===
+            currentDate !==
             lastKnownDate
         ) {
+            lastKnownDate =
+                currentDate;
 
-            return;
-
+            refreshAll();
         }
-
-
-        lastKnownDate =
-            currentDate;
-
-
-        /*
-         * A new day automatically starts with zero eggs and
-         * zero feed usage because those values are keyed by
-         * date.
-         */
-
-        refreshAll();
-
-
-        notify(
-            "A new day has started. Poultry Manager has updated today's records."
-        );
-
     }
 
+    /* =======================================================
+       HEADER DATE
+       ======================================================= */
 
-    /* =====================================================
-       54. LIVE APPLICATION CLOCK
-       ===================================================== */
+    function refreshHeaderDate() {
+        const candidates = [
+            "#currentDate",
+            "#headerDate",
+            "#todayDate",
+            "[data-current-date]"
+        ];
 
-    function updateHeaderDate() {
-
-        const dateElement =
-            document.getElementById(
-                "currentDate"
-            );
-
-
-        if (!dateElement) {
-            return;
-        }
-
-
-        const now =
+        const date =
             new Date();
 
-
-        dateElement.textContent =
-            now.toLocaleDateString(
+        const formatted =
+            date.toLocaleDateString(
                 undefined,
                 {
-                    weekday:
-                        "long",
-
-                    month:
-                        "long",
-
-                    day:
-                        "numeric",
-
-                    year:
-                        "numeric"
-
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
                 }
             );
 
+        candidates.forEach(
+            selector => {
+                const element =
+                    $(selector);
+
+                if (element) {
+                    element.textContent =
+                        formatted;
+                }
+            }
+        );
     }
 
-
-    /* =====================================================
-       55. GLOBAL REFRESH
-       ===================================================== */
+    /* =======================================================
+       GLOBAL REFRESH
+       ======================================================= */
 
     function refreshAll() {
-
-        updateHeaderDate();
-
-        updateFarmOverview();
-
+        refreshHeaderDate();
+        refreshFarmOverview();
+        refreshEggUI();
+        refreshFeedUI();
         refreshProduction();
-
-        refreshFeed();
-
-        updateNextFeed();
-
-        updateAlarmUI();
-
-        updateNotificationUI();
-
-        updateQuickActionState();
-
+        refreshSettings();
     }
 
+    /* =======================================================
+       INITIAL DATA SETUP
+       ======================================================= */
 
-    /* =====================================================
-       56. APPLICATION INITIALIZATION
-       ===================================================== */
+    function initialiseDefaults() {
+        if (
+            localStorage.getItem(
+                STORAGE.flock
+            ) === null
+        ) {
+            setStorageNumber(
+                STORAGE.flock,
+                APP.defaults.flock
+            );
+        }
 
-    async function initializePoultryManager() {
+        if (
+            localStorage.getItem(
+                STORAGE.feed
+            ) === null
+        ) {
+            setStorageNumber(
+                STORAGE.feed,
+                APP.defaults.feed
+            );
+        }
 
-        console.log(
-            `${APP.name} ${APP.version} starting...`
-        );
+        if (
+            localStorage.getItem(
+                STORAGE.alarm
+            ) === null
+        ) {
+            localStorage.setItem(
+                STORAGE.alarm,
+                String(
+                    APP.defaults.alarm
+                )
+            );
+        }
 
+        if (
+            localStorage.getItem(
+                STORAGE.notifications
+            ) === null
+        ) {
+            localStorage.setItem(
+                STORAGE.notifications,
+                String(
+                    APP.defaults.notifications
+                )
+            );
+        }
 
-        /*
-         * Apply theme before the rest of the UI settles.
-         */
+        if (
+            localStorage.getItem(
+                STORAGE.theme
+            ) === null
+        ) {
+            localStorage.setItem(
+                STORAGE.theme,
+                APP.defaults.theme
+            );
+        }
+
+        if (
+            localStorage.getItem(
+                STORAGE.automaticBackup
+            ) === null
+        ) {
+            localStorage.setItem(
+                STORAGE.automaticBackup,
+                String(
+                    APP.defaults.automaticBackup
+                )
+            );
+        }
+    }
+
+    /* =======================================================
+       APPLICATION INITIALISATION
+       ======================================================= */
+
+    let initialised = false;
+
+    async function initialiseApp() {
+        if (initialised) {
+            return;
+        }
+
+        initialised = true;
+
+        initialiseDefaults();
 
         applyTheme(
             getTheme()
         );
 
+        ensureNavigation();
 
-        /*
-         * Create Settings and navigation.
-         */
+        buildSettingsView();
 
-        createNavigation();
+        setupNavigation();
 
-        createSettingsView();
+        setupQuickActions();
 
-        initializeNavigation();
+        setupEggControls();
 
-
-        /*
-         * Existing dashboard controls.
-         */
-
-        initializeEggControls();
-
-        initializeFeedControls();
-
-        initializeQuickActions();
-
-
-        /*
-         * Dynamic feed action buttons.
-         */
-
-        ensureFeedActionButtons();
-
-
-        /*
-         * Settings controls.
-         */
-
-        initializeSettingsControls();
-
-
-        /*
-         * Legacy dashboard backup cleanup.
-         */
-
-        hideLegacyBackupSection();
-
-
-        /*
-         * App shell.
-         */
-
-        initializeAppShell();
-
-
-        /*
-         * Charts.
-         */
-
-        initializeChartResize();
-
-
-        /*
-         * Initial application state.
-         */
-
-        refreshAll();
-
-        refreshSettings();
-
-
-        /*
-         * Service worker.
-         */
+        setupFeedControls();
 
         await registerServiceWorker();
 
+        refreshAll();
 
         /*
-         * Initial automatic backup.
+         * Automatic backup happens once during
+         * application startup if enabled.
          */
-
         if (
             isAutomaticBackupEnabled()
         ) {
-
             createAutomaticBackup();
-
         }
 
-
         /*
-         * Timed application maintenance.
+         * Lightweight clock/alarm checks.
+         * No duplicated refresh loops.
          */
-
         setInterval(
             () => {
-
-                updateHeaderDate();
-
-                updateNextFeed();
-
+                handleDateRollover();
+                refreshHeaderDate();
                 checkFeedAlarm();
-
-                checkDateRollover();
-
+                refreshFarmOverview();
             },
             1000
         );
 
-
         /*
-         * Less frequent complete refresh.
+         * Periodic UI refresh for external/local changes.
          */
-
         setInterval(
             () => {
-
                 refreshAll();
-
             },
-            5000
+            10000
         );
-
-
-        console.log(
-            `${APP.name} is ready.`
-        );
-
     }
 
-
-    /* =====================================================
-       57. PUBLIC APPLICATION API
-       ===================================================== */
-
-    /*
-     * Only expose a small controlled API.
-     *
-     * This allows Quick Actions, future modules and debugging
-     * tools to use the application without scattering dozens
-     * of functions into window.
-     */
+    /* =======================================================
+       PUBLIC API
+       ======================================================= */
 
     window.PoultryManager = {
+        version: APP.version,
 
-        version:
-            APP.version,
-
-        addEgg:
-            addEggs,
-
-        removeEgg:
-            removeEggs,
+        addEgg: addEggs,
+        removeEgg: removeEggs,
 
         addFeed,
-
         recordFeedUsage,
-
         undoLastFeedAddition,
-
         resetFeedStock,
-
         resetTodayFeedUsage,
 
         showDashboard,
-
         showSettings,
 
-        refresh:
-            refreshAll,
+        refresh: refreshAll,
+        refreshSettings,
 
         getFlockCount,
-
         getTodayEggs,
-
         getTodayLayingRate,
-
         getFeedAmount,
+        getTodayFeedUsage,
 
-        getTodayFeedUsage
+        getFeedSchedule,
+        saveFeedSchedule,
 
+        enableNotifications,
+        sendTestNotification,
+
+        checkFeedAlarm,
+
+        applyTheme,
+
+        exportBackup,
+        restoreBackupFile
     };
 
-
-    /*
-     * Compatibility export.
-     *
-     * Existing page code or previously added UI may call
-     * window.updateFarmOverview().
-     */
-
-    window.updateFarmOverview =
-        updateFarmOverview;
-
-
-    /* =====================================================
-       58. START APPLICATION SAFELY
-       ===================================================== */
+    /* =======================================================
+       START
+       ======================================================= */
 
     if (
         document.readyState ===
         "loading"
     ) {
-
         document.addEventListener(
             "DOMContentLoaded",
-            initializePoultryManager,
+            initialiseApp,
             {
                 once: true
             }
         );
-
     } else {
-
-        initializePoultryManager();
-
+        initialiseApp();
     }
-
 
 })();
 
 
 /* =========================================================
    POULTRY MANAGER
-   PART 2 — SETTINGS, NAVIGATION, BACKUP, POLISH & SAFETY
+   Main Application Script
+   Part 2
+   Supporting compatibility + UI helpers
    ========================================================= */
 
-(function () {
-
+(() => {
     "use strict";
 
-
-    /* =====================================================
-       BASIC HELPERS
-       ===================================================== */
-
-    const $ = (id) => document.getElementById(id);
-
-    const storageGet = (key, fallback = null) => {
-
-        try {
-
-            const value =
-                localStorage.getItem(key);
-
-            return value === null
-                ? fallback
-                : value;
-
-        } catch (error) {
-
-            console.error(
-                "Poultry Manager storage read error:",
-                error
-            );
-
-            return fallback;
-        }
-    };
-
-
-    const storageSet = (key, value) => {
-
-        try {
-
-            localStorage.setItem(
-                key,
-                String(value)
-            );
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Poultry Manager storage write error:",
-                error
-            );
-
-            return false;
-        }
-    };
-
-
-    const readJSON = (key, fallback = {}) => {
-
-        try {
-
-            const raw =
-                localStorage.getItem(key);
-
-            if (!raw) {
-                return fallback;
-            }
-
-            return JSON.parse(raw);
-
-        } catch (error) {
-
-            return fallback;
-        }
-    };
-
-
-    const writeJSON = (key, value) => {
-
-        try {
-
-            localStorage.setItem(
-                key,
-                JSON.stringify(value)
-            );
-
-            return true;
-
-        } catch (error) {
-
-            console.error(
-                "Poultry Manager JSON write error:",
-                error
-            );
-
-            return false;
-        }
-    };
-
-
-    /* =====================================================
-       APP REFERENCES
-       ===================================================== */
+    /*
+     * This block intentionally does NOT create another
+     * application system.
+     *
+     * It only provides small compatibility helpers for
+     * existing HTML/CSS that may use older class names.
+     */
 
     const PM =
         window.PoultryManager || {};
 
-    const SETTINGS_VIEW_KEY =
-        "poultryManagerLastView";
+    /* =======================================================
+       SAFE DOM HELPERS
+       ======================================================= */
 
-    const THEME_KEY =
-        "poultryManagerTheme";
-
-    const FLOCK_KEY =
-        "flockCount";
-
-    const EGG_HISTORY_KEY =
-        "eggHistory";
-
-    const FEED_KEY =
-        "feed";
-
-    const FEED_USAGE_KEY =
-        "feedUsageHistory";
-
-    const SCHEDULE_KEY =
-        "feedingSchedule";
-
-    const ALARM_KEY =
-        "feedAlarmEnabled";
-
-    const NOTIFICATION_KEY =
-        "notificationsEnabled";
-
-
-    /* =====================================================
-       DATE HELPERS
-       ===================================================== */
-
-    function getTodayKey() {
-
-        const date =
-            new Date();
-
-        const year =
-            date.getFullYear();
-
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0");
-
-        const day =
-            String(
-                date.getDate()
-            ).padStart(2, "0");
-
-        return `${year}-${month}-${day}`;
-    }
-
-
-    function formatDate(dateString) {
-
-        if (!dateString) {
-            return "";
-        }
-
-        const parts =
-            String(dateString).split("-");
-
-        if (parts.length !== 3) {
-            return dateString;
-        }
-
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    }
-
-
-    function getTodayEggs() {
-
-        const history =
-            readJSON(
-                EGG_HISTORY_KEY,
-                {}
-            );
-
-        const today =
-            getTodayKey();
-
-        const record =
-            history[today];
-
-        if (
-            typeof record ===
-            "number"
-        ) {
-
-            return Math.max(
-                0,
-                Number(record) || 0
-            );
-        }
-
-        if (
-            record &&
-            typeof record ===
-            "object"
-        ) {
-
-            return Math.max(
-                0,
-                Number(record.eggs) || 0
-            );
-        }
-
-        return 0;
-    }
-
-
-    function getFlockCount() {
-
-        return Math.max(
-            0,
-            Number(
-                storageGet(
-                    FLOCK_KEY,
-                    0
-                )
-            ) || 0
-        );
-    }
-
-
-    function getFeedStock() {
-
-        return Math.max(
-            0,
-            Number(
-                storageGet(
-                    FEED_KEY,
-                    0
-                )
-            ) || 0
-        );
-    }
-
-
-    /* =====================================================
-       DASHBOARD / SETTINGS REFERENCES
-       ===================================================== */
-
-    let dashboardView =
-        $("pmDashboardView");
-
-    let settingsView =
-        $("pmSettingsView");
-
-    let dashboardButton =
-        $("dashboardNavButton") ||
-        $("dashboardButton");
-
-    let settingsButton =
-        $("settingsNavButton") ||
-        $("settingsButton");
-
-
-    function findNavigationButton(type) {
-
-        const selectors =
-            type === "dashboard"
-
-                ? [
-                    "#dashboardNavButton",
-                    "#dashboardButton",
-                    "[data-view='dashboard']",
-                    "[data-nav='dashboard']",
-                    ".dashboard-nav-button"
-                ]
-
-                : [
-                    "#settingsNavButton",
-                    "#settingsButton",
-                    "[data-view='settings']",
-                    "[data-nav='settings']",
-                    ".settings-nav-button"
-                ];
-
-        for (
-            const selector
-            of selectors
-        ) {
-
+    function getElement(
+        ...selectors
+    ) {
+        for (const selector of selectors) {
             const element =
                 document.querySelector(
                     selector
@@ -8197,2604 +3538,359 @@
         return null;
     }
 
+    /* =======================================================
+       LEGACY BUTTON COMPATIBILITY
+       ======================================================= */
 
-    function refreshViewReferences() {
-
-        dashboardView =
-            $("pmDashboardView");
-
-        settingsView =
-            $("pmSettingsView");
-
-        dashboardButton =
-            dashboardButton ||
-            findNavigationButton(
-                "dashboard"
-            );
-
-        settingsButton =
-            settingsButton ||
-            findNavigationButton(
-                "settings"
-            );
-    }
-
-
-    /* =====================================================
-       VIEW CONTROL
-       ===================================================== */
-
-    function hideDashboard() {
-
-        refreshViewReferences();
-
-        if (!dashboardView) {
-            return;
-        }
-
-        dashboardView.style.display =
-            "none";
-
-        dashboardView.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-    }
-
-
-    function showDashboardElement() {
-
-        refreshViewReferences();
-
-        if (!dashboardView) {
-            return;
-        }
-
-        dashboardView.style.display =
-            "";
-
-        dashboardView.removeAttribute(
-            "aria-hidden"
-        );
-    }
-
-
-    function hideSettings() {
-
-        refreshViewReferences();
-
-        if (!settingsView) {
-            return;
-        }
-
-        settingsView.style.display =
-            "none";
-
-        settingsView.classList.remove(
-            "active"
-        );
-
-        settingsView.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-    }
-
-
-    function showSettingsElement() {
-
-        refreshViewReferences();
-
-        if (!settingsView) {
-            return;
-        }
-
-        settingsView.style.display =
-            "";
-
-        settingsView.classList.add(
-            "active"
-        );
-
-        settingsView.removeAttribute(
-            "aria-hidden"
-        );
-    }
-
-
-    function updateNavigationButtons(
-        currentView
+    function connectLegacyButton(
+        selectors,
+        callback
     ) {
-
-        refreshViewReferences();
-
-        if (dashboardButton) {
-
-            dashboardButton.classList.toggle(
-                "active",
-                currentView ===
-                "dashboard"
-            );
-
-            dashboardButton.setAttribute(
-                "aria-current",
-                currentView ===
-                "dashboard"
-                    ? "page"
-                    : "false"
-            );
-        }
-
-
-        if (settingsButton) {
-
-            settingsButton.classList.toggle(
-                "active",
-                currentView ===
-                "settings"
-            );
-
-            settingsButton.setAttribute(
-                "aria-current",
-                currentView ===
-                "settings"
-                    ? "page"
-                    : "false"
-            );
-        }
-    }
-
-
-    function showDashboard() {
-
-        showDashboardElement();
-        hideSettings();
-
-        updateNavigationButtons(
-            "dashboard"
-        );
-
-        storageSet(
-            SETTINGS_VIEW_KEY,
-            "dashboard"
-        );
+        const element =
+            getElement(...selectors);
 
         if (
-            typeof window.updateFarmOverview ===
-            "function"
-        ) {
-
-            window.updateFarmOverview();
-        }
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    }
-
-
-    function showSettings() {
-
-        hideDashboard();
-        showSettingsElement();
-
-        updateNavigationButtons(
-            "settings"
-        );
-
-        storageSet(
-            SETTINGS_VIEW_KEY,
-            "settings"
-        );
-
-        refreshSettingsUI();
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-    }
-
-
-    function setupNavigation() {
-
-        refreshViewReferences();
-
-        if (dashboardButton) {
-
-            dashboardButton.onclick =
-                function (event) {
-
-                    event.preventDefault();
-
-                    showDashboard();
-                };
-        }
-
-
-        if (settingsButton) {
-
-            settingsButton.onclick =
-                function (event) {
-
-                    event.preventDefault();
-
-                    showSettings();
-                };
-        }
-    }
-
-
-    /* =====================================================
-       SETTINGS CONTAINER
-       ===================================================== */
-
-    function ensureSettingsView() {
-
-        let view =
-            $("pmSettingsView");
-
-        if (view) {
-            return view;
-        }
-
-        view =
-            document.createElement(
-                "section"
-            );
-
-        view.id =
-            "pmSettingsView";
-
-        view.className =
-            "pm-settings-view";
-
-        view.style.display =
-            "none";
-
-        const dashboard =
-            $("pmDashboardView");
-
-        if (dashboard) {
-
-            dashboard.parentNode.insertBefore(
-                view,
-                dashboard.nextSibling
-            );
-
-        } else {
-
-            document.body.appendChild(
-                view
-            );
-        }
-
-        settingsView =
-            view;
-
-        return view;
-    }
-
-
-    /* =====================================================
-       SETTINGS HTML
-       ===================================================== */
-
-    function createSettingsHTML() {
-
-        return `
-
-        <div class="pm-settings-shell">
-
-            <div class="pm-settings-header">
-
-                <div>
-
-                    <span class="pm-settings-eyebrow">
-                        POULTRY MANAGER
-                    </span>
-
-                    <h2>
-                        Settings
-                    </h2>
-
-                    <p>
-                        Manage your flock,
-                        feeding system,
-                        notifications and app preferences.
-                    </p>
-
-                </div>
-
-                <button
-                    type="button"
-                    id="pmSettingsBackButton"
-                    class="pm-settings-back-button"
-                >
-                    ← Dashboard
-                </button>
-
-            </div>
-
-
-            <!-- =========================================
-                 FLOCK SETTINGS
-                 ========================================= -->
-
-            <div
-                class="pm-settings-card"
-                id="pmSettingsFlockCard"
-            >
-
-                <div class="pm-settings-card-heading">
-
-                    <div>
-
-                        <span class="pm-settings-icon">
-                            🐔
-                        </span>
-
-                        <div>
-
-                            <h3>
-                                Flock Settings
-                            </h3>
-
-                            <p>
-                                Keep your flock size accurate.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-row">
-
-                    <div>
-
-                        <strong>
-                            Number of birds
-                        </strong>
-
-                        <span>
-                            Used to calculate laying rate.
-                        </span>
-
-                    </div>
-
-                    <input
-                        id="pmSettingsFlockInput"
-                        class="pm-settings-input"
-                        type="number"
-                        min="0"
-                        step="1"
-                        inputmode="numeric"
-                    >
-
-                </div>
-
-
-                <button
-                    type="button"
-                    id="pmSettingsSaveFlock"
-                    class="pm-settings-primary-button"
-                >
-                    Save Flock Size
-                </button>
-
-            </div>
-
-
-            <!-- =========================================
-                 FEEDING SCHEDULE
-                 ========================================= -->
-
-            <div
-                class="pm-settings-card"
-                id="pmSettingsScheduleCard"
-            >
-
-                <div class="pm-settings-card-heading">
-
-                    <div>
-
-                        <span class="pm-settings-icon">
-                            🕐
-                        </span>
-
-                        <div>
-
-                            <h3>
-                                Feeding Schedule
-                            </h3>
-
-                            <p>
-                                Set your morning and afternoon feeding times.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-time-grid">
-
-                    <label>
-
-                        <span>
-                            Morning Feed
-                        </span>
-
-                        <input
-                            type="time"
-                            id="pmSettingsMorningTime"
-                        >
-
-                    </label>
-
-
-                    <label>
-
-                        <span>
-                            Afternoon Feed
-                        </span>
-
-                        <input
-                            type="time"
-                            id="pmSettingsAfternoonTime"
-                        >
-
-                    </label>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    id="pmSettingsSaveSchedule"
-                    class="pm-settings-primary-button"
-                >
-                    Save Feeding Schedule
-                </button>
-
-                <p
-                    id="pmSettingsScheduleStatus"
-                    class="pm-settings-status"
-                ></p>
-
-            </div>
-
-
-            <!-- =========================================
-                 FEED ALARM
-                 ========================================= -->
-
-            <div
-                class="pm-settings-card"
-            >
-
-                <div class="pm-settings-card-heading">
-
-                    <div>
-
-                        <span class="pm-settings-icon">
-                            🔔
-                        </span>
-
-                        <div>
-
-                            <h3>
-                                Feed Alarm
-                            </h3>
-
-                            <p>
-                                Receive reminders when it is time to feed.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <label class="pm-settings-switch">
-
-                        <input
-                            type="checkbox"
-                            id="pmSettingsAlarmToggle"
-                        >
-
-                        <span
-                            class="pm-settings-slider"
-                        ></span>
-
-                    </label>
-
-                </div>
-
-                <p
-                    id="pmSettingsAlarmStatus"
-                    class="pm-settings-status"
-                ></p>
-
-            </div>
-
-
-            <!-- =========================================
-                 NOTIFICATIONS
-                 ========================================= -->
-
-            <div
-                class="pm-settings-card"
-            >
-
-                <div class="pm-settings-card-heading">
-
-                    <div>
-
-                        <span class="pm-settings-icon">
-                            📲
-                        </span>
-
-                        <div>
-
-                            <h3>
-                                Notifications
-                            </h3>
-
-                            <p>
-                                Connect this device to Poultry Manager notifications.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    id="pmSettingsNotificationsButton"
-                    class="pm-settings-primary-button"
-                >
-                    Enable Notifications
-                </button>
-
-                <p
-                    id="pmSettingsNotificationStatus"
-                    class="pm-settings-status"
-                ></p>
-
-            </div>
-
-
-            <!-- =========================================
-                 APP PREFERENCES
-                 ========================================= -->
-
-            <div
-                class="pm-settings-card"
-            >
-
-                <div class="pm-settings-card-heading">
-
-                    <div>
-
-                        <span class="pm-settings-icon">
-                            🎨
-                        </span>
-
-                        <div>
-
-                            <h3>
-                                App Preferences
-                            </h3>
-
-                            <p>
-                                Personalize how Poultry Manager looks.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-row">
-
-                    <div>
-
-                        <strong>
-                            Dark Mode
-                        </strong>
-
-                        <span>
-                            Use a darker interface.
-                        </span>
-
-                    </div>
-
-                    <label class="pm-settings-switch">
-
-                        <input
-                            type="checkbox"
-                            id="pmSettingsThemeToggle"
-                        >
-
-                        <span
-                            class="pm-settings-slider"
-                        ></span>
-
-                    </label>
-
-                </div>
-
-            </div>
-
-
-            <!-- =========================================
-                 DATA BACKUP
-                 ========================================= -->
-
-            <div
-                class="pm-settings-card"
-            >
-
-                <div class="pm-settings-card-heading">
-
-                    <div>
-
-                        <span class="pm-settings-icon">
-                            💾
-                        </span>
-
-                        <div>
-
-                            <h3>
-                                Data Backup
-                            </h3>
-
-                            <p>
-                                Protect your Poultry Manager records.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-button-grid">
-
-                    <button
-                        type="button"
-                        id="pmSettingsExportButton"
-                        class="pm-settings-secondary-button"
-                    >
-                        Export Backup
-                    </button>
-
-                    <button
-                        type="button"
-                        id="pmSettingsRestoreButton"
-                        class="pm-settings-secondary-button"
-                    >
-                        Restore Backup
-                    </button>
-
-                </div>
-
-
-                <input
-                    type="file"
-                    id="pmSettingsRestoreInput"
-                    accept=".json,application/json"
-                    hidden
-                >
-
-                <p
-                    class="pm-settings-status"
-                >
-                    Export your records before changing devices or browsers.
-                </p>
-
-            </div>
-
-
-            <!-- =========================================
-                 ABOUT
-                 ========================================= -->
-
-            <div
-                class="pm-settings-card pm-settings-about-card"
-            >
-
-                <div class="pm-settings-card-heading">
-
-                    <div>
-
-                        <span class="pm-settings-icon">
-                            ℹ️
-                        </span>
-
-                        <div>
-
-                            <h3>
-                                About Poultry Manager
-                            </h3>
-
-                            <p>
-                                Your flock. Your records. Your farm.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-about-content">
-
-                    <strong>
-                        Poultry Manager
-                    </strong>
-
-                    <span>
-                        Production management system
-                    </span>
-
-                    <span>
-                        Built for practical poultry keeping.
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        `;
-    }
-
-
-    function buildSettingsView() {
-
-        const view =
-            ensureSettingsView();
-
-        if (!view) {
-            return;
-        }
-
-        if (
-            !view.querySelector(
-                ".pm-settings-shell"
-            )
-        ) {
-
-            view.innerHTML =
-                createSettingsHTML();
-        }
-
-        bindSettingsControls();
-    }
-
-
-    /* =====================================================
-       FLOCK SETTINGS
-       ===================================================== */
-
-    function refreshFlockSetting() {
-
-        const input =
-            $("pmSettingsFlockInput");
-
-        if (!input) {
-            return;
-        }
-
-        input.value =
-            String(
-                getFlockCount()
-            );
-    }
-
-
-    function saveFlockSetting() {
-
-        const input =
-            $("pmSettingsFlockInput");
-
-        if (!input) {
-            return;
-        }
-
-        let flock =
-            Number(input.value);
-
-        if (!Number.isFinite(flock)) {
-            flock = 0;
-        }
-
-        flock =
-            Math.max(
-                0,
-                Math.floor(flock)
-            );
-
-        storageSet(
-            FLOCK_KEY,
-            flock
-        );
-
-        input.value =
-            String(flock);
-
-
-        if (
-            typeof window.updateFarmOverview ===
-            "function"
-        ) {
-
-            window.updateFarmOverview();
-        }
-
-
-        if (
-            typeof PM.refreshAll ===
-            "function"
-        ) {
-
-            PM.refreshAll();
-        }
-
-
-        const status =
-            input.parentElement
-                ?.parentElement
-                ?.nextElementSibling
-                ?.nextElementSibling;
-
-        if (status) {
-
-            status.textContent =
-                "Flock size saved.";
-
-            setTimeout(
-                () => {
-
-                    if (
-                        status.textContent ===
-                        "Flock size saved."
-                    ) {
-
-                        status.textContent =
-                            "";
-                    }
-
-                },
-                2500
-            );
-        }
-    }
-
-
-    /* =====================================================
-       SCHEDULE SETTINGS
-       ===================================================== */
-
-    function getScheduleData() {
-
-        const saved =
-            readJSON(
-                SCHEDULE_KEY,
-                null
-            );
-
-        if (
-            saved &&
-            typeof saved ===
-            "object"
-        ) {
-
-            return {
-                morning:
-                    saved.morning ||
-                    saved.morningTime ||
-                    "07:00",
-
-                afternoon:
-                    saved.afternoon ||
-                    saved.afternoonTime ||
-                    "17:00"
-            };
-        }
-
-        return {
-            morning: "07:00",
-            afternoon: "17:00"
-        };
-    }
-
-
-    function refreshScheduleSetting() {
-
-        const morning =
-            $("pmSettingsMorningTime");
-
-        const afternoon =
-            $("pmSettingsAfternoonTime");
-
-        if (!morning || !afternoon) {
-            return;
-        }
-
-        const schedule =
-            getScheduleData();
-
-        morning.value =
-            schedule.morning;
-
-        afternoon.value =
-            schedule.afternoon;
-    }
-
-
-    async function saveScheduleSetting() {
-
-        const morning =
-            $("pmSettingsMorningTime");
-
-        const afternoon =
-            $("pmSettingsAfternoonTime");
-
-        const status =
-            $("pmSettingsScheduleStatus");
-
-        if (!morning || !afternoon) {
-            return;
-        }
-
-        const schedule = {
-
-            morning:
-                morning.value ||
-                "07:00",
-
-            afternoon:
-                afternoon.value ||
-                "17:00"
-
-        };
-
-
-        writeJSON(
-            SCHEDULE_KEY,
-            schedule
-        );
-
-
-        if (status) {
-
-            status.textContent =
-                "Saving schedule...";
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    "https://poultry-manager-hppo.onrender.com/schedule",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify(
-                                schedule
-                            )
-                    }
-                );
-
-
-            if (
-                response.ok
-            ) {
-
-                if (status) {
-
-                    status.textContent =
-                        "Schedule saved successfully.";
-                }
-
-            } else {
-
-                if (status) {
-
-                    status.textContent =
-                        "Saved on this device. Server sync unavailable.";
-                }
-            }
-
-        } catch (error) {
-
-            if (status) {
-
-                status.textContent =
-                    "Saved on this device. Server sync unavailable.";
-            }
-
-        }
-
-
-        if (
-            typeof PM.refreshAll ===
-            "function"
-        ) {
-
-            PM.refreshAll();
-        }
-
-        if (
-            typeof window.updateFarmOverview ===
-            "function"
-        ) {
-
-            window.updateFarmOverview();
-        }
-
-
-        setTimeout(
-            () => {
-
-                if (status) {
-                    status.textContent = "";
-                }
-
-            },
-            3500
-        );
-    }
-
-
-    /* =====================================================
-       ALARM SETTINGS
-       ===================================================== */
-
-    function isAlarmEnabled() {
-
-        return (
-            storageGet(
-                ALARM_KEY,
-                "false"
-            ) === "true"
-        );
-    }
-
-
-    function refreshAlarmSetting() {
-
-        const toggle =
-            $("pmSettingsAlarmToggle");
-
-        const status =
-            $("pmSettingsAlarmStatus");
-
-        if (!toggle) {
-            return;
-        }
-
-        toggle.checked =
-            isAlarmEnabled();
-
-
-        if (status) {
-
-            status.textContent =
-                toggle.checked
-                    ? "Feed alarm is enabled."
-                    : "Feed alarm is currently off.";
-        }
-    }
-
-
-    function toggleAlarm() {
-
-        const toggle =
-            $("pmSettingsAlarmToggle");
-
-        if (!toggle) {
-            return;
-        }
-
-        const enabled =
-            Boolean(
-                toggle.checked
-            );
-
-        storageSet(
-            ALARM_KEY,
-            enabled
-                ? "true"
-                : "false"
-        );
-
-
-        refreshAlarmSetting();
-
-
-        if (
-            typeof PM.checkFeedAlarm ===
-            "function"
-        ) {
-
-            PM.checkFeedAlarm();
-        }
-    }
-
-
-    /* =====================================================
-       THEME
-       ===================================================== */
-
-    function isDarkMode() {
-
-        return (
-            storageGet(
-                THEME_KEY,
-                "light"
-            ) === "dark"
-        );
-    }
-
-
-    function applyTheme(
-        theme
-    ) {
-
-        const root =
-            document.documentElement;
-
-        const dark =
-            theme === "dark";
-
-        if (dark) {
-
-            root.setAttribute(
-                "data-theme",
-                "dark"
-            );
-
-        } else {
-
-            root.removeAttribute(
-                "data-theme"
-            );
-        }
-
-        storageSet(
-            THEME_KEY,
-            dark
-                ? "dark"
-                : "light"
-        );
-    }
-
-
-    function refreshThemeSetting() {
-
-        const toggle =
-            $("pmSettingsThemeToggle");
-
-        if (!toggle) {
-            return;
-        }
-
-        toggle.checked =
-            isDarkMode();
-    }
-
-
-    function toggleTheme() {
-
-        const toggle =
-            $("pmSettingsThemeToggle");
-
-        if (!toggle) {
-            return;
-        }
-
-        applyTheme(
-            toggle.checked
-                ? "dark"
-                : "light"
-        );
-    }
-
-
-    function loadSavedTheme() {
-
-        const theme =
-            storageGet(
-                THEME_KEY,
-                "light"
-            );
-
-        applyTheme(
-            theme === "dark"
-                ? "dark"
-                : "light"
-        );
-    }
-
-
-    /* =====================================================
-       NOTIFICATIONS
-       ===================================================== */
-
-    function refreshNotificationSetting() {
-
-        const button =
-            $("pmSettingsNotificationsButton");
-
-        const status =
-            $("pmSettingsNotificationStatus");
-
-        if (!button) {
-            return;
-        }
-
-        const enabled =
-            storageGet(
-                NOTIFICATION_KEY,
-                "false"
-            ) === "true";
-
-
-        if (
-            enabled
-        ) {
-
-            button.textContent =
-                "Notifications Enabled";
-
-            if (status) {
-
-                status.textContent =
-                    "This device is connected to notifications.";
-            }
-
-        } else {
-
-            button.textContent =
-                "Enable Notifications";
-
-            if (status) {
-
-                status.textContent =
-                    "Notifications are not connected on this device.";
-            }
-        }
-    }
-
-
-    async function enableNotificationsFromSettings() {
-
-        const status =
-            $("pmSettingsNotificationStatus");
-
-        if (status) {
-
-            status.textContent =
-                "Connecting notifications...";
-        }
-
-
-        try {
-
-            if (
-                typeof PM.enableNotifications ===
-                "function"
-            ) {
-
-                await PM.enableNotifications();
-
-            } else if (
-                typeof window.enableNotifications ===
-                "function"
-            ) {
-
-                await window.enableNotifications();
-
-            } else {
-
-                throw new Error(
-                    "Notification system unavailable."
-                );
-            }
-
-
-            storageSet(
-                NOTIFICATION_KEY,
+            !element ||
+            element.dataset.pmConnected ===
                 "true"
-            );
-
-
-            refreshNotificationSetting();
-
-
-        } catch (error) {
-
-            console.error(
-                "Notification setup error:",
-                error
-            );
-
-            if (status) {
-
-                status.textContent =
-                    error.message ||
-                    "Notifications could not be enabled.";
-            }
-        }
-    }
-
-
-    /* =====================================================
-       BACKUP EXPORT
-       ===================================================== */
-
-    function collectAllStorage() {
-
-        const data = {};
-
-        try {
-
-            for (
-                let index = 0;
-                index < localStorage.length;
-                index++
-            ) {
-
-                const key =
-                    localStorage.key(
-                        index
-                    );
-
-                if (!key) {
-                    continue;
-                }
-
-                data[key] =
-                    localStorage.getItem(
-                        key
-                    );
-            }
-
-        } catch (error) {
-
-            console.error(
-                "Could not collect storage:",
-                error
-            );
-        }
-
-        return data;
-    }
-
-
-    function exportBackup() {
-
-        const backup = {
-
-            app:
-                "Poultry Manager",
-
-            version:
-                "2.0",
-
-            exportedAt:
-                new Date().toISOString(),
-
-            data:
-                collectAllStorage()
-
-        };
-
-
-        const json =
-            JSON.stringify(
-                backup,
-                null,
-                2
-            );
-
-
-        const blob =
-            new Blob(
-                [json],
-                {
-                    type:
-                        "application/json"
-                }
-            );
-
-
-        const url =
-            URL.createObjectURL(
-                blob
-            );
-
-
-        const link =
-            document.createElement(
-                "a"
-            );
-
-        const date =
-            getTodayKey();
-
-
-        link.href =
-            url;
-
-        link.download =
-            `poultry-manager-backup-${date}.json`;
-
-
-        document.body.appendChild(
-            link
-        );
-
-        link.click();
-
-        link.remove();
-
-
-        setTimeout(
-            () => {
-
-                URL.revokeObjectURL(
-                    url
-                );
-
-            },
-            1000
-        );
-    }
-
-
-    /* =====================================================
-       BACKUP RESTORE
-       ===================================================== */
-
-    function restoreBackupFile(
-        file
-    ) {
-
-        if (!file) {
+        ) {
             return;
         }
 
+        element.dataset.pmConnected =
+            "true";
 
-        const reader =
-            new FileReader();
+        element.addEventListener(
+            "click",
+            callback
+        );
+    }
 
+    /* =======================================================
+       COMPATIBILITY INITIALISATION
+       ======================================================= */
 
-        reader.onload =
-            function () {
+    function setupCompatibility() {
+        /*
+         * Some older versions of the HTML used slightly
+         * different button IDs. Connect them only if
+         * present, without creating duplicate listeners
+         * on the current IDs.
+         */
+
+        connectLegacyButton(
+            [
+                "#dashboardNavButton",
+                "#dashboardButton"
+            ],
+            () => {
+                if (
+                    typeof PM.showDashboard ===
+                    "function"
+                ) {
+                    PM.showDashboard();
+                }
+            }
+        );
+
+        connectLegacyButton(
+            [
+                "#settingsNavButton",
+                "#settingsButton"
+            ],
+            () => {
+                if (
+                    typeof PM.showSettings ===
+                    "function"
+                ) {
+                    PM.showSettings();
+                }
+            }
+        );
+
+        connectLegacyButton(
+            [
+                "#pmSettingsNotificationsButton"
+            ],
+            async () => {
+                if (
+                    typeof PM.enableNotifications !==
+                    "function"
+                ) {
+                    return;
+                }
 
                 try {
-
-                    const backup =
-                        JSON.parse(
-                            reader.result
-                        );
-
-
-                    if (
-                        !backup ||
-                        backup.app !==
-                            "Poultry Manager"
-                    ) {
-
-                        alert(
-                            "This file is not a valid Poultry Manager backup."
-                        );
-
-                        return;
-                    }
-
-
-                    if (
-                        !backup.data ||
-                        typeof backup.data !==
-                            "object"
-                    ) {
-
-                        alert(
-                            "The backup file does not contain valid data."
-                        );
-
-                        return;
-                    }
-
-
-                    const confirmed =
-                        confirm(
-                            "Restore this Poultry Manager backup?\n\nCurrent app data will be replaced by the data in the backup."
-                        );
-
-
-                    if (!confirmed) {
-                        return;
-                    }
-
-
-                    localStorage.clear();
-
-
-                    Object.keys(
-                        backup.data
-                    ).forEach(
-                        (key) => {
-
-                            localStorage.setItem(
-                                key,
-                                backup.data[key]
-                            );
-
-                        }
-                    );
-
+                    await PM.enableNotifications();
 
                     alert(
-                        "Backup restored successfully. Poultry Manager will now reload."
+                        "Notifications are enabled."
                     );
-
-
-                    window.location.reload();
-
                 } catch (error) {
-
-                    console.error(
-                        "Backup restore error:",
-                        error
-                    );
-
                     alert(
-                        "The backup file could not be read."
+                        error.message ||
+                        "Notifications could not be enabled."
                     );
                 }
-            };
-
-
-        reader.onerror =
-            function () {
-
-                alert(
-                    "The backup file could not be opened."
-                );
-            };
-
-
-        reader.readAsText(
-            file
+            }
         );
-    }
 
+        connectLegacyButton(
+            [
+                "#pmSettingsExportButton"
+            ],
+            () => {
+                if (
+                    typeof PM.exportBackup ===
+                    "function"
+                ) {
+                    PM.exportBackup();
+                }
+            }
+        );
 
-    /* =====================================================
-       SETTINGS REFRESH
-       ===================================================== */
+        connectLegacyButton(
+            [
+                "#pmSettingsRestoreButton"
+            ],
+            () => {
+                const input =
+                    getElement(
+                        "#pmSettingsRestoreInput"
+                    );
 
-    function refreshSettingsUI() {
-
-        refreshFlockSetting();
-
-        refreshScheduleSetting();
-
-        refreshAlarmSetting();
-
-        refreshThemeSetting();
-
-        refreshNotificationSetting();
-    }
-
-
-    /* =====================================================
-       SETTINGS EVENT BINDING
-       ===================================================== */
-
-    function bindSettingsControls() {
-
-        const backButton =
-            $("pmSettingsBackButton");
-
-        if (
-            backButton &&
-            !backButton.dataset.bound
-        ) {
-
-            backButton.dataset.bound =
-                "true";
-
-            backButton.addEventListener(
-                "click",
-                showDashboard
-            );
-        }
-
-
-        const saveFlock =
-            $("pmSettingsSaveFlock");
-
-        if (
-            saveFlock &&
-            !saveFlock.dataset.bound
-        ) {
-
-            saveFlock.dataset.bound =
-                "true";
-
-            saveFlock.addEventListener(
-                "click",
-                saveFlockSetting
-            );
-        }
-
-
-        const saveSchedule =
-            $("pmSettingsSaveSchedule");
-
-        if (
-            saveSchedule &&
-            !saveSchedule.dataset.bound
-        ) {
-
-            saveSchedule.dataset.bound =
-                "true";
-
-            saveSchedule.addEventListener(
-                "click",
-                saveScheduleSetting
-            );
-        }
-
-
-        const alarmToggle =
-            $("pmSettingsAlarmToggle");
-
-        if (
-            alarmToggle &&
-            !alarmToggle.dataset.bound
-        ) {
-
-            alarmToggle.dataset.bound =
-                "true";
-
-            alarmToggle.addEventListener(
-                "change",
-                toggleAlarm
-            );
-        }
-
-
-        const themeToggle =
-            $("pmSettingsThemeToggle");
-
-        if (
-            themeToggle &&
-            !themeToggle.dataset.bound
-        ) {
-
-            themeToggle.dataset.bound =
-                "true";
-
-            themeToggle.addEventListener(
-                "change",
-                toggleTheme
-            );
-        }
-
-
-        const notificationButton =
-            $("pmSettingsNotificationsButton");
-
-        if (
-            notificationButton &&
-            !notificationButton.dataset.bound
-        ) {
-
-            notificationButton.dataset.bound =
-                "true";
-
-            notificationButton.addEventListener(
-                "click",
-                enableNotificationsFromSettings
-            );
-        }
-
-
-        const exportButton =
-            $("pmSettingsExportButton");
-
-        if (
-            exportButton &&
-            !exportButton.dataset.bound
-        ) {
-
-            exportButton.dataset.bound =
-                "true";
-
-            exportButton.addEventListener(
-                "click",
-                exportBackup
-            );
-        }
-
-
-        const restoreButton =
-            $("pmSettingsRestoreButton");
+                input?.click();
+            }
+        );
 
         const restoreInput =
-            $("pmSettingsRestoreInput");
-
-
-        if (
-            restoreButton &&
-            restoreInput &&
-            !restoreButton.dataset.bound
-        ) {
-
-            restoreButton.dataset.bound =
-                "true";
-
-            restoreButton.addEventListener(
-                "click",
-                function () {
-
-                    restoreInput.click();
-
-                }
+            getElement(
+                "#pmSettingsRestoreInput"
             );
-        }
-
 
         if (
             restoreInput &&
-            !restoreInput.dataset.bound
+            restoreInput.dataset.pmConnected !==
+                "true"
         ) {
-
-            restoreInput.dataset.bound =
+            restoreInput.dataset.pmConnected =
                 "true";
 
             restoreInput.addEventListener(
                 "change",
-                function () {
-
+                event => {
                     const file =
-                        this.files &&
-                        this.files[0];
+                        event.target.files?.[0];
 
-                    if (file) {
-
-                        restoreBackupFile(
+                    if (
+                        file &&
+                        typeof PM.restoreBackupFile ===
+                            "function"
+                    ) {
+                        PM.restoreBackupFile(
                             file
                         );
                     }
 
-                    this.value =
-                        "";
+                    event.target.value = "";
                 }
             );
         }
     }
 
-
-    /* =====================================================
-       QUICK ACTION SAFETY
-       ===================================================== */
-
-    function setupQuickActionFallbacks() {
-
-        const quickAddEggs =
-            $("quickAddEggs");
-
-        const quickFeed =
-            $("quickFeed");
-
-        const quickHistory =
-            $("quickHistory");
-
-
-        if (
-            quickAddEggs &&
-            !quickAddEggs.dataset.settingsBound
-        ) {
-
-            quickAddEggs.dataset.settingsBound =
-                "true";
-
-            quickAddEggs.addEventListener(
-                "click",
-                function () {
-
-                    if (
-                        typeof PM.addEgg ===
-                        "function"
-                    ) {
-
-                        PM.addEgg();
-
-                        return;
-                    }
-
-
-                    if (
-                        typeof window.addEgg ===
-                        "function"
-                    ) {
-
-                        window.addEgg();
-
-                        return;
-                    }
-
-
-                    const button =
-                        $("addEggButton");
-
-                    if (button) {
-                        button.click();
-                    }
-                }
-            );
-        }
-
-
-        if (
-            quickFeed &&
-            !quickFeed.dataset.settingsBound
-        ) {
-
-            quickFeed.dataset.settingsBound =
-                "true";
-
-            quickFeed.addEventListener(
-                "click",
-                function () {
-
-                    const feedSection =
-                        $("feedManagementSection") ||
-                        $("feedManagement") ||
-                        document.querySelector(
-                            ".feed-management-section"
-                        );
-
-
-                    if (feedSection) {
-
-                        feedSection.scrollIntoView({
-                            behavior:
-                                "smooth",
-                            block:
-                                "start"
-                        });
-
-                    }
-
-
-                    const input =
-                        $("feedInput");
-
-                    if (input) {
-
-                        setTimeout(
-                            () => {
-
-                                input.focus();
-
-                            },
-                            400
-                        );
-                    }
-                }
-            );
-        }
-
-
-        if (
-            quickHistory &&
-            !quickHistory.dataset.settingsBound
-        ) {
-
-            quickHistory.dataset.settingsBound =
-                "true";
-
-            quickHistory.addEventListener(
-                "click",
-                function () {
-
-                    const history =
-                        $("eggHistoryList");
-
-                    if (history) {
-
-                        history.scrollIntoView({
-                            behavior:
-                                "smooth",
-                            block:
-                                "start"
-                        });
-                    }
-                }
-            );
-        }
-    }
-
-
-    /* =====================================================
-       FARM OVERVIEW SAFETY REFRESH
-       ===================================================== */
-
-    function refreshFarmOverviewFallback() {
-
-        const flock =
-            $("farmOverviewFlock");
-
-        const eggs =
-            $("farmOverviewEggs");
-
-        const rate =
-            $("farmOverviewLayingRate");
-
-        const feed =
-            $("farmOverviewFeed");
-
-
-        const flockCount =
-            getFlockCount();
-
-        const todayEggs =
-            getTodayEggs();
-
-        const feedStock =
-            getFeedStock();
-
-
-        if (flock) {
-
-            flock.textContent =
-                String(
-                    flockCount
-                );
-        }
-
-
-        if (eggs) {
-
-            eggs.textContent =
-                String(
-                    todayEggs
-                );
-        }
-
-
-        if (rate) {
-
-            const layingRate =
-                flockCount > 0
-                    ? (
-                        todayEggs /
-                        flockCount
-                    ) * 100
-                    : 0;
-
-            rate.textContent =
-                `${layingRate.toFixed(0)}%`;
-        }
-
-
-        if (feed) {
-
-            feed.textContent =
-                `${feedStock.toFixed(1)} kg`;
-        }
-    }
-
-
-    /* =====================================================
-       SERVICE WORKER
-       ===================================================== */
-
-    async function registerServiceWorker() {
-
-        if (
-            !("serviceWorker" in navigator)
-        ) {
-
-            return null;
-        }
-
-
-        try {
-
-            const swUrl =
-                new URL(
-                    "sw.js",
-                    window.location.href
-                );
-
-
-            const registration =
-                await navigator.serviceWorker.register(
-                    swUrl.href
-                );
-
-
-            console.log(
-                "Poultry Manager service worker registered:",
-                registration.scope
+    /* =======================================================
+       VISIBILITY SAFETY
+       ======================================================= */
+
+    function preventOldSectionCollision() {
+        const dashboard =
+            document.querySelector(
+                "#pmDashboardView"
             );
 
-
-            return registration;
-
-        } catch (error) {
-
-            console.error(
-                "Service worker registration failed:",
-                error
+        const settings =
+            document.querySelector(
+                "#pmSettingsView"
             );
 
-            return null;
-        }
-    }
-
-
-    /* =====================================================
-       APP INSTALL / PWA POLISH
-       ===================================================== */
-
-    function setupInstallHints() {
-
-        let deferredPrompt =
-            null;
-
-
-        window.addEventListener(
-            "beforeinstallprompt",
-            function (event) {
-
-                event.preventDefault();
-
-                deferredPrompt =
-                    event;
-
-                window.PoultryManagerInstall =
-                    function () {
-
-                        if (
-                            !deferredPrompt
-                        ) {
-
-                            return false;
-                        }
-
-
-                        deferredPrompt.prompt();
-
-
-                        deferredPrompt =
-                            null;
-
-                        return true;
-                    };
-            }
-        );
-
-
-        window.addEventListener(
-            "appinstalled",
-            function () {
-
-                deferredPrompt =
-                    null;
-
-                console.log(
-                    "Poultry Manager installed."
-                );
-            }
-        );
-    }
-
-
-    /* =====================================================
-       HIDE LEGACY DASHBOARD BACKUP
-       ===================================================== */
-
-    function hideLegacyBackupSection() {
-
-        const candidates = [
-
-            "#dataBackupSection",
-
-            "#backupSection",
-
-            ".data-backup-section",
-
-            ".backup-section"
-
-        ];
-
-
-        candidates.forEach(
-            (selector) => {
-
-                const element =
-                    document.querySelector(
-                        selector
-                    );
-
-                if (element) {
-
-                    if (
-                        !element.closest(
-                            "#pmSettingsView"
-                        )
-                    ) {
-
-                        element.style.display =
-                            "none";
-                    }
-                }
-            }
-        );
-    }
-
-
-    /* =====================================================
-       APP SHELL POLISH
-       ===================================================== */
-
-    function applyAppShellPolish() {
-
-        document.documentElement
-            .classList.add(
-                "poultry-manager-ready"
-            );
-
-
-        const body =
-            document.body;
-
-        if (body) {
-
-            body.classList.add(
-                "poultry-manager-app"
-            );
-        }
-    }
-
-
-    /* =====================================================
-       MIDNIGHT ROLLOVER
-       ===================================================== */
-
-    let midnightTimer =
-        null;
-
-
-    function scheduleMidnightRefresh() {
-
-        if (midnightTimer) {
-
-            clearTimeout(
-                midnightTimer
-            );
-        }
-
-
-        const now =
-            new Date();
-
-
-        const tomorrow =
-            new Date(now);
-
-
-        tomorrow.setDate(
-            tomorrow.getDate() + 1
-        );
-
-
-        tomorrow.setHours(
-            0,
-            0,
-            2,
-            0
-        );
-
-
-        const delay =
-            Math.max(
-                1000,
-                tomorrow.getTime() -
-                now.getTime()
-            );
-
-
-        midnightTimer =
-            setTimeout(
-                function () {
-
-                    if (
-                        typeof PM.refreshAll ===
-                        "function"
-                    ) {
-
-                        PM.refreshAll();
-                    }
-
-
-                    if (
-                        typeof window.updateFarmOverview ===
-                        "function"
-                    ) {
-
-                        window.updateFarmOverview();
-                    }
-
-
-                    refreshSettingsUI();
-
-                    scheduleMidnightRefresh();
-
-                },
-                delay
-            );
-    }
-
-
-    /* =====================================================
-       LIVE HEADER DATE
-       ===================================================== */
-
-    function updateHeaderDate() {
-
-        const dateElements = [
-
-            $("currentDate"),
-
-            $("headerDate"),
-
-            $("pmCurrentDate")
-
-        ];
-
-
-        const now =
-            new Date();
-
-
-        const formatted =
-            now.toLocaleDateString(
-                undefined,
-                {
-                    weekday:
-                        "long",
-
-                    day:
-                        "numeric",
-
-                    month:
-                        "long",
-
-                    year:
-                        "numeric"
-                }
-            );
-
-
-        dateElements.forEach(
-            (element) => {
-
-                if (element) {
-
-                    element.textContent =
-                        formatted;
-                }
-
-            }
-        );
-    }
-
-
-    function startHeaderClock() {
-
-        updateHeaderDate();
-
-
-        setInterval(
-            updateHeaderDate,
-            60000
-        );
-    }
-
-
-    /* =====================================================
-       PERIODIC UI REFRESH
-       ===================================================== */
-
-    function startCompanionRefresh() {
-
-        setInterval(
-            function () {
-
-                refreshFarmOverviewFallback();
-
-                if (
-                    typeof window.updateFarmOverview ===
-                    "function"
-                ) {
-
-                    window.updateFarmOverview();
-                }
-
-            },
-            2000
-        );
-    }
-
-
-    /* =====================================================
-       CURRENT VIEW RESTORATION
-       ===================================================== */
-
-    function restoreLastView() {
-
-        const savedView =
-            storageGet(
-                SETTINGS_VIEW_KEY,
-                "dashboard"
-            );
-
-
-        if (
-            savedView ===
-            "settings"
-        ) {
-
-            showSettings();
-
-        } else {
-
-            showDashboard();
-        }
-    }
-
-
-    /* =====================================================
-       PREVENT DOUBLE SETTINGS BUILD
-       ===================================================== */
-
-    let initialized =
-        false;
-
-
-    /* =====================================================
-       COMPANION INITIALIZATION
-       ===================================================== */
-
-    function initializePartTwo() {
-
-        if (initialized) {
+        if (!dashboard || !settings) {
             return;
         }
 
-        initialized =
-            true;
-
-
-        refreshViewReferences();
-
-
         /*
-         * Settings must exist before
-         * navigation tries to display it.
+         * The old navigation system sometimes hid individual
+         * sections instead of the entire view. The current
+         * system always treats Dashboard and Settings as
+         * separate pages.
          */
 
-        buildSettingsView();
+        const current =
+            localStorage.getItem(
+                "poultryManagerView"
+            );
 
+        if (current === "settings") {
+            dashboard.style.display =
+                "none";
 
-        /*
-         * Apply saved appearance first.
-         */
+            settings.style.display =
+                "";
+        } else {
+            dashboard.style.display =
+                "";
 
-        loadSavedTheme();
-
-
-        /*
-         * Navigation.
-         */
-
-        setupNavigation();
-
-
-        /*
-         * Quick action protection.
-         */
-
-        setupQuickActionFallbacks();
-
-
-        /*
-         * Hide old backup UI if it
-         * still exists on Dashboard.
-         */
-
-        hideLegacyBackupSection();
-
-
-        /*
-         * App shell.
-         */
-
-        applyAppShellPolish();
-
-
-        /*
-         * PWA.
-         */
-
-        setupInstallHints();
-
-
-        /*
-         * Service worker.
-         */
-
-        registerServiceWorker();
-
-
-        /*
-         * Header.
-         */
-
-        startHeaderClock();
-
-
-        /*
-         * New-day rollover.
-         */
-
-        scheduleMidnightRefresh();
-
-
-        /*
-         * Keep Farm Overview live.
-         */
-
-        startCompanionRefresh();
-
-
-        /*
-         * Refresh settings after
-         * everything has been built.
-         */
-
-        refreshSettingsUI();
-
-
-        /*
-         * Restore the user's last
-         * selected section.
-         */
-
-        restoreLastView();
-
-
-        /*
-         * Final Farm Overview update.
-         */
-
-        refreshFarmOverviewFallback();
-
-
-        if (
-            typeof window.updateFarmOverview ===
-            "function"
-        ) {
-
-            window.updateFarmOverview();
+            settings.style.display =
+                "none";
         }
-
-
-        console.log(
-            "Poultry Manager Part 2 initialized."
-        );
     }
 
+    /* =======================================================
+       STORAGE EVENT
+       ======================================================= */
 
-    /* =====================================================
-       PUBLIC COMPANION API
-       ===================================================== */
+    window.addEventListener(
+        "storage",
+        event => {
+            if (!event.key) {
+                return;
+            }
 
-    window.PoultryManager =
-        window.PoultryManager || {};
+            if (
+                [
+                    "flockCount",
+                    "eggHistory",
+                    "feed",
+                    "feedUsageHistory",
+                    "feedAdditionHistory",
+                    "feedingSchedule",
+                    "feedAlarmEnabled",
+                    "notificationsEnabled",
+                    "poultryManagerTheme",
+                    "automaticBackupEnabled"
+                ].includes(event.key)
+            ) {
+                if (
+                    typeof PM.refresh ===
+                    "function"
+                ) {
+                    PM.refresh();
+                }
+            }
+        }
+    );
 
+    /* =======================================================
+       PAGE VISIBILITY
+       ======================================================= */
 
-    window.PoultryManager.showDashboard =
-        showDashboard;
+    document.addEventListener(
+        "visibilitychange",
+        () => {
+            if (
+                document.visibilityState ===
+                "visible"
+            ) {
+                if (
+                    typeof PM.refresh ===
+                    "function"
+                ) {
+                    PM.refresh();
+                }
+            }
+        }
+    );
 
+    /* =======================================================
+       RESIZE SUPPORT
+       ======================================================= */
 
-    window.PoultryManager.showSettings =
-        showSettings;
+    let resizeTimer = null;
 
+    window.addEventListener(
+        "resize",
+        () => {
+            clearTimeout(
+                resizeTimer
+            );
 
-    window.PoultryManager.refreshSettings =
-        refreshSettingsUI;
+            resizeTimer =
+                setTimeout(
+                    () => {
+                        if (
+                            typeof PM.refresh ===
+                            "function"
+                        ) {
+                            PM.refresh();
+                        }
+                    },
+                    150
+                );
+        }
+    );
 
+    /* =======================================================
+       KEYBOARD ACCESSIBILITY
+       ======================================================= */
 
-    window.PoultryManager.exportBackup =
-        exportBackup;
+    document.addEventListener(
+        "keydown",
+        event => {
+            /*
+             * Escape returns the user to Dashboard.
+             * This is intentionally lightweight and does
+             * not interfere with inputs.
+             */
+            if (
+                event.key === "Escape" &&
+                document.activeElement?.matches(
+                    "input, textarea, select"
+                ) === false
+            ) {
+                if (
+                    typeof PM.showDashboard ===
+                    "function"
+                ) {
+                    PM.showDashboard();
+                }
+            }
+        }
+    );
 
+    /* =======================================================
+       APP READY
+       ======================================================= */
 
-    window.PoultryManager.restoreBackup =
-        restoreBackupFile;
+    function finishCompatibilitySetup() {
+        setupCompatibility();
 
+        preventOldSectionCollision();
 
-    window.PoultryManager.applyTheme =
-        applyTheme;
-
-
-    window.PoultryManager.getTodayEggs =
-        getTodayEggs;
-
-
-    window.PoultryManager.getFlockCount =
-        getFlockCount;
-
-
-    window.PoultryManager.getFeedStock =
-        getFeedStock;
-
-
-    /* =====================================================
-       SAFE STARTUP
-       ===================================================== */
+        /*
+         * Run once more after the main application has had
+         * time to create Settings/navigation.
+         */
+        setTimeout(
+            () => {
+                setupCompatibility();
+                preventOldSectionCollision();
+            },
+            250
+        );
+    }
 
     if (
         document.readyState ===
         "loading"
     ) {
-
         document.addEventListener(
             "DOMContentLoaded",
-            initializePartTwo,
+            finishCompatibilitySetup,
             {
                 once: true
             }
         );
-
     } else {
-
-        initializePartTwo();
+        finishCompatibilitySetup();
     }
-
 
 })();
