@@ -3030,10 +3030,3 @@ button {
     color: var(--text);
 }
 
-body {
-    outline: 5px solid red !important;
-}
-
-body {
-    background: red !important;
-}
