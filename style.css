@@ -3706,3 +3706,560 @@ html[data-theme="dark"] .feed-reset-button {
     }
 }
 }
+
+
+/* =========================================================
+   POULTRY MANAGER
+   FEED MANAGEMENT — FINAL PROFESSIONAL DESIGN
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   FEED MANAGEMENT CONTAINER
+   --------------------------------------------------------- */
+
+.feed-management {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.feed-management > * {
+    box-sizing: border-box;
+}
+
+
+/* ---------------------------------------------------------
+   FEED INVENTORY / MAIN FEED CARD
+   --------------------------------------------------------- */
+
+.feed-card {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px;
+    padding: 22px;
+    margin: 0 0 18px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e5e7eb);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.feed-card h3,
+.feed-card h4 {
+    margin-top: 0;
+}
+
+.feed-card p {
+    margin-bottom: 0;
+}
+
+
+/* ---------------------------------------------------------
+   FEED METRICS
+   --------------------------------------------------------- */
+
+.feed-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+    margin: 16px 0 0;
+}
+
+.feed-metric {
+    min-width: 0;
+    padding: 16px;
+    border-radius: 16px;
+    background: var(--surface-bg, #f8fafc);
+    border: 1px solid var(--border-color, #e5e7eb);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.feed-metric:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.feed-metric strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--muted-text, #64748b);
+}
+
+.feed-metric span {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--text-color, #111827);
+}
+
+
+/* ---------------------------------------------------------
+   FEED PROGRESS
+   --------------------------------------------------------- */
+
+.feed-progress {
+    width: 100%;
+    margin-top: 18px;
+}
+
+.feed-progress-bar {
+    width: 100%;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--surface-bg, #e5e7eb);
+    transition: background 0.25s ease;
+}
+
+.feed-progress-bar::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: currentColor;
+    transform-origin: left center;
+}
+
+
+/* ---------------------------------------------------------
+   FEED ACTION PANEL
+   --------------------------------------------------------- */
+
+.feed-action-panel {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 18px 0;
+}
+
+.feed-action-card {
+    min-width: 0;
+    padding: 20px;
+    border-radius: 20px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e5e7eb);
+    box-shadow: 0 7px 22px rgba(0, 0, 0, 0.045);
+}
+
+.feed-action-card h3,
+.feed-action-card h4 {
+    margin: 0 0 6px;
+    color: var(--text-color, #111827);
+}
+
+.feed-action-card p {
+    margin: 0 0 14px;
+    color: var(--muted-text, #64748b);
+    line-height: 1.5;
+}
+
+
+/* ---------------------------------------------------------
+   FEED INPUTS
+   --------------------------------------------------------- */
+
+.feed-action-card input,
+.feed-action-panel input {
+    width: 100%;
+    min-height: 48px;
+    box-sizing: border-box;
+    padding: 0 14px;
+    border-radius: 13px;
+    border: 1px solid var(--border-color, #d1d5db);
+    background: var(--input-bg, #ffffff);
+    color: var(--text-color, #111827);
+    font: inherit;
+    outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.feed-action-card input:focus,
+.feed-action-panel input:focus {
+    border-color: currentColor;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12);
+}
+
+
+/* ---------------------------------------------------------
+   FEED ACTION BUTTONS
+   --------------------------------------------------------- */
+
+.feed-action-card button,
+.feed-action-panel button {
+    min-height: 46px;
+    border: 0;
+    border-radius: 13px;
+    padding: 0 16px;
+    margin-top: 10px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        opacity 0.18s ease;
+}
+
+.feed-action-card button:hover,
+.feed-action-panel button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.feed-action-card button:active,
+.feed-action-panel button:active {
+    transform: translateY(0);
+}
+
+
+/* ---------------------------------------------------------
+   FEED SECONDARY / UNDO BUTTON
+   --------------------------------------------------------- */
+
+.feed-secondary-button {
+    background: var(--surface-bg, #f1f5f9);
+    color: var(--text-color, #334155);
+    border: 1px solid var(--border-color, #dbe1e8) !important;
+}
+
+.feed-secondary-button:hover {
+    background: var(--card-bg, #ffffff);
+}
+
+
+/* ---------------------------------------------------------
+   FEED RESET BUTTON
+   --------------------------------------------------------- */
+
+.feed-reset-button {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid rgba(220, 38, 38, 0.2);
+    border-radius: 13px;
+    margin-top: 10px;
+    padding: 0 16px;
+    background: rgba(220, 38, 38, 0.07);
+    color: #b91c1c;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+}
+
+.feed-reset-button:hover {
+    background: rgba(220, 38, 38, 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(220, 38, 38, 0.08);
+}
+
+
+/* ---------------------------------------------------------
+   CONSUMPTION OVERVIEW
+   --------------------------------------------------------- */
+
+.feed-consumption {
+    width: 100%;
+    margin: 18px 0;
+}
+
+.feed-consumption-overview,
+.consumption-overview {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.feed-consumption-overview > *,
+.consumption-overview > * {
+    min-width: 0;
+}
+
+
+/* ---------------------------------------------------------
+   FEED CHART / CONSUMPTION CARD
+   --------------------------------------------------------- */
+
+.feed-chart-card {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 20px;
+    border-radius: 20px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e5e7eb);
+    box-shadow: 0 7px 22px rgba(0, 0, 0, 0.045);
+}
+
+.feed-chart-card h3,
+.feed-chart-card h4 {
+    margin-top: 0;
+    color: var(--text-color, #111827);
+}
+
+.feed-chart-card canvas {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-top: 14px;
+}
+
+
+/* ---------------------------------------------------------
+   FEED HISTORY / RECENT FEED ACTIVITY
+   --------------------------------------------------------- */
+
+.feed-history-card {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 20px;
+    margin-top: 18px;
+    border-radius: 20px;
+    background: var(--card-bg, #ffffff);
+    border: 1px solid var(--border-color, #e5e7eb);
+    box-shadow: 0 7px 22px rgba(0, 0, 0, 0.045);
+}
+
+.feed-history-card h3,
+.feed-history-card h4 {
+    margin-top: 0;
+    color: var(--text-color, #111827);
+}
+
+
+/* ---------------------------------------------------------
+   ACTUAL JAVASCRIPT-GENERATED FEED HISTORY
+   --------------------------------------------------------- */
+
+.feed-history-item {
+    width: 100%;
+    min-height: 56px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 13px 14px;
+    margin-top: 8px;
+    border-radius: 14px;
+    background: var(--surface-bg, #f8fafc);
+    border: 1px solid var(--border-color, #e5e7eb);
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease;
+}
+
+.feed-history-item:hover {
+    transform: translateY(-1px);
+    background: var(--card-bg, #ffffff);
+}
+
+.feed-history-date {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    font-weight: 650;
+    color: var(--text-color, #334155);
+}
+
+.feed-history-value {
+    flex: 0 0 auto;
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: var(--text-color, #111827);
+}
+
+
+/* ---------------------------------------------------------
+   EMPTY FEED HISTORY
+   --------------------------------------------------------- */
+
+.feed-history-card .pm-empty-state,
+#feedHistoryList .pm-empty-state {
+    padding: 24px 14px;
+    text-align: center;
+    border-radius: 14px;
+    color: var(--muted-text, #64748b);
+    background: var(--surface-bg, #f8fafc);
+    border: 1px dashed var(--border-color, #dbe1e8);
+}
+
+
+/* ---------------------------------------------------------
+   FEED HISTORY BUTTON
+   --------------------------------------------------------- */
+
+#viewFeedHistoryButton {
+    min-height: 44px;
+    margin-top: 12px;
+    border-radius: 12px;
+    padding: 0 15px;
+    border: 1px solid var(--border-color, #dbe1e8);
+    background: var(--surface-bg, #f8fafc);
+    color: var(--text-color, #334155);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform 0.18s ease,
+        background 0.18s ease;
+}
+
+#viewFeedHistoryButton:hover {
+    transform: translateY(-1px);
+    background: var(--card-bg, #ffffff);
+}
+
+
+/* ---------------------------------------------------------
+   FEED USAGE RESET
+   --------------------------------------------------------- */
+
+#resetFeedTodayButton {
+    border: 1px solid var(--border-color, #dbe1e8);
+    background: var(--surface-bg, #f8fafc);
+    color: var(--text-color, #475569);
+}
+
+
+/* ---------------------------------------------------------
+   DARK MODE
+   --------------------------------------------------------- */
+
+html[data-theme="dark"] .feed-card,
+html[data-theme="dark"] .feed-action-card,
+html[data-theme="dark"] .feed-chart-card,
+html[data-theme="dark"] .feed-history-card {
+    background: var(--card-bg, #111827);
+    border-color: var(--border-color, #263244);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+html[data-theme="dark"] .feed-metric,
+html[data-theme="dark"] .feed-history-item,
+html[data-theme="dark"] .feed-history-card .pm-empty-state,
+html[data-theme="dark"] #feedHistoryList .pm-empty-state {
+    background: var(--surface-bg, #182231);
+    border-color: var(--border-color, #263244);
+}
+
+html[data-theme="dark"] .feed-action-card input,
+html[data-theme="dark"] .feed-action-panel input {
+    background: var(--input-bg, #111827);
+    border-color: var(--border-color, #334155);
+    color: var(--text-color, #f8fafc);
+}
+
+html[data-theme="dark"] .feed-secondary-button,
+html[data-theme="dark"] #viewFeedHistoryButton,
+html[data-theme="dark"] #resetFeedTodayButton {
+    background: var(--surface-bg, #182231);
+    color: var(--text-color, #e2e8f0);
+    border-color: var(--border-color, #334155) !important;
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE — TABLET
+   --------------------------------------------------------- */
+
+@media (max-width: 760px) {
+
+    .feed-action-panel {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-consumption-overview,
+    .consumption-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-card,
+    .feed-action-card,
+    .feed-chart-card,
+    .feed-history-card {
+        border-radius: 18px;
+        padding: 18px;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE — SMALL PHONES
+   --------------------------------------------------------- */
+
+@media (max-width: 480px) {
+
+    .feed-metrics {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+    }
+
+    .feed-metric {
+        padding: 13px;
+        border-radius: 14px;
+    }
+
+    .feed-metric strong {
+        font-size: 0.72rem;
+    }
+
+    .feed-metric span {
+        font-size: 1.05rem;
+    }
+
+    .feed-card,
+    .feed-action-card,
+    .feed-chart-card,
+    .feed-history-card {
+        padding: 15px;
+        border-radius: 16px;
+    }
+
+    .feed-history-item {
+        min-height: 52px;
+        padding: 11px 12px;
+    }
+
+    .feed-history-date,
+    .feed-history-value {
+        font-size: 0.85rem;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   VERY SMALL PHONES
+   --------------------------------------------------------- */
+
+@media (max-width: 360px) {
+
+    .feed-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-history-item {
+        gap: 10px;
+    }
+}
