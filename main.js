@@ -2798,10 +2798,7 @@
         );
 
 
-        saveFeedAdditionHistory(
-            []
-        );
-
+        
 
         const input =
             $("feedInput");
@@ -2829,135 +2826,85 @@
        17. FEED ANALYTICS
        ===================================================== */
 
-    function getFeedStats() {
+  function getFeedStats() {
 
-        const history =
-            getFeedUsageHistory();
+    const history =
+        getFeedUsageHistory();
 
+    const dates =
+        getRecentDateKeys(7);
 
-        const dates =
-            getRecentDateKeys(
-                7
-            );
+    const usage =
+        dates.map(
+            date => ({
+                date,
+                amount:
+                    safeNumber(
+                        history[date]
+                    )
+            })
+        );
 
+    const totalUsage =
+        usage.reduce(
+            (sum, item) =>
+                sum + item.amount,
+            0
+        );
 
-        const usage =
-            dates.map(
-                date => ({
-                    date,
-                    amount:
-                        safeNumber(
-                            history[date]
-                        )
-                })
-            );
+    /*
+     * Only days with actual recorded feed
+     * usage are used to calculate the
+     * average daily consumption.
+     *
+     * This prevents unrecorded days from
+     * making the flock appear to consume
+     * less feed than it actually does.
+     */
+    const activeUsageDays =
+        usage.filter(
+            item =>
+                item.amount > 0
+        );
 
+    const averageUsage =
+        activeUsageDays.length > 0
+            ? totalUsage /
+              activeUsageDays.length
+            : 0;
 
-        const totalUsage =
-            usage.reduce(
-                (sum, item) =>
-                    sum +
-                    item.amount,
-                0
-            );
+    const flock =
+        getFlockCount();
 
+    const feedPerBird =
+        flock > 0
+            ? averageUsage / flock
+            : 0;
 
-        const averageUsage =
-            totalUsage /
-            dates.length;
+    const stock =
+        getFeedAmount();
 
+    /*
+     * Estimated number of days the current
+     * feed stock will last.
+     */
+    const daysRemaining =
+        averageUsage > 0
+            ? stock / averageUsage
+            : 0;
 
-        const flock =
-            getFlockCount();
-
-
-        const feedPerBird =
-            flock > 0
-                ? averageUsage /
-                  flock
-                : 0;
-
-
-        const stock =
-            getFeedAmount();
-
-
-        const daysRemaining =
-            averageUsage > 0
-                ? stock /
-                  averageUsage
-                : 0;
-
-
-        return {
-            dates,
-            usage,
-            totalUsage,
-            averageUsage,
-            feedPerBird,
-            stock,
-            daysRemaining
-        };
-    }
-
-
-    function getFeedStatus(
-        daysRemaining
-    ) {
-
-        if (
-            daysRemaining <= 0
-        ) {
-
-            return {
-                label: "Out of feed",
-                percentage: 0,
-                className: "danger"
-            };
-        }
-
-
-        const percentage =
-            clamp(
-                (
-                    daysRemaining /
-                    14
-                ) * 100,
-                0,
-                100
-            );
-
-
-        if (
-            daysRemaining < 2
-        ) {
-
-            return {
-                label: "Very low",
-                percentage,
-                className: "danger"
-            };
-        }
-
-
-        if (
-            daysRemaining < 5
-        ) {
-
-            return {
-                label: "Running low",
-                percentage,
-                className: "warning"
-            };
-        }
-
-
-        return {
-            label: "Healthy stock",
-            percentage,
-            className: "healthy"
-        };
-    }
+    return {
+        dates,
+        usage,
+        totalUsage,
+        averageUsage,
+        feedPerBird,
+        stock,
+        daysRemaining,
+        activeUsageDays:
+            activeUsageDays.length
+    };
+}
 
 
     /* =====================================================
