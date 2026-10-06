@@ -7375,16 +7375,7 @@ async function initializeApplication() {
     applicationInitialized =
         true;
 
-    /*
-     * Establish the correct initial view before any
-     * asynchronous startup work can allow the browser
-     * to render the interface.
-     */
-    setDashboardVisibility(true);
-
-    if (settingsView) {
-        setSettingsVisibility(false);
-    }
+   
 
     console.log(
         `Poultry Manager ${APP.version} starting...`
@@ -7408,12 +7399,6 @@ async function initializeApplication() {
 
     createSettingsView();
 
-    /*
-     * Dashboard is the default startup view.
-     * Settings must remain hidden until selected.
-     */
-    setDashboardVisibility(true);
-    setSettingsVisibility(false);
 
 
     /*
