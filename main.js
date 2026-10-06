@@ -2,6 +2,7 @@
    POULTRY MANAGER
    UNIFIED PRODUCTION MANAGEMENT SYSTEM
    ---------------------------------------------------------
+   Corrected Production Management System
    Part 1 of 2
    ========================================================= */
 
@@ -227,10 +228,7 @@
                 return fallback;
             }
 
-            const parsed =
-                JSON.parse(raw);
-
-            return parsed;
+            return JSON.parse(raw);
 
         } catch (error) {
 
@@ -279,11 +277,6 @@
             return;
         }
 
-        /*
-         * Prefer an existing application toast if one
-         * exists. Otherwise use a simple alert.
-         */
-
         const existing =
             $("pmToast");
 
@@ -315,11 +308,6 @@
 
             return;
         }
-
-        /*
-         * Do not use alert for ordinary information
-         * unless there is no toast system available.
-         */
 
         if (
             type === "error" ||
@@ -804,21 +792,6 @@
         return history;
     }
 
-
-    /*
-     * Older versions of Poultry Manager stored:
-     *
-     * "2026-10-05": 4
-     *
-     * Newer versions may store:
-     *
-     * "2026-10-05": {
-     *     eggs: 4,
-     *     flock: 5
-     * }
-     *
-     * Both formats are supported.
-     */
 
     function normalizeEggRecord(
         record
@@ -1732,28 +1705,83 @@
 
 
     /* =====================================================
-       9. PRODUCTION TREND CHART
+       9. CHART HELPERS
        ===================================================== */
 
-    function updateProductionTrend(
-        stats
+    /*
+     * Your current index.html uses DIV containers for both
+     * charts. The drawing engine uses canvas, so we create
+     * the canvas INSIDE the existing DIV instead of changing
+     * your HTML.
+     */
+
+    function getOrCreateChartCanvas(
+        container,
+        className = ""
     ) {
 
-        const canvas =
-            $("productionTrendChart");
-
-        if (!canvas) {
-            return;
+        if (!container) {
+            return null;
         }
 
 
-        const context =
-            canvas.getContext(
-                "2d"
+        let canvas =
+            container.querySelector(
+                "canvas"
             );
 
-        if (!context) {
-            return;
+
+        if (!canvas) {
+
+            canvas =
+                document.createElement(
+                    "canvas"
+                );
+
+            if (className) {
+
+                canvas.className =
+                    className;
+            }
+
+            canvas.setAttribute(
+                "aria-hidden",
+                "true"
+            );
+
+
+            container.innerHTML =
+                "";
+
+
+            container.appendChild(
+                canvas
+            );
+        }
+
+
+        canvas.style.width =
+            "100%";
+
+        canvas.style.height =
+            "100%";
+
+        canvas.style.display =
+            "block";
+
+
+        return canvas;
+    }
+
+
+    function prepareCanvasSize(
+        canvas,
+        minimumWidth = 280,
+        minimumHeight = 180
+    ) {
+
+        if (!canvas) {
+            return null;
         }
 
 
@@ -1763,7 +1791,7 @@
 
         const width =
             Math.max(
-                280,
+                minimumWidth,
                 Math.floor(
                     rect.width ||
                     canvas.parentElement?.clientWidth ||
@@ -1774,10 +1802,11 @@
 
         const height =
             Math.max(
-                180,
+                minimumHeight,
                 Math.floor(
                     rect.height ||
-                    220
+                    canvas.parentElement?.clientHeight ||
+                    minimumHeight
                 )
             );
 
@@ -1788,12 +1817,28 @@
 
 
         canvas.width =
-            width *
-            pixelRatio;
+            Math.floor(
+                width *
+                pixelRatio
+            );
+
 
         canvas.height =
-            height *
-            pixelRatio;
+            Math.floor(
+                height *
+                pixelRatio
+            );
+
+
+        const context =
+            canvas.getContext(
+                "2d"
+            );
+
+
+        if (!context) {
+            return null;
+        }
 
 
         context.setTransform(
@@ -1812,6 +1857,57 @@
             width,
             height
         );
+
+
+        return {
+            context,
+            width,
+            height
+        };
+    }
+
+
+    /* =====================================================
+       10. PRODUCTION TREND CHART
+       ===================================================== */
+
+    function updateProductionTrend(
+        stats
+    ) {
+
+        const container =
+            $("productionTrendChart");
+
+        if (!container) {
+            return;
+        }
+
+
+        const canvas =
+            getOrCreateChartCanvas(
+                container,
+                "pm-production-chart-canvas"
+            );
+
+
+        const prepared =
+            prepareCanvasSize(
+                canvas,
+                280,
+                180
+            );
+
+
+        if (!prepared) {
+            return;
+        }
+
+
+        const {
+            context,
+            width,
+            height
+        } = prepared;
 
 
         const values =
@@ -1837,15 +1933,21 @@
 
 
         const chartWidth =
-            width -
-            padding.left -
-            padding.right;
+            Math.max(
+                1,
+                width -
+                padding.left -
+                padding.right
+            );
 
 
         const chartHeight =
-            height -
-            padding.top -
-            padding.bottom;
+            Math.max(
+                1,
+                height -
+                padding.top -
+                padding.bottom
+            );
 
 
         const gridLines = 4;
@@ -2112,7 +2214,7 @@
 
 
     /* =====================================================
-       10. FEED DATA
+       11. FEED DATA
        ===================================================== */
 
     function getFeedAmount() {
@@ -2242,10 +2344,6 @@
         }
 
 
-        /*
-         * Support a possible legacy object format.
-         */
-
         if (
             history &&
             typeof history === "object"
@@ -2273,7 +2371,7 @@
 
 
     /* =====================================================
-       11. FEED ADDITION
+       12. FEED ADDITION
        ===================================================== */
 
     function addFeed(
@@ -2343,10 +2441,6 @@
         });
 
 
-        /*
-         * Keep the history small and useful.
-         */
-
         while (
             history.length > 30
         ) {
@@ -2370,6 +2464,8 @@
 
         updateFeedManagement();
 
+        updateFarmOverview();
+
         scheduleAutomaticBackup();
 
 
@@ -2381,7 +2477,7 @@
 
 
     /* =====================================================
-       12. UNDO LAST FEED ADDITION
+       13. UNDO LAST FEED ADDITION
        ===================================================== */
 
     function undoLastFeedAddition() {
@@ -2418,11 +2514,6 @@
                 last.afterStock
             );
 
-
-        /*
-         * Undo is only safe when the stock has not
-         * changed since the addition.
-         */
 
         if (
             Math.abs(
@@ -2474,6 +2565,8 @@
 
         updateFeedManagement();
 
+        updateFarmOverview();
+
         scheduleAutomaticBackup();
 
 
@@ -2485,7 +2578,7 @@
 
 
     /* =====================================================
-       13. FEED USAGE
+       14. FEED USAGE
        ===================================================== */
 
     function useFeed(
@@ -2569,6 +2662,8 @@
 
         updateFeedManagement();
 
+        updateFarmOverview();
+
         scheduleAutomaticBackup();
 
 
@@ -2580,7 +2675,7 @@
 
 
     /* =====================================================
-       14. RESET TODAY'S FEED USAGE
+       15. RESET TODAY'S FEED USAGE
        ===================================================== */
 
     function resetTodayFeedUsage() {
@@ -2642,17 +2737,14 @@
         );
 
 
-        /*
-         * The stock has changed, so previous addition
-         * history should no longer be undoable.
-         */
-
         saveFeedAdditionHistory(
             []
         );
 
 
         updateFeedManagement();
+
+        updateFarmOverview();
 
         scheduleAutomaticBackup();
 
@@ -2665,7 +2757,7 @@
 
 
     /* =====================================================
-       15. RESET ENTIRE FEED STOCK
+       16. RESET ENTIRE FEED STOCK
        ===================================================== */
 
     function resetFeedStock() {
@@ -2706,11 +2798,6 @@
         );
 
 
-        /*
-         * Old additions cannot be undone after a complete
-         * stock reset.
-         */
-
         saveFeedAdditionHistory(
             []
         );
@@ -2726,6 +2813,8 @@
 
         updateFeedManagement();
 
+        updateFarmOverview();
+
         scheduleAutomaticBackup();
 
 
@@ -2737,7 +2826,7 @@
 
 
     /* =====================================================
-       16. FEED ANALYTICS
+       17. FEED ANALYTICS
        ===================================================== */
 
     function getFeedStats() {
@@ -2828,11 +2917,6 @@
         }
 
 
-        /*
-         * Fourteen days is treated as a healthy
-         * planning window.
-         */
-
         const percentage =
             clamp(
                 (
@@ -2877,7 +2961,7 @@
 
 
     /* =====================================================
-       17. FEED UI
+       18. FEED UI
        ===================================================== */
 
     function updateFeedManagement() {
@@ -2981,9 +3065,7 @@
         const feedUsageDays =
             $("feedUsageDays");
 
-        if (
-            feedUsageDays
-        ) {
+        if (feedUsageDays) {
 
             const activeDays =
                 stats.usage.filter(
@@ -3015,14 +3097,15 @@
     ) {
 
         const progress =
-            document.querySelector(
-                ".feed-progress-bar"
-            );
+            $("feedStockProgress");
 
 
-        if (!progress) {
-            return;
-        }
+        const percentageLabel =
+            $("feedStockPercentage");
+
+
+        const badge =
+            $("feedStatusBadge");
 
 
         const status =
@@ -3031,17 +3114,107 @@
             );
 
 
-        progress.style.width =
-            status.percentage +
-            "%";
+        /*
+         * When there is no usage history yet, there is
+         * no meaningful consumption-based stock forecast.
+         */
+
+        const hasUsage =
+            stats.averageUsage > 0;
 
 
-        progress.setAttribute(
-            "aria-valuenow",
-            Math.round(
-                status.percentage
-            )
-        );
+        const percentage =
+            hasUsage
+                ? status.percentage
+                : 0;
+
+
+        if (progress) {
+
+            progress.style.width =
+                percentage +
+                "%";
+
+            progress.setAttribute(
+                "aria-valuenow",
+                Math.round(
+                    percentage
+                );
+
+            progress.setAttribute(
+                "aria-valuemin",
+                "0"
+            );
+
+            progress.setAttribute(
+                "aria-valuemax",
+                "100"
+            );
+        }
+
+
+        if (percentageLabel) {
+
+            percentageLabel.textContent =
+                hasUsage
+                    ? Math.round(
+                        percentage
+                    ) + "%"
+                    : "—";
+        }
+
+
+        if (badge) {
+
+            badge.classList.remove(
+                "feed-status-neutral",
+                "feed-status-healthy",
+                "feed-status-warning",
+                "feed-status-danger"
+            );
+
+
+            if (!hasUsage) {
+
+                badge.classList.add(
+                    "feed-status-neutral"
+                );
+
+                badge.textContent =
+                    "No usage data";
+
+            } else {
+
+                if (
+                    status.className ===
+                    "healthy"
+                ) {
+
+                    badge.classList.add(
+                        "feed-status-healthy"
+                    );
+
+                } else if (
+                    status.className ===
+                    "warning"
+                ) {
+
+                    badge.classList.add(
+                        "feed-status-warning"
+                    );
+
+                } else {
+
+                    badge.classList.add(
+                        "feed-status-danger"
+                    );
+                }
+
+
+                badge.textContent =
+                    status.label;
+            }
+        }
     }
 
 
@@ -3089,83 +3262,47 @@
     }
 
 
+    /* =====================================================
+       19. FEED CONSUMPTION CHART
+       ===================================================== */
+
     function updateFeedConsumptionChart(
         stats
     ) {
 
-        const canvas =
+        const container =
             $("feedConsumptionChart");
 
-        if (!canvas) {
+        if (!container) {
             return;
         }
 
 
-        const context =
-            canvas.getContext(
-                "2d"
+        const canvas =
+            getOrCreateChartCanvas(
+                container,
+                "pm-feed-chart-canvas"
             );
 
-        if (!context) {
-            return;
-        }
 
-
-        const rect =
-            canvas.getBoundingClientRect();
-
-
-        const width =
-            Math.max(
+        const prepared =
+            prepareCanvasSize(
+                canvas,
                 280,
-                Math.floor(
-                    rect.width ||
-                    canvas.parentElement?.clientWidth ||
-                    320
-                )
+                170
             );
 
 
-        const height =
-            Math.max(
-                170,
-                Math.floor(
-                    rect.height ||
-                    200
-                )
-            );
+        if (!prepared) {
+            return;
+        }
 
 
-        const pixelRatio =
-            window.devicePixelRatio ||
-            1;
-
-
-        canvas.width =
-            width *
-            pixelRatio;
-
-        canvas.height =
-            height *
-            pixelRatio;
-
-
-        context.setTransform(
-            pixelRatio,
-            0,
-            0,
-            pixelRatio,
-            0,
-            0
-        );
-
-
-        context.clearRect(
-            0,
-            0,
+        const {
+            context,
             width,
             height
-        );
+        } = prepared;
 
 
         const values =
@@ -3191,15 +3328,21 @@
 
 
         const chartWidth =
-            width -
-            padding.left -
-            padding.right;
+            Math.max(
+                1,
+                width -
+                padding.left -
+                padding.right
+            );
 
 
         const chartHeight =
-            height -
-            padding.top -
-            padding.bottom;
+            Math.max(
+                1,
+                height -
+                padding.top -
+                padding.bottom
+            );
 
 
         context.strokeStyle =
@@ -3279,59 +3422,64 @@
             );
 
 
-        context.beginPath();
+        if (
+            points.length > 0
+        ) {
 
-        points.forEach(
-            (point, index) => {
+            context.beginPath();
 
-                if (
-                    index === 0
-                ) {
+            points.forEach(
+                (point, index) => {
 
-                    context.moveTo(
-                        point.x,
-                        point.y
-                    );
+                    if (
+                        index === 0
+                    ) {
 
-                } else {
+                        context.moveTo(
+                            point.x,
+                            point.y
+                        );
 
-                    context.lineTo(
-                        point.x,
-                        point.y
-                    );
+                    } else {
+
+                        context.lineTo(
+                            point.x,
+                            point.y
+                        );
+                    }
                 }
-            }
-        );
+            );
 
 
-        context.strokeStyle =
-            "currentColor";
+            context.strokeStyle =
+                "currentColor";
 
-        context.lineWidth =
-            2.5;
+            context.lineWidth =
+                2.5;
 
-        context.stroke();
+            context.stroke();
 
 
-        points.forEach(
-            point => {
+            points.forEach(
+                point => {
 
-                context.beginPath();
+                    context.beginPath();
 
-                context.arc(
-                    point.x,
-                    point.y,
-                    3.5,
-                    0,
-                    Math.PI * 2
-                );
+                    context.arc(
+                        point.x,
+                        point.y,
+                        3.5,
+                        0,
+                        Math.PI * 2
+                    );
 
-                context.fillStyle =
-                    "currentColor";
+                    context.fillStyle =
+                        "currentColor";
 
-                context.fill();
-            }
-        );
+                    context.fill();
+                }
+            );
+        }
 
 
         context.fillStyle =
@@ -3350,6 +3498,10 @@
                 const point =
                     points[index];
 
+                if (!point) {
+                    return;
+                }
+
                 context.fillText(
                     isToday(
                         item.date
@@ -3367,7 +3519,7 @@
 
 
     /* =====================================================
-       18. FEED HISTORY
+       20. FEED HISTORY
        ===================================================== */
 
     let showAllFeedHistory = false;
@@ -3486,7 +3638,7 @@
 
 
     /* =====================================================
-       19. FEED SCHEDULE
+       21. FEED SCHEDULE
        ===================================================== */
 
     function getFeedSchedule() {
@@ -3516,10 +3668,6 @@
             };
         }
 
-
-        /*
-         * Support possible legacy individual keys.
-         */
 
         const morning =
             readStorage(
@@ -3563,10 +3711,6 @@
             schedule
         );
 
-
-        /*
-         * Keep legacy keys synchronized.
-         */
 
         writeStorage(
             "morningFeedTime",
@@ -3617,11 +3761,6 @@
             );
 
         } catch (error) {
-
-            /*
-             * Render may be sleeping or temporarily
-             * unavailable. Local schedule still works.
-             */
 
             console.warn(
                 "Could not sync feeding schedule with server:",
@@ -3734,18 +3873,12 @@
 
         if (overview) {
 
-            if (!next) {
-
-                overview.textContent =
-                    "--";
-
-            } else {
-
-                overview.textContent =
-                    formatTime(
+            overview.textContent =
+                next
+                    ? formatTime(
                         next.time
-                    );
-            }
+                    )
+                    : "--";
         }
 
 
@@ -3754,18 +3887,12 @@
 
         if (scheduleTime) {
 
-            if (!next) {
-
-                scheduleTime.textContent =
-                    "--";
-
-            } else {
-
-                scheduleTime.textContent =
-                    formatTime(
+            scheduleTime.textContent =
+                next
+                    ? formatTime(
                         next.time
-                    );
-            }
+                    )
+                    : "--";
         }
 
 
@@ -3774,48 +3901,20 @@
 
         if (countdown) {
 
-            if (!next) {
-
-                countdown.textContent =
-                    "--";
-
-            } else {
-
-                let minutes =
-                    getMinutesUntilTime(
-                        next.time
-                    );
-
-
-                if (
-                    next.tomorrow
-                ) {
-
-                    /*
-                     * getMinutesUntilTime already wraps to
-                     * tomorrow when the scheduled time has
-                     * passed.
-                     */
-
-                    minutes =
-                        Math.max(
-                            0,
-                            minutes
-                        );
-                }
-
-
-                countdown.textContent =
-                    formatCountdown(
-                        minutes
-                    );
-            }
+            countdown.textContent =
+                next
+                    ? formatCountdown(
+                        getMinutesUntilTime(
+                            next.time
+                        )
+                    )
+                    : "--";
         }
     }
 
 
     /* =====================================================
-       20. FARM OVERVIEW
+       22. FARM OVERVIEW
        ===================================================== */
 
     function updateFarmOverview() {
@@ -3903,7 +4002,7 @@
 
 
     /* =====================================================
-       21. QUICK ACTIONS
+       23. QUICK ACTIONS
        ===================================================== */
 
     function initializeQuickActions() {
@@ -4009,7 +4108,7 @@
 
 
     /* =====================================================
-       22. EGG CONTROLS
+       24. EGG CONTROLS
        ===================================================== */
 
     function initializeEggControls() {
@@ -4067,7 +4166,7 @@
 
 
     /* =====================================================
-       23. FEED CONTROLS
+       25. FEED CONTROLS
        ===================================================== */
 
     function initializeFeedControls() {
@@ -4155,10 +4254,6 @@
         }
 
 
-        /*
-         * Allow Enter in feed fields.
-         */
-
         const feedInput =
             $("feedInput");
 
@@ -4209,7 +4304,7 @@
 
 
     /* =====================================================
-       24. FEED ACTION BUTTONS
+       26. FEED ACTION BUTTONS
        ===================================================== */
 
     function ensureFeedActionButtons() {
@@ -4223,7 +4318,14 @@
         }
 
 
+        const actionContent =
+            addButton.closest(
+                ".feed-action-content"
+            );
+
+
         const parent =
+            actionContent ||
             addButton.parentElement;
 
 
@@ -4231,10 +4333,6 @@
             return;
         }
 
-
-        /*
-         * Undo button.
-         */
 
         let undoButton =
             $("undoFeedButton");
@@ -4271,10 +4369,6 @@
             );
         }
 
-
-        /*
-         * Full stock reset button.
-         */
 
         let resetButton =
             $("resetFeedStockButton");
@@ -4314,7 +4408,7 @@
 
 
     /* =====================================================
-       25. ALARM DATA
+       27. ALARM DATA
        ===================================================== */
 
     function isAlarmEnabled() {
@@ -4392,7 +4486,7 @@
 
 
     /* =====================================================
-       26. ALARM CHECK
+       28. ALARM CHECK
        ===================================================== */
 
     function checkFeedAlarm() {
@@ -4501,10 +4595,6 @@
                 : "Afternoon feeding time.";
 
 
-        /*
-         * Browser notification.
-         */
-
         if (
             "Notification" in window &&
             Notification.permission ===
@@ -4532,11 +4622,6 @@
         }
 
 
-        /*
-         * Also provide a visible message inside
-         * the app when it is open.
-         */
-
         notify(
             body,
             "info"
@@ -4545,7 +4630,7 @@
 
 
     /* =====================================================
-       27. NOTIFICATIONS / PUSH
+       29. NOTIFICATIONS / PUSH
        ===================================================== */
 
     function notificationsEnabled() {
@@ -4873,11 +4958,29 @@
                     ? "Notifications Enabled"
                     : "Enable Notifications";
         }
+
+
+        const status =
+            $("pmNotificationsStatus");
+
+
+        if (status) {
+
+            status.textContent =
+                enabled
+                    ? "Notifications are enabled."
+                    : "Notifications are not enabled.";
+
+            status.className =
+                enabled
+                    ? "pm-settings-status success"
+                    : "pm-settings-status";
+        }
     }
 
 
     /* =====================================================
-       28. FARM OVERVIEW REFRESH LOOP
+       30. FARM OVERVIEW REFRESH LOOP
        ===================================================== */
 
     function startFarmOverviewRefresh() {
@@ -4912,7 +5015,7 @@
 
 
     /* =====================================================
-       29. GLOBAL REFRESH
+       31. GLOBAL REFRESH
        ===================================================== */
 
     function refreshAll() {
@@ -4934,7 +5037,7 @@
 
 
     /* =====================================================
-       30. PUBLIC API
+       32. PUBLIC API
        ===================================================== */
 
     window.updateFarmOverview =
@@ -4984,9 +5087,8 @@
 
 
     /*
-     * Part 2 continues here.
+     * Part 2 continues below.
      */
-
 
 /* =========================================================
    POULTRY MANAGER
@@ -4998,7 +5100,7 @@
 
 
 /* =====================================================
-   31. SETTINGS VIEW
+   33. SETTINGS VIEW
    ===================================================== */
 
 let settingsView = null;
@@ -5011,9 +5113,7 @@ function createSettingsView() {
         $("pmSettingsView");
 
 
-       if (
-        !settingsView
-    ) {
+    if (!settingsView) {
 
         settingsView =
             document.createElement(
@@ -5027,16 +5127,11 @@ function createSettingsView() {
             "pm-settings-view";
 
         /*
-         * Settings must start hidden.
-         * It will only become visible when
-         * showSettings() is called.
+         * Settings MUST start hidden.
+         * It is only shown by showSettings().
          */
         settingsView.style.display =
             "none";
-
-
-        const dashboardView =
-            $("pmDashboardView");
 
 
         const dashboardView =
@@ -5058,6 +5153,23 @@ function createSettingsView() {
             document.body.appendChild(
                 settingsView
             );
+        }
+
+    } else {
+
+        /*
+         * If an existing Settings view is found,
+         * do not allow it to appear underneath the
+         * Dashboard during startup.
+         */
+        if (
+            !settingsView.classList.contains(
+                "active"
+            )
+        ) {
+
+            settingsView.style.display =
+                "none";
         }
     }
 
@@ -5378,6 +5490,7 @@ function createSettingsView() {
                             Choose how Poultry Manager
                             looks on your device.
                         </p>
+
                     </div>
 
                 </div>
@@ -5589,6 +5702,19 @@ function createSettingsView() {
     `;
 
 
+    /*
+     * Settings must remain hidden after the HTML is
+     * generated. showSettings() is responsible for
+     * displaying it.
+     */
+    settingsView.classList.remove(
+        "active"
+    );
+
+    settingsView.style.display =
+        "none";
+
+
     initializeSettingsEvents();
 
     refreshSettings();
@@ -5596,7 +5722,7 @@ function createSettingsView() {
 
 
 /* =====================================================
-   32. SETTINGS REFRESH
+   34. SETTINGS REFRESH
    ===================================================== */
 
 function refreshSettings() {
@@ -5685,7 +5811,7 @@ function refreshSettings() {
 
 
 /* =====================================================
-   33. SETTINGS EVENTS
+   35. SETTINGS EVENTS
    ===================================================== */
 
 function initializeSettingsEvents() {
@@ -5721,15 +5847,6 @@ function initializeSettingsEvents() {
                     value
                 );
 
-
-                /*
-                 * Update historical records' flock value
-                 * only when they are already using a missing
-                 * or zero flock value.
-                 *
-                 * Existing historical flock snapshots are
-                 * otherwise preserved.
-                 */
 
                 const status =
                     $("pmFlockStatus");
@@ -5948,7 +6065,6 @@ function initializeSettingsEvents() {
                 const fileInput =
                     $("pmBackupFileInput");
 
-
                 fileInput?.click();
             }
         );
@@ -5985,7 +6101,7 @@ function initializeSettingsEvents() {
 
 
 /* =====================================================
-   34. NAVIGATION
+   36. NAVIGATION
    ===================================================== */
 
 let dashboardButton = null;
@@ -6107,7 +6223,7 @@ function createNavigation() {
 
 
 /* =====================================================
-   35. VIEW CONTROL
+   37. VIEW CONTROL
    ===================================================== */
 
 function setDashboardVisibility(
@@ -6132,6 +6248,14 @@ function setDashboardVisibility(
         visible
             ? ""
             : "none";
+
+
+    dashboardView.setAttribute(
+        "aria-hidden",
+        visible
+            ? "false"
+            : "true"
+    );
 }
 
 
@@ -6159,18 +6283,31 @@ function setSettingsVisibility(
         visible
             ? ""
             : "none";
+
+
+    settingsView.setAttribute(
+        "aria-hidden",
+        visible
+            ? "false"
+            : "true"
+    );
 }
 
 
 function showDashboard() {
 
-    setDashboardVisibility(
-        true
-    );
-
+    /*
+     * Dashboard and Settings are always mutually
+     * exclusive.
+     */
 
     setSettingsVisibility(
         false
+    );
+
+
+    setDashboardVisibility(
+        true
     );
 
 
@@ -6242,7 +6379,7 @@ function showSettings() {
 
 
 /* =====================================================
-   36. THEME
+   38. THEME
    ===================================================== */
 
 function getTheme() {
@@ -6308,7 +6445,7 @@ function initializeTheme() {
 
 
 /* =====================================================
-   37. AUTOMATIC BACKUP
+   39. AUTOMATIC BACKUP
    ===================================================== */
 
 function isAutomaticBackupEnabled() {
@@ -6524,7 +6661,7 @@ function updateBackupStatus() {
 
 
 /* =====================================================
-   38. EXPORT BACKUP
+   40. EXPORT BACKUP
    ===================================================== */
 
 function exportBackup() {
@@ -6625,7 +6762,7 @@ function exportBackup() {
 
 
 /* =====================================================
-   39. RESTORE BACKUP
+   41. RESTORE BACKUP
    ===================================================== */
 
 function restoreBackupFromFile(
@@ -6770,7 +6907,7 @@ function restoreBackupFromFile(
 
 
 /* =====================================================
-   40. LEGACY DASHBOARD BACKUP CLEANUP
+   42. LEGACY DASHBOARD BACKUP CLEANUP
    ===================================================== */
 
 function hideLegacyBackupSection() {
@@ -6789,10 +6926,6 @@ function hideLegacyBackupSection() {
             $$(selector)
                 .forEach(
                     element => {
-
-                        /*
-                         * Do not hide the Settings backup.
-                         */
 
                         if (
                             element.closest(
@@ -6813,7 +6946,7 @@ function hideLegacyBackupSection() {
 
 
 /* =====================================================
-   41. APP SHELL POLISH
+   43. APP SHELL POLISH
    ===================================================== */
 
 function initializeAppShell() {
@@ -6848,11 +6981,6 @@ function initializeAppShell() {
     }
 
 
-    /*
-     * Prevent accidental form submission from buttons
-     * that were not explicitly given a type.
-     */
-
     $$("button")
         .forEach(
             button => {
@@ -6870,11 +6998,18 @@ function initializeAppShell() {
                 }
             }
         );
+
+
+    /*
+     * Hide any obsolete dashboard backup block
+     * without affecting Settings.
+     */
+    hideLegacyBackupSection();
 }
 
 
 /* =====================================================
-   42. CHART RESIZE
+   44. CHART RESIZE
    ===================================================== */
 
 function initializeChartResize() {
@@ -6909,7 +7044,7 @@ function initializeChartResize() {
 
 
 /* =====================================================
-   43. HEADER DATE
+   45. HEADER DATE
    ===================================================== */
 
 function updateHeaderDate() {
@@ -6956,7 +7091,7 @@ function updateHeaderDate() {
 
 
 /* =====================================================
-   44. MIDNIGHT ROLLOVER
+   46. MIDNIGHT ROLLOVER
    ===================================================== */
 
 let lastKnownDate =
@@ -6978,10 +7113,6 @@ function checkMidnightRollover() {
             currentDate;
 
 
-        /*
-         * Reset the alarm trigger for the new day.
-         */
-
         writeStorage(
             APP.storage.alarmTriggered,
             ""
@@ -6998,7 +7129,7 @@ function checkMidnightRollover() {
 
 
 /* =====================================================
-   45. SERVICE WORKER
+   47. SERVICE WORKER
    ===================================================== */
 
 async function initializeServiceWorker() {
@@ -7048,7 +7179,7 @@ async function initializeServiceWorker() {
 
 
 /* =====================================================
-   46. PWA INSTALL / UPDATE SUPPORT
+   48. PWA INSTALL / UPDATE SUPPORT
    ===================================================== */
 
 function initializePWAHints() {
@@ -7056,11 +7187,6 @@ function initializePWAHints() {
     window.addEventListener(
         "beforeinstallprompt",
         event => {
-
-            /*
-             * Keep the browser's install event available
-             * without automatically interrupting the user.
-             */
 
             window.__pmInstallPrompt =
                 event;
@@ -7086,34 +7212,29 @@ function initializePWAHints() {
 
 
 /* =====================================================
-   47. RESTORE LAST VIEW
+   49. RESTORE LAST VIEW
    ===================================================== */
 
 function restoreLastView() {
 
-    const savedView =
-        readStorage(
-            APP.storage.lastView,
-            "dashboard"
-        );
+    /*
+     * Dashboard is deliberately the startup view.
+     *
+     * The previous implementation could reopen Settings
+     * underneath or alongside the Dashboard when the saved
+     * lastView value was "settings".
+     *
+     * Navigation still remembers the selected view while
+     * the app is running, but a fresh launch always starts
+     * cleanly on Dashboard.
+     */
 
-
-    if (
-        savedView ===
-        "settings"
-    ) {
-
-        showSettings();
-
-    } else {
-
-        showDashboard();
-    }
+    showDashboard();
 }
 
 
 /* =====================================================
-   48. KEYBOARD ACCESSIBILITY
+   50. KEYBOARD ACCESSIBILITY
    ===================================================== */
 
 function initializeKeyboardSupport() {
@@ -7148,13 +7269,17 @@ function initializeKeyboardSupport() {
 
 
 /* =====================================================
-   49. DATA SAFETY NORMALIZATION
+   51. DATA SAFETY NORMALIZATION
    ===================================================== */
 
 function normalizeStoredData() {
 
     /*
-     * Flock
+     * Flock.
+     *
+     * IMPORTANT:
+     * Do not overwrite an existing flock value,
+     * including an intentional 0.
      */
 
     const flock =
@@ -7175,7 +7300,7 @@ function normalizeStoredData() {
 
 
     /*
-     * Feed
+     * Feed.
      */
 
     const feed =
@@ -7208,11 +7333,6 @@ function normalizeStoredData() {
             eggHistory
         ).length > 0
     ) {
-
-        /*
-         * Normalize old numeric records into the current
-         * object format without changing their egg counts.
-         */
 
         const normalized =
             getEggHistory();
@@ -7252,7 +7372,7 @@ function normalizeStoredData() {
 
 
 /* =====================================================
-   50. INITIALIZE DEFAULT SCHEDULE
+   52. INITIALIZE DEFAULT SCHEDULE
    ===================================================== */
 
 function initializeDefaultSchedule() {
@@ -7275,7 +7395,7 @@ function initializeDefaultSchedule() {
 
 
 /* =====================================================
-   51. INITIALIZE INPUT VALUES
+   53. INITIALIZE INPUT VALUES
    ===================================================== */
 
 function initializeInputDefaults() {
@@ -7319,7 +7439,7 @@ function initializeInputDefaults() {
 
 
 /* =====================================================
-   52. GLOBAL PERIODIC REFRESH
+   54. GLOBAL PERIODIC REFRESH
    ===================================================== */
 
 function startGlobalRefresh() {
@@ -7355,7 +7475,7 @@ function startGlobalRefresh() {
 
 
 /* =====================================================
-   53. APPLICATION INITIALIZATION
+   55. APPLICATION INITIALIZATION
    ===================================================== */
 
 let applicationInitialized =
@@ -7375,7 +7495,6 @@ async function initializeApplication() {
     applicationInitialized =
         true;
 
-   
 
     console.log(
         `Poultry Manager ${APP.version} starting...`
@@ -7395,15 +7514,13 @@ async function initializeApplication() {
      * Build the application shell.
      */
 
-        createNavigation();
+    createNavigation();
 
     createSettingsView();
 
 
-
     /*
-     * Theme must be applied before the interface
-     * is fully displayed.
+     * Theme.
      */
 
     initializeTheme();
@@ -7470,10 +7587,36 @@ async function initializeApplication() {
 
 
     /*
-     * Restore the last page the user was viewing.
+     * Always establish a clean Dashboard startup.
      */
 
-    restoreLastView();
+    setSettingsVisibility(
+        false
+    );
+
+    setDashboardVisibility(
+        true
+    );
+
+
+    dashboardButton?.classList.add(
+        "active"
+    );
+
+    settingsButton?.classList.remove(
+        "active"
+    );
+
+
+    /*
+     * Do not write "settings" back into lastView
+     * during startup.
+     */
+
+    writeStorage(
+        APP.storage.lastView,
+        "dashboard"
+    );
 
 
     /*
@@ -7495,7 +7638,7 @@ async function initializeApplication() {
 
 
 /* =====================================================
-   54. STARTUP
+   56. STARTUP
    ===================================================== */
 
 if (
@@ -7518,7 +7661,7 @@ if (
 
 
 /* =====================================================
-   55. FINAL PUBLIC API
+   57. FINAL PUBLIC API
    ===================================================== */
 
 window.PoultryManager =
