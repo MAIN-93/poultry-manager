@@ -3136,10 +3136,11 @@
                 "%";
 
             progress.setAttribute(
-                "aria-valuenow",
-                Math.round(
-                    percentage
-                );
+    "aria-valuenow",
+    Math.round(
+        percentage
+    )
+);
 
             progress.setAttribute(
                 "aria-valuemin",
