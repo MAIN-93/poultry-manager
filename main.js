@@ -5011,7 +5011,7 @@ function createSettingsView() {
         $("pmSettingsView");
 
 
-    if (
+       if (
         !settingsView
     ) {
 
@@ -5025,6 +5025,18 @@ function createSettingsView() {
 
         settingsView.className =
             "pm-settings-view";
+
+        /*
+         * Settings must start hidden.
+         * It will only become visible when
+         * showSettings() is called.
+         */
+        settingsView.style.display =
+            "none";
+
+
+        const dashboardView =
+            $("pmDashboardView");
 
 
         const dashboardView =
@@ -7363,6 +7375,16 @@ async function initializeApplication() {
     applicationInitialized =
         true;
 
+    /*
+     * Establish the correct initial view before any
+     * asynchronous startup work can allow the browser
+     * to render the interface.
+     */
+    setDashboardVisibility(true);
+
+    if (settingsView) {
+        setSettingsVisibility(false);
+    }
 
     console.log(
         `Poultry Manager ${APP.version} starting...`
@@ -7382,9 +7404,16 @@ async function initializeApplication() {
      * Build the application shell.
      */
 
-    createNavigation();
+        createNavigation();
 
     createSettingsView();
+
+    /*
+     * Dashboard is the default startup view.
+     * Settings must remain hidden until selected.
+     */
+    setDashboardVisibility(true);
+    setSettingsVisibility(false);
 
 
     /*
