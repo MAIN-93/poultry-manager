@@ -1,62 +1,59 @@
 /* =========================================================
    POULTRY MANAGER
-   COMPLETE PROFESSIONAL UI SYSTEM
-   Dashboard + Settings + Feed + Responsive + Dark Mode
+   Complete Application Stylesheet
    ========================================================= */
 
 
 /* =========================================================
-   1. ROOT DESIGN TOKENS
+   1. DESIGN TOKENS
    ========================================================= */
 
 :root {
-    --bg: #f4f6f8;
-    --card: #ffffff;
-    --text: #111827;
-    --muted: #6b7280;
-    --border: #e5e7eb;
+    --pm-bg: #f5f7f4;
+    --pm-surface: #ffffff;
+    --pm-surface-soft: #f8faf8;
+    --pm-surface-muted: #f1f4f1;
 
-    --primary: #166534;
-    --primary-hover: #14532d;
+    --pm-text: #172019;
+    --pm-text-soft: #5d685f;
+    --pm-text-muted: #89918a;
 
-    --success: #15803d;
-    --success-light: #dcfce7;
+    --pm-border: #e2e7e2;
+    --pm-border-strong: #d5ddd5;
 
-    --accent-green: #16a34a;
-    --accent-green-soft: #f0fdf4;
+    --pm-primary: #1f6b45;
+    --pm-primary-dark: #185638;
+    --pm-primary-soft: #e8f3ec;
 
-    --accent-amber: #d97706;
-    --accent-amber-soft: #fffbeb;
+    --pm-secondary: #315d49;
+    --pm-accent: #d89a2b;
+    --pm-accent-soft: #fff4dc;
 
-    --accent-blue: #2563eb;
-    --accent-blue-soft: #eff6ff;
+    --pm-success: #2f8a55;
+    --pm-success-soft: #e8f6ed;
 
-    --accent-purple: #7c3aed;
-    --accent-purple-soft: #f5f3ff;
+    --pm-danger: #c84d4d;
+    --pm-danger-soft: #fcecec;
 
-    --danger: #dc2626;
-    --danger-light: #fef2f2;
+    --pm-warning: #c98a21;
+    --pm-warning-soft: #fff4df;
 
-    --secondary: #f3f4f6;
-    --secondary-hover: #e5e7eb;
+    --pm-shadow-sm: 0 2px 8px rgba(20, 35, 25, 0.05);
+    --pm-shadow: 0 8px 24px rgba(20, 35, 25, 0.07);
+    --pm-shadow-lg: 0 16px 40px rgba(20, 35, 25, 0.09);
 
-    --settings-bg: #f4f6f8;
-    --settings-card: #ffffff;
-    --settings-border: #e5e7eb;
-    --settings-text: #111827;
-    --settings-muted: #6b7280;
-    --settings-soft: #f8fafc;
-    --settings-hover: #f1f5f9;
+    --pm-radius-sm: 10px;
+    --pm-radius: 16px;
+    --pm-radius-lg: 22px;
 
-    --shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
-    --shadow-soft: 0 4px 16px rgba(15, 23, 42, 0.04);
+    --pm-content-width: 1180px;
 
-    --radius: 18px;
+    --pm-transition: 180ms ease;
 }
 
 
 /* =========================================================
-   2. GLOBAL RESET
+   2. RESET
    ========================================================= */
 
 * {
@@ -64,17 +61,18 @@
 }
 
 html {
-    margin: 0;
-    padding: 0;
+    min-height: 100%;
     scroll-behavior: smooth;
-    background: var(--bg);
 }
 
 body {
     margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--text);
+    min-width: 320px;
+    min-height: 100vh;
+
+    background: var(--pm-bg);
+    color: var(--pm-text);
+
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -85,7 +83,10 @@ body {
         Helvetica,
         Arial,
         sans-serif;
+
+    font-size: 15px;
     line-height: 1.5;
+
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
 }
@@ -98,108 +99,139 @@ textarea {
 }
 
 button {
-    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
 }
 
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: 3px solid rgba(22, 101, 52, 0.18);
-    outline-offset: 2px;
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
 }
 
-img {
-    max-width: 100%;
-    display: block;
+input,
+select {
+    outline: none;
 }
 
-.hidden {
-    display: none !important;
+h1,
+h2,
+h3,
+h4,
+p {
+    margin-top: 0;
 }
 
-
-/* =========================================================
-   3. MAIN APP CONTAINER
-   ========================================================= */
-
-#app,
-.app,
-.app-container {
-    width: 100%;
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 20px;
+h1,
+h2,
+h3,
+h4,
+strong {
+    letter-spacing: -0.02em;
 }
 
-main {
-    width: 100%;
-}
-
-section {
-    width: 100%;
-}
-
-.pm-section {
-    width: 100%;
-    margin-bottom: 24px;
+::selection {
+    background: var(--pm-primary-soft);
+    color: var(--pm-primary-dark);
 }
 
 
 /* =========================================================
-   4. APP HEADER
+   3. APPLICATION SHELL
    ========================================================= */
+
+.app {
+    width: 100%;
+    min-height: 100vh;
+}
 
 .app-header {
+    width: 100%;
+    background: var(--pm-surface);
+    border-bottom: 1px solid var(--pm-border);
+
+    padding: 26px 24px 22px;
+
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    z-index: 10;
+}
 
-    margin-bottom: 18px;
-    padding: 22px 24px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow);
+.app-header > div {
+    width: min(100%, var(--pm-content-width));
+    margin: 0 auto;
 }
 
 .app-header h1 {
     margin: 0;
-    color: var(--text);
-    font-size: 26px;
+    color: var(--pm-text);
+
+    font-size: clamp(25px, 4vw, 32px);
     line-height: 1.1;
     font-weight: 800;
-    letter-spacing: -0.04em;
 }
 
 .app-header p {
-    margin: 6px 0 0;
-    color: var(--muted);
-    font-size: 13px;
-}
+    margin: 7px 0 0;
 
-.app-header-date {
-    color: var(--muted);
+    color: var(--pm-text-soft);
     font-size: 13px;
-    font-weight: 600;
-    text-align: right;
+    font-weight: 500;
 }
 
 
 /* =========================================================
-   5. DASHBOARD VIEW
+   4. DASHBOARD CONTAINER
    ========================================================= */
 
-#pmDashboardView {
-    width: 100%;
+.pm-dashboard-view {
+    width: min(100%, var(--pm-content-width));
+    margin: 0 auto;
+
+    padding: 28px 24px 70px;
 }
 
-#pmDashboardView > section {
+.pm-dashboard-view > section {
     margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   5. GENERIC SECTIONS
+   ========================================================= */
+
+.section {
+    background: var(--pm-surface);
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius-lg);
+
+    padding: 26px;
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.section-title {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+
+    margin-bottom: 22px;
+}
+
+.section-title h2 {
+    margin: 0;
+
+    font-size: 21px;
+    line-height: 1.25;
+    font-weight: 750;
+
+    color: var(--pm-text);
+}
+
+.section-title p {
+    margin: 6px 0 0;
+
+    color: var(--pm-text-soft);
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 
@@ -208,212 +240,213 @@ section {
    ========================================================= */
 
 .farm-overview-section {
-    margin-bottom: 24px;
-    padding: 24px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow);
+    padding: 0;
 }
 
 .farm-overview-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 16px;
     margin-bottom: 20px;
 }
 
 .farm-overview-eyebrow {
-    margin-bottom: 4px;
-    color: var(--primary);
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: var(--pm-primary);
     font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    letter-spacing: 0.13em;
 }
 
 .farm-overview-header h2 {
     margin: 0;
-    color: var(--text);
-    font-size: 22px;
-    line-height: 1.2;
+
+    font-size: clamp(25px, 4vw, 31px);
+    line-height: 1.15;
     font-weight: 800;
-    letter-spacing: -0.03em;
 }
 
 .farm-overview-header p {
-    margin: 5px 0 0;
-    color: var(--muted);
-    font-size: 13px;
+    margin: 7px 0 0;
+
+    color: var(--pm-text-soft);
+    font-size: 14px;
 }
+
+
+/* =========================================================
+   7. FARM OVERVIEW CARDS
+   ========================================================= */
 
 .farm-overview-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 14px;
 }
 
 .farm-overview-card {
     min-width: 0;
-    padding: 17px;
 
-    background: var(--settings-soft);
-    border: 1px solid var(--border);
-    border-radius: 15px;
+    background: var(--pm-surface);
+    border: 1px solid var(--pm-border);
+
+    border-radius: var(--pm-radius);
+
+    padding: 19px;
+
+    box-shadow: var(--pm-shadow-sm);
 
     transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease;
+        transform var(--pm-transition),
+        box-shadow var(--pm-transition),
+        border-color var(--pm-transition);
 }
 
 .farm-overview-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(22, 101, 52, 0.18);
-    box-shadow: var(--shadow-soft);
+    border-color: var(--pm-border-strong);
+    box-shadow: var(--pm-shadow);
 }
 
 .farm-overview-card-wide {
-    grid-column: span 2;
+    grid-column: span 4;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--pm-primary-soft),
+            var(--pm-surface)
+        );
+
+    border-color: #d8e9dd;
 }
 
 .farm-overview-card-top {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
+
     margin-bottom: 14px;
 }
 
 .farm-overview-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
 
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
 
-    flex: 0 0 36px;
+    border-radius: 10px;
 
-    border-radius: 11px;
-
-    background: var(--accent-green-soft);
-    color: var(--primary);
+    background: var(--pm-surface-soft);
 
     font-size: 17px;
-    font-weight: 800;
 }
 
 .farm-overview-label {
-    color: var(--muted);
+    min-width: 0;
+
+    color: var(--pm-text-soft);
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 650;
 }
 
 .farm-overview-value {
-    color: var(--text);
-    font-size: 25px;
-    line-height: 1;
+    display: block;
+
+    color: var(--pm-text);
+
+    font-size: clamp(24px, 4vw, 31px);
+    line-height: 1.1;
     font-weight: 800;
-    letter-spacing: -0.04em;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .farm-overview-description {
-    margin-top: 7px;
-    color: var(--muted);
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--pm-text-muted);
     font-size: 11px;
-    line-height: 1.4;
-}
-
-.farm-overview-card:nth-child(2) .farm-overview-icon {
-    background: var(--accent-amber-soft);
-    color: var(--accent-amber);
-}
-
-.farm-overview-card:nth-child(3) .farm-overview-icon {
-    background: var(--accent-blue-soft);
-    color: var(--accent-blue);
-}
-
-.farm-overview-card:nth-child(4) .farm-overview-icon {
-    background: var(--accent-purple-soft);
-    color: var(--accent-purple);
-}
-
-.farm-overview-card:nth-child(5) .farm-overview-icon {
-    background: var(--accent-amber-soft);
-    color: var(--accent-amber);
 }
 
 
 /* =========================================================
-   7. QUICK ACTIONS
+   8. QUICK ACTIONS
    ========================================================= */
 
 .quick-actions {
-    margin-bottom: 24px;
+    margin-top: 18px;
+
+    background: var(--pm-surface);
+    border: 1px solid var(--pm-border);
+
+    border-radius: var(--pm-radius-lg);
+
+    padding: 21px;
+
+    box-shadow: var(--pm-shadow-sm);
 }
 
 .quick-actions-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
-.quick-actions-header h2 {
+.quick-actions-header h3 {
     margin: 0;
-    color: var(--text);
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
+
+    font-size: 17px;
+    font-weight: 750;
 }
 
 .quick-actions-header p {
-    margin: 0;
-    color: var(--muted);
+    margin: 4px 0 0;
+
+    color: var(--pm-text-soft);
     font-size: 12px;
 }
 
 .quick-actions-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
+    gap: 11px;
 }
 
 .quick-action-button {
+    width: 100%;
+
     display: flex;
     align-items: center;
     gap: 12px;
 
-    min-height: 70px;
-    padding: 14px 16px;
-
-    border: 1px solid var(--border);
-    border-radius: 15px;
-
-    background: var(--card);
-    color: var(--text);
-
-    box-shadow: var(--shadow-soft);
-
-    cursor: pointer;
-
     text-align: left;
 
+    padding: 14px;
+
+    color: var(--pm-text);
+
+    background: var(--pm-surface-soft);
+    border: 1px solid var(--pm-border);
+
+    border-radius: 13px;
+
     transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease,
-        background 0.2s ease;
+        transform var(--pm-transition),
+        background var(--pm-transition),
+        border-color var(--pm-transition);
 }
 
 .quick-action-button:hover {
-    transform: translateY(-2px);
-    border-color: rgba(22, 101, 52, 0.22);
-    box-shadow: var(--shadow);
+    transform: translateY(-1px);
+    background: var(--pm-primary-soft);
+    border-color: #cfe2d5;
 }
 
 .quick-action-button:active {
@@ -421,147 +454,122 @@ section {
 }
 
 .quick-action-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex: 0 0 auto;
 
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
+    display: grid;
+    place-items: center;
 
-    border-radius: 12px;
+    width: 38px;
+    height: 38px;
 
-    background: var(--accent-green-soft);
-    color: var(--primary);
+    border-radius: 11px;
+
+    background: var(--pm-surface);
+    box-shadow: var(--pm-shadow-sm);
 
     font-size: 18px;
-    font-weight: 800;
 }
 
-.quick-action-button:nth-child(2) .quick-action-icon {
-    background: var(--accent-amber-soft);
-    color: var(--accent-amber);
+.quick-action-button strong {
+    display: block;
+
+    font-size: 13px;
+    font-weight: 750;
 }
 
-.quick-action-button:nth-child(3) .quick-action-icon {
-    background: var(--accent-blue-soft);
-    color: var(--accent-blue);
+.quick-action-button small {
+    display: block;
+
+    margin-top: 2px;
+
+    color: var(--pm-text-muted);
+    font-size: 10px;
 }
 
 
 /* =========================================================
-   8. PRODUCTION SUMMARY
+   9. PRODUCTION SUMMARY
    ========================================================= */
-
-.summary-section {
-    margin-bottom: 24px;
-}
 
 .summary-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 13px;
 }
 
 .summary-card {
     padding: 18px;
 
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
+    background: var(--pm-surface-soft);
+    border: 1px solid var(--pm-border);
 
-    box-shadow: var(--shadow-soft);
+    border-radius: 14px;
 }
 
-.summary-card h3,
-.summary-card .summary-label {
-    margin: 0 0 8px;
-    color: var(--muted);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.summary-card strong,
-.summary-card .summary-value {
+.summary-card span {
     display: block;
-    color: var(--text);
+
+    color: var(--pm-text-soft);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.summary-card strong {
+    display: block;
+
+    margin-top: 8px;
+
+    color: var(--pm-text);
+
     font-size: 23px;
-    line-height: 1.1;
+    line-height: 1.15;
     font-weight: 800;
+
+    word-break: break-word;
 }
 
 
 /* =========================================================
-   9. SUBSECTION HEADERS
-   ========================================================= */
-
-.subsection-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    margin-bottom: 12px;
-}
-
-.subsection-header h2,
-.subsection-header h3 {
-    margin: 0;
-    color: var(--text);
-    font-size: 18px;
-    font-weight: 800;
-    letter-spacing: -0.025em;
-}
-
-.subsection-header p {
-    margin: 4px 0 0;
-    color: var(--muted);
-    font-size: 12px;
-}
-
-
-/* =========================================================
-   10. SEVEN-DAY PRODUCTION TREND
+   10. PRODUCTION TREND
    ========================================================= */
 
 .trend-card {
-    padding: 22px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow-soft);
+    overflow: hidden;
 }
 
 .trend-chart-wrapper {
-    position: relative;
+    display: flex;
+    gap: 13px;
 
-    display: grid;
-    grid-template-columns: 35px minmax(0, 1fr);
-
-    gap: 8px;
-
-    min-height: 230px;
-    margin-top: 14px;
+    min-height: 235px;
 }
 
 .trend-y-axis {
+    flex: 0 0 28px;
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
-    padding: 4px 0 28px;
+    padding: 3px 0 27px;
 
-    color: var(--muted);
+    color: var(--pm-text-muted);
     font-size: 10px;
     text-align: right;
 }
 
 .trend-chart-area {
     position: relative;
+
+    flex: 1;
     min-width: 0;
-    min-height: 230px;
+
+    min-height: 235px;
+
+    border-bottom: 1px solid var(--pm-border);
 }
 
 .trend-grid-lines {
@@ -577,81 +585,30 @@ section {
 
 .trend-grid-lines span {
     display: block;
+
     width: 100%;
-    border-top: 1px dashed var(--border);
+    height: 1px;
+
+    background: var(--pm-border);
+    opacity: 0.8;
 }
 
 .production-trend-chart {
     position: relative;
     z-index: 2;
 
-    display: grid;
-    grid-template-columns: repeat(7, minmax(0, 1fr));
-    align-items: end;
-
+    width: 100%;
     height: 100%;
-    min-height: 230px;
+    min-height: 235px;
 
-    gap: 8px;
-}
-
-.trend-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: center;
-
-    min-width: 0;
-    height: 100%;
-}
-
-.trend-bar-container {
     display: flex;
     align-items: flex-end;
-    justify-content: center;
 
-    width: 100%;
-    height: calc(100% - 30px);
+    overflow: hidden;
 }
 
-.trend-bar {
-    width: min(42px, 72%);
-
-    min-height: 4px;
-
-    border-radius: 8px 8px 3px 3px;
-
-    background: var(--primary);
-
-    transition:
-        height 0.35s ease,
-        transform 0.2s ease;
-}
-
-.trend-bar:hover {
-    transform: translateY(-2px);
-}
-
-.trend-bar.zero {
-    opacity: 0.25;
-}
-
-.trend-bar-value {
-    margin-bottom: 5px;
-
-    color: var(--text);
-    font-size: 10px;
-    font-weight: 800;
-}
-
-.trend-day {
-    margin-top: 7px;
-
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-
-    white-space: nowrap;
+.production-trend-chart > * {
+    min-width: 0;
 }
 
 .trend-legend {
@@ -661,19 +618,17 @@ section {
 
     margin-top: 10px;
 
-    color: var(--muted);
+    color: var(--pm-text-muted);
     font-size: 11px;
 }
 
-.trend-legend::before {
-    content: "";
-
+.trend-legend-dot {
     width: 8px;
     height: 8px;
 
     border-radius: 50%;
 
-    background: var(--primary);
+    background: var(--pm-primary);
 }
 
 
@@ -682,89 +637,99 @@ section {
    ========================================================= */
 
 .analytics-section {
-    margin-bottom: 24px;
+    overflow: hidden;
 }
 
 .analytics-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 13px;
 }
 
 .analytics-card {
-    min-width: 0;
-    padding: 17px;
+    padding: 18px;
 
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 15px;
+    background: var(--pm-surface-soft);
+    border: 1px solid var(--pm-border);
 
-    box-shadow: var(--shadow-soft);
+    border-radius: 14px;
 }
 
 .analytics-label {
     display: block;
-    margin-bottom: 8px;
 
-    color: var(--muted);
+    color: var(--pm-text-soft);
+
     font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-weight: 650;
 }
 
 .analytics-card strong {
     display: block;
 
-    color: var(--text);
-    font-size: 20px;
+    margin-top: 7px;
+
+    color: var(--pm-text);
+
+    font-size: 24px;
     line-height: 1.15;
     font-weight: 800;
 }
 
-.analytics-positive {
-    color: var(--success) !important;
-}
+.analytics-card small {
+    display: block;
 
-.analytics-negative {
-    color: var(--danger) !important;
-}
+    margin-top: 6px;
 
-.analytics-neutral {
-    color: var(--muted) !important;
+    color: var(--pm-text-muted);
+    font-size: 10px;
 }
 
 .analytics-insight {
     display: flex;
     align-items: flex-start;
-    gap: 11px;
+    gap: 13px;
 
-    margin-top: 12px;
-    padding: 15px;
+    margin-top: 15px;
+    padding: 16px;
 
-    background: var(--accent-green-soft);
-    border: 1px solid rgba(22, 163, 74, 0.12);
+    background: var(--pm-primary-soft);
+    border: 1px solid #d7e9dd;
+
     border-radius: 14px;
-
-    color: var(--text);
-    font-size: 13px;
 }
 
 .analytics-insight-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex: 0 0 auto;
 
-    width: 32px;
-    height: 32px;
-    flex: 0 0 32px;
+    display: grid;
+    place-items: center;
+
+    width: 36px;
+    height: 36px;
 
     border-radius: 10px;
 
-    background: var(--success-light);
-    color: var(--success);
+    background: var(--pm-surface);
 
-    font-weight: 800;
+    font-size: 17px;
+}
+
+.analytics-insight strong {
+    display: block;
+
+    font-size: 13px;
+}
+
+.analytics-insight p {
+    margin: 4px 0 0;
+
+    color: var(--pm-text-soft);
+    font-size: 12px;
+    line-height: 1.55;
 }
 
 
@@ -773,87 +738,105 @@ section {
    ========================================================= */
 
 .egg-main-card {
+    display: grid;
+
+    grid-template-columns:
+        1.2fr
+        0.8fr
+        auto;
+
+    align-items: center;
+    gap: 20px;
+
     padding: 22px;
 
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
+    background:
+        linear-gradient(
+            135deg,
+            var(--pm-primary-soft),
+            var(--pm-surface)
+        );
 
-    box-shadow: var(--shadow-soft);
+    border: 1px solid #d8e9dd;
+
+    border-radius: var(--pm-radius);
 }
 
-.egg-number {
-    margin: 0;
+.egg-number span,
+.laying-rate span {
+    display: block;
 
-    color: var(--text);
-    font-size: 46px;
+    color: var(--pm-text);
+
+    font-size: clamp(34px, 6vw, 48px);
     line-height: 1;
     font-weight: 850;
-    letter-spacing: -0.05em;
+}
+
+.egg-number small,
+.laying-rate small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--pm-text-soft);
+    font-size: 11px;
 }
 
 .laying-rate {
-    display: inline-flex;
-    align-items: center;
+    padding-left: 20px;
 
-    margin-top: 8px;
-    padding: 5px 9px;
+    border-left: 1px solid #d4e2d8;
+}
 
-    background: var(--success-light);
-    border-radius: 999px;
-
-    color: var(--success);
-
-    font-size: 12px;
-    font-weight: 800;
+.laying-rate span {
+    font-size: 30px;
 }
 
 .egg-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 9px;
-
-    margin-top: 18px;
+    justify-content: flex-end;
+    gap: 8px;
 }
 
 
 /* =========================================================
-   13. BUTTON SYSTEM
+   13. BUTTONS
    ========================================================= */
 
 .primary-button,
 .secondary-button,
 .text-button,
-.pm-settings-action-button,
-.pm-settings-primary-button,
-.pm-settings-secondary-button,
-.pm-settings-danger-button {
+.feed-action-button,
+.feed-reset-button,
+.pm-settings-action-button {
     border: 0;
-    cursor: pointer;
 
     transition:
-        transform 0.18s ease,
-        box-shadow 0.18s ease,
-        background 0.18s ease,
-        border-color 0.18s ease;
+        transform var(--pm-transition),
+        background var(--pm-transition),
+        border-color var(--pm-transition),
+        color var(--pm-transition),
+        box-shadow var(--pm-transition);
 }
 
 .primary-button {
     padding: 11px 16px;
 
-    background: var(--primary);
     color: #ffffff;
+    background: var(--pm-primary);
 
     border-radius: 10px;
 
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 750;
 
-    box-shadow: 0 5px 14px rgba(22, 101, 52, 0.16);
+    box-shadow: 0 4px 10px rgba(31, 107, 69, 0.18);
 }
 
 .primary-button:hover {
-    background: var(--primary-hover);
+    background: var(--pm-primary-dark);
     transform: translateY(-1px);
 }
 
@@ -862,481 +845,530 @@ section {
 }
 
 .secondary-button {
-    padding: 11px 16px;
+    padding: 10px 15px;
 
-    background: var(--secondary);
-    color: var(--text);
+    color: var(--pm-text);
+    background: var(--pm-surface);
 
-    border: 1px solid var(--border);
+    border: 1px solid var(--pm-border-strong);
     border-radius: 10px;
 
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
 }
 
 .secondary-button:hover {
-    background: var(--secondary-hover);
+    background: var(--pm-surface-soft);
+    border-color: #c7d1c9;
 }
 
 .text-button {
-    padding: 6px 8px;
+    flex: 0 0 auto;
 
+    padding: 5px 0;
+
+    color: var(--pm-primary);
     background: transparent;
-    color: var(--primary);
 
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 750;
 }
 
 .text-button:hover {
+    color: var(--pm-primary-dark);
     text-decoration: underline;
 }
 
 
 /* =========================================================
-   14. GENERIC CARD / SUBSECTION
+   14. SUBSECTIONS / HISTORY
    ========================================================= */
-
-.card,
-.section-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-soft);
-}
 
 .subsection {
-    margin-bottom: 20px;
+    margin-top: 22px;
 }
 
-
-/* =========================================================
-   15. HISTORY
-   ========================================================= */
-
-.history-section {
-    margin-top: 18px;
-}
-
-.history-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.history-item {
+.subsection-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
 
-    padding: 13px 14px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--border);
-    border-radius: 11px;
+    margin-bottom: 11px;
 }
 
-.history-item strong {
-    color: var(--text);
-    font-size: 13px;
-}
-
-.history-item small {
-    color: var(--muted);
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   16. FEED MANAGEMENT
-   ========================================================= */
-
-.feed-management,
-.feed-section {
-    margin-bottom: 24px;
-}
-
-.feed-card {
-    padding: 22px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow-soft);
-}
-
-.feed-progress {
-    overflow: hidden;
-
-    width: 100%;
-    height: 9px;
-
-    margin-top: 10px;
-
-    background: var(--secondary);
-    border-radius: 999px;
-}
-
-.feed-progress-bar {
-    height: 100%;
-    width: 0;
-
-    border-radius: inherit;
-
-    background: var(--primary);
-
-    transition: width 0.35s ease;
-}
-
-.feed-progress-bar.warning {
-    background: var(--accent-amber);
-}
-
-.feed-progress-bar.danger {
-    background: var(--danger);
-}
-
-.feed-metrics {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 10px;
-
-    margin-top: 16px;
-}
-
-.feed-metric {
-    min-width: 0;
-    padding: 13px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-}
-
-.feed-metric-label {
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.feed-metric-value {
-    margin-top: 4px;
-
-    color: var(--text);
-    font-size: 17px;
-    font-weight: 800;
-}
-
-
-/* =========================================================
-   17. FEED ACTION PANEL
-   ========================================================= */
-
-.feed-action-panel {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-
-    margin-top: 18px;
-}
-
-.feed-action-card {
-    padding: 16px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-}
-
-.feed-action-card h3 {
-    margin: 0 0 5px;
-
-    color: var(--text);
-    font-size: 14px;
-    font-weight: 800;
-}
-
-.feed-action-card p {
-    margin: 0 0 12px;
-
-    color: var(--muted);
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   18. INPUTS
-   ========================================================= */
-
-.feed-input-row,
-.input-row {
-    display: flex;
-    gap: 8px;
-    align-items: stretch;
-}
-
-input[type="number"],
-input[type="text"],
-input[type="time"],
-input[type="date"],
-input[type="file"],
-select,
-textarea {
-    width: 100%;
-
-    min-height: 42px;
-
-    padding: 10px 12px;
-
-    background: var(--card);
-    color: var(--text);
-
-    border: 1px solid var(--border);
-    border-radius: 10px;
-
-    outline: none;
-
-    transition:
-        border-color 0.18s ease,
-        box-shadow 0.18s ease,
-        background 0.18s ease;
-}
-
-input[type="number"]:focus,
-input[type="text"]:focus,
-input[type="time"]:focus,
-input[type="date"]:focus,
-input[type="file"]:focus,
-select:focus,
-textarea:focus {
-    border-color: rgba(22, 101, 52, 0.45);
-    box-shadow: 0 0 0 4px rgba(22, 101, 52, 0.08);
-}
-
-input::placeholder,
-textarea::placeholder {
-    color: var(--muted);
-}
-
-
-/* =========================================================
-   19. FEED CONSUMPTION
-   ========================================================= */
-
-.feed-consumption {
-    margin-top: 18px;
-    padding: 18px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-}
-
-.feed-consumption h3 {
-    margin: 0 0 12px;
-
-    color: var(--text);
-    font-size: 15px;
-    font-weight: 800;
-}
-
-
-/* =========================================================
-   20. FEED CHART
-   ========================================================= */
-
-.feed-chart-card {
-    margin-top: 18px;
-    padding: 18px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 15px;
-
-    box-shadow: var(--shadow-soft);
-}
-
-.feed-chart {
-    width: 100%;
-    height: 220px;
-    margin-top: 12px;
-}
-
-.feed-consumption-chart {
-    width: 100%;
-    max-width: 100%;
-}
-
-
-/* =========================================================
-   21. FEED HISTORY
-   ========================================================= */
-
-.feed-history-section {
-    margin-top: 18px;
-}
-
-.feed-history-card {
-    padding: 18px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-
-    box-shadow: var(--shadow-soft);
-}
-
-.feed-history-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-
-    margin-bottom: 12px;
-}
-
-.feed-history-header h3 {
+.subsection-header h3 {
     margin: 0;
 
-    color: var(--text);
-    font-size: 16px;
-    font-weight: 800;
+    font-size: 14px;
+    font-weight: 750;
 }
 
-.feed-history-header p {
-    margin: 3px 0 0;
-
-    color: var(--muted);
-    font-size: 11px;
-}
-
+.history-list,
 .feed-history-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
 }
 
+.egg-history-item,
 .feed-history-item {
-    position: relative;
-
-    display: grid;
-    grid-template-columns: 38px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 11px;
-
-    padding: 12px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-
-    transition:
-        transform 0.18s ease,
-        border-color 0.18s ease,
-        background 0.18s ease;
-}
-
-.feed-history-item:hover {
-    transform: translateY(-1px);
-    border-color: rgba(22, 101, 52, 0.16);
-}
-
-.feed-history-icon {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    padding: 11px 13px;
+
+    background: var(--pm-surface-soft);
+    border: 1px solid var(--pm-border);
+
+    border-radius: 11px;
+}
+
+.egg-history-date,
+.feed-history-date {
+    color: var(--pm-text-soft);
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.egg-history-value,
+.feed-history-value {
+    color: var(--pm-text);
+
+    font-size: 12px;
+    font-weight: 750;
+
+    text-align: right;
+}
+
+.egg-history-value span {
+    color: var(--pm-primary);
+}
+
+.history-list:empty::before {
+    content: "No egg production recorded yet.";
+
+    display: block;
+
+    padding: 17px;
+
+    color: var(--pm-text-muted);
+    background: var(--pm-surface-soft);
+
+    border: 1px dashed var(--pm-border-strong);
+    border-radius: 11px;
+
+    font-size: 11px;
+    text-align: center;
+}
+
+.feed-history-list:empty::before {
+    content: "No feed activity recorded yet.";
+
+    display: block;
+
+    padding: 17px;
+
+    color: var(--pm-text-muted);
+    background: var(--pm-surface-soft);
+
+    border: 1px dashed var(--pm-border-strong);
+    border-radius: 11px;
+
+    font-size: 11px;
+    text-align: center;
+}
+
+
+/* =========================================================
+   15. FEED MANAGEMENT
+   ========================================================= */
+
+.feed-management-section {
+    overflow: hidden;
+}
+
+.feed-dashboard {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 13px;
+}
+
+.feed-hero-card {
+    grid-column: 1 / -1;
+
+    padding: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f3f8f4,
+            var(--pm-surface)
+        );
+
+    border: 1px solid #dbe7de;
+    border-radius: var(--pm-radius);
+}
+
+.feed-hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.feed-eyebrow {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--pm-primary);
+
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+#feedAmount {
+    display: block;
+
+    color: var(--pm-text);
+
+    font-size: clamp(31px, 6vw, 43px);
+    line-height: 1.05;
+    font-weight: 850;
+}
+
+.feed-hero-top small {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--pm-text-muted);
+    font-size: 11px;
+}
+
+.feed-status-badge {
+    flex: 0 0 auto;
+
+    display: inline-flex;
+    align-items: center;
+
+    min-height: 28px;
+
+    padding: 6px 10px;
+
+    border-radius: 999px;
+
+    font-size: 10px;
+    font-weight: 750;
+}
+
+.feed-status-neutral {
+    color: var(--pm-text-soft);
+    background: var(--pm-surface-muted);
+}
+
+.feed-status-good,
+.feed-status-success {
+    color: var(--pm-success);
+    background: var(--pm-success-soft);
+}
+
+.feed-status-warning {
+    color: var(--pm-warning);
+    background: var(--pm-warning-soft);
+}
+
+.feed-status-danger {
+    color: var(--pm-danger);
+    background: var(--pm-danger-soft);
+}
+
+
+/* =========================================================
+   16. FEED STOCK PROGRESS
+   ========================================================= */
+
+.feed-stock-progress {
+    margin-top: 22px;
+}
+
+.feed-progress-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+
+    margin-bottom: 7px;
+
+    color: var(--pm-text-soft);
+
+    font-size: 10px;
+    font-weight: 650;
+}
+
+.feed-progress-track {
+    width: 100%;
+    height: 9px;
+
+    overflow: hidden;
+
+    background: #e7ece8;
+
+    border-radius: 999px;
+}
+
+.feed-progress-fill {
+    width: 0;
+    height: 100%;
+
+    min-width: 0;
+
+    background: var(--pm-primary);
+
+    border-radius: inherit;
+
+    transition:
+        width 350ms ease,
+        background 250ms ease;
+}
+
+
+/* =========================================================
+   17. FEED METRIC CARDS
+   ========================================================= */
+
+.feed-metric-card {
+    min-width: 0;
+
+    padding: 18px;
+
+    background: var(--pm-surface);
+    border: 1px solid var(--pm-border);
+
+    border-radius: 14px;
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.feed-metric-label {
+    display: block;
+
+    color: var(--pm-text-soft);
+
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.feed-metric-card strong {
+    display: block;
+
+    margin-top: 8px;
+
+    color: var(--pm-text);
+
+    font-size: 24px;
+    line-height: 1.15;
+    font-weight: 800;
+}
+
+.feed-metric-card small {
+    display: block;
+
+    margin-top: 6px;
+
+    color: var(--pm-text-muted);
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   18. FEED ACTION PANEL
+   ========================================================= */
+
+.feed-action-panel {
+    margin-top: 16px;
+
+    padding: 20px;
+
+    background: var(--pm-surface-soft);
+
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius);
+}
+
+.feed-action-header {
+    margin-bottom: 15px;
+}
+
+.feed-action-header h3 {
+    margin: 0;
+
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.feed-action-header p {
+    margin: 5px 0 0;
+
+    color: var(--pm-text-soft);
+
+    font-size: 12px;
+}
+
+.feed-action-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 13px;
+}
+
+.feed-action-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+
+    min-width: 0;
+
+    padding: 17px;
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+
+    border-radius: 14px;
+}
+
+.feed-action-icon {
+    flex: 0 0 auto;
+
+    display: grid;
+    place-items: center;
 
     width: 38px;
     height: 38px;
 
+    color: var(--pm-primary);
+    background: var(--pm-primary-soft);
+
     border-radius: 11px;
 
-    background: var(--accent-green-soft);
-    color: var(--success);
-
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 21px;
+    font-weight: 700;
 }
 
-.feed-history-main {
+.feed-action-icon.feed-use-icon {
+    color: var(--pm-warning);
+    background: var(--pm-warning-soft);
+}
+
+.feed-action-content {
+    flex: 1;
     min-width: 0;
 }
 
-.feed-history-main strong {
+.feed-action-content > strong {
     display: block;
 
-    color: var(--text);
-    font-size: 12px;
-    font-weight: 800;
-}
+    color: var(--pm-text);
 
-.feed-history-main small {
-    display: block;
-
-    margin-top: 2px;
-
-    color: var(--muted);
-    font-size: 10px;
-}
-
-.feed-history-amount {
-    text-align: right;
-    white-space: nowrap;
-
-    color: var(--text);
     font-size: 13px;
-    font-weight: 800;
-}
-
-.feed-history-amount.addition {
-    color: var(--success);
-}
-
-.feed-history-amount.usage {
-    color: var(--accent-amber);
-}
-
-.feed-history-empty {
-    padding: 20px;
-
-    background: var(--settings-soft);
-    border: 1px dashed var(--border);
-    border-radius: 12px;
-
-    color: var(--muted);
-    font-size: 12px;
-    text-align: center;
-}
-
-.feed-history-view-all {
-    display: flex;
-    justify-content: center;
-
-    margin-top: 10px;
-}
-
-.feed-history-view-all button {
-    padding: 7px 10px;
-
-    border: 0;
-    background: transparent;
-
-    color: var(--primary);
-
-    cursor: pointer;
-
-    font-size: 11px;
     font-weight: 750;
+}
+
+.feed-action-content > span {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--pm-text-muted);
+
+    font-size: 10px;
+    line-height: 1.45;
+}
+
+.feed-input-row {
+    display: flex;
+    gap: 7px;
+
+    margin-top: 12px;
+}
+
+.feed-input-row input {
+    flex: 1;
+    min-width: 0;
+
+    width: 100%;
+
+    padding: 10px 11px;
+
+    color: var(--pm-text);
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border-strong);
+    border-radius: 9px;
+
+    font-size: 12px;
+}
+
+.feed-input-row input::placeholder {
+    color: var(--pm-text-muted);
+}
+
+.feed-input-row input:focus {
+    border-color: var(--pm-primary);
+
+    box-shadow:
+        0 0 0 3px rgba(31, 107, 69, 0.08);
+}
+
+.feed-input-row button {
+    flex: 0 0 auto;
 }
 
 
 /* =========================================================
-   22. FEED RESET / UNDO
+   19. FEED ACTION BUTTONS GENERATED BY JS
    ========================================================= */
+
+.feed-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-top: 9px;
+    margin-right: 6px;
+
+    min-height: 32px;
+
+    padding: 7px 11px;
+
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.feed-secondary-button {
+    color: var(--pm-text-soft);
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border-strong);
+}
+
+.feed-secondary-button:hover {
+    color: var(--pm-text);
+    background: var(--pm-surface-muted);
+}
 
 .feed-reset-button {
     display: inline-flex;
@@ -1344,386 +1376,265 @@ textarea::placeholder {
     justify-content: center;
 
     margin-top: 10px;
-    padding: 9px 14px;
 
-    border: 1px solid var(--border);
+    padding: 7px 10px;
+
+    color: var(--pm-danger);
+    background: var(--pm-danger-soft);
+
+    border: 1px solid #f1cccc;
+    border-radius: 8px;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.feed-reset-button:hover {
+    background: #f9dddd;
+}
+
+
+/* =========================================================
+   20. FEED CONSUMPTION
+   ========================================================= */
+
+.feed-consumption-card {
+    margin-top: 16px;
+
+    padding: 20px;
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius);
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.feed-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
+
+    margin-bottom: 17px;
+}
+
+.feed-card-header h3 {
+    margin: 0;
+
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.feed-card-header p {
+    margin: 5px 0 0;
+
+    color: var(--pm-text-soft);
+
+    font-size: 11px;
+}
+
+.feed-period-label {
+    flex: 0 0 auto;
+
+    padding: 6px 9px;
+
+    color: var(--pm-text-soft);
+    background: var(--pm-surface-soft);
+
+    border: 1px solid var(--pm-border);
+    border-radius: 999px;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.feed-consumption-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+.feed-consumption-summary > div {
+    padding: 13px;
+
+    background: var(--pm-surface-soft);
+
+    border: 1px solid var(--pm-border);
+    border-radius: 11px;
+}
+
+.feed-consumption-summary span {
+    display: block;
+
+    color: var(--pm-text-muted);
+
+    font-size: 10px;
+}
+
+.feed-consumption-summary strong {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--pm-text);
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.feed-chart-wrapper {
+    width: 100%;
+
+    margin-top: 17px;
+
+    min-height: 190px;
+}
+
+.feed-consumption-chart {
+    width: 100%;
+    min-height: 190px;
+
+    position: relative;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   21. FEED ACTIVITY
+   ========================================================= */
+
+.feed-activity-section {
+    margin-top: 22px;
+}
+
+.feed-history-item {
+    background: var(--pm-surface-soft);
+}
+
+
+/* =========================================================
+   22. SETTINGS NAVIGATION
+   ========================================================= */
+
+.app-navigation {
+    width: min(
+        calc(100% - 48px),
+        var(--pm-content-width)
+    );
+
+    margin: 0 auto 22px;
+
+    display: flex;
+    gap: 6px;
+
+    padding: 5px;
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+    border-radius: 13px;
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.app-navigation button {
+    flex: 1;
+
+    min-height: 38px;
+
+    padding: 8px 14px;
+
+    color: var(--pm-text-soft);
+    background: transparent;
+
+    border: 0;
     border-radius: 9px;
-
-    background: var(--card);
-    color: var(--muted);
 
     font-size: 12px;
     font-weight: 700;
 
-    cursor: pointer;
-
     transition:
-        color 0.18s ease,
-        border-color 0.18s ease,
-        background 0.18s ease,
-        transform 0.18s ease;
-}
-
-.feed-reset-button:hover {
-    color: var(--danger);
-    border-color: rgba(220, 38, 38, 0.25);
-    background: var(--danger-light);
-}
-
-.feed-reset-button:active {
-    transform: translateY(1px);
-}
-
-.feed-undo-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-top: 10px;
-    padding: 9px 14px;
-
-    border: 1px solid rgba(217, 119, 6, 0.18);
-    border-radius: 9px;
-
-    background: var(--accent-amber-soft);
-    color: var(--accent-amber);
-
-    font-size: 12px;
-    font-weight: 750;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.18s ease,
-        background 0.18s ease;
-}
-
-.feed-undo-button:hover {
-    transform: translateY(-1px);
-}
-
-.feed-reset-button:disabled,
-.feed-undo-button:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-    transform: none;
-}
-
-
-/* =========================================================
-   23. FEED SCHEDULE
-   ========================================================= */
-
-.feed-schedule {
-    padding: 18px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-
-    box-shadow: var(--shadow-soft);
-}
-
-.schedule-row {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-}
-
-.schedule-field {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.schedule-field label {
-    color: var(--muted);
-    font-size: 11px;
-    font-weight: 750;
-}
-
-.schedule-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-
-    margin-top: 12px;
-}
-
-
-/* =========================================================
-   24. LEGACY FLOCK STYLES
-   ========================================================= */
-
-.flock-section {
-    padding: 20px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow-soft);
-}
-
-.flock-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-}
-
-.flock-card {
-    padding: 16px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--border);
-    border-radius: 13px;
-}
-
-
-/* =========================================================
-   25. LEGACY ALARM
-   ========================================================= */
-
-.alarm-section {
-    padding: 20px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow-soft);
-}
-
-.alarm-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-
-    padding: 6px 10px;
-
-    border-radius: 999px;
-
-    background: var(--settings-soft);
-    color: var(--muted);
-
-    font-size: 11px;
-    font-weight: 750;
-}
-
-.alarm-status.active {
-    background: var(--success-light);
-    color: var(--success);
-}
-
-
-/* =========================================================
-   26. DATA BACKUP
-   ========================================================= */
-
-.data-backup-section {
-    padding: 20px;
-
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow-soft);
-}
-
-.backup-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 9px;
-}
-
-
-/* =========================================================
-   27. APP NAVIGATION
-   ========================================================= */
-
-.app-navigation {
-    position: sticky;
-    top: 12px;
-    z-index: 50;
-
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
-
-    width: 100%;
-    max-width: 1180px;
-
-    margin: 0 auto 18px;
-    padding: 6px;
-
-    background: rgba(255, 255, 255, 0.92);
-    border: 1px solid var(--border);
-    border-radius: 15px;
-
-    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
-
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-}
-
-.app-navigation button {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-
-    min-height: 42px;
-
-    padding: 9px 14px;
-
-    border: 0;
-    border-radius: 10px;
-
-    background: transparent;
-    color: var(--muted);
-
-    cursor: pointer;
-
-    font-size: 13px;
-    font-weight: 750;
-
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
+        background var(--pm-transition),
+        color var(--pm-transition);
 }
 
 .app-navigation button:hover {
-    background: var(--settings-soft);
-    color: var(--text);
-}
-
-.app-navigation button:active {
-    transform: scale(0.98);
+    color: var(--pm-text);
+    background: var(--pm-surface-soft);
 }
 
 .app-navigation button.active {
-    background: var(--primary);
     color: #ffffff;
+    background: var(--pm-primary);
 
-    box-shadow: 0 5px 14px rgba(22, 101, 52, 0.18);
-}
-
-.app-navigation button.active:hover {
-    background: var(--primary-hover);
-}
-
-
-/* =========================================================
-   28. DASHBOARD / SETTINGS VIEW CONTROL
-   ========================================================= */
-
-#pmDashboardView,
-#pmSettingsView {
-    width: 100%;
-}
-
-#pmSettingsView {
-    display: none;
-}
-
-#pmSettingsView.active {
-    display: block;
-}
-
-#pmDashboardView.pm-hidden,
-#pmDashboardView[hidden] {
-    display: none !important;
+    box-shadow:
+        0 3px 8px rgba(31, 107, 69, 0.16);
 }
 
 
 /* =========================================================
-   29. SETTINGS MAIN SHELL
+   23. SETTINGS VIEW
    ========================================================= */
 
 .pm-settings-view {
-    width: 100%;
+    width: min(
+        calc(100% - 48px),
+        var(--pm-content-width)
+    );
 
-    margin-bottom: 30px;
-    padding: 0;
+    margin: 0 auto;
+
+    padding: 26px 0 70px;
 }
 
 .pm-settings-view.active {
     display: block;
 }
 
-.pm-settings-shell {
-    width: 100%;
-}
-
 .pm-settings-header {
-    margin-bottom: 18px;
-    padding: 24px;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--card) 0%,
-            var(--settings-soft) 100%
-        );
-
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-
-    box-shadow: var(--shadow-soft);
+    margin-bottom: 22px;
 }
 
 .pm-settings-header h2 {
     margin: 0;
 
-    color: var(--settings-text);
-
-    font-size: 25px;
-    line-height: 1.15;
-    font-weight: 850;
-    letter-spacing: -0.04em;
+    font-size: 27px;
+    font-weight: 800;
 }
 
 .pm-settings-header p {
-    margin: 7px 0 0;
+    margin: 6px 0 0;
 
-    max-width: 680px;
-
-    color: var(--settings-muted);
-
+    color: var(--pm-text-soft);
     font-size: 13px;
-    line-height: 1.55;
 }
 
 .pm-settings-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
 
-    align-items: start;
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
 }
 
 .pm-settings-card {
     min-width: 0;
 
-    padding: 19px;
+    padding: 21px;
 
-    background: var(--settings-card);
-    border: 1px solid var(--settings-border);
-    border-radius: 17px;
+    background: var(--pm-surface);
 
-    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius);
 
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.pm-settings-card:hover {
-    border-color: rgba(22, 101, 52, 0.13);
-    box-shadow: var(--shadow);
+    box-shadow: var(--pm-shadow-sm);
 }
 
 .pm-settings-card-wide {
@@ -1732,951 +1643,747 @@ textarea::placeholder {
 
 .pm-settings-card-header {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
 
-    margin-bottom: 17px;
+    margin-bottom: 18px;
 }
 
 .pm-settings-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    flex: 0 0 auto;
 
-    width: 40px;
-    height: 40px;
-    flex: 0 0 40px;
+    display: grid;
+    place-items: center;
 
-    border-radius: 12px;
+    width: 38px;
+    height: 38px;
 
-    background: var(--accent-green-soft);
-    color: var(--primary);
+    background: var(--pm-primary-soft);
+
+    border-radius: 11px;
 
     font-size: 17px;
-    font-weight: 850;
 }
 
 .pm-settings-card-header h3 {
     margin: 0;
 
-    color: var(--settings-text);
-
     font-size: 15px;
-    line-height: 1.2;
-    font-weight: 800;
+    font-weight: 750;
 }
 
 .pm-settings-card-header p {
-    margin: 3px 0 0;
+    margin: 4px 0 0;
 
-    color: var(--settings-muted);
+    color: var(--pm-text-muted);
 
     font-size: 11px;
-    line-height: 1.4;
 }
 
 
 /* =========================================================
-   30. SETTINGS ROWS
+   24. SETTINGS ROWS
    ========================================================= */
 
 .pm-settings-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
 
-    gap: 18px;
+    padding: 13px 0;
 
-    min-height: 54px;
-
-    padding: 11px 0;
-
-    border-bottom: 1px solid var(--settings-border);
+    border-top: 1px solid var(--pm-border);
 }
 
-.pm-settings-row:last-child {
-    border-bottom: 0;
+.pm-settings-row:first-child {
+    border-top: 0;
 }
 
 .pm-settings-row-info {
-    min-width: 0;
     flex: 1;
+    min-width: 0;
 }
 
-.pm-settings-row-info strong,
-.pm-settings-row-info h4 {
+.pm-settings-row-info strong {
     display: block;
 
-    margin: 0;
-
-    color: var(--settings-text);
-
-    font-size: 13px;
-    font-weight: 750;
+    font-size: 12px;
+    font-weight: 700;
 }
 
-.pm-settings-row-info span,
-.pm-settings-row-info small,
-.pm-settings-row-info p {
+.pm-settings-row-info small {
     display: block;
 
-    margin: 3px 0 0;
+    margin-top: 3px;
 
-    color: var(--settings-muted);
+    color: var(--pm-text-muted);
 
     font-size: 10px;
     line-height: 1.45;
 }
 
-.pm-settings-row > label {
-    color: var(--settings-text);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-
-/* =========================================================
-   31. SETTINGS INPUTS
-   ========================================================= */
-
 .pm-settings-input,
 .pm-settings-select {
-    width: 180px;
-    max-width: 100%;
+    flex: 0 0 auto;
 
-    min-height: 40px;
+    width: 150px;
 
-    padding: 9px 11px;
+    padding: 9px 10px;
 
-    background: var(--settings-card);
-    color: var(--settings-text);
+    color: var(--pm-text);
+    background: var(--pm-surface);
 
-    border: 1px solid var(--settings-border);
-    border-radius: 10px;
+    border: 1px solid var(--pm-border-strong);
+    border-radius: 9px;
 
-    font-size: 12px;
-    font-weight: 600;
-
-    outline: none;
-
-    transition:
-        border-color 0.18s ease,
-        box-shadow 0.18s ease;
+    font-size: 11px;
 }
 
 .pm-settings-input:focus,
 .pm-settings-select:focus {
-    border-color: rgba(22, 101, 52, 0.42);
-    box-shadow: 0 0 0 4px rgba(22, 101, 52, 0.08);
-}
+    border-color: var(--pm-primary);
 
-.pm-settings-input[type="number"] {
-    text-align: right;
-}
-
-.pm-settings-input[type="time"] {
-    min-width: 130px;
+    box-shadow:
+        0 0 0 3px rgba(31, 107, 69, 0.08);
 }
 
 
 /* =========================================================
-   32. SETTINGS BUTTONS
+   25. SETTINGS ACTIONS
    ========================================================= */
 
 .pm-settings-actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
     gap: 8px;
 
-    margin-top: 14px;
+    margin-top: 15px;
 }
 
-.pm-settings-action-button,
-.pm-settings-primary-button,
-.pm-settings-secondary-button,
-.pm-settings-danger-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-
-    min-height: 39px;
-
+.pm-settings-action-button {
     padding: 9px 13px;
 
-    border-radius: 10px;
+    border-radius: 9px;
 
     font-size: 11px;
-    font-weight: 750;
+    font-weight: 700;
 }
 
-.pm-settings-primary,
-.pm-settings-primary-button {
-    background: var(--primary);
+.pm-settings-primary {
     color: #ffffff;
-
-    box-shadow: 0 5px 13px rgba(22, 101, 52, 0.14);
+    background: var(--pm-primary);
 }
 
-.pm-settings-primary:hover,
-.pm-settings-primary-button:hover {
-    background: var(--primary-hover);
-    transform: translateY(-1px);
+.pm-settings-primary:hover {
+    background: var(--pm-primary-dark);
 }
 
-.pm-settings-secondary,
-.pm-settings-secondary-button {
-    background: var(--secondary);
-    color: var(--settings-text);
+.pm-settings-secondary {
+    color: var(--pm-text);
+    background: var(--pm-surface);
 
-    border: 1px solid var(--settings-border);
+    border: 1px solid var(--pm-border-strong);
 }
 
-.pm-settings-secondary:hover,
-.pm-settings-secondary-button:hover {
-    background: var(--secondary-hover);
+.pm-settings-secondary:hover {
+    background: var(--pm-surface-soft);
 }
 
-.pm-settings-danger,
-.pm-settings-danger-button {
-    background: var(--danger-light);
-    color: var(--danger);
+.pm-settings-danger {
+    color: var(--pm-danger);
+    background: var(--pm-danger-soft);
 
-    border: 1px solid rgba(220, 38, 38, 0.12);
+    border: 1px solid #f1cccc;
 }
 
-.pm-settings-danger:hover,
-.pm-settings-danger-button:hover {
-    background: var(--danger);
-    color: #ffffff;
-}
-
-.pm-settings-action-button:disabled,
-.pm-settings-primary-button:disabled,
-.pm-settings-secondary-button:disabled,
-.pm-settings-danger-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none;
+.pm-settings-danger:hover {
+    background: #f8dddd;
 }
 
 
 /* =========================================================
-   33. SETTINGS STATUS
+   26. SETTINGS STATUS / BADGES
    ========================================================= */
 
 .pm-settings-status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
     margin-top: 11px;
-    padding: 10px 12px;
 
-    background: var(--settings-soft);
-    border: 1px solid var(--settings-border);
-    border-radius: 10px;
+    padding: 9px 11px;
 
-    color: var(--settings-muted);
+    border-radius: 9px;
 
-    font-size: 11px;
-    font-weight: 650;
+    font-size: 10px;
+    line-height: 1.45;
 }
 
 .pm-settings-status.success {
-    background: var(--success-light);
-    border-color: rgba(21, 128, 61, 0.12);
-    color: var(--success);
+    color: var(--pm-success);
+    background: var(--pm-success-soft);
+
+    border: 1px solid #cfe9d8;
 }
 
 .pm-settings-status.error {
-    background: var(--danger-light);
-    border-color: rgba(220, 38, 38, 0.12);
-    color: var(--danger);
+    color: var(--pm-danger);
+    background: var(--pm-danger-soft);
+
+    border: 1px solid #f1cccc;
 }
-
-.pm-settings-status::before {
-    content: "";
-
-    width: 7px;
-    height: 7px;
-
-    flex: 0 0 7px;
-
-    border-radius: 50%;
-
-    background: currentColor;
-}
-
-
-/* =========================================================
-   34. SETTINGS SWITCH / TOGGLE
-   ========================================================= */
-
-.pm-settings-switch {
-    position: relative;
-
-    display: inline-flex;
-
-    width: 46px;
-    height: 27px;
-
-    flex: 0 0 46px;
-}
-
-.pm-settings-switch input {
-    position: absolute;
-
-    width: 1px;
-    height: 1px;
-
-    opacity: 0;
-    pointer-events: none;
-}
-
-.pm-settings-slider {
-    position: relative;
-
-    display: block;
-
-    width: 100%;
-    height: 100%;
-
-    background: var(--secondary-hover);
-
-    border: 1px solid var(--border);
-    border-radius: 999px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.pm-settings-slider::before {
-    content: "";
-
-    position: absolute;
-    top: 3px;
-    left: 3px;
-
-    width: 19px;
-    height: 19px;
-
-    border-radius: 50%;
-
-    background: #ffffff;
-
-    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.18);
-
-    transition:
-        transform 0.2s ease;
-}
-
-.pm-settings-switch input:checked + .pm-settings-slider {
-    background: var(--primary);
-    border-color: var(--primary);
-}
-
-.pm-settings-switch input:checked + .pm-settings-slider::before {
-    transform: translateX(19px);
-}
-
-.pm-settings-switch input:focus-visible + .pm-settings-slider {
-    outline: 3px solid rgba(22, 101, 52, 0.16);
-    outline-offset: 2px;
-}
-
-
-/* =========================================================
-   35. SETTINGS TIME GRID
-   ========================================================= */
-
-.pm-settings-time-grid,
-.pm-schedule-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-}
-
-.pm-settings-time-grid > div,
-.pm-schedule-field {
-    min-width: 0;
-}
-
-.pm-settings-time-grid label,
-.pm-schedule-field label {
-    display: block;
-
-    margin-bottom: 6px;
-
-    color: var(--settings-muted);
-
-    font-size: 10px;
-    font-weight: 750;
-}
-
-
-/* =========================================================
-   36. SETTINGS BUTTON GRID
-   ========================================================= */
-
-.pm-settings-button-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 9px;
-
-    margin-top: 12px;
-}
-
-.pm-settings-button-grid button {
-    width: 100%;
-}
-
-
-/* =========================================================
-   37. SETTINGS LIST / ITEMS
-   ========================================================= */
-
-.pm-settings-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.pm-settings-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 14px;
-
-    padding: 12px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--settings-border);
-    border-radius: 12px;
-}
-
-.pm-settings-item-title {
-    color: var(--settings-text);
-    font-size: 12px;
-    font-weight: 750;
-}
-
-.pm-settings-item-description {
-    margin-top: 3px;
-
-    color: var(--settings-muted);
-    font-size: 10px;
-    line-height: 1.4;
-}
-
-
-/* =========================================================
-   38. SETTINGS BADGES
-   ========================================================= */
 
 .pm-settings-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
 
-    padding: 5px 9px;
+    padding: 6px 9px;
 
-    background: var(--settings-soft);
-    border: 1px solid var(--settings-border);
+    color: var(--pm-text-soft);
+    background: var(--pm-surface-muted);
+
     border-radius: 999px;
 
-    color: var(--settings-muted);
-
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 750;
 }
 
 .pm-settings-badge-dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
 
     border-radius: 50%;
 
-    background: currentColor;
+    background: var(--pm-text-muted);
 }
 
 .pm-settings-badge.enabled {
-    background: var(--success-light);
-    border-color: rgba(21, 128, 61, 0.12);
-    color: var(--success);
+    color: var(--pm-success);
+    background: var(--pm-success-soft);
 }
 
-.pm-settings-badge.disabled {
-    color: var(--muted);
+.pm-settings-badge.enabled .pm-settings-badge-dot {
+    background: var(--pm-success);
 }
 
 
 /* =========================================================
-   39. SETTINGS NOTES
+   27. SETTINGS SCHEDULE
    ========================================================= */
 
-.pm-settings-note {
-    margin-top: 10px;
-    padding: 11px 12px;
+.pm-schedule-grid {
+    display: grid;
 
-    background: var(--settings-soft);
-    border-left: 3px solid var(--primary);
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
 
-    border-radius: 8px;
+    gap: 11px;
+}
 
-    color: var(--settings-muted);
+.pm-schedule-field {
+    min-width: 0;
+}
+
+.pm-schedule-field label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--pm-text-soft);
 
     font-size: 10px;
-    line-height: 1.5;
+    font-weight: 650;
 }
+
+.pm-schedule-field input,
+.pm-schedule-field select {
+    width: 100%;
+
+    padding: 9px 10px;
+
+    color: var(--pm-text);
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border-strong);
+    border-radius: 9px;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   28. SETTINGS DIVIDER
+   ========================================================= */
 
 .pm-settings-divider {
     width: 100%;
     height: 1px;
 
-    margin: 14px 0;
+    margin: 17px 0;
 
-    background: var(--settings-border);
+    background: var(--pm-border);
 }
 
 
 /* =========================================================
-   40. SETTINGS BACK BUTTON
-   ========================================================= */
-
-.pm-settings-back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-
-    margin-bottom: 12px;
-    padding: 7px 10px;
-
-    border: 0;
-    border-radius: 9px;
-
-    background: var(--settings-soft);
-    color: var(--settings-muted);
-
-    cursor: pointer;
-
-    font-size: 11px;
-    font-weight: 750;
-}
-
-.pm-settings-back-button:hover {
-    background: var(--settings-hover);
-    color: var(--settings-text);
-}
-
-
-/* =========================================================
-   41. SETTINGS THEME / PREFERENCE CONTROL
-   ========================================================= */
-
-.pm-theme-options {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-}
-
-.pm-theme-option {
-    padding: 11px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--settings-border);
-    border-radius: 11px;
-
-    color: var(--settings-text);
-
-    cursor: pointer;
-
-    text-align: center;
-
-    font-size: 11px;
-    font-weight: 750;
-}
-
-.pm-theme-option.active {
-    background: var(--accent-green-soft);
-    border-color: rgba(22, 101, 52, 0.25);
-    color: var(--primary);
-}
-
-
-/* =========================================================
-   42. ABOUT SECTION
+   29. ABOUT
    ========================================================= */
 
 .pm-about {
-    padding: 3px 0;
+    text-align: center;
+
+    padding: 10px 0;
 }
 
 .pm-about-brand {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
 }
 
 .pm-about-logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
 
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
+    width: 58px;
+    height: 58px;
 
-    border-radius: 14px;
+    margin-bottom: 10px;
 
-    background: var(--primary);
     color: #ffffff;
+    background: var(--pm-primary);
 
-    font-size: 18px;
+    border-radius: 17px;
+
+    font-size: 25px;
     font-weight: 850;
 
-    box-shadow: 0 7px 16px rgba(22, 101, 52, 0.16);
+    box-shadow:
+        0 8px 20px rgba(31, 107, 69, 0.18);
 }
 
-.pm-about-brand strong {
-    color: var(--settings-text);
+.pm-about-brand h3 {
+    margin: 0;
 
-    font-size: 16px;
-    font-weight: 850;
-}
-
-.pm-about-brand small {
-    display: block;
-
-    margin-top: 2px;
-
-    color: var(--settings-muted);
-
-    font-size: 10px;
+    font-size: 17px;
+    font-weight: 800;
 }
 
 .pm-about-description {
-    margin: 15px 0 0;
+    max-width: 540px;
 
-    color: var(--settings-muted);
+    margin: 7px auto 0;
+
+    color: var(--pm-text-soft);
 
     font-size: 11px;
     line-height: 1.6;
 }
 
-.pm-about-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
-
-    margin-top: 13px;
-}
-
-.pm-about-meta span {
-    padding: 5px 8px;
-
-    background: var(--settings-soft);
-    border: 1px solid var(--settings-border);
-    border-radius: 7px;
-
-    color: var(--settings-muted);
-
-    font-size: 9px;
-    font-weight: 700;
-}
-
 
 /* =========================================================
-   43. NOTIFICATION AREA
+   30. GENERAL FORM FOCUS
    ========================================================= */
 
-.pm-notification-status {
-    margin-top: 10px;
-}
-
-.pm-notification-status.success {
-    color: var(--success);
-}
-
-.pm-notification-status.error {
-    color: var(--danger);
+input:focus-visible,
+select:focus-visible,
+button:focus-visible {
+    outline: 2px solid rgba(31, 107, 69, 0.25);
+    outline-offset: 2px;
 }
 
 
 /* =========================================================
-   44. BACKUP AREA
+   31. SCROLLBAR
    ========================================================= */
 
-.pm-backup-actions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 9px;
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
 }
 
-.pm-backup-actions button {
-    width: 100%;
+::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-.pm-backup-file {
-    margin-top: 10px;
+::-webkit-scrollbar-thumb {
+    background: #cbd3cc;
+    border-radius: 999px;
 }
 
-
-/* =========================================================
-   45. LEGACY / GENERATED SETTINGS COMPATIBILITY
-   ========================================================= */
-
-.settings-card,
-.settings-section,
-.settings-row {
-    max-width: 100%;
-}
-
-.settings-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 15px;
-}
-
-.settings-row {
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-}
-
-.settings-row:last-child {
-    border-bottom: 0;
+::-webkit-scrollbar-thumb:hover {
+    background: #b5c0b7;
 }
 
 
 /* =========================================================
-   46. DARK MODE
+   32. DARK MODE
    ========================================================= */
 
 html[data-theme="dark"] {
-    --bg: #0f172a;
-    --card: #111827;
-    --text: #f8fafc;
-    --muted: #94a3b8;
-    --border: #263244;
+    --pm-bg: #101512;
+    --pm-surface: #171d19;
+    --pm-surface-soft: #1c241f;
+    --pm-surface-muted: #222b25;
 
-    --secondary: #172033;
-    --secondary-hover: #1e293b;
+    --pm-text: #edf4ee;
+    --pm-text-soft: #aab7ad;
+    --pm-text-muted: #77847a;
 
-    --settings-bg: #0f172a;
-    --settings-card: #111827;
-    --settings-border: #263244;
-    --settings-text: #f8fafc;
-    --settings-muted: #94a3b8;
-    --settings-soft: #172033;
-    --settings-hover: #1e293b;
+    --pm-border: #29342c;
+    --pm-border-strong: #364239;
 
-    --accent-green-soft: #102b1a;
-    --accent-amber-soft: #2a2111;
-    --accent-blue-soft: #111f38;
-    --accent-purple-soft: #211735;
+    --pm-primary: #55b77d;
+    --pm-primary-dark: #69c88f;
+    --pm-primary-soft: #193425;
 
-    --success-light: #12351f;
-    --danger-light: #351619;
+    --pm-secondary: #80b998;
 
-    --shadow:
-        0 8px 25px rgba(0, 0, 0, 0.22);
+    --pm-accent: #e1a843;
+    --pm-accent-soft: #382b16;
 
-    --shadow-soft:
-        0 4px 16px rgba(0, 0, 0, 0.16);
+    --pm-success: #62c58a;
+    --pm-success-soft: #183526;
+
+    --pm-danger: #e87878;
+    --pm-danger-soft: #382021;
+
+    --pm-warning: #e1aa4c;
+    --pm-warning-soft: #382b17;
+
+    --pm-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.18);
+    --pm-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
+    --pm-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.3);
 }
 
-html[data-theme="dark"] body {
-    background: var(--bg);
-    color: var(--text);
+html[data-theme="dark"] .app-header {
+    background: var(--pm-surface);
 }
 
-html[data-theme="dark"] .app-header,
-html[data-theme="dark"] .farm-overview-section,
-html[data-theme="dark"] .farm-overview-card,
-html[data-theme="dark"] .quick-action-button,
-html[data-theme="dark"] .summary-card,
-html[data-theme="dark"] .trend-card,
-html[data-theme="dark"] .analytics-card,
-html[data-theme="dark"] .egg-main-card,
-html[data-theme="dark"] .feed-card,
-html[data-theme="dark"] .feed-chart-card,
-html[data-theme="dark"] .feed-history-card,
-html[data-theme="dark"] .feed-schedule,
-html[data-theme="dark"] .flock-section,
-html[data-theme="dark"] .alarm-section,
-html[data-theme="dark"] .data-backup-section,
-html[data-theme="dark"] .pm-settings-card,
-html[data-theme="dark"] .pm-settings-header {
-    background: var(--card);
-    border-color: var(--border);
+html[data-theme="dark"] .farm-overview-card-wide,
+html[data-theme="dark"] .egg-main-card {
+    border-color: #2c4936;
 }
 
-html[data-theme="dark"] .app-navigation {
-    background: rgba(17, 24, 39, 0.92);
-    border-color: var(--border);
+html[data-theme="dark"] .feed-hero-card {
+    background:
+        linear-gradient(
+            135deg,
+            #19251d,
+            var(--pm-surface)
+        );
+
+    border-color: #2b4232;
 }
 
-html[data-theme="dark"] .quick-action-button:hover,
-html[data-theme="dark"] .farm-overview-card:hover {
-    border-color: #334155;
-}
-
-html[data-theme="dark"] .pm-settings-input,
-html[data-theme="dark"] .pm-settings-select,
-html[data-theme="dark"] input[type="number"],
-html[data-theme="dark"] input[type="text"],
-html[data-theme="dark"] input[type="time"],
-html[data-theme="dark"] input[type="date"],
-html[data-theme="dark"] input[type="file"],
-html[data-theme="dark"] select,
-html[data-theme="dark"] textarea {
-    background: #0f172a;
-    color: var(--text);
-    border-color: var(--border);
-}
-
-html[data-theme="dark"] .pm-settings-slider {
-    background: #273449;
-    border-color: #334155;
-}
-
-html[data-theme="dark"] .pm-settings-slider::before {
-    background: #f8fafc;
-}
-
-html[data-theme="dark"] .feed-history-item,
-html[data-theme="dark"] .history-item,
-html[data-theme="dark"] .feed-action-card,
-html[data-theme="dark"] .feed-consumption,
-html[data-theme="dark"] .feed-metric,
-html[data-theme="dark"] .pm-settings-item,
-html[data-theme="dark"] .pm-settings-note {
-    background: var(--settings-soft);
-    border-color: var(--border);
-}
-
-html[data-theme="dark"] .secondary-button,
-html[data-theme="dark"] .pm-settings-secondary,
-html[data-theme="dark"] .pm-settings-secondary-button {
-    background: var(--secondary);
-    color: var(--text);
-    border-color: var(--border);
-}
-
-html[data-theme="dark"] .secondary-button:hover,
-html[data-theme="dark"] .pm-settings-secondary:hover,
-html[data-theme="dark"] .pm-settings-secondary-button:hover {
-    background: var(--secondary-hover);
+html[data-theme="dark"] .feed-progress-track {
+    background: #2a332c;
 }
 
 html[data-theme="dark"] .trend-grid-lines span {
-    border-color: #263244;
+    background: var(--pm-border);
+}
+
+html[data-theme="dark"] .laying-rate {
+    border-left-color: var(--pm-border);
+}
+
+html[data-theme="dark"] .pm-about-logo {
+    color: #102016;
+    background: var(--pm-primary);
+}
+
+html[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #3a463d;
 }
 
 
 /* =========================================================
-   47. APP SHELL POLISH
+   33. RESPONSIVE — TABLET
    ========================================================= */
 
-.app-navigation {
-    animation: pmFadeIn 0.25s ease both;
-}
-
-#pmDashboardView,
-#pmSettingsView {
-    animation: pmViewIn 0.28s ease both;
-}
-
-@keyframes pmFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-4px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes pmViewIn {
-    from {
-        opacity: 0;
-        transform: translateY(5px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* =========================================================
-   48. MOBILE NAVIGATION
-   ========================================================= */
-
-@media (max-width: 650px) {
-
-    #app,
-    .app,
-    .app-container {
-        padding: 14px;
-    }
-
-    .app-header {
-        padding: 18px;
-    }
-
-    .app-header h1 {
-        font-size: 23px;
-    }
-
-    .app-navigation {
-        top: 8px;
-        margin-bottom: 14px;
-    }
-
-    .app-navigation button {
-        min-height: 40px;
-        font-size: 12px;
-    }
-
-    .pm-settings-header {
-        padding: 19px;
-    }
-
-    .pm-settings-header h2 {
-        font-size: 22px;
-    }
-}
-
-
-/* =========================================================
-   49. TABLET
-   ========================================================= */
-
-@media (max-width: 1000px) {
+@media (max-width: 900px) {
 
     .farm-overview-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .farm-overview-card-wide {
+        grid-column: span 2;
     }
 
     .summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
     .analytics-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
     }
 
-    .feed-metrics {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+    .feed-dashboard {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .feed-hero-card {
+        grid-column: 1 / -1;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+   34. RESPONSIVE — MOBILE
+   ========================================================= */
+
+@media (max-width: 680px) {
+
+    .app-header {
+        padding: 21px 17px 18px;
+    }
+
+    .pm-dashboard-view {
+        padding:
+            22px
+            15px
+            50px;
+    }
+
+    .pm-dashboard-view > section {
+        margin-bottom: 17px;
+    }
+
+    .section {
+        padding: 18px;
+
+        border-radius: 17px;
+    }
+
+    .section-title {
+        margin-bottom: 17px;
+    }
+
+    .section-title h2 {
+        font-size: 18px;
+    }
+
+    .section-title p {
+        font-size: 12px;
+    }
+
+
+    /* Farm overview */
+
+    .farm-overview-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 9px;
+    }
+
+    .farm-overview-card {
+        padding: 14px;
+
+        border-radius: 13px;
+    }
+
+    .farm-overview-card-wide {
+        grid-column: span 2;
+    }
+
+    .farm-overview-card-top {
+        margin-bottom: 10px;
+    }
+
+    .farm-overview-icon {
+        width: 29px;
+        height: 29px;
+
+        font-size: 15px;
+    }
+
+    .farm-overview-label {
+        font-size: 10px;
+    }
+
+    .farm-overview-value {
+        font-size: 22px;
+    }
+
+    .farm-overview-description {
+        font-size: 9px;
+    }
+
+
+    /* Quick actions */
+
+    .quick-actions {
+        padding: 15px;
+
+        border-radius: 15px;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-action-button {
+        padding: 12px;
+    }
+
+
+    /* Summary */
+
+    .summary-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 9px;
+    }
+
+    .summary-card {
+        padding: 14px;
+    }
+
+    .summary-card strong {
+        font-size: 20px;
+    }
+
+
+    /* Analytics */
+
+    .analytics-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 9px;
+    }
+
+    .analytics-card {
+        padding: 14px;
+    }
+
+    .analytics-card strong {
+        font-size: 20px;
+    }
+
+
+    /* Egg production */
+
+    .egg-main-card {
+        grid-template-columns:
+            1fr
+            1fr;
+
+        gap: 15px;
+
+        padding: 17px;
+    }
+
+    .egg-number span {
+        font-size: 37px;
+    }
+
+    .laying-rate {
+        padding-left: 15px;
+    }
+
+    .laying-rate span {
+        font-size: 26px;
+    }
+
+    .egg-actions {
+        grid-column: 1 / -1;
+
+        justify-content: stretch;
+    }
+
+    .egg-actions button {
+        flex: 1;
+    }
+
+
+    /* Feed */
+
+    .feed-dashboard {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 9px;
+    }
+
+    .feed-hero-card {
+        grid-column: 1 / -1;
+
+        padding: 17px;
+    }
+
+    .feed-metric-card {
+        padding: 14px;
+    }
+
+    .feed-metric-card strong {
+        font-size: 20px;
+    }
+
+    .feed-action-panel,
+    .feed-consumption-card {
+        padding: 16px;
+    }
+
+    .feed-action-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-consumption-summary {
+        grid-template-columns:
+            1fr;
+    }
+
+    .feed-card-header {
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .feed-period-label {
+        align-self: flex-start;
+    }
+
+    .feed-input-row {
+        flex-direction: column;
+    }
+
+    .feed-input-row button {
+        width: 100%;
+    }
+
+
+    /* Navigation */
+
+    .app-navigation {
+        width: calc(100% - 30px);
+
+        margin-bottom: 8px;
+    }
+
+    .app-navigation button {
+        min-height: 36px;
+        padding: 7px 10px;
+    }
+
+
+    /* Settings */
+
+    .pm-settings-view {
+        width: calc(100% - 30px);
+
+        padding-top: 20px;
     }
 
     .pm-settings-grid {
@@ -2686,1580 +2393,148 @@ html[data-theme="dark"] .trend-grid-lines span {
     .pm-settings-card-wide {
         grid-column: auto;
     }
-}
-
-
-/* =========================================================
-   50. MEDIUM MOBILE
-   ========================================================= */
-
-@media (max-width: 850px) {
-
-    .quick-actions-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .feed-action-panel {
-        grid-template-columns: 1fr;
-    }
 
     .pm-settings-row {
         align-items: flex-start;
-    }
-
-    .pm-settings-row > .pm-settings-input,
-    .pm-settings-row > .pm-settings-select {
-        width: 150px;
-    }
-}
-
-
-/* =========================================================
-   51. SMALL MOBILE
-   ========================================================= */
-
-@media (max-width: 560px) {
-
-    #app,
-    .app,
-    .app-container {
-        padding: 10px;
-    }
-
-    .app-header {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-        padding: 17px;
+        gap: 9px;
     }
 
-    .app-header-date {
-        text-align: left;
-    }
-
-    .farm-overview-section {
-        padding: 17px;
-    }
-
-    .farm-overview-header {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 5px;
-    }
-
-    .farm-overview-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-    }
-
-    .farm-overview-card {
-        padding: 13px;
-        border-radius: 13px;
-    }
-
-    .farm-overview-card-wide {
-        grid-column: span 2;
-    }
-
-    .farm-overview-value {
-        font-size: 21px;
-    }
-
-    .farm-overview-icon {
-        width: 32px;
-        height: 32px;
-        flex-basis: 32px;
-        border-radius: 9px;
-    }
-
-    .summary-grid,
-    .analytics-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 8px;
-    }
-
-    .summary-card,
-    .analytics-card {
-        padding: 14px;
-    }
-
-    .trend-card {
-        padding: 16px;
-    }
-
-    .trend-chart-wrapper {
-        grid-template-columns: 28px minmax(0, 1fr);
-    }
-
-    .production-trend-chart {
-        gap: 4px;
-    }
-
-    .trend-bar {
-        width: 65%;
-    }
-
-    .trend-day {
-        font-size: 8px;
-    }
-
-    .egg-main-card,
-    .feed-card {
-        padding: 17px;
-    }
-
-    .egg-number {
-        font-size: 40px;
-    }
-
-    .feed-metrics {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .feed-history-item {
-        grid-template-columns: 34px minmax(0, 1fr) auto;
-        gap: 8px;
-        padding: 10px;
-    }
-
-    .feed-history-icon {
-        width: 34px;
-        height: 34px;
-    }
-
-    .pm-settings-card {
-        padding: 15px;
-        border-radius: 15px;
-    }
-
-    .pm-settings-row {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 8px;
-    }
-
-    .pm-settings-row > .pm-settings-input,
-    .pm-settings-row > .pm-settings-select {
+    .pm-settings-input,
+    .pm-settings-select {
         width: 100%;
     }
 
-    .pm-settings-time-grid,
     .pm-schedule-grid {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .pm-settings-button-grid,
-    .pm-backup-actions {
         grid-template-columns: 1fr;
     }
 
     .pm-settings-actions {
+        flex-direction: column;
+    }
+
+    .pm-settings-action-button {
         width: 100%;
-    }
-
-    .pm-settings-action-button,
-    .pm-settings-primary-button,
-    .pm-settings-secondary-button,
-    .pm-settings-danger-button {
-        flex: 1;
-    }
-
-    .schedule-row {
-        grid-template-columns: 1fr;
     }
 }
 
 
 /* =========================================================
-   52. VERY SMALL PHONES
+   35. SMALL PHONES
    ========================================================= */
 
-@media (max-width: 380px) {
+@media (max-width: 430px) {
 
-    #app,
-    .app,
-    .app-container {
-        padding: 8px;
-    }
-
-    .app-header h1 {
-        font-size: 21px;
-    }
-
-    .app-navigation {
-        padding: 5px;
-    }
-
-    .app-navigation button {
-        min-height: 38px;
-        padding: 8px 9px;
-        font-size: 11px;
-    }
-
-    .farm-overview-section {
-        padding: 14px;
+    .farm-overview-header h2 {
+        font-size: 25px;
     }
 
     .farm-overview-grid {
-        gap: 7px;
+        gap: 8px;
     }
 
     .farm-overview-card {
-        padding: 11px;
-    }
-
-    .farm-overview-label {
-        font-size: 10px;
+        padding: 12px;
     }
 
     .farm-overview-value {
-        font-size: 19px;
-    }
-
-    .farm-overview-description {
-        font-size: 9px;
-    }
-
-    .summary-card strong,
-    .summary-card .summary-value {
-        font-size: 19px;
-    }
-
-    .analytics-card strong {
-        font-size: 17px;
-    }
-
-    .pm-settings-header h2 {
         font-size: 20px;
     }
 
-    .pm-settings-card-header {
-        gap: 9px;
+    .summary-card {
+        padding: 12px;
     }
 
-    .pm-settings-icon {
-        width: 36px;
-        height: 36px;
-        flex-basis: 36px;
+    .summary-card span {
+        font-size: 10px;
+    }
+
+    .summary-card strong {
+        font-size: 18px;
+    }
+
+    .analytics-card {
+        padding: 12px;
+    }
+
+    .analytics-card strong {
+        font-size: 18px;
+    }
+
+    .analytics-insight {
+        padding: 13px;
+    }
+
+    .egg-main-card {
+        padding: 14px;
+    }
+
+    .egg-actions {
+        flex-direction: column;
+    }
+
+    .egg-actions button {
+        width: 100%;
+    }
+
+    .feed-hero-top {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .feed-status-badge {
+        align-self: flex-start;
+    }
+
+    .feed-dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .feed-hero-card {
+        grid-column: auto;
+    }
+
+    .feed-action-box {
+        padding: 14px;
+    }
+
+    .feed-action-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .egg-history-item,
+    .feed-history-item {
+        padding: 10px;
+    }
+
+    .egg-history-date,
+    .feed-history-date {
+        font-size: 10px;
+    }
+
+    .egg-history-value,
+    .feed-history-value {
+        font-size: 11px;
     }
 }
 
 
 /* =========================================================
-   53. TOUCH DEVICES
-   ========================================================= */
-
-@media (hover: none) {
-
-    .farm-overview-card:hover,
-    .quick-action-button:hover,
-    .feed-history-item:hover {
-        transform: none;
-    }
-
-    .primary-button:hover,
-    .pm-settings-primary:hover,
-    .pm-settings-primary-button:hover {
-        transform: none;
-    }
-}
-
-
-/* =========================================================
-   54. REDUCED MOTION
+   36. REDUCED MOTION
    ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
 
+    html {
+        scroll-behavior: auto;
+    }
+
     *,
     *::before,
     *::after {
-        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
-
-
-/* =========================================================
-   55. SAFETY / OVERFLOW
-   ========================================================= */
-
-html,
-body {
-    max-width: 100%;
-    overflow-x: hidden;
-}
-
-button,
-input,
-select,
-textarea {
-    max-width: 100%;
-}
-
-.pm-settings-row-info,
-.feed-history-main,
-.farm-overview-card,
-.analytics-card,
-.summary-card {
-    overflow-wrap: anywhere;
-}
-
-
-/* =========================================================
-   56. FINAL VISUAL POLISH
-   ========================================================= */
-
-.pm-settings-card,
-.feed-history-card,
-.feed-card,
-.trend-card,
-.egg-main-card {
-    isolation: isolate;
-}
-
-button {
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-::selection {
-    background: rgba(22, 101, 52, 0.18);
-    color: var(--text);
-}
-
-
-
-/* =========================================================
-   57. POULTRY MANAGER
-   EGG HISTORY + FEED MANAGEMENT
-   FINAL UI POLISH
-   ========================================================= */
-
-/* =========================================================
-   EGG HISTORY
-   ========================================================= */
-
-#eggHistoryList {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 14px;
-}
-
-#eggHistoryList .egg-history-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-
-    min-height: 58px;
-    padding: 13px 15px;
-
-    border: 1px solid rgba(0, 0, 0, 0.07);
-    border-radius: 14px;
-
-    background: rgba(255, 255, 255, 0.92);
-
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.035);
-
-    transition:
-        transform 0.18s ease,
-        box-shadow 0.18s ease,
-        border-color 0.18s ease;
-}
-
-#eggHistoryList .egg-history-item:hover {
-    transform: translateY(-1px);
-
-    box-shadow:
-        0 7px 18px rgba(0, 0, 0, 0.06);
-
-    border-color: rgba(0, 0, 0, 0.11);
-}
-
-#eggHistoryList .egg-history-date {
-    font-size: 0.88rem;
-    font-weight: 600;
-    color: #6b7280;
-
-    white-space: nowrap;
-}
-
-#eggHistoryList .egg-history-value {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    font-size: 0.94rem;
-    font-weight: 700;
-
-    color: #171717;
-
-    white-space: nowrap;
-}
-
-#eggHistoryList .egg-history-value span {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #737373;
-}
-
-#eggHistoryList .pm-empty-state {
-    padding: 22px 16px;
-
-    text-align: center;
-
-    border: 1px dashed rgba(0, 0, 0, 0.13);
-    border-radius: 14px;
-
-    color: #777;
-    background: rgba(0, 0, 0, 0.015);
-
-    font-size: 0.9rem;
-}
-
-
-/* =========================================================
-   FEED MANAGEMENT
-   ========================================================= */
-
-.feed-management {
-    position: relative;
-}
-
-.feed-management .feed-card,
-.feed-management .feed-section,
-.feed-management .feed-metric,
-.feed-management .feed-action-card,
-.feed-management .feed-chart-card,
-.feed-management .feed-history-card {
-    box-sizing: border-box;
-}
-
-
-/* =========================================================
-   FEED INVENTORY
-   ========================================================= */
-
-.feed-management .feed-card {
-    position: relative;
-    overflow: hidden;
-
-    border-radius: 18px;
-}
-
-.feed-management .feed-card::before {
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-    left: 0;
-    right: 0;
-
-    height: 3px;
-
-    background: currentColor;
-
-    opacity: 0.12;
-
-    pointer-events: none;
-}
-
-#feedAmount {
-    display: block;
-
-    font-size: clamp(1.65rem, 4vw, 2.25rem);
-    line-height: 1.05;
-
-    font-weight: 800;
-    letter-spacing: -0.03em;
-
-    color: inherit;
-}
-
-#feedDaysRemaining {
-    font-weight: 800;
-}
-
-#feedDaysRemainingText {
-    font-size: 0.8rem;
-    font-weight: 700;
-
-    color: #737373;
-}
-
-
-/* =========================================================
-   FEED METRICS
-   ========================================================= */
-
-.feed-management .feed-metrics {
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-
-    gap: 12px;
-
-    margin-top: 14px;
-}
-
-.feed-management .feed-metric {
-    min-width: 0;
-
-    padding: 15px;
-
-    border: 1px solid rgba(0, 0, 0, 0.065);
-    border-radius: 15px;
-
-    background: rgba(255, 255, 255, 0.78);
-
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.025);
-}
-
-.feed-management .feed-metric strong,
-.feed-management .feed-metric-value {
-    display: block;
-
-    font-size: 1.05rem;
-    font-weight: 800;
-}
-
-.feed-management .feed-metric span,
-.feed-management .feed-metric-label {
-    display: block;
-
-    margin-top: 4px;
-
-    font-size: 0.76rem;
-    line-height: 1.35;
-
-    color: #777;
-}
-
-
-/* =========================================================
-   FEED PROGRESS
-   ========================================================= */
-
-.feed-management .feed-progress-bar {
-    height: 8px;
-
-    min-width: 0;
-
-    border-radius: 999px;
-
-    background: currentColor;
-
-    transition:
-        width 0.35s ease;
-
-    opacity: 0.85;
-}
-
-
-/* =========================================================
-   FEED ACTION PANEL
-   ========================================================= */
-
-.feed-management .feed-action-panel {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 14px;
-
-    margin-top: 16px;
-}
-
-.feed-management .feed-action-card {
-    min-width: 0;
-
-    padding: 16px;
-
-    border: 1px solid rgba(0, 0, 0, 0.065);
-    border-radius: 16px;
-
-    background: rgba(255, 255, 255, 0.82);
-}
-
-.feed-management .feed-action-card h3 {
-    margin: 0 0 5px;
-
-    font-size: 0.98rem;
-    font-weight: 750;
-}
-
-.feed-management .feed-action-card p {
-    margin: 0 0 13px;
-
-    color: #777;
-
-    font-size: 0.8rem;
-    line-height: 1.45;
-}
-
-
-/* =========================================================
-   FEED INPUTS
-   ========================================================= */
-
-#feedInput,
-#useFeedInput {
-    width: 100%;
-    min-width: 0;
-
-    box-sizing: border-box;
-
-    min-height: 46px;
-
-    padding: 10px 13px;
-
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    border-radius: 12px;
-
-    background: #fff;
-
-    font: inherit;
-    font-size: 0.95rem;
-    font-weight: 600;
-
-    color: inherit;
-
-    outline: none;
-
-    transition:
-        border-color 0.18s ease,
-        box-shadow 0.18s ease;
-}
-
-#feedInput:focus,
-#useFeedInput:focus {
-    border-color: currentColor;
-
-    box-shadow:
-        0 0 0 3px rgba(0, 0, 0, 0.055);
-}
-
-#addFeedButton,
-#useFeedButton {
-    margin-top: 9px;
-}
-
-
-/* =========================================================
-   UNDO / RESET FEED BUTTONS
-   ========================================================= */
-
-.feed-action-button,
-.feed-secondary-button,
-.feed-reset-button {
-    min-height: 42px;
-
-    border-radius: 11px;
-
-    font: inherit;
-    font-size: 0.82rem;
-    font-weight: 700;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.16s ease,
-        opacity 0.16s ease,
-        box-shadow 0.16s ease;
-}
-
-.feed-action-button:hover:not(:disabled),
-.feed-secondary-button:hover:not(:disabled),
-.feed-reset-button:hover:not(:disabled) {
-    transform: translateY(-1px);
-}
-
-.feed-action-button:disabled,
-.feed-secondary-button:disabled {
-    opacity: 0.42;
-
-    cursor: not-allowed;
-
-    transform: none;
-}
-
-.feed-secondary-button {
-    margin-top: 9px;
-
-    width: 100%;
-
-    border: 1px solid rgba(0, 0, 0, 0.1);
-
-    background: rgba(0, 0, 0, 0.035);
-
-    color: inherit;
-}
-
-.feed-reset-button {
-    margin-top: 9px;
-
-    width: 100%;
-
-    border: 1px solid rgba(180, 55, 55, 0.18);
-
-    background: rgba(180, 55, 55, 0.055);
-
-    color: #a13d3d;
-}
-
-
-/* =========================================================
-   CONSUMPTION OVERVIEW
-   ========================================================= */
-
-.feed-management .feed-consumption {
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1.45fr)
-        minmax(280px, 0.75fr);
-
-    gap: 16px;
-
-    margin-top: 18px;
-}
-
-.feed-management .feed-chart-card,
-.feed-management .feed-history-card {
-    min-width: 0;
-
-    padding: 17px;
-
-    border: 1px solid rgba(0, 0, 0, 0.065);
-    border-radius: 17px;
-
-    background: rgba(255, 255, 255, 0.82);
-
-    box-shadow:
-        0 5px 18px rgba(0, 0, 0, 0.03);
-}
-
-.feed-management .feed-chart-card h3,
-.feed-management .feed-history-card h3 {
-    margin: 0 0 12px;
-
-    font-size: 0.98rem;
-    font-weight: 750;
-}
-
-#feedConsumptionChart {
-    display: block;
-
-    width: 100%;
-    height: 210px;
-
-    max-width: 100%;
-
-    color: inherit;
-}
-
-
-/* =========================================================
-   RECENT FEED ACTIVITY
-   ========================================================= */
-
-#feedHistoryList {
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 8px;
-
-    margin-top: 8px;
-}
-
-#feedHistoryList .feed-history-item {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 12px;
-
-    min-height: 48px;
-
-    padding: 10px 12px;
-
-    border: 1px solid rgba(0, 0, 0, 0.055);
-    border-radius: 12px;
-
-    background: rgba(0, 0, 0, 0.018);
-
-    transition:
-        background 0.18s ease,
-        transform 0.18s ease;
-}
-
-#feedHistoryList .feed-history-item:hover {
-    transform: translateY(-1px);
-
-    background: rgba(0, 0, 0, 0.035);
-}
-
-#feedHistoryList .feed-history-date {
-    font-size: 0.82rem;
-    font-weight: 600;
-
-    color: #6f6f6f;
-}
-
-#feedHistoryList .feed-history-value {
-    font-size: 0.88rem;
-    font-weight: 800;
-
-    color: inherit;
-
-    white-space: nowrap;
-}
-
-#feedHistoryList .pm-empty-state {
-    padding: 20px 12px;
-
-    text-align: center;
-
-    border: 1px dashed rgba(0, 0, 0, 0.12);
-    border-radius: 13px;
-
-    color: #777;
-
-    font-size: 0.86rem;
-}
-
-
-/* =========================================================
-   FEED HISTORY / VIEW ALL BUTTON
-   ========================================================= */
-
-#viewFeedHistoryButton {
-    margin-top: 12px;
-
-    width: 100%;
-
-    min-height: 40px;
-
-    border-radius: 11px;
-
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-
-/* =========================================================
-   DARK MODE
-   ========================================================= */
-
-html[data-theme="dark"] #eggHistoryList .egg-history-item,
-html[data-theme="dark"] .feed-management .feed-metric,
-html[data-theme="dark"] .feed-management .feed-action-card,
-html[data-theme="dark"] .feed-management .feed-chart-card,
-html[data-theme="dark"] .feed-management .feed-history-card {
-    border-color: rgba(255, 255, 255, 0.09);
-
-    background: rgba(255, 255, 255, 0.035);
-
-    box-shadow:
-        0 5px 18px rgba(0, 0, 0, 0.18);
-}
-
-html[data-theme="dark"] #eggHistoryList .egg-history-date,
-html[data-theme="dark"] #feedHistoryList .feed-history-date,
-html[data-theme="dark"] #feedDaysRemainingText,
-html[data-theme="dark"] .feed-management .feed-action-card p,
-html[data-theme="dark"] .feed-management .feed-metric span,
-html[data-theme="dark"] .feed-management .feed-metric-label {
-    color: rgba(255, 255, 255, 0.58);
-}
-
-html[data-theme="dark"] #eggHistoryList .egg-history-value span {
-    color: rgba(255, 255, 255, 0.55);
-}
-
-html[data-theme="dark"] #feedHistoryList .feed-history-item {
-    border-color: rgba(255, 255, 255, 0.07);
-
-    background: rgba(255, 255, 255, 0.025);
-}
-
-html[data-theme="dark"] #feedInput,
-html[data-theme="dark"] #useFeedInput {
-    border-color: rgba(255, 255, 255, 0.12);
-
-    background: rgba(255, 255, 255, 0.055);
-
-    color: inherit;
-}
-
-html[data-theme="dark"] .feed-secondary-button {
-    border-color: rgba(255, 255, 255, 0.11);
-
-    background: rgba(255, 255, 255, 0.045);
-}
-
-html[data-theme="dark"] .feed-reset-button {
-    border-color: rgba(255, 120, 120, 0.18);
-
-    background: rgba(255, 100, 100, 0.07);
-
-    color: #ffaaa5;
-}
-
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-
-@media (max-width: 850px) {
-
-    .feed-management .feed-metrics {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-    }
-
-    .feed-management .feed-consumption {
-        grid-template-columns: 1fr;
-    }
-}
-
-
-@media (max-width: 620px) {
-
-    #eggHistoryList .egg-history-item {
-        min-height: 54px;
-
-        padding: 11px 12px;
-    }
-
-    #eggHistoryList .egg-history-date {
-        font-size: 0.8rem;
-    }
-
-    #eggHistoryList .egg-history-value {
-        font-size: 0.85rem;
-    }
-
-    #eggHistoryList .egg-history-value span {
-        font-size: 0.75rem;
-    }
-
-    .feed-management .feed-metrics {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        gap: 9px;
-    }
-
-    .feed-management .feed-metric {
-        padding: 12px;
-    }
-
-    .feed-management .feed-action-panel {
-        grid-template-columns: 1fr;
-    }
-
-    .feed-management .feed-chart-card,
-    .feed-management .feed-history-card {
-        padding: 14px;
-    }
-
-    #feedConsumptionChart {
-        height: 190px;
-    }
-}
-
-
-@media (max-width: 430px) {
-
-    #eggHistoryList .egg-history-item {
-        gap: 8px;
-    }
-
-    #eggHistoryList .egg-history-date {
-        white-space: normal;
-    }
-
-    .feed-management .feed-metrics {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .feed-management .feed-metric strong,
-    .feed-management .feed-metric-value {
-        font-size: 0.92rem;
-    }
-
-    .feed-management .feed-metric span,
-    .feed-management .feed-metric-label {
-        font-size: 0.7rem;
-    }
-}
-}
-
-
-/* =========================================================
-   POULTRY MANAGER
-   FEED MANAGEMENT — FINAL PROFESSIONAL DESIGN
-   ========================================================= */
-
-/* ---------------------------------------------------------
-   FEED MANAGEMENT CONTAINER
-   --------------------------------------------------------- */
-
-.feed-management {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-}
-
-.feed-management > * {
-    box-sizing: border-box;
-}
-
-
-/* ---------------------------------------------------------
-   FEED INVENTORY / MAIN FEED CARD
-   --------------------------------------------------------- */
-
-.feed-card {
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    border-radius: 20px;
-    padding: 22px;
-    margin: 0 0 18px;
-    background: var(--card-bg, #ffffff);
-    border: 1px solid var(--border-color, #e5e7eb);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-}
-
-.feed-card h3,
-.feed-card h4 {
-    margin-top: 0;
-}
-
-.feed-card p {
-    margin-bottom: 0;
-}
-
-
-/* ---------------------------------------------------------
-   FEED METRICS
-   --------------------------------------------------------- */
-
-.feed-metrics {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    width: 100%;
-    margin: 16px 0 0;
-}
-
-.feed-metric {
-    min-width: 0;
-    padding: 16px;
-    border-radius: 16px;
-    background: var(--surface-bg, #f8fafc);
-    border: 1px solid var(--border-color, #e5e7eb);
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease;
-}
-
-.feed-metric:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
-}
-
-.feed-metric strong {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    color: var(--muted-text, #64748b);
-}
-
-.feed-metric span {
-    display: block;
-    font-size: 1.25rem;
-    font-weight: 800;
-    line-height: 1.2;
-    color: var(--text-color, #111827);
-}
-
-
-/* ---------------------------------------------------------
-   FEED PROGRESS
-   --------------------------------------------------------- */
-
-.feed-progress {
-    width: 100%;
-    margin-top: 18px;
-}
-
-.feed-progress-bar {
-    width: 100%;
-    height: 10px;
-    overflow: hidden;
-    border-radius: 999px;
-    background: var(--surface-bg, #e5e7eb);
-    transition: background 0.25s ease;
-}
-
-.feed-progress-bar::before {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
-    background: currentColor;
-    transform-origin: left center;
-}
-
-
-/* ---------------------------------------------------------
-   FEED ACTION PANEL
-   --------------------------------------------------------- */
-
-.feed-action-panel {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-    margin: 18px 0;
-}
-
-.feed-action-card {
-    min-width: 0;
-    padding: 20px;
-    border-radius: 20px;
-    background: var(--card-bg, #ffffff);
-    border: 1px solid var(--border-color, #e5e7eb);
-    box-shadow: 0 7px 22px rgba(0, 0, 0, 0.045);
-}
-
-.feed-action-card h3,
-.feed-action-card h4 {
-    margin: 0 0 6px;
-    color: var(--text-color, #111827);
-}
-
-.feed-action-card p {
-    margin: 0 0 14px;
-    color: var(--muted-text, #64748b);
-    line-height: 1.5;
-}
-
-
-/* ---------------------------------------------------------
-   FEED INPUTS
-   --------------------------------------------------------- */
-
-.feed-action-card input,
-.feed-action-panel input {
-    width: 100%;
-    min-height: 48px;
-    box-sizing: border-box;
-    padding: 0 14px;
-    border-radius: 13px;
-    border: 1px solid var(--border-color, #d1d5db);
-    background: var(--input-bg, #ffffff);
-    color: var(--text-color, #111827);
-    font: inherit;
-    outline: none;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.feed-action-card input:focus,
-.feed-action-panel input:focus {
-    border-color: currentColor;
-    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.12);
-}
-
-
-/* ---------------------------------------------------------
-   FEED ACTION BUTTONS
-   --------------------------------------------------------- */
-
-.feed-action-card button,
-.feed-action-panel button {
-    min-height: 46px;
-    border: 0;
-    border-radius: 13px;
-    padding: 0 16px;
-    margin-top: 10px;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    transition:
-        transform 0.18s ease,
-        box-shadow 0.18s ease,
-        opacity 0.18s ease;
-}
-
-.feed-action-card button:hover,
-.feed-action-panel button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-}
-
-.feed-action-card button:active,
-.feed-action-panel button:active {
-    transform: translateY(0);
-}
-
-
-/* ---------------------------------------------------------
-   FEED SECONDARY / UNDO BUTTON
-   --------------------------------------------------------- */
-
-.feed-secondary-button {
-    background: var(--surface-bg, #f1f5f9);
-    color: var(--text-color, #334155);
-    border: 1px solid var(--border-color, #dbe1e8) !important;
-}
-
-.feed-secondary-button:hover {
-    background: var(--card-bg, #ffffff);
-}
-
-
-/* ---------------------------------------------------------
-   FEED RESET BUTTON
-   --------------------------------------------------------- */
-
-.feed-reset-button {
-    width: 100%;
-    min-height: 46px;
-    border: 1px solid rgba(220, 38, 38, 0.2);
-    border-radius: 13px;
-    margin-top: 10px;
-    padding: 0 16px;
-    background: rgba(220, 38, 38, 0.07);
-    color: #b91c1c;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    transition:
-        background 0.18s ease,
-        transform 0.18s ease,
-        box-shadow 0.18s ease;
-}
-
-.feed-reset-button:hover {
-    background: rgba(220, 38, 38, 0.12);
-    transform: translateY(-1px);
-    box-shadow: 0 5px 14px rgba(220, 38, 38, 0.08);
-}
-
-
-/* ---------------------------------------------------------
-   CONSUMPTION OVERVIEW
-   --------------------------------------------------------- */
-
-.feed-consumption {
-    width: 100%;
-    margin: 18px 0;
-}
-
-.feed-consumption-overview,
-.consumption-overview {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-}
-
-.feed-consumption-overview > *,
-.consumption-overview > * {
-    min-width: 0;
-}
-
-
-/* ---------------------------------------------------------
-   FEED CHART / CONSUMPTION CARD
-   --------------------------------------------------------- */
-
-.feed-chart-card {
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-    box-sizing: border-box;
-    padding: 20px;
-    border-radius: 20px;
-    background: var(--card-bg, #ffffff);
-    border: 1px solid var(--border-color, #e5e7eb);
-    box-shadow: 0 7px 22px rgba(0, 0, 0, 0.045);
-}
-
-.feed-chart-card h3,
-.feed-chart-card h4 {
-    margin-top: 0;
-    color: var(--text-color, #111827);
-}
-
-.feed-chart-card canvas {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    margin-top: 14px;
-}
-
-
-/* ---------------------------------------------------------
-   FEED HISTORY / RECENT FEED ACTIVITY
-   --------------------------------------------------------- */
-
-.feed-history-card {
-    width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-    overflow: hidden;
-    padding: 20px;
-    margin-top: 18px;
-    border-radius: 20px;
-    background: var(--card-bg, #ffffff);
-    border: 1px solid var(--border-color, #e5e7eb);
-    box-shadow: 0 7px 22px rgba(0, 0, 0, 0.045);
-}
-
-.feed-history-card h3,
-.feed-history-card h4 {
-    margin-top: 0;
-    color: var(--text-color, #111827);
-}
-
-
-/* ---------------------------------------------------------
-   ACTUAL JAVASCRIPT-GENERATED FEED HISTORY
-   --------------------------------------------------------- */
-
-.feed-history-item {
-    width: 100%;
-    min-height: 56px;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 13px 14px;
-    margin-top: 8px;
-    border-radius: 14px;
-    background: var(--surface-bg, #f8fafc);
-    border: 1px solid var(--border-color, #e5e7eb);
-    transition:
-        background 0.18s ease,
-        transform 0.18s ease;
-}
-
-.feed-history-item:hover {
-    transform: translateY(-1px);
-    background: var(--card-bg, #ffffff);
-}
-
-.feed-history-date {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 0.9rem;
-    font-weight: 650;
-    color: var(--text-color, #334155);
-}
-
-.feed-history-value {
-    flex: 0 0 auto;
-    font-size: 0.92rem;
-    font-weight: 800;
-    color: var(--text-color, #111827);
-}
-
-
-/* ---------------------------------------------------------
-   EMPTY FEED HISTORY
-   --------------------------------------------------------- */
-
-.feed-history-card .pm-empty-state,
-#feedHistoryList .pm-empty-state {
-    padding: 24px 14px;
-    text-align: center;
-    border-radius: 14px;
-    color: var(--muted-text, #64748b);
-    background: var(--surface-bg, #f8fafc);
-    border: 1px dashed var(--border-color, #dbe1e8);
-}
-
-
-/* ---------------------------------------------------------
-   FEED HISTORY BUTTON
-   --------------------------------------------------------- */
-
-#viewFeedHistoryButton {
-    min-height: 44px;
-    margin-top: 12px;
-    border-radius: 12px;
-    padding: 0 15px;
-    border: 1px solid var(--border-color, #dbe1e8);
-    background: var(--surface-bg, #f8fafc);
-    color: var(--text-color, #334155);
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    transition:
-        transform 0.18s ease,
-        background 0.18s ease;
-}
-
-#viewFeedHistoryButton:hover {
-    transform: translateY(-1px);
-    background: var(--card-bg, #ffffff);
-}
-
-
-/* ---------------------------------------------------------
-   FEED USAGE RESET
-   --------------------------------------------------------- */
-
-#resetFeedTodayButton {
-    border: 1px solid var(--border-color, #dbe1e8);
-    background: var(--surface-bg, #f8fafc);
-    color: var(--text-color, #475569);
-}
-
-
-/* ---------------------------------------------------------
-   DARK MODE
-   --------------------------------------------------------- */
-
-html[data-theme="dark"] .feed-card,
-html[data-theme="dark"] .feed-action-card,
-html[data-theme="dark"] .feed-chart-card,
-html[data-theme="dark"] .feed-history-card {
-    background: var(--card-bg, #111827);
-    border-color: var(--border-color, #263244);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
-}
-
-html[data-theme="dark"] .feed-metric,
-html[data-theme="dark"] .feed-history-item,
-html[data-theme="dark"] .feed-history-card .pm-empty-state,
-html[data-theme="dark"] #feedHistoryList .pm-empty-state {
-    background: var(--surface-bg, #182231);
-    border-color: var(--border-color, #263244);
-}
-
-html[data-theme="dark"] .feed-action-card input,
-html[data-theme="dark"] .feed-action-panel input {
-    background: var(--input-bg, #111827);
-    border-color: var(--border-color, #334155);
-    color: var(--text-color, #f8fafc);
-}
-
-html[data-theme="dark"] .feed-secondary-button,
-html[data-theme="dark"] #viewFeedHistoryButton,
-html[data-theme="dark"] #resetFeedTodayButton {
-    background: var(--surface-bg, #182231);
-    color: var(--text-color, #e2e8f0);
-    border-color: var(--border-color, #334155) !important;
-}
-
-
-/* ---------------------------------------------------------
-   RESPONSIVE — TABLET
-   --------------------------------------------------------- */
-
-@media (max-width: 760px) {
-
-    .feed-action-panel {
-        grid-template-columns: 1fr;
-    }
-
-    .feed-consumption-overview,
-    .consumption-overview {
-        grid-template-columns: 1fr;
-    }
-
-    .feed-card,
-    .feed-action-card,
-    .feed-chart-card,
-    .feed-history-card {
-        border-radius: 18px;
-        padding: 18px;
-    }
-}
-
-
-/* ---------------------------------------------------------
-   RESPONSIVE — SMALL PHONES
-   --------------------------------------------------------- */
-
-@media (max-width: 480px) {
-
-    .feed-metrics {
-        grid-template-columns: 1fr 1fr;
-        gap: 9px;
-    }
-
-    .feed-metric {
-        padding: 13px;
-        border-radius: 14px;
-    }
-
-    .feed-metric strong {
-        font-size: 0.72rem;
-    }
-
-    .feed-metric span {
-        font-size: 1.05rem;
-    }
-
-    .feed-card,
-    .feed-action-card,
-    .feed-chart-card,
-    .feed-history-card {
-        padding: 15px;
-        border-radius: 16px;
-    }
-
-    .feed-history-item {
-        min-height: 52px;
-        padding: 11px 12px;
-    }
-
-    .feed-history-date,
-    .feed-history-value {
-        font-size: 0.85rem;
-    }
-}
-
-
-/* ---------------------------------------------------------
-   VERY SMALL PHONES
-   --------------------------------------------------------- */
-
-@media (max-width: 360px) {
-
-    .feed-metrics {
-        grid-template-columns: 1fr;
-    }
-
-    .feed-history-item {
-        gap: 10px;
     }
 }
