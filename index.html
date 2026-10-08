@@ -4,17 +4,13 @@
     <meta charset="UTF-8">
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     >
 
-    <meta
-        name="theme-color"
-        content="#1f6b45"
-    >
-
+    <meta name="theme-color" content="#1f6b45">
     <meta
         name="description"
-        content="Poultry Manager — manage your flock, eggs, feed, production and farm records."
+        content="Poultry Manager — manage your flock, eggs, feed and farm records."
     >
 
     <title>Poultry Manager</title>
@@ -26,177 +22,54 @@
 
 <div class="app">
 
-    <!-- =====================================================
+    <!-- =========================================================
          APP HEADER
-    ====================================================== -->
-
+    ========================================================== -->
     <header class="app-header">
-
-        <div class="app-header-content">
-
+        <div class="app-header-inner">
             <div>
-
-                <p class="app-header-eyebrow">
-                    POULTRY MANAGER
-                </p>
-
-                <h1>
-                    Poultry Manager
-                </h1>
-
+                <p class="app-header-eyebrow">POULTRY MANAGER</p>
+                <h1 id="appHeaderTitle">Dashboard</h1>
                 <p id="headerDate"></p>
-
             </div>
-
-            <div
-                id="headerProfileAvatar"
-                class="header-profile-avatar"
-                aria-label="Profile"
-            >
-                PM
-            </div>
-
         </div>
-
     </header>
 
 
-    <!-- =====================================================
-         APP NAVIGATION
-    ====================================================== -->
+    <!-- =========================================================
+         MAIN APP CONTENT
+    ========================================================== -->
+    <main id="pmDashboardView" class="pm-view pm-dashboard-view">
 
-    <nav
-        id="pmAppNavigation"
-        class="app-navigation"
-        aria-label="Main navigation"
-    >
+        <!-- =====================================================
+             DASHBOARD
+        ====================================================== -->
 
-        <button
-            type="button"
-            id="pmDashboardButton"
-            class="app-nav-button active"
-            data-view="dashboard"
-        >
-
-            <span class="app-nav-icon">
-                🏠
-            </span>
-
-            <span class="app-nav-label">
-                Dashboard
-            </span>
-
-        </button>
-
-
-        <button
-            type="button"
-            id="pmFarmButton"
-            class="app-nav-button"
-            data-view="farm"
-        >
-
-            <span class="app-nav-icon">
-                🐔
-            </span>
-
-            <span class="app-nav-label">
-                My Farm
-            </span>
-
-        </button>
-
-
-        <button
-            type="button"
-            id="pmProfileButton"
-            class="app-nav-button"
-            data-view="profile"
-        >
-
-            <span class="app-nav-icon">
-                👤
-            </span>
-
-            <span class="app-nav-label">
-                Profile
-            </span>
-
-        </button>
-
-
-        <button
-            type="button"
-            id="pmSettingsButton"
-            class="app-nav-button"
-            data-view="settings"
-        >
-
-            <span class="app-nav-icon">
-                ⚙️
-            </span>
-
-            <span class="app-nav-label">
-                Settings
-            </span>
-
-        </button>
-
-    </nav>
-
-
-    <!-- =====================================================
-         DASHBOARD
-    ====================================================== -->
-
-    <main
-        id="pmDashboardView"
-        class="pm-view pm-dashboard-view"
-    >
-
-        <!-- =================================================
-             FARM OVERVIEW
-        ================================================== -->
-
+        <!-- FARM OVERVIEW -->
         <section class="farm-overview-section">
 
             <div class="farm-overview-header">
-
                 <div>
-
                     <span class="farm-overview-eyebrow">
                         FARM OVERVIEW
                     </span>
 
-                    <h2>
-                        Your flock at a glance
-                    </h2>
+                    <h2>Your flock at a glance</h2>
 
                     <p>
                         A quick look at today's poultry activity.
                     </p>
-
                 </div>
-
             </div>
 
 
             <div class="farm-overview-grid">
 
                 <!-- FLOCK -->
-
                 <div class="farm-overview-card">
-
                     <div class="farm-overview-card-top">
-
-                        <span class="farm-overview-icon">
-                            🐔
-                        </span>
-
-                        <span class="farm-overview-label">
-                            Flock
-                        </span>
-
+                        <span class="farm-overview-icon">🐔</span>
+                        <span class="farm-overview-label">Flock</span>
                     </div>
 
                     <strong
@@ -209,24 +82,16 @@
                     <span class="farm-overview-description">
                         birds
                     </span>
-
                 </div>
 
 
                 <!-- EGGS -->
-
                 <div class="farm-overview-card">
-
                     <div class="farm-overview-card-top">
-
-                        <span class="farm-overview-icon">
-                            🥚
-                        </span>
-
+                        <span class="farm-overview-icon">🥚</span>
                         <span class="farm-overview-label">
                             Today's Eggs
                         </span>
-
                     </div>
 
                     <strong
@@ -239,24 +104,16 @@
                     <span class="farm-overview-description">
                         eggs collected
                     </span>
-
                 </div>
 
 
                 <!-- LAYING RATE -->
-
                 <div class="farm-overview-card">
-
                     <div class="farm-overview-card-top">
-
-                        <span class="farm-overview-icon">
-                            📈
-                        </span>
-
+                        <span class="farm-overview-icon">📈</span>
                         <span class="farm-overview-label">
                             Laying Rate
                         </span>
-
                     </div>
 
                     <strong
@@ -269,24 +126,16 @@
                     <span class="farm-overview-description">
                         today's production
                     </span>
-
                 </div>
 
 
                 <!-- FEED -->
-
                 <div class="farm-overview-card">
-
                     <div class="farm-overview-card-top">
-
-                        <span class="farm-overview-icon">
-                            🌾
-                        </span>
-
+                        <span class="farm-overview-icon">🌾</span>
                         <span class="farm-overview-label">
                             Feed
                         </span>
-
                     </div>
 
                     <strong
@@ -299,24 +148,18 @@
                     <span class="farm-overview-description">
                         remaining
                     </span>
-
                 </div>
 
 
                 <!-- NEXT FEED -->
-
-                <div class="farm-overview-card farm-overview-card-wide">
-
+                <div
+                    class="farm-overview-card farm-overview-card-wide"
+                >
                     <div class="farm-overview-card-top">
-
-                        <span class="farm-overview-icon">
-                            ⏰
-                        </span>
-
+                        <span class="farm-overview-icon">⏰</span>
                         <span class="farm-overview-label">
                             Next Feeding
                         </span>
-
                     </div>
 
                     <strong
@@ -329,32 +172,19 @@
                     <span class="farm-overview-description">
                         upcoming feeding time
                     </span>
-
                 </div>
 
             </div>
 
 
-            <!-- =================================================
-                 QUICK ACTIONS
-            ================================================== -->
-
+            <!-- QUICK ACTIONS -->
             <div class="quick-actions">
 
                 <div class="quick-actions-header">
-
                     <div>
-
-                        <h3>
-                            Quick Actions
-                        </h3>
-
-                        <p>
-                            Manage your flock quickly.
-                        </p>
-
+                        <h3>Quick Actions</h3>
+                        <p>Manage your flock quickly.</p>
                     </div>
-
                 </div>
 
 
@@ -365,23 +195,14 @@
                         id="quickAddEggs"
                         class="quick-action-button"
                     >
-
-                        <span class="quick-action-icon">
-                            🥚
-                        </span>
+                        <span class="quick-action-icon">🥚</span>
 
                         <span>
-
-                            <strong>
-                                Add Eggs
-                            </strong>
-
+                            <strong>Add Eggs</strong>
                             <small>
                                 Click here to add eggs ➕
                             </small>
-
                         </span>
-
                     </button>
 
 
@@ -390,23 +211,14 @@
                         id="quickFeed"
                         class="quick-action-button"
                     >
-
-                        <span class="quick-action-icon">
-                            🌾
-                        </span>
+                        <span class="quick-action-icon">🌾</span>
 
                         <span>
-
-                            <strong>
-                                Record Feed
-                            </strong>
-
+                            <strong>Record Feed</strong>
                             <small>
                                 Track feed usage
                             </small>
-
                         </span>
-
                     </button>
 
 
@@ -415,23 +227,14 @@
                         id="quickHistory"
                         class="quick-action-button"
                     >
-
-                        <span class="quick-action-icon">
-                            📊
-                        </span>
+                        <span class="quick-action-icon">📊</span>
 
                         <span>
-
-                            <strong>
-                                View History
-                            </strong>
-
+                            <strong>View History</strong>
                             <small>
                                 Review farm records
                             </small>
-
                         </span>
-
                     </button>
 
                 </div>
@@ -441,80 +244,45 @@
         </section>
 
 
-        <!-- =================================================
+        <!-- =====================================================
              PRODUCTION SUMMARY
-        ================================================== -->
+        ====================================================== -->
 
         <section class="section">
 
             <div class="section-title">
-
                 <div>
-
-                    <h2>
-                        Production Summary
-                    </h2>
-
+                    <h2>Production Summary</h2>
                     <p>
-                        See how your flock has been performing.
+                        A quick summary of your recent egg production.
                     </p>
-
                 </div>
-
             </div>
 
 
             <div class="summary-grid">
 
                 <div class="summary-card">
-
-                    <span>
-                        7-Day Eggs
-                    </span>
-
-                    <strong id="sevenDayEggs">
-                        0
-                    </strong>
-
+                    <span>7-Day Eggs</span>
+                    <strong id="sevenDayEggs">0</strong>
                 </div>
 
 
                 <div class="summary-card">
-
-                    <span>
-                        Average Laying Rate
-                    </span>
-
-                    <strong id="averageLayingRate">
-                        0%
-                    </strong>
-
+                    <span>Average Laying Rate</span>
+                    <strong id="averageLayingRate">0%</strong>
                 </div>
 
 
                 <div class="summary-card">
-
-                    <span>
-                        Best Production Day
-                    </span>
-
-                    <strong id="bestProductionDay">
-                        —
-                    </strong>
-
+                    <span>Best Production Day</span>
+                    <strong id="bestProductionDay">—</strong>
                 </div>
 
 
                 <div class="summary-card">
-
-                    <span>
-                        Best Day Eggs
-                    </span>
-
-                    <strong id="bestProductionEggs">
-                        0
-                    </strong>
-
+                    <span>Best Day Eggs</span>
+                    <strong id="bestProductionEggs">0</strong>
                 </div>
 
             </div>
@@ -522,58 +290,40 @@
         </section>
 
 
-        <!-- =================================================
-             PRODUCTION TREND
-        ================================================== -->
+        <!-- =====================================================
+             7-DAY PRODUCTION TREND
+        ====================================================== -->
 
         <section class="section trend-card">
 
             <div class="section-title">
-
                 <div>
-
-                    <h2>
-                        7-Day Production Trend
-                    </h2>
+                    <h2>7-Day Production Trend</h2>
 
                     <p>
-                        Egg production across the last seven calendar days.
+                        Egg production across the last seven
+                        calendar days.
                     </p>
-
                 </div>
-
             </div>
 
 
             <div class="trend-chart-wrapper">
 
                 <div class="trend-y-axis">
-
-                    <span id="trendMaxLabel">
-                        0
-                    </span>
-
-                    <span id="trendMidLabel">
-                        0
-                    </span>
-
-                    <span>
-                        0
-                    </span>
-
+                    <span id="trendMaxLabel">0</span>
+                    <span id="trendMidLabel">0</span>
+                    <span>0</span>
                 </div>
 
 
                 <div class="trend-chart-area">
 
                     <div class="trend-grid-lines">
-
                         <span></span>
                         <span></span>
                         <span></span>
-
                     </div>
-
 
                     <div
                         id="productionTrendChart"
@@ -586,36 +336,27 @@
 
 
             <div class="trend-legend">
-
                 <span class="trend-legend-dot"></span>
-
-                <span>
-                    Eggs produced
-                </span>
-
+                <span>Eggs produced</span>
             </div>
 
         </section>
 
 
-        <!-- =================================================
+        <!-- =====================================================
              PRODUCTION ANALYTICS
-        ================================================== -->
+        ====================================================== -->
 
         <section class="section analytics-section">
 
             <div class="section-title">
 
                 <div>
-
-                    <h2>
-                        Production Analytics
-                    </h2>
+                    <h2>Production Analytics</h2>
 
                     <p>
                         Understand your flock's recent egg production.
                     </p>
-
                 </div>
 
             </div>
@@ -624,7 +365,6 @@
             <div class="analytics-grid">
 
                 <div class="analytics-card">
-
                     <span class="analytics-label">
                         Eggs per Hen
                     </span>
@@ -636,12 +376,10 @@
                     <small>
                         7-day period
                     </small>
-
                 </div>
 
 
                 <div class="analytics-card">
-
                     <span class="analytics-label">
                         Daily Average
                     </span>
@@ -653,12 +391,10 @@
                     <small>
                         eggs per day
                     </small>
-
                 </div>
 
 
                 <div class="analytics-card">
-
                     <span class="analytics-label">
                         Highest Day
                     </span>
@@ -670,12 +406,10 @@
                     <small id="analyticsHighestDayDate">
                         No data
                     </small>
-
                 </div>
 
 
                 <div class="analytics-card">
-
                     <span class="analytics-label">
                         Lowest Day
                     </span>
@@ -687,12 +421,10 @@
                     <small id="analyticsLowestDayDate">
                         No data
                     </small>
-
                 </div>
 
 
                 <div class="analytics-card">
-
                     <span class="analytics-label">
                         Consistency
                     </span>
@@ -704,12 +436,10 @@
                     <small>
                         days producing eggs
                     </small>
-
                 </div>
 
 
                 <div class="analytics-card">
-
                     <span class="analytics-label">
                         Production Change
                     </span>
@@ -721,7 +451,6 @@
                     <small>
                         recent vs earlier
                     </small>
-
                 </div>
 
             </div>
@@ -734,15 +463,12 @@
                 </div>
 
                 <div>
-
-                    <strong>
-                        Production Insight
-                    </strong>
+                    <strong>Production Insight</strong>
 
                     <p id="analyticsInsight">
-                        Start recording eggs to see production insights.
+                        Start recording eggs to see production
+                        insights.
                     </p>
-
                 </div>
 
             </div>
@@ -752,9 +478,9 @@
     </main>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          MY FARM VIEW
-    ====================================================== -->
+    ========================================================== -->
 
     <main
         id="pmFarmView"
@@ -762,15 +488,11 @@
         hidden
     >
 
-        <!-- =================================================
-             FARM HEADER
-        ================================================== -->
-
-        <section class="farm-page-header">
+        <!-- FARM HEADER -->
+        <section class="pm-view-header pm-farm-header">
 
             <div>
-
-                <span class="farm-overview-eyebrow">
+                <span class="pm-view-eyebrow">
                     MY FARM
                 </span>
 
@@ -779,87 +501,140 @@
                 </h2>
 
                 <p>
-                    Manage your flock, eggs, feed and farm records.
+                    Manage your flock, eggs, feed and daily
+                    farm records.
                 </p>
-
             </div>
 
         </section>
 
 
-        <!-- =================================================
-             FLOCK MANAGEMENT
-        ================================================== -->
+        <!-- FARM SNAPSHOT -->
+        <section class="pm-farm-grid">
 
-        <section class="section farm-management-section">
+            <div class="pm-farm-card">
+                <span>🐔</span>
+
+                <div>
+                    <small>Flock</small>
+
+                    <strong id="myFarmFlockCount">
+                        0
+                    </strong>
+
+                    <em>birds</em>
+                </div>
+            </div>
+
+
+            <div class="pm-farm-card">
+                <span>🥚</span>
+
+                <div>
+                    <small>Today's Eggs</small>
+
+                    <strong id="myFarmEggCount">
+                        0
+                    </strong>
+
+                    <em>eggs</em>
+                </div>
+            </div>
+
+
+            <div class="pm-farm-card">
+                <span>🌾</span>
+
+                <div>
+                    <small>Feed Stock</small>
+
+                    <strong id="myFarmFeedStock">
+                        0.0
+                    </strong>
+
+                    <em>kg</em>
+                </div>
+            </div>
+
+
+            <div class="pm-farm-card">
+                <span>📈</span>
+
+                <div>
+                    <small>Laying Rate</small>
+
+                    <strong id="myFarmLayingRate">
+                        0%
+                    </strong>
+
+                    <em>today</em>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             FLOCK MANAGEMENT
+        ====================================================== -->
+
+        <section class="section pm-farm-section">
 
             <div class="section-title">
 
                 <div>
-
-                    <h2>
-                        Flock Management
-                    </h2>
+                    <h2>Flock Management</h2>
 
                     <p>
-                        Keep your flock information up to date.
+                        Keep your current flock size up to date.
                     </p>
-
                 </div>
 
             </div>
 
 
-            <div class="farm-management-card">
+            <div class="pm-farm-management-card">
 
-                <div class="farm-management-stat">
-
-                    <span>
-                        Current Flock
+                <div>
+                    <span class="pm-farm-management-icon">
+                        🐔
                     </span>
 
-                    <strong id="farmFlockCount">
-                        0
-                    </strong>
+                    <div>
+                        <strong>Current Flock</strong>
 
-                    <small>
-                        birds
-                    </small>
-
+                        <small>
+                            Number of birds currently on your farm.
+                        </small>
+                    </div>
                 </div>
 
 
-                <div class="farm-management-form">
+                <div class="pm-farm-flock-control">
 
-                    <label for="pmFarmFlockInput">
-                        Flock Size
-                    </label>
+                    <button
+                        type="button"
+                        id="myFarmFlockMinus"
+                        class="secondary-button"
+                        aria-label="Decrease flock"
+                    >
+                        −
+                    </button>
 
-                    <div class="farm-input-row">
 
-                        <input
-                            id="pmFarmFlockInput"
-                            type="number"
-                            min="0"
-                            step="1"
-                            inputmode="numeric"
-                            placeholder="Number of birds"
-                        >
+                    <strong id="myFarmFlockDisplay">
+                        0
+                    </strong>
 
-                        <button
-                            type="button"
-                            id="pmFarmSaveFlockButton"
-                            class="primary-button"
-                        >
-                            Save Flock
-                        </button>
 
-                    </div>
-
-                    <p
-                        id="pmFarmFlockStatus"
-                        class="form-status"
-                    ></p>
+                    <button
+                        type="button"
+                        id="myFarmFlockPlus"
+                        class="primary-button"
+                        aria-label="Increase flock"
+                    >
+                        +
+                    </button>
 
                 </div>
 
@@ -868,27 +643,24 @@
         </section>
 
 
-        <!-- =================================================
+        <!-- =====================================================
              EGG PRODUCTION
-        ================================================== -->
+        ====================================================== -->
 
         <section
-            id="farmEggProductionSection"
-            class="section"
+            id="eggProductionSection"
+            class="section pm-farm-section"
         >
 
             <div class="section-title">
 
                 <div>
-
-                    <h2>
-                        Egg Production
-                    </h2>
+                    <h2>Egg Production</h2>
 
                     <p>
-                        Record today's eggs and review your production history.
+                        Record today's eggs and review your
+                        production history.
                     </p>
-
                 </div>
 
             </div>
@@ -897,45 +669,38 @@
             <div class="egg-main-card">
 
                 <div class="egg-number">
-
-                    <span id="eggCount">
-                        0
-                    </span>
+                    <span id="eggCount">0</span>
 
                     <small>
                         eggs today
                     </small>
-
                 </div>
 
 
                 <div class="laying-rate">
-
-                    <span id="layingRate">
-                        0%
-                    </span>
+                    <span id="layingRate">0%</span>
 
                     <small>
                         laying rate
                     </small>
-
                 </div>
 
 
                 <div class="egg-actions">
 
                     <button
-                        type="button"
                         id="addEggButton"
                         class="primary-button"
+                        type="button"
                     >
                         + Add Egg
                     </button>
 
+
                     <button
-                        type="button"
                         id="removeEggButton"
                         class="secondary-button"
+                        type="button"
                     >
                         − Remove Egg
                     </button>
@@ -945,22 +710,24 @@
             </div>
 
 
+            <!-- EGG HISTORY -->
             <div class="subsection">
 
                 <div class="subsection-header">
 
                     <div>
+                        <h3>Egg History</h3>
 
-                        <h3>
-                            Egg History
-                        </h3>
-
+                        <p>
+                            Review your recent egg collection.
+                        </p>
                     </div>
 
+
                     <button
-                        type="button"
                         id="viewHistoryButton"
                         class="text-button"
+                        type="button"
                     >
                         View All History
                     </button>
@@ -978,34 +745,33 @@
         </section>
 
 
-        <!-- =================================================
+        <!-- =====================================================
              FEED MANAGEMENT
-        ================================================== -->
+        ====================================================== -->
 
         <section
-            id="farmFeedManagementSection"
-            class="section feed-management-section"
+            id="feedManagementSection"
+            class="section feed-management-section pm-farm-section"
         >
 
             <div class="section-title">
 
                 <div>
-
-                    <h2>
-                        Feed Management
-                    </h2>
+                    <h2>Feed Management</h2>
 
                     <p>
-                        Monitor stock, consumption and feeding activity.
+                        Monitor stock, consumption and feeding
+                        activity.
                     </p>
-
                 </div>
 
             </div>
 
 
+            <!-- FEED DASHBOARD -->
             <div class="feed-dashboard">
 
+                <!-- CURRENT STOCK -->
                 <div class="feed-hero-card">
 
                     <div class="feed-hero-top">
@@ -1040,15 +806,11 @@
                     <div class="feed-stock-progress">
 
                         <div class="feed-progress-header">
-
-                            <span>
-                                Stock level
-                            </span>
+                            <span>Stock level</span>
 
                             <span id="feedStockPercentage">
                                 —
                             </span>
-
                         </div>
 
 
@@ -1066,6 +828,7 @@
                 </div>
 
 
+                <!-- USED TODAY -->
                 <div class="feed-metric-card">
 
                     <span class="feed-metric-label">
@@ -1083,6 +846,7 @@
                 </div>
 
 
+                <!-- DAILY AVERAGE -->
                 <div class="feed-metric-card">
 
                     <span class="feed-metric-label">
@@ -1100,6 +864,7 @@
                 </div>
 
 
+                <!-- DAYS REMAINING -->
                 <div class="feed-metric-card">
 
                     <span class="feed-metric-label">
@@ -1119,20 +884,18 @@
             </div>
 
 
+            <!-- FEED INVENTORY -->
             <div class="feed-action-panel">
 
                 <div class="feed-action-header">
 
                     <div>
-
-                        <h3>
-                            Feed Inventory
-                        </h3>
+                        <h3>Feed Inventory</h3>
 
                         <p>
-                            Add new stock or record feed consumed by the flock.
+                            Add new stock or record feed consumed
+                            by the flock.
                         </p>
-
                     </div>
 
                 </div>
@@ -1140,6 +903,7 @@
 
                 <div class="feed-action-grid">
 
+                    <!-- ADD FEED -->
                     <div class="feed-action-box">
 
                         <div class="feed-action-icon">
@@ -1149,9 +913,7 @@
 
                         <div class="feed-action-content">
 
-                            <strong>
-                                Add Feed
-                            </strong>
+                            <strong>Add Feed</strong>
 
                             <span>
                                 Increase your current stock.
@@ -1169,10 +931,11 @@
                                     placeholder="Amount in kg"
                                 >
 
+
                                 <button
-                                    type="button"
                                     id="addFeedButton"
                                     class="primary-button"
+                                    type="button"
                                 >
                                     Add Feed
                                 </button>
@@ -1184,21 +947,23 @@
                     </div>
 
 
+                    <!-- RECORD USAGE -->
                     <div class="feed-action-box">
 
-                        <div class="feed-action-icon feed-use-icon">
+                        <div
+                            class="feed-action-icon feed-use-icon"
+                        >
                             −
                         </div>
 
 
                         <div class="feed-action-content">
 
-                            <strong>
-                                Record Usage
-                            </strong>
+                            <strong>Record Usage</strong>
 
                             <span>
-                                Record feed consumed by your flock.
+                                Record feed consumed by your
+                                flock.
                             </span>
 
 
@@ -1213,10 +978,11 @@
                                     placeholder="Amount in kg"
                                 >
 
+
                                 <button
-                                    type="button"
                                     id="useFeedButton"
                                     class="secondary-button"
+                                    type="button"
                                 >
                                     Record Usage
                                 </button>
@@ -1225,9 +991,9 @@
 
 
                             <button
-                                type="button"
                                 id="resetFeedTodayButton"
                                 class="feed-reset-button"
+                                type="button"
                             >
                                 Reset Today's Usage
                             </button>
@@ -1242,22 +1008,19 @@
 
 
             <!-- FEED CONSUMPTION -->
-
             <div class="feed-consumption-card">
 
                 <div class="feed-card-header">
 
                     <div>
-
-                        <h3>
-                            Consumption Overview
-                        </h3>
+                        <h3>Consumption Overview</h3>
 
                         <p>
-                            Your recorded feed usage over the last seven days.
+                            Your recorded feed usage over the last
+                            seven days.
                         </p>
-
                     </div>
+
 
                     <div class="feed-period-label">
                         Last 7 days
@@ -1269,41 +1032,29 @@
                 <div class="feed-consumption-summary">
 
                     <div>
-
-                        <span>
-                            7-Day Usage
-                        </span>
+                        <span>7-Day Usage</span>
 
                         <strong id="feedSevenDayUsage">
                             0.0 kg
                         </strong>
-
                     </div>
 
 
                     <div>
-
-                        <span>
-                            Usage Days
-                        </span>
+                        <span>Usage Days</span>
 
                         <strong id="feedUsageDays">
                             0
                         </strong>
-
                     </div>
 
 
                     <div>
-
-                        <span>
-                            Per Bird / Day
-                        </span>
+                        <span>Per Bird / Day</span>
 
                         <strong id="feedPerBird">
                             —
                         </strong>
-
                     </div>
 
                 </div>
@@ -1322,24 +1073,23 @@
 
 
             <!-- FEED HISTORY -->
-
             <div class="subsection feed-activity-section">
 
                 <div class="subsection-header">
 
                     <div>
+                        <h3>Recent Feed Activity</h3>
 
-                        <h3>
-                            Recent Feed Activity
-                        </h3>
-
+                        <p>
+                            Review recent feed additions and usage.
+                        </p>
                     </div>
 
 
                     <button
-                        type="button"
                         id="viewFeedHistoryButton"
                         class="text-button"
+                        type="button"
                     >
                         View All
                     </button>
@@ -1356,105 +1106,12 @@
 
         </section>
 
-
-        <!-- =================================================
-             FARM RECORDS
-        ================================================== -->
-
-        <section class="section">
-
-            <div class="section-title">
-
-                <div>
-
-                    <h2>
-                        Farm Records
-                    </h2>
-
-                    <p>
-                        Your production and management information is stored
-                        on this device.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <div class="farm-records-grid">
-
-                <button
-                    type="button"
-                    class="farm-record-card"
-                    id="farmRecordsEggButton"
-                >
-
-                    <span>
-                        🥚
-                    </span>
-
-                    <strong>
-                        Egg Records
-                    </strong>
-
-                    <small>
-                        View egg production history
-                    </small>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="farm-record-card"
-                    id="farmRecordsFeedButton"
-                >
-
-                    <span>
-                        🌾
-                    </span>
-
-                    <strong>
-                        Feed Records
-                    </strong>
-
-                    <small>
-                        Review feed activity
-                    </small>
-
-                </button>
-
-
-                <button
-                    type="button"
-                    class="farm-record-card"
-                    id="farmRecordsProductionButton"
-                >
-
-                    <span>
-                        📊
-                    </span>
-
-                    <strong>
-                        Production Analytics
-                    </strong>
-
-                    <small>
-                        Review flock performance
-                    </small>
-
-                </button>
-
-            </div>
-
-        </section>
-
     </main>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          PROFILE VIEW
-    ====================================================== -->
+    ========================================================== -->
 
     <main
         id="pmProfileView"
@@ -1462,60 +1119,43 @@
         hidden
     >
 
-        <section class="profile-page-header">
+        <!-- PROFILE HEADER -->
+        <section class="pm-view-header pm-profile-header">
 
-            <div>
+            <div class="pm-profile-heading">
 
-                <span class="farm-overview-eyebrow">
-                    PROFILE
-                </span>
-
-                <h2>
-                    Your Profile
-                </h2>
-
-                <p>
-                    Manage your personal and farm identity.
-                </p>
-
-            </div>
-
-        </section>
+                <div
+                    id="pmProfileAvatar"
+                    class="pm-profile-avatar"
+                    aria-hidden="true"
+                >
+                    PM
+                </div>
 
 
-        <!-- PROFILE CARD -->
+                <div>
 
-        <section class="profile-hero-card">
+                    <span class="pm-view-eyebrow">
+                        YOUR PROFILE
+                    </span>
 
-            <div
-                id="pmProfileAvatar"
-                class="profile-avatar"
-            >
-                PM
-            </div>
+                    <h2 id="pmProfileDisplayName">
+                        Farm Manager
+                    </h2>
 
+                    <p id="pmProfileDisplayFarm">
+                        My Poultry Farm
+                    </p>
 
-            <div class="profile-hero-content">
-
-                <span class="profile-role-label">
-                    FARM MANAGER
-                </span>
-
-                <h2 id="pmProfileDisplayName">
-                    Your Name
-                </h2>
-
-                <p id="pmProfileFarmName">
-                    Your Farm
-                </p>
+                </div>
 
             </div>
 
 
             <button
-                type="button"
-                id="pmEditProfileButton"
+                id="pmProfileEditButton"
                 class="primary-button"
+                type="button"
             >
                 Edit Profile
             </button>
@@ -1524,19 +1164,94 @@
 
 
         <!-- PROFILE INFORMATION -->
+        <section class="section pm-profile-card">
 
-        <section class="section profile-information-section">
-
-            <div class="section-title">
+            <div class="pm-profile-card-header">
 
                 <div>
-
-                    <h2>
-                        Profile Information
-                    </h2>
+                    <h2>Farm Profile</h2>
 
                     <p>
-                        Keep your Poultry Manager identity up to date.
+                        Keep your farm information organized in one
+                        place.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- DISPLAY MODE -->
+            <div
+                id="pmProfileDisplay"
+                class="pm-profile-display"
+            >
+
+                <div class="pm-profile-info-grid">
+
+                    <div class="pm-profile-info-item">
+                        <span>Farmer / Manager</span>
+                        <strong id="pmProfileName">
+                            Not added
+                        </strong>
+                    </div>
+
+
+                    <div class="pm-profile-info-item">
+                        <span>Farm Name</span>
+                        <strong id="pmProfileFarmName">
+                            Not added
+                        </strong>
+                    </div>
+
+
+                    <div class="pm-profile-info-item">
+                        <span>Role</span>
+                        <strong id="pmProfileRole">
+                            Farm Manager
+                        </strong>
+                    </div>
+
+
+                    <div class="pm-profile-info-item">
+                        <span>Location</span>
+                        <strong id="pmProfileLocation">
+                            Not added
+                        </strong>
+                    </div>
+
+
+                    <div class="pm-profile-info-item">
+                        <span>Phone</span>
+                        <strong id="pmProfilePhone">
+                            Not added
+                        </strong>
+                    </div>
+
+
+                    <div class="pm-profile-info-item">
+                        <span>Email</span>
+                        <strong id="pmProfileEmail">
+                            Not added
+                        </strong>
+                    </div>
+
+
+                    <div class="pm-profile-info-item">
+                        <span>Farm Type</span>
+                        <strong id="pmProfileFarmType">
+                            Layers
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <div class="pm-profile-notes">
+
+                    <span>About the Farm</span>
+
+                    <p id="pmProfileNotes">
+                        Add a short description about your farm.
                     </p>
 
                 </div>
@@ -1544,31 +1259,32 @@
             </div>
 
 
-            <div
-                id="pmProfileForm"
-                class="profile-form"
+            <!-- EDIT MODE -->
+            <form
+                id="pmProfileEditForm"
+                class="pm-profile-edit-form"
+                hidden
             >
 
-                <div class="profile-form-grid">
+                <div class="pm-profile-edit-grid">
 
-                    <div class="profile-field">
+                    <div class="pm-profile-field">
 
                         <label for="pmProfileNameInput">
-                            Your Name
+                            Farmer / Manager Name
                         </label>
 
                         <input
                             id="pmProfileNameInput"
-                            class="pm-profile-input"
                             type="text"
                             autocomplete="name"
-                            placeholder="Enter your name"
+                            placeholder="Your name"
                         >
 
                     </div>
 
 
-                    <div class="profile-field">
+                    <div class="pm-profile-field">
 
                         <label for="pmProfileFarmNameInput">
                             Farm Name
@@ -1576,15 +1292,14 @@
 
                         <input
                             id="pmProfileFarmNameInput"
-                            class="pm-profile-input"
                             type="text"
-                            placeholder="Enter your farm name"
+                            placeholder="e.g. Main Poultry Farm"
                         >
 
                     </div>
 
 
-                    <div class="profile-field">
+                    <div class="pm-profile-field">
 
                         <label for="pmProfileRoleInput">
                             Role
@@ -1592,7 +1307,6 @@
 
                         <input
                             id="pmProfileRoleInput"
-                            class="pm-profile-input"
                             type="text"
                             placeholder="Farm Manager"
                         >
@@ -1600,7 +1314,7 @@
                     </div>
 
 
-                    <div class="profile-field">
+                    <div class="pm-profile-field">
 
                         <label for="pmProfileLocationInput">
                             Location
@@ -1608,7 +1322,6 @@
 
                         <input
                             id="pmProfileLocationInput"
-                            class="pm-profile-input"
                             type="text"
                             autocomplete="address-level2"
                             placeholder="City / State"
@@ -1617,7 +1330,7 @@
                     </div>
 
 
-                    <div class="profile-field">
+                    <div class="pm-profile-field">
 
                         <label for="pmProfilePhoneInput">
                             Phone
@@ -1625,7 +1338,6 @@
 
                         <input
                             id="pmProfilePhoneInput"
-                            class="pm-profile-input"
                             type="tel"
                             autocomplete="tel"
                             placeholder="Phone number"
@@ -1634,7 +1346,7 @@
                     </div>
 
 
-                    <div class="profile-field">
+                    <div class="pm-profile-field">
 
                         <label for="pmProfileEmailInput">
                             Email
@@ -1642,7 +1354,6 @@
 
                         <input
                             id="pmProfileEmailInput"
-                            class="pm-profile-input"
                             type="email"
                             autocomplete="email"
                             placeholder="Email address"
@@ -1651,16 +1362,13 @@
                     </div>
 
 
-                    <div class="profile-field profile-field-full">
+                    <div class="pm-profile-field">
 
                         <label for="pmProfileFarmTypeInput">
                             Farm Type
                         </label>
 
-                        <select
-                            id="pmProfileFarmTypeInput"
-                            class="pm-profile-input"
-                        >
+                        <select id="pmProfileFarmTypeInput">
 
                             <option value="Layers">
                                 Layers
@@ -1674,8 +1382,8 @@
                                 Breeders
                             </option>
 
-                            <option value="Mixed">
-                                Mixed
+                            <option value="Mixed Poultry">
+                                Mixed Poultry
                             </option>
 
                             <option value="Other">
@@ -1687,17 +1395,16 @@
                     </div>
 
 
-                    <div class="profile-field profile-field-full">
+                    <div class="pm-profile-field pm-profile-field-full">
 
                         <label for="pmProfileNotesInput">
-                            Farm Notes
+                            About the Farm
                         </label>
 
                         <textarea
                             id="pmProfileNotesInput"
-                            class="pm-profile-input"
                             rows="4"
-                            placeholder="Add a short description or notes about your farm..."
+                            placeholder="Tell us a little about your farm..."
                         ></textarea>
 
                     </div>
@@ -1705,125 +1412,90 @@
                 </div>
 
 
-                <div class="profile-form-actions">
+                <div class="pm-profile-actions">
 
                     <button
-                        type="button"
-                        id="pmCancelProfileButton"
+                        id="pmProfileCancelButton"
                         class="secondary-button"
+                        type="button"
                     >
                         Cancel
                     </button>
 
+
                     <button
-                        type="button"
-                        id="pmSaveProfileButton"
+                        id="pmProfileSaveButton"
                         class="primary-button"
+                        type="submit"
                     >
                         Save Profile
                     </button>
 
                 </div>
 
-
-                <p
-                    id="pmProfileStatus"
-                    class="form-status"
-                ></p>
-
-            </div>
+            </form>
 
         </section>
 
 
-        <!-- PROFILE FARM SNAPSHOT -->
+        <!-- =====================================================
+             PROFILE FARM SNAPSHOT
+        ====================================================== -->
 
         <section class="section">
 
             <div class="section-title">
 
                 <div>
-
-                    <h2>
-                        Farm Snapshot
-                    </h2>
+                    <h2>Farm Snapshot</h2>
 
                     <p>
-                        Live information from your existing Poultry Manager records.
+                        Your current farm performance at a glance.
                     </p>
-
                 </div>
 
             </div>
 
 
-            <div class="profile-stats-grid">
+            <div class="pm-profile-stats">
 
-                <div class="profile-stat-card">
+                <div class="pm-profile-stat">
+                    <span>🐔</span>
 
-                    <span>
-                        🐔
-                    </span>
-
-                    <strong id="profileFlockCount">
-                        0
-                    </strong>
-
-                    <small>
-                        Current Birds
-                    </small>
-
+                    <div>
+                        <small>Flock Size</small>
+                        <strong id="pmProfileStatFlock">0</strong>
+                    </div>
                 </div>
 
 
-                <div class="profile-stat-card">
+                <div class="pm-profile-stat">
+                    <span>🥚</span>
 
-                    <span>
-                        🥚
-                    </span>
-
-                    <strong id="profileTodayEggs">
-                        0
-                    </strong>
-
-                    <small>
-                        Eggs Today
-                    </small>
-
+                    <div>
+                        <small>Today's Eggs</small>
+                        <strong id="pmProfileStatEggs">0</strong>
+                    </div>
                 </div>
 
 
-                <div class="profile-stat-card">
+                <div class="pm-profile-stat">
+                    <span>📈</span>
 
-                    <span>
-                        📈
-                    </span>
-
-                    <strong id="profileLayingRate">
-                        0%
-                    </strong>
-
-                    <small>
-                        Today's Laying Rate
-                    </small>
-
+                    <div>
+                        <small>Laying Rate</small>
+                        <strong id="pmProfileStatRate">0%</strong>
+                    </div>
                 </div>
 
 
-                <div class="profile-stat-card">
+                <div class="pm-profile-stat">
+                    <span>🌾</span>
 
-                    <span>
-                        🌾
-                    </span>
-
-                    <strong id="profileFeedStock">
-                        0 kg
-                    </strong>
-
-                    <small>
-                        Feed Remaining
-                    </small>
-
+                    <div>
+                        <small>Feed Stock</small>
+                        <strong id="pmProfileStatFeed">0 kg</strong>
+                    </div>
                 </div>
 
             </div>
@@ -1833,549 +1505,105 @@
     </main>
 
 
-    <!-- =====================================================
+    <!-- =========================================================
          SETTINGS VIEW
-    ====================================================== -->
+         Detailed settings are still generated/managed by
+         main.js so existing functionality remains intact.
+    ========================================================== -->
 
     <main
         id="pmSettingsView"
         class="pm-view pm-settings-view"
         hidden
     >
-
         <!--
-            Settings controls are intentionally kept compatible
-            with the existing main.js settings system.
+            main.js continues to populate/manage the Settings
+            interface here.
+
+            Existing settings IDs remain:
+            pmSettingsFlockInput
+            pmSaveFlockButton
+            pmFlockStatus
+            pmMorningFeedInput
+            pmAfternoonFeedInput
+            pmSaveScheduleButton
+            pmScheduleStatus
+            pmAlarmToggle
+            pmAlarmStatus
+            pmNotificationsToggle
+            pmEnableNotificationsButton
+            pmNotificationsStatus
+            pmThemeSelect
+            pmAutomaticBackupToggle
+            pmExportBackupButton
+            pmImportBackupButton
+            pmBackupFileInput
+            pmBackupStatus
         -->
-
-        <section class="settings-page-header">
-
-            <div>
-
-                <span class="farm-overview-eyebrow">
-                    SETTINGS
-                </span>
-
-                <h2>
-                    Poultry Manager Settings
-                </h2>
-
-                <p>
-                    Manage schedules, notifications, appearance and your data.
-                </p>
-
-            </div>
-
-        </section>
-
-
-        <div class="pm-settings-grid">
-
-            <!-- =================================================
-                 FLOCK SETTINGS
-            ================================================== -->
-
-            <section class="pm-settings-card">
-
-                <div class="pm-settings-card-header">
-
-                    <div class="pm-settings-card-icon">
-                        🐔
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Flock Settings
-                        </h3>
-
-                        <p>
-                            Set the number of birds in your flock.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-row">
-
-                    <label for="pmSettingsFlockInput">
-                        Flock Size
-                    </label>
-
-                    <input
-                        id="pmSettingsFlockInput"
-                        class="pm-settings-input"
-                        type="number"
-                        min="0"
-                        step="1"
-                        inputmode="numeric"
-                    >
-
-                </div>
-
-
-                <div class="pm-settings-actions">
-
-                    <button
-                        type="button"
-                        id="pmSaveFlockButton"
-                        class="primary-button"
-                    >
-                        Save Flock
-                    </button>
-
-                </div>
-
-
-                <p
-                    id="pmFlockStatus"
-                    class="pm-settings-status"
-                ></p>
-
-            </section>
-
-
-            <!-- =================================================
-                 FEEDING SCHEDULE
-            ================================================== -->
-
-            <section class="pm-settings-card">
-
-                <div class="pm-settings-card-header">
-
-                    <div class="pm-settings-card-icon">
-                        ⏰
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Feeding Schedule
-                        </h3>
-
-                        <p>
-                            Set your regular morning and afternoon feeding times.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-schedule-grid">
-
-                    <div class="pm-settings-field">
-
-                        <label for="pmMorningFeedInput">
-                            Morning Feed
-                        </label>
-
-                        <input
-                            id="pmMorningFeedInput"
-                            class="pm-settings-input"
-                            type="time"
-                        >
-
-                    </div>
-
-
-                    <div class="pm-settings-field">
-
-                        <label for="pmAfternoonFeedInput">
-                            Afternoon Feed
-                        </label>
-
-                        <input
-                            id="pmAfternoonFeedInput"
-                            class="pm-settings-input"
-                            type="time"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-actions">
-
-                    <button
-                        type="button"
-                        id="pmSaveScheduleButton"
-                        class="primary-button"
-                    >
-                        Save Schedule
-                    </button>
-
-                </div>
-
-
-                <p
-                    id="pmScheduleStatus"
-                    class="pm-settings-status"
-                ></p>
-
-
-                <div class="pm-next-feed-settings">
-
-                    <span>
-                        Next Feeding
-                    </span>
-
-                    <strong id="nextFeedTime">
-                        Not scheduled
-                    </strong>
-
-                    <small id="nextFeedCountdown">
-                        —
-                    </small>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 FEED ALARM
-            ================================================== -->
-
-            <section class="pm-settings-card">
-
-                <div class="pm-settings-card-header">
-
-                    <div class="pm-settings-card-icon">
-                        🔔
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Feed Alarm
-                        </h3>
-
-                        <p>
-                            Receive reminders for your scheduled feeding times.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-row pm-settings-toggle-row">
-
-                    <div>
-
-                        <strong>
-                            Feeding Alarm
-                        </strong>
-
-                        <small>
-                            Use your feeding schedule for reminders.
-                        </small>
-
-                    </div>
-
-                    <label class="pm-toggle">
-
-                        <input
-                            id="pmAlarmToggle"
-                            type="checkbox"
-                        >
-
-                        <span class="pm-toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <p
-                    id="pmAlarmStatus"
-                    class="pm-settings-status"
-                ></p>
-
-            </section>
-
-
-            <!-- =================================================
-                 NOTIFICATIONS
-            ================================================== -->
-
-            <section class="pm-settings-card">
-
-                <div class="pm-settings-card-header">
-
-                    <div class="pm-settings-card-icon">
-                        📱
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Notifications
-                        </h3>
-
-                        <p>
-                            Enable notifications for Poultry Manager reminders.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-row pm-settings-toggle-row">
-
-                    <div>
-
-                        <strong>
-                            Push Notifications
-                        </strong>
-
-                        <small>
-                            Allow Poultry Manager to send notifications.
-                        </small>
-
-                    </div>
-
-                    <label class="pm-toggle">
-
-                        <input
-                            id="pmNotificationsToggle"
-                            type="checkbox"
-                            disabled
-                        >
-
-                        <span class="pm-toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <div class="pm-settings-actions">
-
-                    <button
-                        type="button"
-                        id="pmEnableNotificationsButton"
-                        class="primary-button"
-                    >
-                        Enable Notifications
-                    </button>
-
-                </div>
-
-
-                <p
-                    id="pmNotificationsStatus"
-                    class="pm-settings-status"
-                ></p>
-
-            </section>
-
-
-            <!-- =================================================
-                 APPEARANCE
-            ================================================== -->
-
-            <section class="pm-settings-card">
-
-                <div class="pm-settings-card-header">
-
-                    <div class="pm-settings-card-icon">
-                        🎨
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Appearance
-                        </h3>
-
-                        <p>
-                            Choose how Poultry Manager looks on your device.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-row">
-
-                    <label for="pmThemeSelect">
-                        Theme
-                    </label>
-
-                    <select
-                        id="pmThemeSelect"
-                        class="pm-settings-select"
-                    >
-
-                        <option value="light">
-                            Light
-                        </option>
-
-                        <option value="dark">
-                            Dark
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 DATA BACKUP
-            ================================================== -->
-
-            <section class="pm-settings-card">
-
-                <div class="pm-settings-card-header">
-
-                    <div class="pm-settings-card-icon">
-                        💾
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Data Backup
-                        </h3>
-
-                        <p>
-                            Protect your Poultry Manager records.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-row pm-settings-toggle-row">
-
-                    <div>
-
-                        <strong>
-                            Automatic Backup
-                        </strong>
-
-                        <small>
-                            Automatically keep a local backup of your data.
-                        </small>
-
-                    </div>
-
-                    <label class="pm-toggle">
-
-                        <input
-                            id="pmAutomaticBackupToggle"
-                            type="checkbox"
-                        >
-
-                        <span class="pm-toggle-slider"></span>
-
-                    </label>
-
-                </div>
-
-
-                <div class="pm-settings-actions pm-settings-actions-wrap">
-
-                    <button
-                        type="button"
-                        id="pmExportBackupButton"
-                        class="secondary-button"
-                    >
-                        Export Backup
-                    </button>
-
-
-                    <button
-                        type="button"
-                        id="pmImportBackupButton"
-                        class="secondary-button"
-                    >
-                        Restore Backup
-                    </button>
-
-                </div>
-
-
-                <input
-                    id="pmBackupFileInput"
-                    type="file"
-                    accept=".json,application/json"
-                    hidden
-                >
-
-
-                <p
-                    id="pmBackupStatus"
-                    class="pm-settings-status"
-                ></p>
-
-            </section>
-
-
-            <!-- =================================================
-                 ABOUT
-            ================================================== -->
-
-            <section class="pm-settings-card pm-settings-about-card">
-
-                <div class="pm-settings-card-header">
-
-                    <div class="pm-settings-brand-mark">
-                        PM
-                    </div>
-
-                    <div>
-
-                        <h3>
-                            Poultry Manager
-                        </h3>
-
-                        <p>
-                            Your digital poultry management system.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <div class="pm-settings-about-content">
-
-                    <p>
-                        Track your flock, eggs, feed, production and farm
-                        activity in one place.
-                    </p>
-
-                    <span>
-                        Version 3.0.0
-                    </span>
-
-                </div>
-
-            </section>
-
-        </div>
-
     </main>
 
-</div>
+
+    <!-- =========================================================
+         APP NAVIGATION
+         main.js also detects/updates this navigation.
+    ========================================================== -->
+
+    <nav
+        id="pmAppNavigation"
+        class="app-navigation"
+        aria-label="Main navigation"
+    >
+
+        <button
+            id="pmDashboardButton"
+            class="active"
+            type="button"
+            data-view="dashboard"
+            aria-label="Dashboard"
+            aria-current="page"
+        >
+            <span class="nav-icon">⌂</span>
+            <span class="nav-label">Dashboard</span>
+        </button>
 
 
-<!-- =========================================================
-     JAVASCRIPT
-========================================================== -->
+        <button
+            id="pmFarmButton"
+            type="button"
+            data-view="farm"
+            aria-label="My Farm"
+        >
+            <span class="nav-icon">🐔</span>
+            <span class="nav-label">My Farm</span>
+        </button>
 
-<script src="main.js?v=23"></script>
+
+        <button
+            id="pmProfileButton"
+            type="button"
+            data-view="profile"
+            aria-label="Profile"
+        >
+            <span class="nav-icon">◉</span>
+            <span class="nav-label">Profile</span>
+        </button>
+
+
+        <button
+            id="pmSettingsButton"
+            type="button"
+            data-view="settings"
+            aria-label="Settings"
+        >
+            <span class="nav-icon">⚙</span>
+            <span class="nav-label">Settings</span>
+        </button>
+
+    </nav>
+
+
+    <!-- APP JAVASCRIPT -->
+    <script src="main.js?v=23"></script>
 
 </body>
 </html>
