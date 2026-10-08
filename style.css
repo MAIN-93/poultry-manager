@@ -1,12 +1,12 @@
-/* =========================================================
+/* ============================================================
    POULTRY MANAGER
    Complete Application Stylesheet
-   ========================================================= */
+   ============================================================ */
 
 
-/* =========================================================
-   1. DESIGN TOKENS
-   ========================================================= */
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
 
 :root {
     --pm-bg: #f5f7f4;
@@ -38,9 +38,14 @@
     --pm-warning: #c98a21;
     --pm-warning-soft: #fff4df;
 
-    --pm-shadow-sm: 0 2px 8px rgba(20, 35, 25, 0.05);
-    --pm-shadow: 0 8px 24px rgba(20, 35, 25, 0.07);
-    --pm-shadow-lg: 0 16px 40px rgba(20, 35, 25, 0.09);
+    --pm-shadow-sm:
+        0 2px 8px rgba(20, 35, 25, 0.05);
+
+    --pm-shadow:
+        0 8px 24px rgba(20, 35, 25, 0.07);
+
+    --pm-shadow-lg:
+        0 16px 40px rgba(20, 35, 25, 0.09);
 
     --pm-radius-sm: 10px;
     --pm-radius: 16px;
@@ -49,42 +54,98 @@
     --pm-content-width: 1180px;
 
     --pm-transition: 180ms ease;
+
+    --pm-header-height: 82px;
+    --pm-nav-height: 76px;
 }
 
 
-/* =========================================================
-   2. RESET
-   ========================================================= */
+/* ============================================================
+   DARK MODE TOKENS
+   ============================================================ */
 
-* {
+html[data-theme="dark"] {
+    --pm-bg: #101512;
+    --pm-surface: #171d19;
+    --pm-surface-soft: #1c241f;
+    --pm-surface-muted: #222b25;
+
+    --pm-text: #eef4ef;
+    --pm-text-soft: #b4beb7;
+    --pm-text-muted: #7f8b82;
+
+    --pm-border: #2b352e;
+    --pm-border-strong: #38443b;
+
+    --pm-primary: #43a96f;
+    --pm-primary-dark: #328658;
+    --pm-primary-soft: #183a29;
+
+    --pm-secondary: #6b9b83;
+
+    --pm-accent: #e3a83e;
+    --pm-accent-soft: #3a2c16;
+
+    --pm-success: #48ad72;
+    --pm-success-soft: #173725;
+
+    --pm-danger: #e06b6b;
+    --pm-danger-soft: #3b1e1e;
+
+    --pm-warning: #e0a33b;
+    --pm-warning-soft: #3b2e17;
+
+    --pm-shadow-sm:
+        0 2px 8px rgba(0, 0, 0, 0.22);
+
+    --pm-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.25);
+
+    --pm-shadow-lg:
+        0 16px 40px rgba(0, 0, 0, 0.32);
+}
+
+
+/* ============================================================
+   RESET
+   ============================================================ */
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
 html {
     min-height: 100%;
     scroll-behavior: smooth;
+    background: var(--pm-bg);
 }
 
 body {
-    margin: 0;
-    min-width: 320px;
     min-height: 100vh;
+    margin: 0;
+    padding: 0;
 
-    background: var(--pm-bg);
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(31, 107, 69, 0.035),
+            transparent 30%
+        ),
+        var(--pm-bg);
+
     color: var(--pm-text);
 
     font-family:
         -apple-system,
         BlinkMacSystemFont,
-        "SF Pro Display",
-        "SF Pro Text",
         "Segoe UI",
         Roboto,
         Helvetica,
         Arial,
         sans-serif;
 
-    font-size: 15px;
     line-height: 1.5;
 
     -webkit-font-smoothing: antialiased;
@@ -102,14 +163,16 @@ button {
     cursor: pointer;
 }
 
-button:disabled {
-    cursor: not-allowed;
-    opacity: 0.55;
+button,
+input,
+select,
+textarea {
+    -webkit-tap-highlight-color: transparent;
 }
 
-input,
-select {
-    outline: none;
+img {
+    max-width: 100%;
+    display: block;
 }
 
 h1,
@@ -123,179 +186,259 @@ p {
 h1,
 h2,
 h3,
-h4,
-strong {
-    letter-spacing: -0.02em;
+h4 {
+    color: var(--pm-text);
 }
 
-::selection {
-    background: var(--pm-primary-soft);
-    color: var(--pm-primary-dark);
+p {
+    color: var(--pm-text-soft);
+}
+
+a {
+    color: inherit;
 }
 
 
-/* =========================================================
-   3. APPLICATION SHELL
-   ========================================================= */
+/* ============================================================
+   APP SHELL
+   ============================================================ */
 
 .app {
     width: 100%;
     min-height: 100vh;
+    padding-bottom: calc(
+        var(--pm-nav-height) + 28px
+    );
 }
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
 
 .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+
     width: 100%;
-    background: var(--pm-surface);
+
+    background: color-mix(
+        in srgb,
+        var(--pm-bg) 88%,
+        transparent
+    );
+
     border-bottom: 1px solid var(--pm-border);
 
-    padding: 26px 24px 22px;
-
-    position: relative;
-    z-index: 10;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
-.app-header > div {
-    width: min(100%, var(--pm-content-width));
+.app-header-inner {
+    width: min(
+        calc(100% - 32px),
+        var(--pm-content-width)
+    );
+
+    min-height: var(--pm-header-height);
+
     margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+}
+
+.app-header-eyebrow {
+    margin: 0 0 2px;
+
+    color: var(--pm-primary);
+
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
 }
 
 .app-header h1 {
     margin: 0;
-    color: var(--pm-text);
 
-    font-size: clamp(25px, 4vw, 32px);
-    line-height: 1.1;
-    font-weight: 800;
+    font-size: clamp(
+        1.35rem,
+        2vw,
+        1.75rem
+    );
+
+    line-height: 1.15;
+    letter-spacing: -0.025em;
 }
 
-.app-header p {
-    margin: 7px 0 0;
+#headerDate {
+    margin: 5px 0 0;
 
-    color: var(--pm-text-soft);
-    font-size: 13px;
-    font-weight: 500;
+    color: var(--pm-text-muted);
+
+    font-size: 0.8rem;
 }
 
 
-/* =========================================================
-   4. DASHBOARD CONTAINER
-   ========================================================= */
+/* ============================================================
+   VIEW SYSTEM
+   ============================================================ */
 
-.pm-dashboard-view {
-    width: min(100%, var(--pm-content-width));
+.pm-view {
+    width: min(
+        calc(100% - 32px),
+        var(--pm-content-width)
+    );
+
     margin: 0 auto;
 
-    padding: 28px 24px 70px;
+    padding: 28px 0 24px;
 }
 
-.pm-dashboard-view > section {
+.pm-view[hidden] {
+    display: none !important;
+}
+
+.pm-view-header {
     margin-bottom: 24px;
 }
 
+.pm-view-eyebrow {
+    display: inline-block;
 
-/* =========================================================
-   5. GENERIC SECTIONS
-   ========================================================= */
+    margin-bottom: 7px;
+
+    color: var(--pm-primary);
+
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.pm-view-header h2 {
+    margin: 0;
+
+    font-size: clamp(
+        1.6rem,
+        3vw,
+        2.2rem
+    );
+
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+}
+
+.pm-view-header p {
+    margin: 9px 0 0;
+
+    max-width: 650px;
+
+    font-size: 0.92rem;
+}
+
+
+/* ============================================================
+   SECTIONS
+   ============================================================ */
 
 .section {
-    background: var(--pm-surface);
-    border: 1px solid var(--pm-border);
-    border-radius: var(--pm-radius-lg);
-
-    padding: 26px;
-
-    box-shadow: var(--pm-shadow-sm);
+    margin-top: 24px;
 }
 
 .section-title {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+
     gap: 18px;
 
-    margin-bottom: 22px;
+    margin-bottom: 16px;
 }
 
 .section-title h2 {
     margin: 0;
 
-    font-size: 21px;
-    line-height: 1.25;
-    font-weight: 750;
-
-    color: var(--pm-text);
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
 }
 
 .section-title p {
-    margin: 6px 0 0;
+    margin: 5px 0 0;
 
-    color: var(--pm-text-soft);
-    font-size: 13px;
-    line-height: 1.5;
+    font-size: 0.86rem;
 }
 
 
-/* =========================================================
-   6. FARM OVERVIEW
-   ========================================================= */
+/* ============================================================
+   FARM OVERVIEW
+   ============================================================ */
 
 .farm-overview-section {
-    padding: 0;
+    padding-top: 2px;
 }
 
 .farm-overview-header {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 .farm-overview-eyebrow {
-    display: block;
+    display: inline-block;
 
     margin-bottom: 7px;
 
     color: var(--pm-primary);
-    font-size: 11px;
+
+    font-size: 0.68rem;
     font-weight: 800;
-    letter-spacing: 0.13em;
+    letter-spacing: 0.14em;
 }
 
 .farm-overview-header h2 {
     margin: 0;
 
-    font-size: clamp(25px, 4vw, 31px);
-    line-height: 1.15;
-    font-weight: 800;
+    font-size: clamp(
+        1.65rem,
+        4vw,
+        2.35rem
+    );
+
+    line-height: 1.08;
+    letter-spacing: -0.04em;
 }
 
 .farm-overview-header p {
-    margin: 7px 0 0;
+    margin: 8px 0 0;
 
-    color: var(--pm-text-soft);
-    font-size: 14px;
+    font-size: 0.9rem;
 }
 
 
-/* =========================================================
-   7. FARM OVERVIEW CARDS
-   ========================================================= */
+/* ============================================================
+   FARM OVERVIEW GRID
+   ============================================================ */
 
 .farm-overview-grid {
     display: grid;
 
     grid-template-columns:
-        repeat(4, minmax(0, 1fr));
+        repeat(
+            4,
+            minmax(0, 1fr)
+        );
 
-    gap: 14px;
+    gap: 12px;
 }
 
 .farm-overview-card {
-    min-width: 0;
+    min-height: 145px;
+
+    padding: 17px;
 
     background: var(--pm-surface);
+
     border: 1px solid var(--pm-border);
-
     border-radius: var(--pm-radius);
-
-    padding: 19px;
 
     box-shadow: var(--pm-shadow-sm);
 
@@ -307,51 +450,44 @@ strong {
 
 .farm-overview-card:hover {
     transform: translateY(-2px);
+
     border-color: var(--pm-border-strong);
+
     box-shadow: var(--pm-shadow);
 }
 
 .farm-overview-card-wide {
-    grid-column: span 4;
-
-    background:
-        linear-gradient(
-            135deg,
-            var(--pm-primary-soft),
-            var(--pm-surface)
-        );
-
-    border-color: #d8e9dd;
+    grid-column: span 2;
 }
 
 .farm-overview-card-top {
     display: flex;
     align-items: center;
+
     gap: 9px;
 
-    margin-bottom: 14px;
+    margin-bottom: 15px;
 }
 
 .farm-overview-icon {
-    display: grid;
-    place-items: center;
-
     width: 34px;
     height: 34px;
 
+    display: grid;
+    place-items: center;
+
+    background: var(--pm-primary-soft);
+
     border-radius: 10px;
 
-    background: var(--pm-surface-soft);
-
-    font-size: 17px;
+    font-size: 1rem;
 }
 
 .farm-overview-label {
-    min-width: 0;
-
     color: var(--pm-text-soft);
-    font-size: 12px;
-    font-weight: 650;
+
+    font-size: 0.78rem;
+    font-weight: 700;
 }
 
 .farm-overview-value {
@@ -359,94 +495,104 @@ strong {
 
     color: var(--pm-text);
 
-    font-size: clamp(24px, 4vw, 31px);
-    line-height: 1.1;
-    font-weight: 800;
+    font-size: clamp(
+        1.45rem,
+        3vw,
+        2rem
+    );
 
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1;
+
+    letter-spacing: -0.04em;
 }
 
 .farm-overview-description {
     display: block;
 
-    margin-top: 6px;
+    margin-top: 7px;
 
     color: var(--pm-text-muted);
-    font-size: 11px;
+
+    font-size: 0.74rem;
 }
 
 
-/* =========================================================
-   8. QUICK ACTIONS
-   ========================================================= */
+/* ============================================================
+   QUICK ACTIONS
+   ============================================================ */
 
 .quick-actions {
     margin-top: 18px;
 
+    padding: 18px;
+
     background: var(--pm-surface);
+
     border: 1px solid var(--pm-border);
-
     border-radius: var(--pm-radius-lg);
-
-    padding: 21px;
 
     box-shadow: var(--pm-shadow-sm);
 }
 
 .quick-actions-header {
-    margin-bottom: 15px;
+    margin-bottom: 14px;
 }
 
 .quick-actions-header h3 {
     margin: 0;
 
-    font-size: 17px;
-    font-weight: 750;
+    font-size: 1rem;
 }
 
 .quick-actions-header p {
     margin: 4px 0 0;
 
-    color: var(--pm-text-soft);
-    font-size: 12px;
+    font-size: 0.8rem;
 }
 
 .quick-actions-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 11px;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 10px;
 }
 
 .quick-action-button {
     width: 100%;
 
+    min-height: 72px;
+
     display: flex;
     align-items: center;
+
     gap: 12px;
 
-    text-align: left;
+    padding: 12px;
 
-    padding: 14px;
+    text-align: left;
 
     color: var(--pm-text);
 
     background: var(--pm-surface-soft);
+
     border: 1px solid var(--pm-border);
 
     border-radius: 13px;
 
     transition:
         transform var(--pm-transition),
-        background var(--pm-transition),
-        border-color var(--pm-transition);
+        border-color var(--pm-transition),
+        background var(--pm-transition);
 }
 
 .quick-action-button:hover {
     transform: translateY(-1px);
+
+    border-color: var(--pm-primary);
+
     background: var(--pm-primary-soft);
-    border-color: #cfe2d5;
 }
 
 .quick-action-button:active {
@@ -454,27 +600,27 @@ strong {
 }
 
 .quick-action-icon {
-    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
 
     display: grid;
     place-items: center;
 
-    width: 38px;
-    height: 38px;
-
-    border-radius: 11px;
-
     background: var(--pm-surface);
-    box-shadow: var(--pm-shadow-sm);
 
-    font-size: 18px;
+    border: 1px solid var(--pm-border);
+
+    border-radius: 12px;
+
+    font-size: 1.15rem;
 }
 
 .quick-action-button strong {
     display: block;
 
-    font-size: 13px;
-    font-weight: 750;
+    font-size: 0.86rem;
 }
 
 .quick-action-button small {
@@ -483,13 +629,14 @@ strong {
     margin-top: 2px;
 
     color: var(--pm-text-muted);
-    font-size: 10px;
+
+    font-size: 0.72rem;
 }
 
 
-/* =========================================================
-   9. PRODUCTION SUMMARY
-   ========================================================= */
+/* ============================================================
+   SUMMARY CARDS
+   ============================================================ */
 
 .summary-grid {
     display: grid;
@@ -497,67 +644,80 @@ strong {
     grid-template-columns:
         repeat(4, minmax(0, 1fr));
 
-    gap: 13px;
+    gap: 12px;
 }
 
 .summary-card {
-    padding: 18px;
+    padding: 17px;
 
-    background: var(--pm-surface-soft);
+    background: var(--pm-surface);
+
     border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius);
 
-    border-radius: 14px;
+    box-shadow: var(--pm-shadow-sm);
 }
 
 .summary-card span {
     display: block;
 
     color: var(--pm-text-soft);
-    font-size: 11px;
-    font-weight: 600;
+
+    font-size: 0.76rem;
+    font-weight: 700;
 }
 
 .summary-card strong {
     display: block;
 
-    margin-top: 8px;
+    margin-top: 9px;
 
     color: var(--pm-text);
 
-    font-size: 23px;
-    line-height: 1.15;
-    font-weight: 800;
+    font-size: 1.55rem;
 
-    word-break: break-word;
+    line-height: 1;
+
+    letter-spacing: -0.035em;
 }
 
 
-/* =========================================================
-   10. PRODUCTION TREND
-   ========================================================= */
+/* ============================================================
+   PRODUCTION TREND
+   ============================================================ */
 
 .trend-card {
-    overflow: hidden;
+    padding: 18px;
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius-lg);
+
+    box-shadow: var(--pm-shadow-sm);
 }
 
 .trend-chart-wrapper {
     display: flex;
-    gap: 13px;
 
-    min-height: 235px;
+    min-height: 230px;
+
+    gap: 12px;
 }
 
 .trend-y-axis {
-    flex: 0 0 28px;
+    width: 28px;
 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
-    padding: 3px 0 27px;
+    padding: 5px 0 24px;
 
     color: var(--pm-text-muted);
-    font-size: 10px;
+
+    font-size: 0.68rem;
+
     text-align: right;
 }
 
@@ -565,61 +725,45 @@ strong {
     position: relative;
 
     flex: 1;
+
     min-width: 0;
-
-    min-height: 235px;
-
-    border-bottom: 1px solid var(--pm-border);
 }
 
 .trend-grid-lines {
     position: absolute;
-    inset: 0 0 28px;
+    inset: 0 0 24px;
 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-
-    pointer-events: none;
 }
 
 .trend-grid-lines span {
-    display: block;
-
     width: 100%;
-    height: 1px;
 
-    background: var(--pm-border);
-    opacity: 0.8;
+    border-top: 1px dashed var(--pm-border);
 }
 
 .production-trend-chart {
     position: relative;
-    z-index: 2;
 
     width: 100%;
     height: 100%;
-    min-height: 235px;
 
-    display: flex;
-    align-items: flex-end;
-
-    overflow: hidden;
-}
-
-.production-trend-chart > * {
-    min-width: 0;
+    min-height: 230px;
 }
 
 .trend-legend {
     display: flex;
     align-items: center;
+
     gap: 7px;
 
-    margin-top: 10px;
+    margin-top: 2px;
 
     color: var(--pm-text-muted);
-    font-size: 11px;
+
+    font-size: 0.73rem;
 }
 
 .trend-legend-dot {
@@ -632,13 +776,9 @@ strong {
 }
 
 
-/* =========================================================
-   11. PRODUCTION ANALYTICS
-   ========================================================= */
-
-.analytics-section {
-    overflow: hidden;
-}
+/* ============================================================
+   ANALYTICS
+   ============================================================ */
 
 .analytics-grid {
     display: grid;
@@ -646,16 +786,18 @@ strong {
     grid-template-columns:
         repeat(3, minmax(0, 1fr));
 
-    gap: 13px;
+    gap: 12px;
 }
 
 .analytics-card {
-    padding: 18px;
+    padding: 17px;
 
-    background: var(--pm-surface-soft);
+    background: var(--pm-surface);
+
     border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius);
 
-    border-radius: 14px;
+    box-shadow: var(--pm-shadow-sm);
 }
 
 .analytics-label {
@@ -663,20 +805,18 @@ strong {
 
     color: var(--pm-text-soft);
 
-    font-size: 11px;
-    font-weight: 650;
+    font-size: 0.76rem;
+    font-weight: 700;
 }
 
 .analytics-card strong {
     display: block;
 
-    margin-top: 7px;
+    margin-top: 8px;
 
-    color: var(--pm-text);
+    font-size: 1.45rem;
 
-    font-size: 24px;
-    line-height: 1.15;
-    font-weight: 800;
+    line-height: 1;
 }
 
 .analytics-card small {
@@ -685,67 +825,661 @@ strong {
     margin-top: 6px;
 
     color: var(--pm-text-muted);
-    font-size: 10px;
+
+    font-size: 0.7rem;
 }
 
 .analytics-insight {
     display: flex;
     align-items: flex-start;
-    gap: 13px;
 
-    margin-top: 15px;
-    padding: 16px;
+    gap: 12px;
+
+    margin-top: 12px;
+
+    padding: 15px;
 
     background: var(--pm-primary-soft);
-    border: 1px solid #d7e9dd;
 
-    border-radius: 14px;
+    border: 1px solid color-mix(
+        in srgb,
+        var(--pm-primary) 18%,
+        var(--pm-border)
+    );
+
+    border-radius: var(--pm-radius);
 }
 
 .analytics-insight-icon {
-    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
 
     display: grid;
     place-items: center;
 
-    width: 36px;
-    height: 36px;
-
-    border-radius: 10px;
-
     background: var(--pm-surface);
 
-    font-size: 17px;
+    border-radius: 11px;
 }
 
 .analytics-insight strong {
     display: block;
 
-    font-size: 13px;
+    font-size: 0.86rem;
 }
 
 .analytics-insight p {
-    margin: 4px 0 0;
+    margin: 3px 0 0;
 
-    color: var(--pm-text-soft);
-    font-size: 12px;
-    line-height: 1.55;
+    font-size: 0.78rem;
 }
 
 
-/* =========================================================
-   12. EGG PRODUCTION
-   ========================================================= */
+/* ============================================================
+   MY FARM
+   ============================================================ */
+
+.pm-farm-view {
+    padding-bottom: 40px;
+}
+
+.pm-farm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    gap: 20px;
+}
+
+.pm-farm-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.pm-farm-card {
+    min-height: 108px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    padding: 16px;
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius);
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.pm-farm-card > span {
+    width: 42px;
+    height: 42px;
+
+    flex: 0 0 42px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--pm-primary-soft);
+
+    border-radius: 12px;
+
+    font-size: 1.15rem;
+}
+
+.pm-farm-card small {
+    display: block;
+
+    color: var(--pm-text-muted);
+
+    font-size: 0.7rem;
+}
+
+.pm-farm-card strong {
+    display: inline-block;
+
+    margin-top: 3px;
+
+    font-size: 1.4rem;
+
+    line-height: 1;
+}
+
+.pm-farm-card em {
+    margin-left: 4px;
+
+    color: var(--pm-text-muted);
+
+    font-size: 0.68rem;
+
+    font-style: normal;
+}
+
+
+/* ============================================================
+   FARM MANAGEMENT
+   ============================================================ */
+
+.pm-farm-management-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 18px;
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+    border-radius: var(--pm-radius-lg);
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.pm-farm-management-card > div:first-child {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.pm-farm-management-icon {
+    width: 44px;
+    height: 44px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--pm-primary-soft);
+
+    border-radius: 12px;
+
+    font-size: 1.2rem;
+}
+
+.pm-farm-management-card strong {
+    display: block;
+
+    font-size: 0.9rem;
+}
+
+.pm-farm-management-card small {
+    display: block;
+
+    margin-top: 3px;
+
+    color: var(--pm-text-muted);
+
+    font-size: 0.74rem;
+}
+
+.pm-farm-flock-control {
+    display: flex !important;
+    align-items: center;
+
+    gap: 10px;
+}
+
+.pm-farm-flock-control button {
+    width: 42px;
+    height: 42px;
+
+    padding: 0;
+
+    display: grid;
+    place-items: center;
+
+    font-size: 1.2rem;
+}
+
+.pm-farm-flock-control > strong {
+    min-width: 48px;
+
+    text-align: center;
+
+    font-size: 1.3rem;
+}
+
+
+/* ============================================================
+   PROFILE
+   ============================================================ */
+
+.pm-profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--pm-primary-soft),
+            var(--pm-surface)
+        );
+
+    border: 1px solid var(--pm-border);
+
+    border-radius: var(--pm-radius-lg);
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.pm-profile-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    min-width: 0;
+}
+
+.pm-profile-avatar {
+    width: 66px;
+    height: 66px;
+
+    flex: 0 0 66px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--pm-primary);
+
+    color: white;
+
+    border-radius: 20px;
+
+    font-size: 1.15rem;
+    font-weight: 800;
+
+    box-shadow:
+        0 8px 18px
+        color-mix(
+            in srgb,
+            var(--pm-primary) 22%,
+            transparent
+        );
+}
+
+.pm-profile-heading h2 {
+    margin: 0;
+
+    font-size: clamp(
+        1.3rem,
+        3vw,
+        1.85rem
+    );
+
+    line-height: 1.1;
+
+    overflow-wrap: anywhere;
+}
+
+.pm-profile-heading p {
+    margin: 5px 0 0;
+
+    font-size: 0.82rem;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* PROFILE CARD */
+
+.pm-profile-card {
+    padding: 20px;
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+
+    border-radius: var(--pm-radius-lg);
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.pm-profile-card-header {
+    padding-bottom: 16px;
+
+    margin-bottom: 17px;
+
+    border-bottom: 1px solid var(--pm-border);
+}
+
+.pm-profile-card-header h2 {
+    margin: 0;
+
+    font-size: 1.15rem;
+}
+
+.pm-profile-card-header p {
+    margin: 5px 0 0;
+
+    font-size: 0.8rem;
+}
+
+
+/* PROFILE DISPLAY */
+
+.pm-profile-info-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.pm-profile-info-item {
+    min-width: 0;
+
+    padding: 14px;
+
+    background: var(--pm-surface-soft);
+
+    border: 1px solid var(--pm-border);
+
+    border-radius: 12px;
+}
+
+.pm-profile-info-item span,
+.pm-profile-notes > span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--pm-text-muted);
+
+    font-size: 0.69rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.045em;
+}
+
+.pm-profile-info-item strong {
+    display: block;
+
+    color: var(--pm-text);
+
+    font-size: 0.86rem;
+
+    overflow-wrap: anywhere;
+}
+
+.pm-profile-notes {
+    margin-top: 12px;
+
+    padding: 14px;
+
+    background: var(--pm-surface-soft);
+
+    border: 1px solid var(--pm-border);
+
+    border-radius: 12px;
+}
+
+.pm-profile-notes p {
+    margin: 0;
+
+    font-size: 0.82rem;
+
+    white-space: pre-wrap;
+}
+
+
+/* PROFILE EDIT FORM */
+
+.pm-profile-edit-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.pm-profile-field {
+    min-width: 0;
+}
+
+.pm-profile-field-full {
+    grid-column: 1 / -1;
+}
+
+.pm-profile-field label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: var(--pm-text);
+
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.pm-profile-field input,
+.pm-profile-field select,
+.pm-profile-field textarea {
+    width: 100%;
+
+    padding: 11px 12px;
+
+    color: var(--pm-text);
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border-strong);
+
+    border-radius: 11px;
+
+    outline: none;
+
+    transition:
+        border-color var(--pm-transition),
+        box-shadow var(--pm-transition),
+        background var(--pm-transition);
+}
+
+.pm-profile-field textarea {
+    resize: vertical;
+
+    min-height: 105px;
+}
+
+.pm-profile-field input::placeholder,
+.pm-profile-field textarea::placeholder {
+    color: var(--pm-text-muted);
+}
+
+.pm-profile-field input:focus,
+.pm-profile-field select:focus,
+.pm-profile-field textarea:focus {
+    border-color: var(--pm-primary);
+
+    box-shadow:
+        0 0 0 3px
+        color-mix(
+            in srgb,
+            var(--pm-primary) 13%,
+            transparent
+        );
+}
+
+.pm-profile-actions {
+    display: flex;
+    justify-content: flex-end;
+
+    gap: 9px;
+
+    margin-top: 17px;
+
+    padding-top: 16px;
+
+    border-top: 1px solid var(--pm-border);
+}
+
+
+/* PROFILE STATS */
+
+.pm-profile-stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+.pm-profile-stat {
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 15px;
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+
+    border-radius: var(--pm-radius);
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.pm-profile-stat > span {
+    width: 40px;
+    height: 40px;
+
+    flex: 0 0 40px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--pm-primary-soft);
+
+    border-radius: 11px;
+}
+
+.pm-profile-stat small {
+    display: block;
+
+    color: var(--pm-text-muted);
+
+    font-size: 0.68rem;
+}
+
+.pm-profile-stat strong {
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 1.2rem;
+
+    line-height: 1;
+}
+
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.primary-button,
+.secondary-button {
+    min-height: 42px;
+
+    padding: 10px 15px;
+
+    border-radius: 11px;
+
+    font-size: 0.8rem;
+    font-weight: 750;
+
+    transition:
+        transform var(--pm-transition),
+        background var(--pm-transition),
+        border-color var(--pm-transition),
+        box-shadow var(--pm-transition);
+}
+
+.primary-button {
+    color: white;
+
+    background: var(--pm-primary);
+
+    border: 1px solid var(--pm-primary);
+}
+
+.primary-button:hover {
+    background: var(--pm-primary-dark);
+
+    box-shadow: var(--pm-shadow-sm);
+}
+
+.secondary-button {
+    color: var(--pm-text);
+
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border-strong);
+}
+
+.secondary-button:hover {
+    border-color: var(--pm-primary);
+
+    background: var(--pm-primary-soft);
+}
+
+.primary-button:active,
+.secondary-button:active {
+    transform: scale(0.98);
+}
+
+.text-button {
+    padding: 5px 0;
+
+    color: var(--pm-primary);
+
+    background: transparent;
+
+    border: 0;
+
+    font-size: 0.75rem;
+    font-weight: 750;
+}
+
+.text-button:hover {
+    color: var(--pm-primary-dark);
+
+    text-decoration: underline;
+}
+
+
+/* ============================================================
+   EGG PRODUCTION
+   ============================================================ */
 
 .egg-main-card {
     display: grid;
 
     grid-template-columns:
-        1.2fr
-        0.8fr
-        auto;
+        1fr 1fr auto;
 
     align-items: center;
+
     gap: 20px;
 
     padding: 22px;
@@ -757,292 +1491,177 @@ strong {
             var(--pm-surface)
         );
 
-    border: 1px solid #d8e9dd;
+    border: 1px solid var(--pm-border);
 
-    border-radius: var(--pm-radius);
+    border-radius: var(--pm-radius-lg);
+
+    box-shadow: var(--pm-shadow-sm);
 }
 
 .egg-number span,
 .laying-rate span {
     display: block;
 
-    color: var(--pm-text);
+    font-size: clamp(
+        2rem,
+        5vw,
+        3rem
+    );
 
-    font-size: clamp(34px, 6vw, 48px);
     line-height: 1;
-    font-weight: 850;
+
+    font-weight: 800;
+
+    letter-spacing: -0.05em;
 }
 
 .egg-number small,
 .laying-rate small {
     display: block;
 
-    margin-top: 6px;
+    margin-top: 7px;
 
-    color: var(--pm-text-soft);
-    font-size: 11px;
-}
+    color: var(--pm-text-muted);
 
-.laying-rate {
-    padding-left: 20px;
-
-    border-left: 1px solid #d4e2d8;
+    font-size: 0.74rem;
 }
 
 .laying-rate span {
-    font-size: 30px;
+    color: var(--pm-primary);
 }
 
 .egg-actions {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
+
     gap: 8px;
+
+    flex-wrap: wrap;
 }
 
 
-/* =========================================================
-   13. BUTTONS
-   ========================================================= */
-
-.primary-button,
-.secondary-button,
-.text-button,
-.feed-action-button,
-.feed-reset-button,
-.pm-settings-action-button {
-    border: 0;
-
-    transition:
-        transform var(--pm-transition),
-        background var(--pm-transition),
-        border-color var(--pm-transition),
-        color var(--pm-transition),
-        box-shadow var(--pm-transition);
-}
-
-.primary-button {
-    padding: 11px 16px;
-
-    color: #ffffff;
-    background: var(--pm-primary);
-
-    border-radius: 10px;
-
-    font-size: 12px;
-    font-weight: 750;
-
-    box-shadow: 0 4px 10px rgba(31, 107, 69, 0.18);
-}
-
-.primary-button:hover {
-    background: var(--pm-primary-dark);
-    transform: translateY(-1px);
-}
-
-.primary-button:active {
-    transform: translateY(0);
-}
-
-.secondary-button {
-    padding: 10px 15px;
-
-    color: var(--pm-text);
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border-strong);
-    border-radius: 10px;
-
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.secondary-button:hover {
-    background: var(--pm-surface-soft);
-    border-color: #c7d1c9;
-}
-
-.text-button {
-    flex: 0 0 auto;
-
-    padding: 5px 0;
-
-    color: var(--pm-primary);
-    background: transparent;
-
-    font-size: 11px;
-    font-weight: 750;
-}
-
-.text-button:hover {
-    color: var(--pm-primary-dark);
-    text-decoration: underline;
-}
-
-
-/* =========================================================
-   14. SUBSECTIONS / HISTORY
-   ========================================================= */
+/* ============================================================
+   HISTORY
+   ============================================================ */
 
 .subsection {
-    margin-top: 22px;
+    margin-top: 20px;
 }
 
 .subsection-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
 
-    margin-bottom: 11px;
+    gap: 15px;
+
+    margin-bottom: 10px;
 }
 
 .subsection-header h3 {
     margin: 0;
 
-    font-size: 14px;
-    font-weight: 750;
+    font-size: 0.95rem;
+}
+
+.subsection-header p {
+    margin: 3px 0 0;
+
+    font-size: 0.75rem;
 }
 
 .history-list,
 .feed-history-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+
     gap: 7px;
 }
 
-.egg-history-item,
+.history-item,
 .feed-history-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 12px;
 
-    padding: 11px 13px;
+    padding: 12px 14px;
 
-    background: var(--pm-surface-soft);
+    background: var(--pm-surface);
+
     border: 1px solid var(--pm-border);
 
     border-radius: 11px;
 }
 
-.egg-history-date,
-.feed-history-date {
-    color: var(--pm-text-soft);
-
-    font-size: 11px;
-    font-weight: 600;
+.history-item strong,
+.feed-history-item strong {
+    font-size: 0.82rem;
 }
 
-.egg-history-value,
-.feed-history-value {
-    color: var(--pm-text);
-
-    font-size: 12px;
-    font-weight: 750;
-
-    text-align: right;
-}
-
-.egg-history-value span {
-    color: var(--pm-primary);
-}
-
-.history-list:empty::before {
-    content: "No egg production recorded yet.";
-
-    display: block;
-
-    padding: 17px;
-
+.history-item span,
+.feed-history-item span {
     color: var(--pm-text-muted);
-    background: var(--pm-surface-soft);
 
-    border: 1px dashed var(--pm-border-strong);
-    border-radius: 11px;
-
-    font-size: 11px;
-    text-align: center;
-}
-
-.feed-history-list:empty::before {
-    content: "No feed activity recorded yet.";
-
-    display: block;
-
-    padding: 17px;
-
-    color: var(--pm-text-muted);
-    background: var(--pm-surface-soft);
-
-    border: 1px dashed var(--pm-border-strong);
-    border-radius: 11px;
-
-    font-size: 11px;
-    text-align: center;
+    font-size: 0.72rem;
 }
 
 
-/* =========================================================
-   15. FEED MANAGEMENT
-   ========================================================= */
-
-.feed-management-section {
-    overflow: hidden;
-}
+/* ============================================================
+   FEED MANAGEMENT
+   ============================================================ */
 
 .feed-dashboard {
     display: grid;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        2fr repeat(3, 1fr);
 
-    gap: 13px;
+    gap: 12px;
+}
+
+.feed-hero-card,
+.feed-metric-card,
+.feed-action-panel,
+.feed-consumption-card {
+    background: var(--pm-surface);
+
+    border: 1px solid var(--pm-border);
+
+    border-radius: var(--pm-radius);
+
+    box-shadow: var(--pm-shadow-sm);
 }
 
 .feed-hero-card {
-    grid-column: 1 / -1;
-
-    padding: 22px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #f3f8f4,
-            var(--pm-surface)
-        );
-
-    border: 1px solid #dbe7de;
-    border-radius: var(--pm-radius);
+    padding: 18px;
 }
 
 .feed-hero-top {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 18px;
+
+    gap: 12px;
 }
 
 .feed-eyebrow {
     display: block;
 
-    margin-bottom: 6px;
-
     color: var(--pm-primary);
 
-    font-size: 10px;
+    font-size: 0.65rem;
     font-weight: 800;
     letter-spacing: 0.12em;
 }
 
-#feedAmount {
+.feed-hero-top strong {
     display: block;
 
-    color: var(--pm-text);
+    margin-top: 6px;
 
-    font-size: clamp(31px, 6vw, 43px);
-    line-height: 1.05;
-    font-weight: 850;
+    font-size: 1.7rem;
+
+    line-height: 1;
 }
 
 .feed-hero-top small {
@@ -1051,75 +1670,48 @@ strong {
     margin-top: 5px;
 
     color: var(--pm-text-muted);
-    font-size: 11px;
+
+    font-size: 0.7rem;
 }
 
 .feed-status-badge {
-    flex: 0 0 auto;
-
-    display: inline-flex;
-    align-items: center;
-
-    min-height: 28px;
-
-    padding: 6px 10px;
+    padding: 6px 9px;
 
     border-radius: 999px;
 
-    font-size: 10px;
+    font-size: 0.66rem;
     font-weight: 750;
+
+    white-space: nowrap;
 }
 
 .feed-status-neutral {
     color: var(--pm-text-soft);
+
     background: var(--pm-surface-muted);
 }
 
-.feed-status-good,
-.feed-status-success {
-    color: var(--pm-success);
-    background: var(--pm-success-soft);
-}
-
-.feed-status-warning {
-    color: var(--pm-warning);
-    background: var(--pm-warning-soft);
-}
-
-.feed-status-danger {
-    color: var(--pm-danger);
-    background: var(--pm-danger-soft);
-}
-
-
-/* =========================================================
-   16. FEED STOCK PROGRESS
-   ========================================================= */
-
 .feed-stock-progress {
-    margin-top: 22px;
+    margin-top: 20px;
 }
 
 .feed-progress-header {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
 
-    margin-bottom: 7px;
+    margin-bottom: 6px;
 
-    color: var(--pm-text-soft);
+    color: var(--pm-text-muted);
 
-    font-size: 10px;
-    font-weight: 650;
+    font-size: 0.68rem;
 }
 
 .feed-progress-track {
-    width: 100%;
-    height: 9px;
+    height: 7px;
 
     overflow: hidden;
 
-    background: #e7ece8;
+    background: var(--pm-surface-muted);
 
     border-radius: 999px;
 }
@@ -1128,33 +1720,17 @@ strong {
     width: 0;
     height: 100%;
 
-    min-width: 0;
-
     background: var(--pm-primary);
 
     border-radius: inherit;
 
-    transition:
-        width 350ms ease,
-        background 250ms ease;
+    transition: width 250ms ease;
 }
 
-
-/* =========================================================
-   17. FEED METRIC CARDS
-   ========================================================= */
-
 .feed-metric-card {
-    min-width: 0;
+    min-height: 130px;
 
-    padding: 18px;
-
-    background: var(--pm-surface);
-    border: 1px solid var(--pm-border);
-
-    border-radius: 14px;
-
-    box-shadow: var(--pm-shadow-sm);
+    padding: 17px;
 }
 
 .feed-metric-label {
@@ -1162,65 +1738,49 @@ strong {
 
     color: var(--pm-text-soft);
 
-    font-size: 11px;
-    font-weight: 650;
+    font-size: 0.72rem;
+    font-weight: 700;
 }
 
 .feed-metric-card strong {
     display: block;
 
-    margin-top: 8px;
+    margin-top: 11px;
 
-    color: var(--pm-text);
+    font-size: 1.35rem;
 
-    font-size: 24px;
-    line-height: 1.15;
-    font-weight: 800;
+    line-height: 1;
 }
 
 .feed-metric-card small {
     display: block;
 
-    margin-top: 6px;
+    margin-top: 7px;
 
     color: var(--pm-text-muted);
 
-    font-size: 10px;
+    font-size: 0.67rem;
 }
 
 
-/* =========================================================
-   18. FEED ACTION PANEL
-   ========================================================= */
+/* FEED ACTION PANEL */
 
 .feed-action-panel {
-    margin-top: 16px;
+    margin-top: 14px;
 
-    padding: 20px;
-
-    background: var(--pm-surface-soft);
-
-    border: 1px solid var(--pm-border);
-    border-radius: var(--pm-radius);
-}
-
-.feed-action-header {
-    margin-bottom: 15px;
+    padding: 18px;
 }
 
 .feed-action-header h3 {
     margin: 0;
 
-    font-size: 16px;
-    font-weight: 750;
+    font-size: 0.98rem;
 }
 
 .feed-action-header p {
-    margin: 5px 0 0;
+    margin: 4px 0 0;
 
-    color: var(--pm-text-soft);
-
-    font-size: 12px;
+    font-size: 0.75rem;
 }
 
 .feed-action-grid {
@@ -1229,242 +1789,191 @@ strong {
     grid-template-columns:
         repeat(2, minmax(0, 1fr));
 
-    gap: 13px;
+    gap: 12px;
+
+    margin-top: 15px;
 }
 
 .feed-action-box {
     display: flex;
-    align-items: flex-start;
-    gap: 13px;
 
-    min-width: 0;
+    gap: 12px;
 
-    padding: 17px;
+    padding: 15px;
 
-    background: var(--pm-surface);
+    background: var(--pm-surface-soft);
 
     border: 1px solid var(--pm-border);
 
-    border-radius: 14px;
+    border-radius: 13px;
 }
 
 .feed-action-icon {
-    flex: 0 0 auto;
+    width: 38px;
+    height: 38px;
+
+    flex: 0 0 38px;
 
     display: grid;
     place-items: center;
 
-    width: 38px;
-    height: 38px;
-
     color: var(--pm-primary);
+
     background: var(--pm-primary-soft);
 
-    border-radius: 11px;
+    border-radius: 10px;
 
-    font-size: 21px;
+    font-size: 1.25rem;
     font-weight: 700;
 }
 
-.feed-action-icon.feed-use-icon {
-    color: var(--pm-warning);
-    background: var(--pm-warning-soft);
+.feed-use-icon {
+    color: var(--pm-danger);
+
+    background: var(--pm-danger-soft);
 }
 
 .feed-action-content {
     flex: 1;
+
     min-width: 0;
 }
 
 .feed-action-content > strong {
     display: block;
 
-    color: var(--pm-text);
-
-    font-size: 13px;
-    font-weight: 750;
+    font-size: 0.84rem;
 }
 
 .feed-action-content > span {
     display: block;
 
-    margin-top: 3px;
+    margin-top: 2px;
 
     color: var(--pm-text-muted);
 
-    font-size: 10px;
-    line-height: 1.45;
+    font-size: 0.7rem;
 }
 
 .feed-input-row {
     display: flex;
+
     gap: 7px;
 
-    margin-top: 12px;
+    margin-top: 11px;
 }
 
 .feed-input-row input {
-    flex: 1;
-    min-width: 0;
-
     width: 100%;
+    min-width: 0;
 
     padding: 10px 11px;
 
     color: var(--pm-text);
+
     background: var(--pm-surface);
 
     border: 1px solid var(--pm-border-strong);
-    border-radius: 9px;
 
-    font-size: 12px;
-}
+    border-radius: 10px;
 
-.feed-input-row input::placeholder {
-    color: var(--pm-text-muted);
+    outline: none;
 }
 
 .feed-input-row input:focus {
     border-color: var(--pm-primary);
 
     box-shadow:
-        0 0 0 3px rgba(31, 107, 69, 0.08);
+        0 0 0 3px
+        color-mix(
+            in srgb,
+            var(--pm-primary) 12%,
+            transparent
+        );
 }
 
 .feed-input-row button {
     flex: 0 0 auto;
 }
 
-
-/* =========================================================
-   19. FEED ACTION BUTTONS GENERATED BY JS
-   ========================================================= */
-
-.feed-action-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-top: 9px;
-    margin-right: 6px;
-
-    min-height: 32px;
-
-    padding: 7px 11px;
-
-    border-radius: 8px;
-
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.feed-secondary-button {
-    color: var(--pm-text-soft);
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border-strong);
-}
-
-.feed-secondary-button:hover {
-    color: var(--pm-text);
-    background: var(--pm-surface-muted);
-}
-
 .feed-reset-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    margin-top: 9px;
 
-    margin-top: 10px;
-
-    padding: 7px 10px;
+    padding: 0;
 
     color: var(--pm-danger);
-    background: var(--pm-danger-soft);
 
-    border: 1px solid #f1cccc;
-    border-radius: 8px;
+    background: transparent;
 
-    font-size: 10px;
+    border: 0;
+
+    font-size: 0.7rem;
     font-weight: 700;
 }
 
-.feed-reset-button:hover {
-    background: #f9dddd;
-}
 
-
-/* =========================================================
-   20. FEED CONSUMPTION
-   ========================================================= */
+/* FEED CONSUMPTION */
 
 .feed-consumption-card {
-    margin-top: 16px;
+    margin-top: 14px;
 
-    padding: 20px;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-    border-radius: var(--pm-radius);
-
-    box-shadow: var(--pm-shadow-sm);
+    padding: 18px;
 }
 
 .feed-card-header {
     display: flex;
-    align-items: flex-start;
     justify-content: space-between;
-    gap: 14px;
 
-    margin-bottom: 17px;
+    gap: 15px;
 }
 
 .feed-card-header h3 {
     margin: 0;
 
-    font-size: 15px;
-    font-weight: 750;
+    font-size: 0.98rem;
 }
 
 .feed-card-header p {
-    margin: 5px 0 0;
+    margin: 4px 0 0;
 
-    color: var(--pm-text-soft);
-
-    font-size: 11px;
+    font-size: 0.74rem;
 }
 
 .feed-period-label {
-    flex: 0 0 auto;
+    align-self: flex-start;
 
     padding: 6px 9px;
 
-    color: var(--pm-text-soft);
-    background: var(--pm-surface-soft);
+    color: var(--pm-text-muted);
 
-    border: 1px solid var(--pm-border);
+    background: var(--pm-surface-muted);
+
     border-radius: 999px;
 
-    font-size: 9px;
+    font-size: 0.65rem;
     font-weight: 700;
+
+    white-space: nowrap;
 }
 
 .feed-consumption-summary {
     display: grid;
 
     grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+        repeat(3, 1fr);
 
     gap: 10px;
+
+    margin-top: 16px;
 }
 
 .feed-consumption-summary > div {
-    padding: 13px;
+    padding: 12px;
 
     background: var(--pm-surface-soft);
 
     border: 1px solid var(--pm-border);
+
     border-radius: 11px;
 }
 
@@ -1473,7 +1982,7 @@ strong {
 
     color: var(--pm-text-muted);
 
-    font-size: 10px;
+    font-size: 0.67rem;
 }
 
 .feed-consumption-summary strong {
@@ -1481,627 +1990,179 @@ strong {
 
     margin-top: 5px;
 
-    color: var(--pm-text);
-
-    font-size: 17px;
-    font-weight: 800;
+    font-size: 1rem;
 }
 
 .feed-chart-wrapper {
-    width: 100%;
-
-    margin-top: 17px;
-
     min-height: 190px;
-}
-
-.feed-consumption-chart {
-    width: 100%;
-    min-height: 190px;
-
-    position: relative;
-
-    overflow: hidden;
-}
-
-
-/* =========================================================
-   21. FEED ACTIVITY
-   ========================================================= */
-
-.feed-activity-section {
-    margin-top: 22px;
-}
-
-.feed-history-item {
-    background: var(--pm-surface-soft);
-}
-
-
-/* =========================================================
-   22. SETTINGS NAVIGATION
-   ========================================================= */
-
-.app-navigation {
-    width: min(
-        calc(100% - 48px),
-        var(--pm-content-width)
-    );
-
-    margin: 0 auto 22px;
-
-    display: flex;
-    gap: 6px;
-
-    padding: 5px;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-    border-radius: 13px;
-
-    box-shadow: var(--pm-shadow-sm);
-}
-
-.app-navigation button {
-    flex: 1;
-
-    min-height: 38px;
-
-    padding: 8px 14px;
-
-    color: var(--pm-text-soft);
-    background: transparent;
-
-    border: 0;
-    border-radius: 9px;
-
-    font-size: 12px;
-    font-weight: 700;
-
-    transition:
-        background var(--pm-transition),
-        color var(--pm-transition);
-}
-
-.app-navigation button:hover {
-    color: var(--pm-text);
-    background: var(--pm-surface-soft);
-}
-
-.app-navigation button.active {
-    color: #ffffff;
-    background: var(--pm-primary);
-
-    box-shadow:
-        0 3px 8px rgba(31, 107, 69, 0.16);
-}
-
-
-/* =========================================================
-   23. SETTINGS VIEW
-   ========================================================= */
-
-.pm-settings-view {
-    width: min(
-        calc(100% - 48px),
-        var(--pm-content-width)
-    );
-
-    margin: 0 auto;
-
-    padding: 26px 0 70px;
-}
-
-.pm-settings-view.active {
-    display: block;
-}
-
-.pm-settings-header {
-    margin-bottom: 22px;
-}
-
-.pm-settings-header h2 {
-    margin: 0;
-
-    font-size: 27px;
-    font-weight: 800;
-}
-
-.pm-settings-header p {
-    margin: 6px 0 0;
-
-    color: var(--pm-text-soft);
-    font-size: 13px;
-}
-
-.pm-settings-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-
-    gap: 16px;
-}
-
-.pm-settings-card {
-    min-width: 0;
-
-    padding: 21px;
-
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border);
-    border-radius: var(--pm-radius);
-
-    box-shadow: var(--pm-shadow-sm);
-}
-
-.pm-settings-card-wide {
-    grid-column: 1 / -1;
-}
-
-.pm-settings-card-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-
-    margin-bottom: 18px;
-}
-
-.pm-settings-icon {
-    flex: 0 0 auto;
-
-    display: grid;
-    place-items: center;
-
-    width: 38px;
-    height: 38px;
-
-    background: var(--pm-primary-soft);
-
-    border-radius: 11px;
-
-    font-size: 17px;
-}
-
-.pm-settings-card-header h3 {
-    margin: 0;
-
-    font-size: 15px;
-    font-weight: 750;
-}
-
-.pm-settings-card-header p {
-    margin: 4px 0 0;
-
-    color: var(--pm-text-muted);
-
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   24. SETTINGS ROWS
-   ========================================================= */
-
-.pm-settings-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-
-    padding: 13px 0;
-
-    border-top: 1px solid var(--pm-border);
-}
-
-.pm-settings-row:first-child {
-    border-top: 0;
-}
-
-.pm-settings-row-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.pm-settings-row-info strong {
-    display: block;
-
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.pm-settings-row-info small {
-    display: block;
-
-    margin-top: 3px;
-
-    color: var(--pm-text-muted);
-
-    font-size: 10px;
-    line-height: 1.45;
-}
-
-.pm-settings-input,
-.pm-settings-select {
-    flex: 0 0 auto;
-
-    width: 150px;
-
-    padding: 9px 10px;
-
-    color: var(--pm-text);
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border-strong);
-    border-radius: 9px;
-
-    font-size: 11px;
-}
-
-.pm-settings-input:focus,
-.pm-settings-select:focus {
-    border-color: var(--pm-primary);
-
-    box-shadow:
-        0 0 0 3px rgba(31, 107, 69, 0.08);
-}
-
-
-/* =========================================================
-   25. SETTINGS ACTIONS
-   ========================================================= */
-
-.pm-settings-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
 
     margin-top: 15px;
 }
 
-.pm-settings-action-button {
-    padding: 9px 13px;
-
-    border-radius: 9px;
-
-    font-size: 11px;
-    font-weight: 700;
-}
-
-.pm-settings-primary {
-    color: #ffffff;
-    background: var(--pm-primary);
-}
-
-.pm-settings-primary:hover {
-    background: var(--pm-primary-dark);
-}
-
-.pm-settings-secondary {
-    color: var(--pm-text);
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border-strong);
-}
-
-.pm-settings-secondary:hover {
-    background: var(--pm-surface-soft);
-}
-
-.pm-settings-danger {
-    color: var(--pm-danger);
-    background: var(--pm-danger-soft);
-
-    border: 1px solid #f1cccc;
-}
-
-.pm-settings-danger:hover {
-    background: #f8dddd;
+.feed-consumption-chart {
+    width: 100%;
+    height: 190px;
 }
 
 
-/* =========================================================
-   26. SETTINGS STATUS / BADGES
-   ========================================================= */
+/* ============================================================
+   SETTINGS
+   Existing settings created by main.js are styled here.
+   ============================================================ */
 
-.pm-settings-status {
-    margin-top: 11px;
-
-    padding: 9px 11px;
-
-    border-radius: 9px;
-
-    font-size: 10px;
-    line-height: 1.45;
-}
-
-.pm-settings-status.success {
-    color: var(--pm-success);
-    background: var(--pm-success-soft);
-
-    border: 1px solid #cfe9d8;
-}
-
-.pm-settings-status.error {
-    color: var(--pm-danger);
-    background: var(--pm-danger-soft);
-
-    border: 1px solid #f1cccc;
-}
-
-.pm-settings-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-
-    padding: 6px 9px;
-
-    color: var(--pm-text-soft);
-    background: var(--pm-surface-muted);
-
-    border-radius: 999px;
-
-    font-size: 9px;
-    font-weight: 750;
-}
-
-.pm-settings-badge-dot {
-    width: 7px;
-    height: 7px;
-
-    border-radius: 50%;
-
-    background: var(--pm-text-muted);
-}
-
-.pm-settings-badge.enabled {
-    color: var(--pm-success);
-    background: var(--pm-success-soft);
-}
-
-.pm-settings-badge.enabled .pm-settings-badge-dot {
-    background: var(--pm-success);
+.pm-settings-view {
+    padding-bottom: 40px;
 }
 
 
-/* =========================================================
-   27. SETTINGS SCHEDULE
-   ========================================================= */
+/* ============================================================
+   APP NAVIGATION
+   ============================================================ */
 
-.pm-schedule-grid {
+.app-navigation {
+    position: fixed;
+
+    z-index: 100;
+
+    left: 50%;
+    bottom: max(
+        12px,
+        env(safe-area-inset-bottom)
+    );
+
+    transform: translateX(-50%);
+
+    width: min(
+        calc(100% - 24px),
+        610px
+    );
+
+    min-height: 62px;
+
     display: grid;
 
     grid-template-columns:
-        repeat(2, minmax(0, 1fr));
+        repeat(4, 1fr);
 
-    gap: 11px;
+    gap: 4px;
+
+    padding: 5px;
+
+    background: color-mix(
+        in srgb,
+        var(--pm-surface) 94%,
+        transparent
+    );
+
+    border: 1px solid var(--pm-border);
+
+    border-radius: 19px;
+
+    box-shadow:
+        0 12px 35px
+        rgba(20, 35, 25, 0.15);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
-.pm-schedule-field {
+.app-navigation button {
     min-width: 0;
-}
 
-.pm-schedule-field label {
-    display: block;
+    min-height: 52px;
 
-    margin-bottom: 6px;
-
-    color: var(--pm-text-soft);
-
-    font-size: 10px;
-    font-weight: 650;
-}
-
-.pm-schedule-field input,
-.pm-schedule-field select {
-    width: 100%;
-
-    padding: 9px 10px;
-
-    color: var(--pm-text);
-    background: var(--pm-surface);
-
-    border: 1px solid var(--pm-border-strong);
-    border-radius: 9px;
-
-    font-size: 11px;
-}
-
-
-/* =========================================================
-   28. SETTINGS DIVIDER
-   ========================================================= */
-
-.pm-settings-divider {
-    width: 100%;
-    height: 1px;
-
-    margin: 17px 0;
-
-    background: var(--pm-border);
-}
-
-
-/* =========================================================
-   29. ABOUT
-   ========================================================= */
-
-.pm-about {
-    text-align: center;
-
-    padding: 10px 0;
-}
-
-.pm-about-brand {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+
+    gap: 2px;
+
+    padding: 5px 3px;
+
+    color: var(--pm-text-muted);
+
+    background: transparent;
+
+    border: 0;
+
+    border-radius: 14px;
+
+    font-size: 0.65rem;
+    font-weight: 700;
+
+    transition:
+        background var(--pm-transition),
+        color var(--pm-transition),
+        transform var(--pm-transition);
 }
 
-.pm-about-logo {
+.app-navigation button:hover {
+    color: var(--pm-primary);
+
+    background: var(--pm-primary-soft);
+}
+
+.app-navigation button.active {
+    color: var(--pm-primary);
+
+    background: var(--pm-primary-soft);
+}
+
+.app-navigation button:active {
+    transform: scale(0.96);
+}
+
+.nav-icon {
+    height: 21px;
+
     display: grid;
     place-items: center;
 
-    width: 58px;
-    height: 58px;
-
-    margin-bottom: 10px;
-
-    color: #ffffff;
-    background: var(--pm-primary);
-
-    border-radius: 17px;
-
-    font-size: 25px;
-    font-weight: 850;
-
-    box-shadow:
-        0 8px 20px rgba(31, 107, 69, 0.18);
+    font-size: 1rem;
+    line-height: 1;
 }
 
-.pm-about-brand h3 {
-    margin: 0;
-
-    font-size: 17px;
-    font-weight: 800;
-}
-
-.pm-about-description {
-    max-width: 540px;
-
-    margin: 7px auto 0;
-
-    color: var(--pm-text-soft);
-
-    font-size: 11px;
-    line-height: 1.6;
+.nav-label {
+    line-height: 1;
 }
 
 
-/* =========================================================
-   30. GENERAL FORM FOCUS
-   ========================================================= */
+/* ============================================================
+   FORM ELEMENTS / DYNAMIC SETTINGS
+   ============================================================ */
 
+.pm-settings-view input,
+.pm-settings-view select,
+.pm-settings-view textarea {
+    max-width: 100%;
+}
+
+
+/* ============================================================
+   FOCUS ACCESSIBILITY
+   ============================================================ */
+
+button:focus-visible,
 input:focus-visible,
 select:focus-visible,
-button:focus-visible {
-    outline: 2px solid rgba(31, 107, 69, 0.25);
+textarea:focus-visible {
+    outline: 3px solid
+        color-mix(
+            in srgb,
+            var(--pm-primary) 30%,
+            transparent
+        );
+
     outline-offset: 2px;
 }
 
 
-/* =========================================================
-   31. SCROLLBAR
-   ========================================================= */
+/* ============================================================
+   TABLET
+   ============================================================ */
 
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #cbd3cc;
-    border-radius: 999px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #b5c0b7;
-}
-
-
-/* =========================================================
-   32. DARK MODE
-   ========================================================= */
-
-html[data-theme="dark"] {
-    --pm-bg: #101512;
-    --pm-surface: #171d19;
-    --pm-surface-soft: #1c241f;
-    --pm-surface-muted: #222b25;
-
-    --pm-text: #edf4ee;
-    --pm-text-soft: #aab7ad;
-    --pm-text-muted: #77847a;
-
-    --pm-border: #29342c;
-    --pm-border-strong: #364239;
-
-    --pm-primary: #55b77d;
-    --pm-primary-dark: #69c88f;
-    --pm-primary-soft: #193425;
-
-    --pm-secondary: #80b998;
-
-    --pm-accent: #e1a843;
-    --pm-accent-soft: #382b16;
-
-    --pm-success: #62c58a;
-    --pm-success-soft: #183526;
-
-    --pm-danger: #e87878;
-    --pm-danger-soft: #382021;
-
-    --pm-warning: #e1aa4c;
-    --pm-warning-soft: #382b17;
-
-    --pm-shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.18);
-    --pm-shadow: 0 8px 25px rgba(0, 0, 0, 0.22);
-    --pm-shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.3);
-}
-
-html[data-theme="dark"] .app-header {
-    background: var(--pm-surface);
-}
-
-html[data-theme="dark"] .farm-overview-card-wide,
-html[data-theme="dark"] .egg-main-card {
-    border-color: #2c4936;
-}
-
-html[data-theme="dark"] .feed-hero-card {
-    background:
-        linear-gradient(
-            135deg,
-            #19251d,
-            var(--pm-surface)
-        );
-
-    border-color: #2b4232;
-}
-
-html[data-theme="dark"] .feed-progress-track {
-    background: #2a332c;
-}
-
-html[data-theme="dark"] .trend-grid-lines span {
-    background: var(--pm-border);
-}
-
-html[data-theme="dark"] .laying-rate {
-    border-left-color: var(--pm-border);
-}
-
-html[data-theme="dark"] .pm-about-logo {
-    color: #102016;
-    background: var(--pm-primary);
-}
-
-html[data-theme="dark"] ::-webkit-scrollbar-thumb {
-    background: #3a463d;
-}
-
-
-/* =========================================================
-   33. RESPONSIVE — TABLET
-   ========================================================= */
-
-@media (max-width: 900px) {
+@media (max-width: 1000px) {
 
     .farm-overview-grid {
         grid-template-columns:
@@ -2122,63 +2183,59 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
             repeat(2, minmax(0, 1fr));
     }
 
+    .pm-farm-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .pm-profile-stats {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
     .feed-dashboard {
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
     }
 
     .feed-hero-card {
-        grid-column: 1 / -1;
-    }
-
-    .quick-actions-grid {
-        grid-template-columns:
-            repeat(3, minmax(0, 1fr));
+        grid-column: span 2;
     }
 }
 
 
-/* =========================================================
-   34. RESPONSIVE — MOBILE
-   ========================================================= */
+/* ============================================================
+   MOBILE
+   ============================================================ */
 
-@media (max-width: 680px) {
+@media (max-width: 700px) {
 
-    .app-header {
-        padding: 21px 17px 18px;
+    :root {
+        --pm-header-height: 72px;
+        --pm-nav-height: 74px;
     }
 
-    .pm-dashboard-view {
-        padding:
-            22px
-            15px
-            50px;
+    .app {
+        padding-bottom: 96px;
     }
 
-    .pm-dashboard-view > section {
-        margin-bottom: 17px;
+    .app-header-inner {
+        width: min(
+            calc(100% - 24px),
+            var(--pm-content-width)
+        );
+
+        min-height: var(--pm-header-height);
     }
 
-    .section {
-        padding: 18px;
+    .pm-view {
+        width: min(
+            calc(100% - 24px),
+            var(--pm-content-width)
+        );
 
-        border-radius: 17px;
+        padding-top: 20px;
     }
-
-    .section-title {
-        margin-bottom: 17px;
-    }
-
-    .section-title h2 {
-        font-size: 18px;
-    }
-
-    .section-title p {
-        font-size: 12px;
-    }
-
-
-    /* Farm overview */
 
     .farm-overview-grid {
         grid-template-columns:
@@ -2188,45 +2245,21 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     }
 
     .farm-overview-card {
-        padding: 14px;
+        min-height: 130px;
 
-        border-radius: 13px;
+        padding: 13px;
     }
 
     .farm-overview-card-wide {
         grid-column: span 2;
     }
 
-    .farm-overview-card-top {
-        margin-bottom: 10px;
-    }
-
-    .farm-overview-icon {
-        width: 29px;
-        height: 29px;
-
-        font-size: 15px;
-    }
-
-    .farm-overview-label {
-        font-size: 10px;
-    }
-
     .farm-overview-value {
-        font-size: 22px;
+        font-size: 1.5rem;
     }
-
-    .farm-overview-description {
-        font-size: 9px;
-    }
-
-
-    /* Quick actions */
 
     .quick-actions {
-        padding: 15px;
-
-        border-radius: 15px;
+        padding: 14px;
     }
 
     .quick-actions-grid {
@@ -2234,16 +2267,10 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
     }
 
     .quick-action-button {
-        padding: 12px;
+        min-height: 64px;
     }
 
-
-    /* Summary */
-
     .summary-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
         gap: 9px;
     }
 
@@ -2251,17 +2278,7 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
         padding: 14px;
     }
 
-    .summary-card strong {
-        font-size: 20px;
-    }
-
-
-    /* Analytics */
-
     .analytics-grid {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
         gap: 9px;
     }
 
@@ -2269,72 +2286,57 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
         padding: 14px;
     }
 
-    .analytics-card strong {
-        font-size: 20px;
+    .trend-card {
+        padding: 14px;
     }
 
+    .pm-farm-header {
+        display: block;
+    }
 
-    /* Egg production */
+    .pm-farm-grid {
+        gap: 9px;
+    }
+
+    .pm-farm-card {
+        min-height: 100px;
+
+        padding: 13px;
+    }
+
+    .pm-farm-management-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .pm-farm-flock-control {
+        width: 100%;
+        justify-content: space-between;
+    }
 
     .egg-main-card {
         grid-template-columns:
-            1fr
-            1fr;
+            repeat(2, 1fr);
 
         gap: 15px;
 
         padding: 17px;
     }
 
-    .egg-number span {
-        font-size: 37px;
-    }
-
-    .laying-rate {
-        padding-left: 15px;
-    }
-
-    .laying-rate span {
-        font-size: 26px;
-    }
-
     .egg-actions {
         grid-column: 1 / -1;
-
-        justify-content: stretch;
     }
 
     .egg-actions button {
         flex: 1;
     }
 
-
-    /* Feed */
-
     .feed-dashboard {
-        grid-template-columns:
-            repeat(2, minmax(0, 1fr));
-
-        gap: 9px;
+        grid-template-columns: 1fr;
     }
 
     .feed-hero-card {
-        grid-column: 1 / -1;
-
-        padding: 17px;
-    }
-
-    .feed-metric-card {
-        padding: 14px;
-    }
-
-    .feed-metric-card strong {
-        font-size: 20px;
-    }
-
-    .feed-action-panel,
-    .feed-consumption-card {
-        padding: 16px;
+        grid-column: auto;
     }
 
     .feed-action-grid {
@@ -2343,16 +2345,130 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
 
     .feed-consumption-summary {
         grid-template-columns:
-            1fr;
+            repeat(3, minmax(0, 1fr));
     }
 
-    .feed-card-header {
+    .feed-consumption-summary > div {
+        padding: 9px;
+    }
+
+    .feed-consumption-summary strong {
+        font-size: 0.85rem;
+    }
+
+    .pm-profile-header {
+        align-items: flex-start;
         flex-direction: column;
+    }
+
+    .pm-profile-header > button {
+        width: 100%;
+    }
+
+    .pm-profile-card {
+        padding: 15px;
+    }
+
+    .pm-profile-info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pm-profile-edit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pm-profile-field-full {
+        grid-column: auto;
+    }
+
+    .pm-profile-actions {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .pm-profile-actions button {
+        width: 100%;
+    }
+
+    .pm-profile-stats {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
         gap: 9px;
     }
 
-    .feed-period-label {
-        align-self: flex-start;
+    .app-navigation {
+        width: calc(100% - 20px);
+
+        bottom: max(
+            8px,
+            env(safe-area-inset-bottom)
+        );
+
+        min-height: 64px;
+
+        border-radius: 18px;
+    }
+
+    .app-navigation button {
+        min-height: 52px;
+    }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 420px) {
+
+    .pm-view {
+        width: calc(100% - 18px);
+    }
+
+    .app-header-inner {
+        width: calc(100% - 18px);
+    }
+
+    .farm-overview-grid {
+        gap: 7px;
+    }
+
+    .farm-overview-card {
+        min-height: 122px;
+
+        padding: 11px;
+    }
+
+    .farm-overview-icon {
+        width: 30px;
+        height: 30px;
+    }
+
+    .farm-overview-card-top {
+        margin-bottom: 11px;
+    }
+
+    .farm-overview-value {
+        font-size: 1.3rem;
+    }
+
+    .farm-overview-description {
+        font-size: 0.66rem;
+    }
+
+    .summary-card strong {
+        font-size: 1.35rem;
+    }
+
+    .analytics-card strong {
+        font-size: 1.25rem;
+    }
+
+    .egg-number span,
+    .laying-rate span {
+        font-size: 2rem;
     }
 
     .feed-input-row {
@@ -2363,113 +2479,79 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
         width: 100%;
     }
 
-
-    /* Navigation */
-
-    .app-navigation {
-        width: calc(100% - 30px);
-
-        margin-bottom: 8px;
+    .feed-card-header {
+        flex-direction: column;
     }
 
-    .app-navigation button {
-        min-height: 36px;
-        padding: 7px 10px;
+    .feed-period-label {
+        align-self: flex-start;
     }
 
-
-    /* Settings */
-
-    .pm-settings-view {
-        width: calc(100% - 30px);
-
-        padding-top: 20px;
-    }
-
-    .pm-settings-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .pm-settings-card-wide {
-        grid-column: auto;
-    }
-
-    .pm-settings-row {
+    .pm-profile-heading {
         align-items: flex-start;
-        flex-direction: column;
-        gap: 9px;
     }
 
-    .pm-settings-input,
-    .pm-settings-select {
-        width: 100%;
+    .pm-profile-avatar {
+        width: 56px;
+        height: 56px;
+
+        flex-basis: 56px;
+
+        border-radius: 17px;
     }
 
-    .pm-schedule-grid {
+    .pm-profile-stats {
         grid-template-columns: 1fr;
     }
 
-    .pm-settings-actions {
-        flex-direction: column;
+    .nav-label {
+        font-size: 0.58rem;
     }
 
-    .pm-settings-action-button {
-        width: 100%;
+    .nav-icon {
+        font-size: 0.9rem;
     }
 }
 
 
-/* =========================================================
-   35. SMALL PHONES
-   ========================================================= */
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
 
-@media (max-width: 430px) {
+@media (max-width: 350px) {
 
-    .farm-overview-header h2 {
-        font-size: 25px;
+    .app-navigation {
+        width: calc(100% - 12px);
+    }
+
+    .app-navigation button {
+        padding-left: 1px;
+        padding-right: 1px;
+    }
+
+    .nav-label {
+        font-size: 0.54rem;
+    }
+
+    .nav-icon {
+        font-size: 0.82rem;
     }
 
     .farm-overview-grid {
-        gap: 8px;
+        grid-template-columns: 1fr;
     }
 
-    .farm-overview-card {
-        padding: 12px;
-    }
-
-    .farm-overview-value {
-        font-size: 20px;
-    }
-
-    .summary-card {
-        padding: 12px;
-    }
-
-    .summary-card span {
-        font-size: 10px;
-    }
-
-    .summary-card strong {
-        font-size: 18px;
-    }
-
-    .analytics-card {
-        padding: 12px;
-    }
-
-    .analytics-card strong {
-        font-size: 18px;
-    }
-
-    .analytics-insight {
-        padding: 13px;
+    .farm-overview-card-wide {
+        grid-column: auto;
     }
 
     .egg-main-card {
-        padding: 14px;
+        grid-template-columns: 1fr;
     }
 
     .egg-actions {
+        grid-column: auto;
+
         flex-direction: column;
     }
 
@@ -2477,52 +2559,39 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
         width: 100%;
     }
 
-    .feed-hero-top {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .feed-status-badge {
-        align-self: flex-start;
-    }
-
-    .feed-dashboard {
+    .pm-profile-actions {
         grid-template-columns: 1fr;
-    }
-
-    .feed-hero-card {
-        grid-column: auto;
-    }
-
-    .feed-action-box {
-        padding: 14px;
-    }
-
-    .feed-action-icon {
-        width: 34px;
-        height: 34px;
-    }
-
-    .egg-history-item,
-    .feed-history-item {
-        padding: 10px;
-    }
-
-    .egg-history-date,
-    .feed-history-date {
-        font-size: 10px;
-    }
-
-    .egg-history-value,
-    .feed-history-value {
-        font-size: 11px;
     }
 }
 
 
-/* =========================================================
-   36. REDUCED MOTION
-   ========================================================= */
+/* ============================================================
+   LANDSCAPE MOBILE
+   ============================================================ */
+
+@media (
+    max-height: 520px
+) and (
+    orientation: landscape
+) {
+
+    .app {
+        padding-bottom: 82px;
+    }
+
+    .app-navigation {
+        min-height: 58px;
+    }
+
+    .app-navigation button {
+        min-height: 46px;
+    }
+}
+
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
 
@@ -2536,5 +2605,45 @@ html[data-theme="dark"] ::-webkit-scrollbar-thumb {
         transition-duration: 0.01ms !important;
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+    }
+}
+
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+
+@media print {
+
+    .app-header {
+        position: static;
+
+        background: white;
+
+        backdrop-filter: none;
+    }
+
+    .app-navigation {
+        display: none !important;
+    }
+
+    .app {
+        padding-bottom: 0;
+    }
+
+    .pm-view {
+        width: 100%;
+    }
+
+    button {
+        display: none !important;
+    }
+
+    .farm-overview-card,
+    .summary-card,
+    .analytics-card,
+    .pm-farm-card,
+    .pm-profile-stat {
+        break-inside: avoid;
     }
 }
