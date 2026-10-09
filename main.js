@@ -4133,7 +4133,7 @@
     view,
     options = {}
 ) {
-    alert("Navigation clicked: " + view);
+    
     console.log("Navigation clicked:", view);
 
     if (!VIEW_CONFIG[view]) {
