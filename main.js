@@ -4735,26 +4735,17 @@
                 "pm-feed-extra-actions";
 
 
-            const historyList =
-                $("#feedHistoryList");
+            const inventoryPanel =
+    document.querySelector(
+        "#feedManagementSection .feed-action-panel"
+    );
 
 
-            if (
-                historyList &&
-                historyList.parentElement
-            ) {
-                historyList.parentElement
-                    .insertBefore(
-                        actionRow,
-                        historyList
-                    );
-
-            } else {
-                container.appendChild(
-                    actionRow
-                );
-            }
-        }
+if (inventoryPanel) {
+    inventoryPanel.appendChild(actionRow);
+} else {
+    container.appendChild(actionRow);
+}
 
 
         if (
