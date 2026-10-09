@@ -4129,12 +4129,17 @@
 
 
     function showView(
-        view,
-        options = {}
-    ) {
-        if (!VIEW_CONFIG[view]) {
-            view = "dashboard";
-        }
+    view,
+    options = {}
+) {
+    alert("Navigation clicked: " + view);
+    console.log("Navigation clicked:", view);
+
+    if (!VIEW_CONFIG[view]) {
+        view = "dashboard";
+    }
+
+    // Keep the rest of your existing code here.
 
 
         setViewVisibility(view);
