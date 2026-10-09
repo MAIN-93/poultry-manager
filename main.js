@@ -459,25 +459,47 @@
     }
 
 
-    function formatDate(
-        dateOrKey,
-        options = {}
-    ) {
-        const date =
-            typeof dateOrKey === "string"
-                ? dateFromKey(dateOrKey)
-                : new Date(dateOrKey);
+    function formatDate(dateOrKey, options = {}) {
+    let date;
 
-        return date.toLocaleDateString(
-            undefined,
-            {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-                ...options
-            }
-        );
+    if (dateOrKey instanceof Date) {
+        date = dateOrKey;
+
+    } else if (typeof dateOrKey === "string") {
+        // Handle ISO timestamps, such as:
+        // 2026-10-09T17:30:00.000Z
+        if (
+            dateOrKey.includes("T") &&
+            !Number.isNaN(Date.parse(dateOrKey))
+        ) {
+            date = new Date(dateOrKey);
+
+        } else {
+            // Preserve existing YYYY-MM-DD date-key handling.
+            date = dateFromKey(dateOrKey);
+        }
+
+    } else {
+        date = new Date(dateOrKey);
     }
+
+    if (
+        !date ||
+        Number.isNaN(date.getTime())
+    ) {
+        return "Date unavailable";
+    }
+
+    return date.toLocaleDateString(
+        undefined,
+        {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            ...options
+        }
+    );
+}
 
 
     function formatShortDate(
@@ -5083,6 +5105,50 @@ function ensureFeedActionButtons() {
                     APP.storage.notifications,
                     "false"
                 );
+                
+                async function disablePushNotifications() {
+    try {
+        const registration =
+            await getServiceWorkerRegistration();
+
+        if (registration) {
+            const subscription =
+                await registration.pushManager
+                    .getSubscription();
+
+            if (subscription) {
+                await subscription.unsubscribe();
+            }
+        }
+
+        writeStorage(
+            APP.storage.notifications,
+            "false"
+        );
+
+        updateNotificationStatus();
+
+        notify(
+            "Push notifications have been disabled.",
+            "success"
+        );
+
+        return true;
+
+    } catch (error) {
+        console.error(
+            "Could not disable push notifications:",
+            error
+        );
+
+        notify(
+            "Could not disable notifications. Please try again.",
+            "warning"
+        );
+
+        return false;
+    }
+}
 
                 updateNotificationStatus();
 
@@ -5229,36 +5295,32 @@ function ensureFeedActionButtons() {
     }
 
 
-    function updateNotificationStatus() {
-        const status =
-            $("#pmNotificationsStatus");
+function updateNotificationStatus() {
+    const status =
+        $("#pmNotificationsStatus");
 
-        const button =
-            $("#pmEnableNotificationsButton");
+    const button =
+        $("#pmEnableNotificationsButton");
 
+    const enabled =
+        areNotificationsEnabled();
 
-        const enabled =
-            areNotificationsEnabled();
-
-
-        if (status) {
-            status.textContent =
-                enabled
-                    ? "Push notifications are enabled."
-                    : "Push notifications are not enabled.";
-        }
-
-
-        if (button) {
-            button.textContent =
-                enabled
-                    ? "Notifications Enabled"
-                    : "Enable Notifications";
-
-            button.disabled =
-                enabled;
-        }
+    if (status) {
+        status.textContent =
+            enabled
+                ? "Push notifications are enabled."
+                : "Push notifications are disabled.";
     }
+
+    if (button) {
+        button.textContent =
+            enabled
+                ? "Disable Notifications"
+                : "Enable Notifications";
+
+        button.disabled = false;
+    }
+}
 
 
     /* ============================================================
@@ -5825,11 +5887,14 @@ function ensureFeedActionButtons() {
 
 
         if (notificationButton) {
-            notificationButton.onclick =
-                function () {
-                    enablePushNotifications();
-                };
+    notificationButton.onclick = async function () {
+        if (areNotificationsEnabled()) {
+            await disablePushNotifications();
+        } else {
+            await enablePushNotifications();
         }
+    };
+}
 
 
         if (theme) {
