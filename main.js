@@ -4107,6 +4107,8 @@
                     element.hidden =
                         !active;
 
+                    element.style.display = active ? "" : "none";
+
 
                     element.classList.toggle(
                         "pm-view-active",
