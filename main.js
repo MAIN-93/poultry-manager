@@ -4702,121 +4702,79 @@
     }
 
 
-    /* ============================================================
-       DYNAMIC FEED ACTION BUTTONS
-       ============================================================ */
+   /* ============================================================
+   DYNAMIC FEED ACTION BUTTONS
+   ============================================================ */
 
-    function ensureFeedActionButtons() {
-        const container =
-            $("#feedManagementSection") ||
-            $("#feedSection") ||
-            $("#pmFarmView");
+function ensureFeedActionButtons() {
+    const container = $("#feedManagementSection");
 
-
-        if (!container) {
-            return;
-        }
-
-
-        let actionRow =
-            $("#pmFeedActionButtons");
-
-
-        if (!actionRow) {
-            actionRow =
-                document.createElement(
-                    "div"
-                );
-
-            actionRow.id =
-                "pmFeedActionButtons";
-
-            actionRow.className =
-                "pm-feed-extra-actions";
-
-
-           const historyList =
-    $("#feedHistoryList");
-
-
-if (
-    historyList &&
-    historyList.parentElement
-) {
-    historyList.parentElement
-        .insertBefore(
-            actionRow,
-            historyList
-        );
-
-} else {
-    container.appendChild(
-        actionRow
-    );
-}
-
-
-        if (
-            !$("#undoFeedButton")
-        ) {
-            const undo =
-                document.createElement(
-                    "button"
-                );
-
-            undo.id =
-                "undoFeedButton";
-
-            undo.type =
-                "button";
-
-            undo.textContent =
-                "Undo Last Addition";
-
-            undo.className =
-                "pm-secondary-button";
-
-            undo.onclick =
-                function () {
-                    undoLastFeedAddition();
-                };
-
-            actionRow.appendChild(
-                undo
-            );
-        }
-
-
-        if (
-            !$("#resetFeedStockButton")
-        ) {
-            const reset =
-                document.createElement(
-                    "button"
-                );
-
-            reset.id =
-                "resetFeedStockButton";
-
-            reset.type =
-                "button";
-
-            reset.textContent =
-                "Reset Stock";
-
-            reset.className =
-                "pm-secondary-button";
-
-            reset.onclick =
-                function () {
-                    resetFeedStock();
-                };
-
-            actionRow.appendChild(
-                reset
-            );
-        }
+    if (!container) {
+        return;
     }
+
+    // Place the buttons inside Feed Inventory.
+    const inventoryPanel =
+        container.querySelector(".feed-action-panel");
+
+    if (!inventoryPanel) {
+        console.warn(
+            "Feed Inventory panel was not found."
+        );
+        return;
+    }
+
+    // Reuse the action row if it already exists.
+    let actionRow = $("#pmFeedActionButtons");
+
+    if (!actionRow) {
+        actionRow = document.createElement("div");
+        actionRow.id = "pmFeedActionButtons";
+        actionRow.className = "pm-feed-extra-actions";
+    }
+
+    // Always keep the action row inside Feed Inventory.
+    // This also moves it if it was previously misplaced.
+    inventoryPanel.appendChild(actionRow);
+
+    // Create or reposition the Undo button.
+    let undoButton = $("#undoFeedButton");
+
+    if (!undoButton) {
+        undoButton = document.createElement("button");
+        undoButton.id = "undoFeedButton";
+        undoButton.type = "button";
+        undoButton.textContent = "Undo Last Addition";
+        undoButton.className = "pm-secondary-button";
+
+        undoButton.onclick = function () {
+            undoLastFeedAddition();
+        };
+    }
+
+    if (undoButton.parentElement !== actionRow) {
+        actionRow.appendChild(undoButton);
+    }
+
+    // Create or reposition the Reset Stock button.
+    let resetButton = $("#resetFeedStockButton");
+
+    if (!resetButton) {
+        resetButton = document.createElement("button");
+        resetButton.id = "resetFeedStockButton";
+        resetButton.type = "button";
+        resetButton.textContent = "Reset Stock";
+        resetButton.className = "pm-secondary-button";
+
+        resetButton.onclick = function () {
+            resetFeedStock();
+        };
+    }
+
+    if (resetButton.parentElement !== actionRow) {
+        actionRow.appendChild(resetButton);
+    }
+}
 
 
     /* ============================================================
