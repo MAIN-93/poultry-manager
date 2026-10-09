@@ -2647,3 +2647,343 @@ textarea:focus-visible {
         break-inside: avoid;
     }
 }
+
+/* ============================================================
+   POULTRY MANAGER — SETTINGS PAGE DESIGN
+   Add this section at the bottom of style.css.
+   ============================================================ */
+
+#pmSettingsView {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 18px 110px;
+    box-sizing: border-box;
+    color: var(--text-color, #202820);
+}
+
+#pmSettingsView[hidden] {
+    display: none !important;
+}
+
+#pmSettingsView .pm-settings-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    width: 100%;
+}
+
+#pmSettingsView .pm-section {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Section headings */
+
+#pmSettingsView .pm-section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+#pmSettingsView .pm-section-heading > div {
+    min-width: 0;
+}
+
+#pmSettingsView .pm-eyebrow {
+    display: inline-block;
+    margin-bottom: 7px;
+    color: var(--primary-color, #39734a);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+#pmSettingsView .pm-section-heading h2,
+#pmSettingsView .pm-about-card h2 {
+    margin: 0;
+    color: var(--heading-color, var(--text-color, #202820));
+    font-size: clamp(19px, 4vw, 25px);
+    font-weight: 750;
+    line-height: 1.3;
+}
+
+#pmSettingsView .pm-section-heading p,
+#pmSettingsView .pm-about-card p {
+    margin: 8px 0 0;
+    color: var(--muted-color, #737b73);
+    font-size: 14px;
+    line-height: 1.65;
+}
+
+/* Settings cards */
+
+#pmSettingsView .pm-settings-card {
+    width: 100%;
+    padding: 20px;
+    border: 1px solid var(--border-color, #e3e9e2);
+    border-radius: 18px;
+    background: var(--card-background, #ffffff);
+    box-shadow: 0 5px 18px rgba(25, 45, 28, 0.045);
+    box-sizing: border-box;
+}
+
+#pmSettingsView .pm-setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color, #e3e9e2);
+}
+
+#pmSettingsView .pm-setting-row:first-child {
+    padding-top: 0;
+}
+
+#pmSettingsView .pm-setting-row:last-of-type {
+    border-bottom: none;
+}
+
+#pmSettingsView .pm-setting-row > div {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+#pmSettingsView .pm-setting-row strong,
+#pmSettingsView .pm-setting-toggle strong {
+    color: var(--heading-color, var(--text-color, #202820));
+    font-size: 14px;
+    font-weight: 700;
+}
+
+#pmSettingsView .pm-setting-row span,
+#pmSettingsView .pm-setting-toggle small {
+    color: var(--muted-color, #737b73);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* Time inputs and theme selector */
+
+#pmSettingsView input[type="time"],
+#pmSettingsView select {
+    width: auto;
+    min-width: 112px;
+    max-width: 145px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color, #dce4db);
+    border-radius: 10px;
+    background: var(--input-background, #f8faf7);
+    color: var(--text-color, #202820);
+    font: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+#pmSettingsView input[type="time"]:focus,
+#pmSettingsView select:focus {
+    border-color: var(--primary-color, #39734a);
+    box-shadow: 0 0 0 3px rgba(57, 115, 74, 0.12);
+}
+
+/* Buttons */
+
+#pmSettingsView .pm-primary-button,
+#pmSettingsView .pm-secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    padding: 12px 18px;
+    border-radius: 11px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 750;
+    text-align: center;
+    cursor: pointer;
+    transition:
+        transform 0.15s ease,
+        opacity 0.15s ease,
+        box-shadow 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#pmSettingsView .pm-primary-button {
+    width: 100%;
+    margin-top: 18px;
+    border: 1px solid var(--primary-color, #39734a);
+    background: var(--primary-color, #39734a);
+    color: #ffffff;
+    box-shadow: 0 5px 12px rgba(45, 95, 57, 0.13);
+}
+
+#pmSettingsView .pm-secondary-button {
+    flex: 1;
+    border: 1px solid var(--border-color, #dce4db);
+    background: var(--secondary-background, #f5f8f4);
+    color: var(--text-color, #202820);
+}
+
+#pmSettingsView .pm-primary-button:active,
+#pmSettingsView .pm-secondary-button:active {
+    transform: scale(0.98);
+}
+
+#pmSettingsView button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Toggle rows */
+
+#pmSettingsView .pm-setting-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    padding: 4px 0;
+    cursor: pointer;
+}
+
+#pmSettingsView .pm-setting-toggle > span {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+#pmSettingsView input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 21px;
+    height: 21px;
+    accent-color: var(--primary-color, #39734a);
+    cursor: pointer;
+}
+
+/* Status messages */
+
+#pmSettingsView .pm-setting-status {
+    margin: 12px 0 0;
+    color: var(--muted-color, #737b73);
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+#pmSettingsView .pm-settings-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* About card */
+
+#pmSettingsView .pm-about-card {
+    background: var(--secondary-background, #f5f8f4);
+}
+
+#pmSettingsView .pm-version-label {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 6px 10px;
+    border: 1px solid var(--border-color, #dce4db);
+    border-radius: 8px;
+    color: var(--muted-color, #737b73);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* Dark theme support */
+
+html[data-theme="dark"] #pmSettingsView {
+    color: var(--text-color, #f1f4f0);
+}
+
+html[data-theme="dark"] #pmSettingsView .pm-settings-card {
+    border-color: var(--border-color, #353b36);
+    background: var(--card-background, #202520);
+    box-shadow: none;
+}
+
+html[data-theme="dark"] #pmSettingsView .pm-setting-row {
+    border-bottom-color: var(--border-color, #353b36);
+}
+
+html[data-theme="dark"] #pmSettingsView input[type="time"],
+html[data-theme="dark"] #pmSettingsView select {
+    border-color: var(--border-color, #414941);
+    background: var(--input-background, #292f29);
+    color: var(--text-color, #f1f4f0);
+}
+
+html[data-theme="dark"] #pmSettingsView .pm-secondary-button,
+html[data-theme="dark"] #pmSettingsView .pm-about-card {
+    border-color: var(--border-color, #353b36);
+    background: var(--secondary-background, #292f29);
+    color: var(--text-color, #f1f4f0);
+}
+
+html[data-theme="dark"] #pmSettingsView .pm-version-label {
+    border-color: var(--border-color, #414941);
+}
+
+/* Responsive layout for phones */
+
+@media (max-width: 480px) {
+    #pmSettingsView {
+        padding: 20px 14px 105px;
+    }
+
+    #pmSettingsView .pm-settings-shell {
+        gap: 19px;
+    }
+
+    #pmSettingsView .pm-settings-card {
+        padding: 16px;
+        border-radius: 15px;
+    }
+
+    #pmSettingsView .pm-setting-row {
+        gap: 10px;
+    }
+
+    #pmSettingsView .pm-setting-row strong,
+    #pmSettingsView .pm-setting-toggle strong {
+        font-size: 13px;
+    }
+
+    #pmSettingsView .pm-setting-row span,
+    #pmSettingsView .pm-setting-toggle small {
+        font-size: 11px;
+    }
+
+    #pmSettingsView input[type="time"],
+    #pmSettingsView select {
+        min-width: 100px;
+        max-width: 125px;
+        padding: 9px 7px;
+        font-size: 12px;
+    }
+
+    #pmSettingsView .pm-settings-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #pmSettingsView .pm-primary-button,
+    #pmSettingsView .pm-secondary-button {
+        min-height: 44px;
+    }
+}
