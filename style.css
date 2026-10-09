@@ -2987,3 +2987,351 @@ html[data-theme="dark"] #pmSettingsView .pm-version-label {
         min-height: 44px;
     }
 }
+
+/* ============================================================
+   POULTRY MANAGER — PROFESSIONAL PROFILE DESIGN
+   Append to the bottom of style.css
+   ============================================================ */
+
+#pmProfileView {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 18px 110px;
+    box-sizing: border-box;
+}
+
+#pmProfileView[hidden] {
+    display: none !important;
+}
+
+/* Profile layout */
+
+#pmProfileView .pm-profile-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    width: 100%;
+}
+
+/* Profile header */
+
+#pmProfileView .pm-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 24px;
+    border: 1px solid var(--border-color, #e3e9e2);
+    border-radius: 20px;
+    background: var(--card-background, #ffffff);
+    box-shadow: 0 5px 18px rgba(25, 45, 28, 0.045);
+    box-sizing: border-box;
+}
+
+#pmProfileView .pm-profile-avatar {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: var(--primary-color, #39734a);
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+#pmProfileView .pm-profile-heading {
+    flex: 1;
+    min-width: 0;
+}
+
+#pmProfileView #pmProfileDisplayName {
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--heading-color, var(--text-color, #202820));
+    font-size: clamp(20px, 4vw, 27px);
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+#pmProfileView #pmProfileDisplayFarm {
+    margin: 7px 0 0;
+    overflow-wrap: anywhere;
+    color: var(--muted-color, #737b73);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Edit button */
+
+#pmProfileView #pmProfileEditButton {
+    flex-shrink: 0;
+    min-height: 42px;
+    padding: 10px 15px;
+    border: 1px solid var(--primary-color, #39734a);
+    border-radius: 11px;
+    background: var(--primary-color, #39734a);
+    color: #ffffff;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+#pmProfileView #pmProfileEditButton:active {
+    transform: scale(0.98);
+}
+
+/* General profile cards */
+
+#pmProfileView .pm-profile-card {
+    padding: 22px;
+    border: 1px solid var(--border-color, #e3e9e2);
+    border-radius: 18px;
+    background: var(--card-background, #ffffff);
+    box-shadow: 0 5px 18px rgba(25, 45, 28, 0.04);
+    box-sizing: border-box;
+}
+
+#pmProfileView .pm-profile-card h2,
+#pmProfileView .pm-profile-card h3 {
+    margin: 0 0 17px;
+    color: var(--heading-color, var(--text-color, #202820));
+    font-size: 17px;
+    font-weight: 800;
+}
+
+/* Information displayed outside edit mode */
+
+#pmProfileView .pm-profile-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 24px;
+}
+
+#pmProfileView .pm-profile-detail {
+    min-width: 0;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color, #e3e9e2);
+}
+
+#pmProfileView .pm-profile-detail-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted-color, #737b73);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+}
+
+#pmProfileView .pm-profile-detail-value {
+    display: block;
+    color: var(--text-color, #202820);
+    font-size: 14px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+}
+
+/* Edit form */
+
+#pmProfileView #pmProfileEditForm {
+    width: 100%;
+    margin: 0;
+    padding: 22px;
+    border: 1px solid var(--border-color, #dce5da);
+    border-radius: 20px;
+    background: var(--card-background, #ffffff);
+    box-shadow: 0 8px 28px rgba(25, 45, 28, 0.07);
+    box-sizing: border-box;
+}
+
+#pmProfileView #pmProfileEditForm[hidden] {
+    display: none !important;
+}
+
+#pmProfileView #pmProfileEditForm h2,
+#pmProfileView #pmProfileEditForm h3 {
+    margin: 0 0 7px;
+    color: var(--heading-color, var(--text-color, #202820));
+    font-size: 20px;
+    font-weight: 800;
+}
+
+#pmProfileView #pmProfileEditForm > p {
+    margin: 0 0 22px;
+    color: var(--muted-color, #737b73);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Arrange form fields in a grid */
+
+#pmProfileView #pmProfileEditForm .pm-profile-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+#pmProfileView #pmProfileEditForm .pm-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+#pmProfileView #pmProfileEditForm .pm-form-group > label {
+    color: var(--text-color, #202820);
+    font-size: 12px;
+    font-weight: 750;
+}
+
+#pmProfileView #pmProfileEditForm input,
+#pmProfileView #pmProfileEditForm select,
+#pmProfileView #pmProfileEditForm textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 12px 13px;
+    border: 1px solid var(--border-color, #dce4db);
+    border-radius: 11px;
+    outline: none;
+    background: var(--input-background, #f8faf7);
+    color: var(--text-color, #202820);
+    font: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+#pmProfileView #pmProfileEditForm textarea {
+    min-height: 100px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+#pmProfileView #pmProfileEditForm input:focus,
+#pmProfileView #pmProfileEditForm select:focus,
+#pmProfileView #pmProfileEditForm textarea:focus {
+    border-color: var(--primary-color, #39734a);
+    box-shadow: 0 0 0 3px rgba(57, 115, 74, 0.12);
+}
+
+#pmProfileView #pmProfileEditForm .pm-form-full-width {
+    grid-column: 1 / -1;
+}
+
+/* Save and Cancel actions */
+
+#pmProfileView #pmProfileEditForm .pm-profile-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color, #e3e9e2);
+}
+
+#pmProfileView #pmProfileEditForm .pm-profile-form-actions button {
+    min-width: 115px;
+    min-height: 45px;
+    padding: 11px 18px;
+    border-radius: 11px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 750;
+    cursor: pointer;
+}
+
+#pmProfileView #pmProfileSaveButton {
+    border: 1px solid var(--primary-color, #39734a);
+    background: var(--primary-color, #39734a);
+    color: #ffffff;
+}
+
+#pmProfileView #pmProfileCancelButton {
+    border: 1px solid var(--border-color, #dce4db);
+    background: var(--secondary-background, #f5f8f4);
+    color: var(--text-color, #202820);
+}
+
+/* Dark theme */
+
+html[data-theme="dark"] #pmProfileView .pm-profile-header,
+html[data-theme="dark"] #pmProfileView .pm-profile-card,
+html[data-theme="dark"] #pmProfileView #pmProfileEditForm {
+    border-color: var(--border-color, #353b36);
+    background: var(--card-background, #202520);
+    box-shadow: none;
+}
+
+html[data-theme="dark"] #pmProfileView #pmProfileEditForm input,
+html[data-theme="dark"] #pmProfileView #pmProfileEditForm select,
+html[data-theme="dark"] #pmProfileView #pmProfileEditForm textarea {
+    border-color: var(--border-color, #414941);
+    background: var(--input-background, #292f29);
+    color: var(--text-color, #f1f4f0);
+}
+
+html[data-theme="dark"] #pmProfileView #pmProfileCancelButton {
+    border-color: var(--border-color, #414941);
+    background: var(--secondary-background, #292f29);
+    color: var(--text-color, #f1f4f0);
+}
+
+/* Phone layout */
+
+@media (max-width: 520px) {
+    #pmProfileView {
+        padding: 18px 14px 105px;
+    }
+
+    #pmProfileView .pm-profile-header {
+        flex-wrap: wrap;
+        gap: 14px;
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    #pmProfileView .pm-profile-avatar {
+        width: 58px;
+        height: 58px;
+        font-size: 19px;
+    }
+
+    #pmProfileView #pmProfileEditButton {
+        width: 100%;
+        margin-top: 2px;
+    }
+
+    #pmProfileView .pm-profile-card,
+    #pmProfileView #pmProfileEditForm {
+        padding: 17px;
+        border-radius: 16px;
+    }
+
+    #pmProfileView .pm-profile-details {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #pmProfileView #pmProfileEditForm .pm-profile-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    #pmProfileView #pmProfileEditForm .pm-form-full-width {
+        grid-column: auto;
+    }
+
+    #pmProfileView #pmProfileEditForm .pm-profile-form-actions {
+        flex-direction: column-reverse;
+    }
+
+    #pmProfileView #pmProfileEditForm .pm-profile-form-actions button {
+        width: 100%;
+    }
+}
