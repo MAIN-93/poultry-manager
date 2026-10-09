@@ -4735,16 +4735,24 @@
                 "pm-feed-extra-actions";
 
 
-            const inventoryPanel =
-    document.querySelector(
-        "#feedManagementSection .feed-action-panel"
-    );
+           const historyList =
+    $("#feedHistoryList");
 
 
-if (inventoryPanel) {
-    inventoryPanel.appendChild(actionRow);
+if (
+    historyList &&
+    historyList.parentElement
+) {
+    historyList.parentElement
+        .insertBefore(
+            actionRow,
+            historyList
+        );
+
 } else {
-    container.appendChild(actionRow);
+    container.appendChild(
+        actionRow
+    );
 }
 
 
