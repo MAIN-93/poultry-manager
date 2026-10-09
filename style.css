@@ -3335,3 +3335,398 @@ html[data-theme="dark"] #pmProfileView #pmProfileCancelButton {
         width: 100%;
     }
 }
+
+
+/* =========================================================
+   POULTRY MANAGER — PROFILE DESIGN UPGRADE
+   Matches the actual Profile HTML
+========================================================= */
+
+#pmProfileView {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#pmProfileView[hidden],
+#pmProfileEditForm[hidden] {
+    display: none !important;
+}
+
+/* PROFILE HEADER */
+
+#pmProfileView .pm-profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 26px;
+}
+
+#pmProfileView .pm-profile-heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+#pmProfileView .pm-profile-avatar {
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #176b45, #35a66d);
+    color: #fff;
+    font-size: 25px;
+    font-weight: 800;
+    box-shadow: 0 8px 22px rgba(23, 107, 69, 0.2);
+}
+
+#pmProfileView .pm-profile-heading h2 {
+    margin: 5px 0;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+#pmProfileView #pmProfileDisplayFarm {
+    margin: 5px 0 0;
+    color: var(--text-muted, #718096);
+    overflow-wrap: anywhere;
+}
+
+#pmProfileView #pmProfileEditButton {
+    flex-shrink: 0;
+    min-height: 44px;
+    padding: 11px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+/* FARM PROFILE CARD */
+
+#pmProfileView .pm-profile-card {
+    padding: 24px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 20px;
+    background: var(--card-bg, #fff);
+    box-shadow: 0 8px 28px rgba(15, 23, 42, 0.045);
+    box-sizing: border-box;
+}
+
+#pmProfileView .pm-profile-card-header {
+    margin-bottom: 24px;
+}
+
+#pmProfileView .pm-profile-card-header h2 {
+    margin: 0 0 7px;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+#pmProfileView .pm-profile-card-header p {
+    margin: 0;
+    line-height: 1.6;
+    color: var(--text-muted, #718096);
+}
+
+/* PROFILE INFORMATION GRID */
+
+#pmProfileView .pm-profile-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+#pmProfileView .pm-profile-info-item {
+    min-width: 0;
+    padding: 17px;
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 14px;
+    background: var(--surface-bg, #f8fafc);
+    box-sizing: border-box;
+}
+
+#pmProfileView .pm-profile-info-item span,
+#pmProfileView .pm-profile-notes > span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-muted, #718096);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+#pmProfileView .pm-profile-info-item strong {
+    display: block;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+#pmProfileView .pm-profile-notes {
+    margin-top: 16px;
+    padding: 19px;
+    border-radius: 14px;
+    background: var(--surface-bg, #f8fafc);
+    border: 1px solid var(--border-color, #e5e7eb);
+}
+
+#pmProfileView .pm-profile-notes p {
+    margin: 0;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+/* EDIT PROFILE FORM */
+
+#pmProfileView .pm-profile-edit-form {
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color, #e5e7eb);
+    box-sizing: border-box;
+    animation: pmProfileFormEnter 0.22s ease-out;
+}
+
+#pmProfileView .pm-profile-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+#pmProfileView .pm-profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+#pmProfileView .pm-profile-field-full {
+    grid-column: 1 / -1;
+}
+
+#pmProfileView .pm-profile-field label {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
+#pmProfileView .pm-profile-field input,
+#pmProfileView .pm-profile-field select,
+#pmProfileView .pm-profile-field textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-color, #d1d5db);
+    border-radius: 11px;
+    background: var(--input-bg, #fff);
+    color: var(--text-color, #1f2937);
+    font: inherit;
+    font-size: 14px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#pmProfileView .pm-profile-field textarea {
+    min-height: 115px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+#pmProfileView .pm-profile-field input:focus,
+#pmProfileView .pm-profile-field select:focus,
+#pmProfileView .pm-profile-field textarea:focus {
+    outline: none;
+    border-color: #258557;
+    box-shadow: 0 0 0 3px rgba(37, 133, 87, 0.13);
+}
+
+#pmProfileView .pm-profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+#pmProfileView .pm-profile-actions button {
+    min-height: 45px;
+    padding: 11px 20px;
+    border-radius: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* FARM SNAPSHOT */
+
+#pmProfileView .pm-profile-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+}
+
+#pmProfileView .pm-profile-stat {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid var(--border-color, #e5e7eb);
+    border-radius: 16px;
+    background: var(--card-bg, #fff);
+    box-sizing: border-box;
+}
+
+#pmProfileView .pm-profile-stat > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+    border-radius: 13px;
+    background: var(--surface-bg, #f1f5f9);
+    font-size: 21px;
+}
+
+#pmProfileView .pm-profile-stat small {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-muted, #718096);
+    font-size: 12px;
+}
+
+#pmProfileView .pm-profile-stat strong {
+    display: block;
+    font-size: 21px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+/* DARK MODE SUPPORT */
+
+[data-theme="dark"] #pmProfileView .pm-profile-card,
+[data-theme="dark"] #pmProfileView .pm-profile-stat {
+    background: var(--card-bg, #1e293b);
+}
+
+[data-theme="dark"] #pmProfileView .pm-profile-info-item,
+[data-theme="dark"] #pmProfileView .pm-profile-notes,
+[data-theme="dark"] #pmProfileView .pm-profile-stat > span {
+    background: var(--surface-bg, #0f172a);
+}
+
+[data-theme="dark"] #pmProfileView .pm-profile-field input,
+[data-theme="dark"] #pmProfileView .pm-profile-field select,
+[data-theme="dark"] #pmProfileView .pm-profile-field textarea {
+    background: var(--input-bg, #0f172a);
+    color: var(--text-color, #f8fafc);
+}
+
+/* FORM ENTRANCE ANIMATION */
+
+@keyframes pmProfileFormEnter {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* TABLET */
+
+@media (max-width: 800px) {
+    #pmProfileView .pm-profile-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 560px) {
+    #pmProfileView {
+        padding: 14px;
+    }
+
+    #pmProfileView .pm-profile-header {
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    #pmProfileView .pm-profile-heading {
+        gap: 12px;
+    }
+
+    #pmProfileView .pm-profile-avatar {
+        width: 56px;
+        height: 56px;
+        border-radius: 17px;
+        font-size: 20px;
+    }
+
+    #pmProfileView #pmProfileEditButton {
+        width: 100%;
+    }
+
+    #pmProfileView .pm-profile-card {
+        padding: 17px;
+        border-radius: 16px;
+    }
+
+    #pmProfileView .pm-profile-info-grid,
+    #pmProfileView .pm-profile-edit-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #pmProfileView .pm-profile-field-full {
+        grid-column: auto;
+    }
+
+    #pmProfileView .pm-profile-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    #pmProfileView .pm-profile-stat {
+        padding: 12px;
+        gap: 9px;
+    }
+
+    #pmProfileView .pm-profile-stat > span {
+        width: 35px;
+        height: 35px;
+        font-size: 17px;
+    }
+
+    #pmProfileView .pm-profile-stat strong {
+        font-size: 18px;
+    }
+
+    #pmProfileView .pm-profile-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+    }
+
+    #pmProfileView .pm-profile-actions button {
+        width: 100%;
+    }
+}
