@@ -4728,74 +4728,66 @@
    DYNAMIC FEED ACTION BUTTONS
    ============================================================ */
 
-function ensureFeedActionButtons() {
-    const container = $("#feedManagementSection");
+// Find the Add Feed card specifically, not the whole inventory panel.
+const actionBoxes = container.querySelectorAll(".feed-action-box");
+let addFeedBox = null;
 
-    if (!container) {
-        return;
-    }
+actionBoxes.forEach(function (box) {
+    const input = box.querySelector("#feedInput");
+    if (input) addFeedBox = box;
+});
 
-    // Place the buttons inside Feed Inventory.
-    const inventoryPanel =
-        container.querySelector(".feed-action-panel");
+if (!addFeedBox) {
+    console.warn("Add Feed panel was not found.");
+    return;
+}
 
-    if (!inventoryPanel) {
-        console.warn(
-            "Feed Inventory panel was not found."
-        );
-        return;
-    }
+let actionRow = document.getElementById("pmFeedActionButtons");
 
-    // Reuse the action row if it already exists.
-    let actionRow = $("#pmFeedActionButtons");
+if (!actionRow) {
+    actionRow = document.createElement("div");
+    actionRow.id = "pmFeedActionButtons";
+    actionRow.className = "pm-feed-extra-actions";
+}
 
-    if (!actionRow) {
-        actionRow = document.createElement("div");
-        actionRow.id = "pmFeedActionButtons";
-        actionRow.className = "pm-feed-extra-actions";
-    }
+// Place the extra buttons inside the Add Feed card.
+const addFeedContent = addFeedBox.querySelector(".feed-action-content");
+if (!addFeedContent) return;
 
-    // Always keep the action row inside Feed Inventory.
-    // This also moves it if it was previously misplaced.
-    inventoryPanel.appendChild(actionRow);
+addFeedContent.appendChild(actionRow);
 
-    // Create or reposition the Undo button.
-    let undoButton = $("#undoFeedButton");
+let undoButton = document.getElementById("undoFeedButton");
 
-    if (!undoButton) {
-        undoButton = document.createElement("button");
-        undoButton.id = "undoFeedButton";
-        undoButton.type = "button";
-        undoButton.textContent = "Undo Last Addition";
-        undoButton.className = "pm-secondary-button";
+if (!undoButton) {
+    undoButton = document.createElement("button");
+    undoButton.id = "undoFeedButton";
+    undoButton.type = "button";
+    undoButton.textContent = "Undo Last Addition";
+    undoButton.className = "secondary-button";
+    undoButton.addEventListener("click", function () {
+        undoLastFeedAddition();
+    });
+}
 
-        undoButton.onclick = function () {
-            undoLastFeedAddition();
-        };
-    }
+if (undoButton.parentElement !== actionRow) {
+    actionRow.appendChild(undoButton);
+}
 
-    if (undoButton.parentElement !== actionRow) {
-        actionRow.appendChild(undoButton);
-    }
+let resetButton = document.getElementById("resetFeedStockButton");
 
-    // Create or reposition the Reset Stock button.
-    let resetButton = $("#resetFeedStockButton");
+if (!resetButton) {
+    resetButton = document.createElement("button");
+    resetButton.id = "resetFeedStockButton";
+    resetButton.type = "button";
+    resetButton.textContent = "Reset Stock";
+    resetButton.className = "secondary-button";
+    resetButton.addEventListener("click", function () {
+        resetFeedStock();
+    });
+}
 
-    if (!resetButton) {
-        resetButton = document.createElement("button");
-        resetButton.id = "resetFeedStockButton";
-        resetButton.type = "button";
-        resetButton.textContent = "Reset Stock";
-        resetButton.className = "pm-secondary-button";
-
-        resetButton.onclick = function () {
-            resetFeedStock();
-        };
-    }
-
-    if (resetButton.parentElement !== actionRow) {
-        actionRow.appendChild(resetButton);
-    }
+if (resetButton.parentElement !== actionRow) {
+    actionRow.appendChild(resetButton);
 }
 
 
