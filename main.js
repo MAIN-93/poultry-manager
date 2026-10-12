@@ -4729,117 +4729,75 @@
    ============================================================ */
 
 function ensureFeedActionButtons() {
-        const container =
-            $("#feedManagementSection") ||
-            $("#feedSection") ||
-            $("#pmFarmView");
+    const container =
+        $("#feedManagementSection") ||
+        $("#feedSection") ||
+        $("#pmFarmView");
 
-
-        if (!container) {
-            return;
-        }
-
-
-        let actionRow =
-            $("#pmFeedActionButtons");
-
-
-        if (!actionRow) {
-            actionRow =
-                document.createElement(
-                    "div"
-                );
-
-            actionRow.id =
-                "pmFeedActionButtons";
-
-            actionRow.className =
-                "pm-feed-extra-actions";
-
-
-            const historyList =
-                $("#feedHistoryList");
-
-
-            if (
-                historyList &&
-                historyList.parentElement
-            ) {
-                historyList.parentElement
-                    .insertBefore(
-                        actionRow,
-                        historyList
-                    );
-
-            } else {
-                container.appendChild(
-                    actionRow
-                );
-            }
-        }
-
-
-        if (
-            !$("#undoFeedButton")
-        ) {
-            const undo =
-                document.createElement(
-                    "button"
-                );
-
-            undo.id =
-                "undoFeedButton";
-
-            undo.type =
-                "button";
-
-            undo.textContent =
-                "Undo Last Addition";
-
-            undo.className =
-                "pm-secondary-button";
-
-            undo.onclick =
-                function () {
-                    undoLastFeedAddition();
-                };
-
-            actionRow.appendChild(
-                undo
-            );
-        }
-
-
-        if (
-            !$("#resetFeedStockButton")
-        ) {
-            const reset =
-                document.createElement(
-                    "button"
-                );
-
-            reset.id =
-                "resetFeedStockButton";
-
-            reset.type =
-                "button";
-
-            reset.textContent =
-                "Reset Stock";
-
-            reset.className =
-                "pm-secondary-button";
-
-            reset.onclick =
-                function () {
-                    resetFeedStock();
-                };
-
-            actionRow.appendChild(
-                reset
-            );
-        }
+    if (!container) {
+        return;
     }
+
+    let actionRow =
+        $("#pmFeedActionButtons");
+
+    if (!actionRow) {
+        actionRow = document.createElement("div");
+
+        actionRow.id = "pmFeedActionButtons";
+        actionRow.className = "pm-feed-extra-actions";
+
+        // Place the buttons in Feed Management,
+        // not inside Recent Feed Activity.
+        const feedForm =
+            container.querySelector("#feedForm") ||
+            container.querySelector(".feed-form") ||
+            container.querySelector(".feed-input-row");
+
+        if (feedForm && feedForm.parentElement) {
+            feedForm.insertAdjacentElement(
+                "afterend",
+                actionRow
+            );
+        } else {
+            container.appendChild(actionRow);
+        }
+    } else if (!container.contains(actionRow)) {
+        // If the buttons already exist elsewhere,
+        // move them back into Feed Management.
+        container.appendChild(actionRow);
+    }
+
+    if (!$("#undoFeedButton")) {
+        const undo = document.createElement("button");
+
+        undo.id = "undoFeedButton";
+        undo.type = "button";
+        undo.textContent = "Undo Last Addition";
+        undo.className = "pm-secondary-button";
+
+        undo.onclick = function () {
+            undoLastFeedAddition();
+        };
+
+        actionRow.appendChild(undo);
+    }
+
+    if (!$("#resetFeedStockButton")) {
+        const reset = document.createElement("button");
+
+        reset.id = "resetFeedStockButton";
+        reset.type = "button";
+        reset.textContent = "Reset Stock";
+        reset.className = "pm-secondary-button";
+
+        reset.onclick = function () {
+            resetFeedStock();
+        };
+
+        actionRow.appendChild(reset);
+    }
+}
 
 
     /* ============================================================
