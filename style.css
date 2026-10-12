@@ -3804,3 +3804,15 @@ html[data-theme="dark"] #pmProfileView #pmProfileCancelButton {
         font-size: 13px;
     }
 }
+
+/* Prevent double-tap zoom on interactive app sections */
+.feed-action-panel,
+.feed-action-box,
+.feed-hero-card,
+.feed-metric-card,
+.feed-consumption-card,
+.feed-activity-section,
+.pm-view button {
+    touch-action: manipulation;
+}
+
