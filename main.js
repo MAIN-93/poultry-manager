@@ -4728,67 +4728,118 @@
    DYNAMIC FEED ACTION BUTTONS
    ============================================================ */
 
-// Find the Add Feed card specifically, not the whole inventory panel.
-const actionBoxes = container.querySelectorAll(".feed-action-box");
-let addFeedBox = null;
+function ensureFeedActionButtons() {
+        const container =
+            $("#feedManagementSection") ||
+            $("#feedSection") ||
+            $("#pmFarmView");
 
-actionBoxes.forEach(function (box) {
-    const input = box.querySelector("#feedInput");
-    if (input) addFeedBox = box;
-});
 
-if (!addFeedBox) {
-    console.warn("Add Feed panel was not found.");
-    return;
-}
+        if (!container) {
+            return;
+        }
 
-let actionRow = document.getElementById("pmFeedActionButtons");
 
-if (!actionRow) {
-    actionRow = document.createElement("div");
-    actionRow.id = "pmFeedActionButtons";
-    actionRow.className = "pm-feed-extra-actions";
-}
+        let actionRow =
+            $("#pmFeedActionButtons");
 
-// Place the extra buttons inside the Add Feed card.
-const addFeedContent = addFeedBox.querySelector(".feed-action-content");
-if (!addFeedContent) return;
 
-addFeedContent.appendChild(actionRow);
+        if (!actionRow) {
+            actionRow =
+                document.createElement(
+                    "div"
+                );
 
-let undoButton = document.getElementById("undoFeedButton");
+            actionRow.id =
+                "pmFeedActionButtons";
 
-if (!undoButton) {
-    undoButton = document.createElement("button");
-    undoButton.id = "undoFeedButton";
-    undoButton.type = "button";
-    undoButton.textContent = "Undo Last Addition";
-    undoButton.className = "secondary-button";
-    undoButton.addEventListener("click", function () {
-        undoLastFeedAddition();
-    });
-}
+            actionRow.className =
+                "pm-feed-extra-actions";
 
-if (undoButton.parentElement !== actionRow) {
-    actionRow.appendChild(undoButton);
-}
 
-let resetButton = document.getElementById("resetFeedStockButton");
+            const historyList =
+                $("#feedHistoryList");
 
-if (!resetButton) {
-    resetButton = document.createElement("button");
-    resetButton.id = "resetFeedStockButton";
-    resetButton.type = "button";
-    resetButton.textContent = "Reset Stock";
-    resetButton.className = "secondary-button";
-    resetButton.addEventListener("click", function () {
-        resetFeedStock();
-    });
-}
 
-if (resetButton.parentElement !== actionRow) {
-    actionRow.appendChild(resetButton);
-}
+            if (
+                historyList &&
+                historyList.parentElement
+            ) {
+                historyList.parentElement
+                    .insertBefore(
+                        actionRow,
+                        historyList
+                    );
+
+            } else {
+                container.appendChild(
+                    actionRow
+                );
+            }
+        }
+
+
+        if (
+            !$("#undoFeedButton")
+        ) {
+            const undo =
+                document.createElement(
+                    "button"
+                );
+
+            undo.id =
+                "undoFeedButton";
+
+            undo.type =
+                "button";
+
+            undo.textContent =
+                "Undo Last Addition";
+
+            undo.className =
+                "pm-secondary-button";
+
+            undo.onclick =
+                function () {
+                    undoLastFeedAddition();
+                };
+
+            actionRow.appendChild(
+                undo
+            );
+        }
+
+
+        if (
+            !$("#resetFeedStockButton")
+        ) {
+            const reset =
+                document.createElement(
+                    "button"
+                );
+
+            reset.id =
+                "resetFeedStockButton";
+
+            reset.type =
+                "button";
+
+            reset.textContent =
+                "Reset Stock";
+
+            reset.className =
+                "pm-secondary-button";
+
+            reset.onclick =
+                function () {
+                    resetFeedStock();
+                };
+
+            actionRow.appendChild(
+                reset
+            );
+        }
+    }
 
 
     /* ============================================================
