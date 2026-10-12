@@ -61,50 +61,47 @@
 
 
 /* ============================================================
-   DARK MODE TOKENS
+   DARK MODE TOKENS — FOREST GREEN
    ============================================================ */
-
 html[data-theme="dark"] {
-    --pm-bg: #101512;
-    --pm-surface: #171d19;
-    --pm-surface-soft: #1c241f;
-    --pm-surface-muted: #222b25;
-
-    --pm-text: #eef4ef;
-    --pm-text-soft: #b4beb7;
-    --pm-text-muted: #7f8b82;
-
-    --pm-border: #2b352e;
-    --pm-border-strong: #38443b;
-
-    --pm-primary: #43a96f;
-    --pm-primary-dark: #328658;
-    --pm-primary-soft: #183a29;
-
-    --pm-secondary: #6b9b83;
-
-    --pm-accent: #e3a83e;
-    --pm-accent-soft: #3a2c16;
-
-    --pm-success: #48ad72;
-    --pm-success-soft: #173725;
-
-    --pm-danger: #e06b6b;
-    --pm-danger-soft: #3b1e1e;
-
-    --pm-warning: #e0a33b;
-    --pm-warning-soft: #3b2e17;
-
+    /* Main backgrounds */
+    --pm-bg: #0D1410;
+    --pm-surface: #17211A;
+    --pm-surface-soft: #1E2B22;
+    --pm-surface-muted: #26352A;
+    /* Text */
+    --pm-text: #F2F7F2;
+    --pm-text-soft: #B6C4B8;
+    --pm-text-muted: #91A196;
+    /* Borders */
+    --pm-border: #304035;
+    --pm-border-strong: #435748;
+    /* Primary green */
+    --pm-primary: #4ADE80;
+    --pm-primary-dark: #22C55E;
+    --pm-primary-soft: #193B27;
+    /* Secondary green */
+    --pm-secondary: #86B99A;
+    /* Accent */
+    --pm-accent: #FBBF24;
+    --pm-accent-soft: #3B3018;
+    /* Success */
+    --pm-success: #4ADE80;
+    --pm-success-soft: #193B27;
+    /* Danger */
+    --pm-danger: #F87171;
+    --pm-danger-soft: #402020;
+    /* Warning */
+    --pm-warning: #FBBF24;
+    --pm-warning-soft: #3B3018;
+    /* Shadows */
     --pm-shadow-sm:
-        0 2px 8px rgba(0, 0, 0, 0.22);
-
+        0 2px 8px rgba(0, 0, 0, 0.24);
     --pm-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.25);
-
+        0 8px 24px rgba(0, 0, 0, 0.28);
     --pm-shadow-lg:
-        0 16px 40px rgba(0, 0, 0, 0.32);
+        0 16px 40px rgba(0, 0, 0, 0.36);
 }
-
 
 /* ============================================================
    RESET
