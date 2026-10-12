@@ -1860,21 +1860,22 @@ a {
     margin-top: 11px;
 }
 
-.feed-input-row input {
+..feed-input-row input {
     width: 100%;
     min-width: 0;
 
     padding: 10px 11px;
 
     color: var(--pm-text);
-
     background: var(--pm-surface);
 
     border: 1px solid var(--pm-border-strong);
-
     border-radius: 10px;
 
     outline: none;
+
+    /* Prevent automatic zoom on iPhone */
+    font-size: 16px;
 }
 
 .feed-input-row input:focus {
