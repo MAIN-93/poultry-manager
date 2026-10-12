@@ -3729,4 +3729,80 @@ html[data-theme="dark"] #pmProfileView #pmProfileCancelButton {
     #pmProfileView .pm-profile-actions button {
         width: 100%;
     }
+} 
+
+/* Feed Management Action Buttons */
+.pm-feed-extra-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+/* Shared button design */
+.pm-feed-extra-actions .pm-secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    min-height: 44px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+/* Undo Last Addition */
+.pm-feed-extra-actions #undoFeedButton {
+    background: #fff7ed;
+    color: #c2410c;
+    border-color: #fed7aa;
+}
+/* Undo hover effect */
+.pm-feed-extra-actions #undoFeedButton:hover {
+    background: #ffedd5;
+    border-color: #fdba74;
+    box-shadow: 0 2px 6px rgba(194, 65, 12, 0.12);
+}
+/* Reset Stock */
+.pm-feed-extra-actions #resetFeedStockButton {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+/* Reset hover effect */
+.pm-feed-extra-actions #resetFeedStockButton:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    box-shadow: 0 2px 6px rgba(185, 28, 28, 0.12);
+}
+/* Button press effect */
+.pm-feed-extra-actions .pm-secondary-button:active {
+    transform: translateY(1px);
+}
+/* Keyboard accessibility */
+.pm-feed-extra-actions .pm-secondary-button:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, 0.35);
+    outline-offset: 2px;
+}
+/* Mobile layout */
+@media (max-width: 480px) {
+    .pm-feed-extra-actions {
+        gap: 10px;
+    }
+    .pm-feed-extra-actions .pm-secondary-button {
+        flex: 1 1 140px;
+        padding: 12px;
+        font-size: 13px;
+    }
 }
