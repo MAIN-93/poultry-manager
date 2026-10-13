@@ -5889,14 +5889,31 @@ function updateNotificationStatus() {
 
         if (notificationButton) {
     notificationButton.onclick = async function () {
-        if (areNotificationsEnabled()) {
-            await disablePushNotifications();
-        } else {
-            await enablePushNotifications();
+        console.log("Notification button clicked.");
+
+        notificationButton.disabled = true;
+
+        try {
+            if (areNotificationsEnabled()) {
+                console.log("Disabling notifications...");
+                await disablePushNotifications();
+            } else {
+                console.log("Enabling notifications...");
+                await enablePushNotifications();
+            }
+        } catch (error) {
+            console.error("Notification button error:", error);
+
+            notify(
+                "Notification action failed. Please try again.",
+                "warning"
+            );
+        } finally {
+            notificationButton.disabled = false;
+            updateNotificationStatus();
         }
     };
 }
-
 
         if (theme) {
             theme.onchange =
