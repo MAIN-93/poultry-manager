@@ -5109,24 +5109,48 @@ function ensureFeedActionButtons() {
                 
                 async function disablePushNotifications() {
     try {
+        console.log("Starting notification disable process...");
+
+        // Get the service worker registration
         const registration =
-            await getServiceWorkerRegistration();
+            await navigator.serviceWorker.ready;
 
-        if (registration) {
-            const subscription =
-                await registration.pushManager
-                    .getSubscription();
-
-            if (subscription) {
-                await subscription.unsubscribe();
-            }
+        if (!registration) {
+            throw new Error(
+                "Service worker registration not found."
+            );
         }
 
+        console.log("Service worker found.");
+
+        // Get the existing push subscription
+        const subscription =
+            await registration.pushManager.getSubscription();
+
+        if (subscription) {
+            console.log("Push subscription found. Unsubscribing...");
+
+            const unsubscribed =
+                await subscription.unsubscribe();
+
+            if (!unsubscribed) {
+                throw new Error(
+                    "Browser could not unsubscribe from push notifications."
+                );
+            }
+
+            console.log("Push subscription removed.");
+        } else {
+            console.log("No active push subscription found.");
+        }
+
+        // Update the saved notification setting
         writeStorage(
             APP.storage.notifications,
             "false"
         );
 
+        // Refresh the interface
         updateNotificationStatus();
 
         notify(
@@ -5143,7 +5167,8 @@ function ensureFeedActionButtons() {
         );
 
         notify(
-            "Could not disable notifications. Please try again.",
+            "Could not disable notifications: " +
+            (error.message || "Unknown error"),
             "warning"
         );
 
