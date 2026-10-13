@@ -552,3 +552,3085 @@ animation-iteration-count: 1 !important;
 transition-duration: 0.01ms !important;
 }
 }
+/* ============================================================
+POULTRY MANAGER
+CLEAN STYLESHEET — PART 2 OF 5
+
+Contents:
+
+1. Dashboard layout
+2. Farm overview
+3. Dashboard summary cards
+4. Quick actions
+5. Production trends
+6. Analytics and charts
+7. Dashboard responsive grids
+
+Append this part directly below Part 1.
+============================================================ */
+
+/* ============================================================
+
+1. DASHBOARD LAYOUT
+    ============================================================ */
+
+#pmDashboardView,
+#dashboardView,
+.pm-dashboard {
+width: 100%;
+min-width: 0;
+}
+
+#pmDashboardView > *,
+#dashboardView > *,
+.pm-dashboard > * {
+min-width: 0;
+}
+
+.pm-dashboard-header,
+.pm-dashboard-welcome {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 16px;
+margin-bottom: 24px;
+}
+
+.pm-dashboard-header h1,
+.pm-dashboard-welcome h1 {
+margin: 0;
+color: var(–pm-heading);
+font-size: clamp(24px, 3.5vw, 32px);
+font-weight: 800;
+letter-spacing: -0.7px;
+}
+
+.pm-dashboard-header p,
+.pm-dashboard-welcome p {
+margin: 7px 0 0;
+color: var(–pm-text-secondary);
+font-size: 14px;
+line-height: 1.6;
+}
+
+.pm-dashboard-content {
+display: flex;
+flex-direction: column;
+gap: 24px;
+min-width: 0;
+}
+
+.pm-dashboard-section {
+width: 100%;
+min-width: 0;
+}
+
+.pm-dashboard-section-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 12px;
+margin-bottom: 16px;
+}
+
+.pm-dashboard-section-header h2 {
+margin: 0;
+color: var(–pm-heading);
+font-size: 19px;
+font-weight: 750;
+}
+
+/* ============================================================
+2. FARM OVERVIEW
+============================================================ */
+
+.pm-farm-overview,
+#pmFarmOverview,
+.farm-overview {
+position: relative;
+overflow: hidden;
+padding: 24px;
+color: var(–pm-text);
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-farm-overview h2,
+.pm-farm-overview h3,
+#pmFarmOverview h2,
+#pmFarmOverview h3,
+.farm-overview h2,
+.farm-overview h3 {
+color: var(–pm-heading);
+}
+
+.pm-farm-overview-header,
+.pm-farm-overview-top {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 16px;
+margin-bottom: 20px;
+}
+
+.pm-farm-overview-title {
+margin: 0;
+font-size: 20px;
+font-weight: 750;
+}
+
+.pm-farm-overview-description {
+margin: 6px 0 0;
+color: var(–pm-text-secondary);
+font-size: 13px;
+}
+
+.pm-farm-overview-stats {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 16px;
+margin-top: 20px;
+}
+
+.pm-farm-overview-stat {
+min-width: 0;
+padding: 16px;
+background: var(–pm-surface-alt);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+}
+
+.pm-farm-overview-stat-label {
+display: block;
+margin-bottom: 8px;
+color: var(–pm-text-secondary);
+font-size: 12px;
+font-weight: 600;
+}
+
+.pm-farm-overview-stat-value {
+display: block;
+color: var(–pm-heading);
+font-size: clamp(20px, 3vw, 27px);
+font-weight: 800;
+line-height: 1.2;
+overflow-wrap: anywhere;
+}
+
+.pm-farm-overview-stat-detail {
+display: block;
+margin-top: 6px;
+color: var(–pm-text-muted);
+font-size: 12px;
+}
+
+/* ============================================================
+3. DASHBOARD SUMMARY CARDS
+============================================================ */
+
+.pm-dashboard-stats,
+.pm-summary-grid,
+.pm-stats-grid,
+.pm-dashboard-cards {
+display: grid;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 16px;
+width: 100%;
+min-width: 0;
+}
+
+.pm-stat-card,
+.pm-summary-card,
+.pm-dashboard-card {
+position: relative;
+display: flex;
+flex-direction: column;
+gap: 12px;
+min-width: 0;
+padding: 20px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+transition:
+transform var(–pm-transition),
+box-shadow var(–pm-transition),
+border-color var(–pm-transition);
+}
+
+.pm-stat-card:hover,
+.pm-summary-card:hover,
+.pm-dashboard-card:hover {
+transform: translateY(-2px);
+border-color: var(–pm-border-strong);
+box-shadow: var(–pm-shadow-md);
+}
+
+.pm-stat-card-top {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+}
+
+.pm-stat-card-label,
+.pm-summary-card-label {
+color: var(–pm-text-secondary);
+font-size: 13px;
+font-weight: 600;
+line-height: 1.5;
+}
+
+.pm-stat-card-value,
+.pm-summary-card-value,
+.pm-dashboard-card-value {
+display: block;
+color: var(–pm-heading);
+font-size: clamp(23px, 3vw, 32px);
+font-weight: 800;
+letter-spacing: -0.6px;
+line-height: 1.2;
+overflow-wrap: anywhere;
+}
+
+.pm-stat-card-description,
+.pm-summary-card-description {
+color: var(–pm-text-muted);
+font-size: 12px;
+line-height: 1.5;
+}
+
+.pm-stat-card-icon,
+.pm-summary-card-icon,
+.pm-dashboard-card-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+width: 42px;
+height: 42px;
+color: var(–pm-primary);
+background: var(–pm-primary-light);
+border-radius: var(–pm-radius-md);
+font-size: 20px;
+}
+
+.pm-stat-card-icon svg,
+.pm-summary-card-icon svg,
+.pm-dashboard-card-icon svg {
+width: 21px;
+height: 21px;
+}
+
+/* ============================================================
+4. QUICK ACTIONS
+============================================================ */
+
+.pm-quick-actions,
+#pmQuickActions,
+.quick-actions {
+display: grid;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 14px;
+width: 100%;
+min-width: 0;
+}
+
+.pm-quick-action,
+.pm-quick-action-button,
+.quick-action-btn {
+display: flex;
+align-items: center;
+justify-content: flex-start;
+gap: 12px;
+min-width: 0;
+min-height: 72px;
+padding: 15px;
+color: var(–pm-text);
+text-align: left;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+box-shadow: var(–pm-shadow-sm);
+cursor: pointer;
+transition:
+background-color var(–pm-transition),
+border-color var(–pm-transition),
+transform var(–pm-transition),
+box-shadow var(–pm-transition);
+}
+
+.pm-quick-action:hover,
+.pm-quick-action-button:hover,
+.quick-action-btn:hover {
+background: var(–pm-primary-light);
+border-color: var(–pm-primary);
+box-shadow: var(–pm-shadow-md);
+}
+
+.pm-quick-action:active,
+.pm-quick-action-button:active,
+.quick-action-btn:active {
+transform: scale(0.98);
+}
+
+.pm-quick-action-icon,
+.pm-quick-action .icon,
+.quick-action-btn .icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+width: 40px;
+height: 40px;
+color: var(–pm-primary);
+background: var(–pm-primary-light);
+border-radius: var(–pm-radius-sm);
+font-size: 19px;
+}
+
+.pm-quick-action-text {
+display: flex;
+flex-direction: column;
+gap: 3px;
+min-width: 0;
+}
+
+.pm-quick-action-title {
+color: var(–pm-heading);
+font-size: 13px;
+font-weight: 700;
+line-height: 1.4;
+overflow-wrap: anywhere;
+}
+
+.pm-quick-action-description {
+color: var(–pm-text-muted);
+font-size: 11px;
+line-height: 1.4;
+}
+
+/* ============================================================
+5. PRODUCTION TRENDS
+============================================================ */
+
+.pm-production-trend,
+.pm-production-chart,
+#pmProductionTrend,
+#pmProductionChart {
+min-width: 0;
+padding: 22px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-production-trend-header,
+.pm-chart-header {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 12px;
+margin-bottom: 20px;
+}
+
+.pm-production-trend-header h2,
+.pm-chart-header h2 {
+margin: 0;
+color: var(–pm-heading);
+font-size: 18px;
+font-weight: 750;
+}
+
+.pm-production-trend-header p,
+.pm-chart-header p {
+margin: 5px 0 0;
+color: var(–pm-text-secondary);
+font-size: 12px;
+}
+
+.pm-chart-container {
+position: relative;
+width: 100%;
+min-width: 0;
+min-height: 220px;
+}
+
+.pm-chart-container canvas,
+.pm-production-chart canvas,
+#pmProductionChart canvas {
+display: block;
+width: 100%;
+max-width: 100%;
+}
+
+.pm-chart-legend {
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 14px;
+margin-top: 16px;
+}
+
+.pm-chart-legend-item {
+display: inline-flex;
+align-items: center;
+gap: 7px;
+color: var(–pm-text-secondary);
+font-size: 12px;
+}
+
+.pm-chart-legend-dot {
+width: 9px;
+height: 9px;
+flex-shrink: 0;
+background: var(–pm-primary);
+border-radius: 50%;
+}
+
+/* ============================================================
+6. ANALYTICS LAYOUT
+============================================================ */
+
+.pm-analytics-grid,
+.pm-dashboard-analytics {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 20px;
+min-width: 0;
+}
+
+.pm-analytics-card {
+min-width: 0;
+padding: 22px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-analytics-card h2,
+.pm-analytics-card h3 {
+margin: 0 0 16px;
+color: var(–pm-heading);
+font-size: 17px;
+font-weight: 750;
+}
+
+.pm-analytics-card p {
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.6;
+}
+
+.pm-analytics-value {
+color: var(–pm-heading);
+font-size: 26px;
+font-weight: 800;
+overflow-wrap: anywhere;
+}
+
+.pm-analytics-label {
+color: var(–pm-text-secondary);
+font-size: 12px;
+font-weight: 600;
+}
+
+.pm-analytics-detail {
+margin-top: 6px;
+color: var(–pm-text-muted);
+font-size: 12px;
+}
+
+/* ============================================================
+7. PROGRESS BARS
+============================================================ */
+
+.pm-progress,
+.pm-progress-bar {
+width: 100%;
+height: 9px;
+overflow: hidden;
+background: var(–pm-surface-alt);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-pill);
+}
+
+.pm-progress-fill,
+.pm-progress-bar-fill {
+display: block;
+width: 0;
+height: 100%;
+background: var(–pm-primary);
+border-radius: inherit;
+transition: width 0.3s ease;
+}
+
+.pm-progress-labels {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 8px;
+margin-bottom: 8px;
+color: var(–pm-text-secondary);
+font-size: 12px;
+}
+
+/* ============================================================
+8. RESPONSIVE DASHBOARD GRIDS
+============================================================ */
+
+@media (max-width: 1100px) {
+.pm-dashboard-stats,
+.pm-summary-grid,
+.pm-stats-grid,
+.pm-dashboard-cards {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pm-quick-actions,
+#pmQuickActions,
+.quick-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.pm-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+}
+
+@media (max-width: 700px) {
+.pm-dashboard-header,
+.pm-dashboard-welcome {
+align-items: flex-start;
+flex-direction: column;
+}
+
+.pm-dashboard-content {
+    gap: 18px;
+}
+.pm-farm-overview,
+#pmFarmOverview,
+.farm-overview {
+    padding: 18px;
+    border-radius: var(--pm-radius-md);
+}
+.pm-farm-overview-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+.pm-stat-card,
+.pm-summary-card,
+.pm-dashboard-card {
+    padding: 15px;
+    gap: 10px;
+    border-radius: var(--pm-radius-md);
+}
+.pm-stat-card-icon,
+.pm-summary-card-icon,
+.pm-dashboard-card-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+}
+.pm-quick-actions,
+#pmQuickActions,
+.quick-actions {
+    gap: 10px;
+}
+.pm-quick-action,
+.pm-quick-action-button,
+.quick-action-btn {
+    gap: 9px;
+    min-height: 64px;
+    padding: 11px;
+}
+.pm-quick-action-icon,
+.pm-quick-action .icon,
+.quick-action-btn .icon {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+}
+.pm-analytics-grid,
+.pm-dashboard-analytics {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+}
+.pm-production-trend,
+.pm-production-chart,
+#pmProductionTrend,
+#pmProductionChart,
+.pm-analytics-card {
+    padding: 17px;
+}
+.pm-chart-container {
+    min-height: 180px;
+}
+
+}
+
+@media (max-width: 420px) {
+.pm-dashboard-stats,
+.pm-summary-grid,
+.pm-stats-grid,
+.pm-dashboard-cards {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 10px;
+}
+
+.pm-farm-overview-stats {
+    grid-template-columns: minmax(0, 1fr);
+}
+.pm-quick-actions,
+#pmQuickActions,
+.quick-actions {
+    grid-template-columns: minmax(0, 1fr);
+}
+.pm-stat-card-value,
+.pm-summary-card-value,
+.pm-dashboard-card-value {
+    font-size: 23px;
+}
+.pm-grid,
+.pm-grid-3,
+.pm-grid-4 {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+}
+ 
+/* ============================================================
+POULTRY MANAGER
+CLEAN STYLESHEET — PART 3 OF 5
+
+Contents:
+
+1. My Farm view
+2. Farm information cards
+3. Profile view
+4. Profile header and avatar
+5. Profile statistics and details
+6. Shared forms and inputs
+7. Responsive farm and profile layouts
+
+Append this part directly below Part 2.
+============================================================ */
+
+/* ============================================================
+
+1. MY FARM VIEW
+    ============================================================ */
+
+#pmFarmView,
+#pmMyFarmView,
+#myFarmView,
+.pm-farm-view {
+width: 100%;
+min-width: 0;
+}
+
+#pmFarmView > *,
+#pmMyFarmView > *,
+#myFarmView > *,
+.pm-farm-view > * {
+min-width: 0;
+}
+
+.pm-farm-header,
+.pm-farm-page-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 16px;
+margin-bottom: 24px;
+}
+
+.pm-farm-header h1,
+.pm-farm-page-header h1 {
+margin: 0;
+color: var(–pm-heading);
+font-size: clamp(23px, 3vw, 30px);
+font-weight: 800;
+}
+
+.pm-farm-header p,
+.pm-farm-page-header p {
+margin: 7px 0 0;
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.6;
+}
+
+.pm-farm-content {
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.pm-farm-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 20px;
+}
+
+.pm-farm-card {
+min-width: 0;
+padding: 22px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-farm-card h2,
+.pm-farm-card h3 {
+margin: 0 0 16px;
+color: var(–pm-heading);
+font-size: 18px;
+font-weight: 750;
+}
+
+.pm-farm-card p {
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.65;
+}
+
+.pm-farm-card-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 12px;
+margin-bottom: 16px;
+}
+
+.pm-farm-card-header h2,
+.pm-farm-card-header h3 {
+margin: 0;
+}
+
+.pm-farm-details {
+display: flex;
+flex-direction: column;
+gap: 0;
+}
+
+.pm-farm-detail-row {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 16px;
+padding: 13px 0;
+border-bottom: 1px solid var(–pm-border);
+}
+
+.pm-farm-detail-row:last-child {
+border-bottom: 0;
+}
+
+.pm-farm-detail-label {
+color: var(–pm-text-secondary);
+font-size: 13px;
+}
+
+.pm-farm-detail-value {
+color: var(–pm-heading);
+font-size: 13px;
+font-weight: 650;
+text-align: right;
+overflow-wrap: anywhere;
+}
+
+/* ============================================================
+2. FARM INFORMATION AND FLOCK CARDS
+============================================================ */
+
+.pm-farm-info-grid,
+.pm-flock-grid {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 16px;
+}
+
+.pm-farm-info-card,
+.pm-flock-card {
+min-width: 0;
+padding: 18px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-farm-info-card-label,
+.pm-flock-card-label {
+display: block;
+margin-bottom: 8px;
+color: var(–pm-text-secondary);
+font-size: 12px;
+font-weight: 600;
+}
+
+.pm-farm-info-card-value,
+.pm-flock-card-value {
+display: block;
+color: var(–pm-heading);
+font-size: clamp(20px, 3vw, 27px);
+font-weight: 800;
+line-height: 1.3;
+overflow-wrap: anywhere;
+}
+
+.pm-farm-info-card-note,
+.pm-flock-card-note {
+display: block;
+margin-top: 7px;
+color: var(–pm-text-muted);
+font-size: 12px;
+line-height: 1.5;
+}
+
+/* ============================================================
+3. PROFILE VIEW
+============================================================ */
+
+#pmProfileView,
+#profileView,
+.pm-profile-view {
+width: 100%;
+min-width: 0;
+}
+
+#pmProfileView > *,
+#profileView > *,
+.pm-profile-view > * {
+min-width: 0;
+}
+
+.pm-profile-page-header {
+margin-bottom: 22px;
+}
+
+.pm-profile-page-header h1 {
+margin: 0;
+color: var(–pm-heading);
+font-size: clamp(23px, 3vw, 30px);
+font-weight: 800;
+}
+
+.pm-profile-page-header p {
+margin: 7px 0 0;
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.6;
+}
+
+.pm-profile-layout {
+display: grid;
+grid-template-columns: minmax(250px, 0.8fr) minmax(0, 1.6fr);
+align-items: start;
+gap: 22px;
+}
+
+.pm-profile-main,
+.pm-profile-sidebar {
+display: flex;
+flex-direction: column;
+gap: 20px;
+min-width: 0;
+}
+
+/* ============================================================
+4. PROFILE HEADER AND AVATAR
+============================================================ */
+
+.pm-profile-header {
+position: relative;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 12px;
+min-width: 0;
+padding: 28px 22px;
+text-align: center;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-profile-avatar {
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+width: 94px;
+height: 94px;
+overflow: hidden;
+color: #ffffff;
+background: var(–pm-primary);
+border: 4px solid var(–pm-primary-light);
+border-radius: 50%;
+font-size: 34px;
+font-weight: 800;
+line-height: 1;
+box-shadow: var(–pm-shadow-md);
+}
+
+.pm-profile-avatar img {
+display: block;
+width: 100%;
+height: 100%;
+object-fit: cover;
+border-radius: inherit;
+}
+
+.pm-profile-name {
+margin: 2px 0 0;
+color: var(–pm-heading);
+font-size: 22px;
+font-weight: 800;
+overflow-wrap: anywhere;
+}
+
+.pm-profile-role,
+.pm-profile-subtitle {
+margin: 0;
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.6;
+overflow-wrap: anywhere;
+}
+
+.pm-profile-badge {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 6px;
+padding: 6px 12px;
+color: var(–pm-primary-dark);
+background: var(–pm-primary-light);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-pill);
+font-size: 11px;
+font-weight: 750;
+}
+
+/* ============================================================
+5. PROFILE CARDS AND STATISTICS
+============================================================ */
+
+.pm-profile-card {
+min-width: 0;
+padding: 22px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-profile-card h2,
+.pm-profile-card h3 {
+margin: 0 0 17px;
+color: var(–pm-heading);
+font-size: 17px;
+font-weight: 750;
+}
+
+.pm-profile-card-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 12px;
+margin-bottom: 16px;
+}
+
+.pm-profile-card-header h2,
+.pm-profile-card-header h3 {
+margin: 0;
+}
+
+.pm-profile-stats {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 12px;
+width: 100%;
+}
+
+.pm-profile-stat {
+min-width: 0;
+padding: 15px;
+background: var(–pm-surface-alt);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+}
+
+.pm-profile-stat-label {
+display: block;
+margin-bottom: 7px;
+color: var(–pm-text-secondary);
+font-size: 12px;
+font-weight: 600;
+}
+
+.pm-profile-stat-value {
+display: block;
+color: var(–pm-heading);
+font-size: clamp(19px, 2.5vw, 25px);
+font-weight: 800;
+line-height: 1.3;
+overflow-wrap: anywhere;
+}
+
+.pm-profile-stat-note {
+display: block;
+margin-top: 5px;
+color: var(–pm-text-muted);
+font-size: 11px;
+}
+
+.pm-profile-details {
+display: flex;
+flex-direction: column;
+gap: 0;
+}
+
+.pm-profile-detail,
+.pm-profile-detail-row {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 16px;
+padding: 13px 0;
+border-bottom: 1px solid var(–pm-border);
+}
+
+.pm-profile-detail:last-child,
+.pm-profile-detail-row:last-child {
+border-bottom: 0;
+}
+
+.pm-profile-detail-label {
+flex: 0 0 auto;
+color: var(–pm-text-secondary);
+font-size: 13px;
+}
+
+.pm-profile-detail-value {
+min-width: 0;
+color: var(–pm-heading);
+font-size: 13px;
+font-weight: 650;
+text-align: right;
+overflow-wrap: anywhere;
+}
+
+/* ============================================================
+6. SHARED FORM LAYOUT
+============================================================ */
+
+.pm-form,
+.pm-settings-form,
+.pm-profile-form,
+.pm-farm-form {
+display: flex;
+flex-direction: column;
+gap: 18px;
+min-width: 0;
+}
+
+.pm-form-row,
+.pm-form-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 16px;
+min-width: 0;
+}
+
+.pm-form-group,
+.pm-form-field,
+.pm-field {
+display: flex;
+flex-direction: column;
+gap: 7px;
+min-width: 0;
+}
+
+.pm-form-group label,
+.pm-form-field label,
+.pm-field label,
+.pm-form-label {
+color: var(–pm-heading);
+font-size: 13px;
+font-weight: 650;
+}
+
+.pm-form-help,
+.pm-field-help,
+.pm-form-hint {
+margin: 0;
+color: var(–pm-text-muted);
+font-size: 12px;
+line-height: 1.5;
+}
+
+.pm-form-error,
+.pm-field-error {
+margin: 0;
+color: var(–pm-danger);
+font-size: 12px;
+line-height: 1.5;
+}
+
+/* ============================================================
+7. INPUTS, SELECTS, AND TEXTAREAS
+============================================================ */
+
+input,
+select,
+textarea {
+max-width: 100%;
+}
+
+.pm-form input,
+.pm-form select,
+.pm-form textarea,
+.pm-form-group input,
+.pm-form-group select,
+.pm-form-group textarea,
+.pm-form-field input,
+.pm-form-field select,
+.pm-form-field textarea,
+.pm-field input,
+.pm-field select,
+.pm-field textarea,
+.pm-profile-form input,
+.pm-profile-form select,
+.pm-profile-form textarea,
+.pm-farm-form input,
+.pm-farm-form select,
+.pm-farm-form textarea,
+.pm-settings-form input,
+.pm-settings-form select,
+.pm-settings-form textarea {
+width: 100%;
+min-width: 0;
+min-height: 44px;
+padding: 11px 13px;
+color: var(–pm-text);
+background: var(–pm-input-bg);
+border: 1px solid var(–pm-border-strong);
+border-radius: var(–pm-radius-sm);
+outline: none;
+font-size: 14px;
+line-height: 1.5;
+transition:
+border-color var(–pm-transition),
+box-shadow var(–pm-transition),
+background-color var(–pm-transition);
+}
+
+.pm-form textarea,
+.pm-form-group textarea,
+.pm-form-field textarea,
+.pm-field textarea,
+.pm-profile-form textarea,
+.pm-farm-form textarea,
+.pm-settings-form textarea {
+min-height: 110px;
+resize: vertical;
+}
+
+.pm-form input:focus,
+.pm-form select:focus,
+.pm-form textarea:focus,
+.pm-form-group input:focus,
+.pm-form-group select:focus,
+.pm-form-group textarea:focus,
+.pm-form-field input:focus,
+.pm-form-field select:focus,
+.pm-form-field textarea:focus,
+.pm-field input:focus,
+.pm-field select:focus,
+.pm-field textarea:focus,
+.pm-profile-form input:focus,
+.pm-profile-form select:focus,
+.pm-profile-form textarea:focus,
+.pm-farm-form input:focus,
+.pm-farm-form select:focus,
+.pm-farm-form textarea:focus,
+.pm-settings-form input:focus,
+.pm-settings-form select:focus,
+.pm-settings-form textarea:focus {
+border-color: var(–pm-primary);
+box-shadow: 0 0 0 3px rgba(33, 140, 82, 0.12);
+}
+
+input::placeholder,
+textarea::placeholder {
+color: var(–pm-text-muted);
+opacity: 1;
+}
+
+input[type=“checkbox”],
+input[type=“radio”] {
+width: 18px;
+min-width: 18px;
+height: 18px;
+min-height: 18px;
+margin: 0;
+accent-color: var(–pm-primary);
+cursor: pointer;
+}
+
+input[type=“file”] {
+min-height: auto;
+padding: 9px;
+}
+
+input[type=“color”] {
+min-height: 44px;
+padding: 4px;
+cursor: pointer;
+}
+
+input[type=“range”] {
+padding: 0;
+accent-color: var(–pm-primary);
+}
+
+.pm-checkbox-row,
+.pm-radio-row {
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 12px;
+}
+
+.pm-checkbox-label,
+.pm-radio-label {
+display: inline-flex;
+align-items: center;
+gap: 9px;
+color: var(–pm-text);
+font-size: 13px;
+cursor: pointer;
+}
+
+/* ============================================================
+8. FORM ACTIONS
+============================================================ */
+
+.pm-form-actions,
+.pm-profile-actions,
+.pm-farm-actions {
+display: flex;
+align-items: center;
+justify-content: flex-end;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 4px;
+}
+
+.pm-form-actions > *,
+.pm-profile-actions > *,
+.pm-farm-actions > * {
+max-width: 100%;
+}
+
+/* ============================================================
+9. RESPONSIVE FARM AND PROFILE LAYOUTS
+============================================================ */
+
+@media (max-width: 900px) {
+.pm-profile-layout {
+grid-template-columns: minmax(0, 1fr);
+}
+
+.pm-profile-sidebar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+}
+.pm-farm-info-grid,
+.pm-flock-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+}
+
+@media (max-width: 700px) {
+.pm-farm-header,
+.pm-farm-page-header {
+align-items: flex-start;
+flex-direction: column;
+}
+
+.pm-farm-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+}
+.pm-farm-card,
+.pm-profile-card {
+    padding: 18px;
+    border-radius: var(--pm-radius-md);
+}
+.pm-profile-header {
+    padding: 24px 18px;
+    border-radius: var(--pm-radius-md);
+}
+.pm-profile-avatar {
+    width: 82px;
+    height: 82px;
+    font-size: 29px;
+}
+.pm-profile-name {
+    font-size: 20px;
+}
+.pm-profile-sidebar {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+}
+.pm-form-row,
+.pm-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+}
+.pm-form-actions,
+.pm-profile-actions,
+.pm-farm-actions {
+    justify-content: stretch;
+}
+
+}
+
+@media (max-width: 420px) {
+.pm-farm-info-grid,
+.pm-flock-grid {
+grid-template-columns: minmax(0, 1fr);
+}
+
+.pm-profile-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+}
+.pm-profile-stat {
+    padding: 12px;
+}
+.pm-profile-detail,
+.pm-profile-detail-row,
+.pm-farm-detail-row {
+    gap: 10px;
+}
+.pm-profile-detail-label,
+.pm-profile-detail-value,
+.pm-farm-detail-label,
+.pm-farm-detail-value {
+    font-size: 12px;
+}
+
+}
+
+/* ============================================================
+POULTRY MANAGER
+CLEAN STYLESHEET — PART 4 OF 5
+
+Contents:
+
+1. Egg Production
+2. Egg History and records
+3. Feed Management
+4. Feed inputs and action buttons
+5. Settings view
+6. Settings cards and controls
+7. Responsive production, feed, and settings layouts
+
+Append this part directly below Part 3.
+============================================================ */
+
+/* ============================================================
+
+1. EGG PRODUCTION VIEW
+    ============================================================ */
+
+#pmEggProductionView,
+#pmEggsView,
+#eggProductionView,
+#eggView,
+.pm-egg-production-view {
+width: 100%;
+min-width: 0;
+}
+
+.pm-egg-production-header,
+.pm-egg-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 16px;
+margin-bottom: 22px;
+}
+
+.pm-egg-production-header h1,
+.pm-egg-header h1 {
+margin: 0;
+color: var(–pm-heading);
+font-size: clamp(23px, 3vw, 30px);
+font-weight: 800;
+}
+
+.pm-egg-production-header p,
+.pm-egg-header p {
+margin: 7px 0 0;
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.6;
+}
+
+.pm-egg-production-grid,
+.pm-egg-summary-grid {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 16px;
+margin-bottom: 22px;
+}
+
+.pm-egg-summary-card {
+min-width: 0;
+padding: 20px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-egg-summary-label {
+display: block;
+margin-bottom: 8px;
+color: var(–pm-text-secondary);
+font-size: 12px;
+font-weight: 600;
+}
+
+.pm-egg-summary-value {
+display: block;
+color: var(–pm-heading);
+font-size: clamp(22px, 3vw, 30px);
+font-weight: 800;
+line-height: 1.25;
+overflow-wrap: anywhere;
+}
+
+.pm-egg-summary-note {
+display: block;
+margin-top: 6px;
+color: var(–pm-text-muted);
+font-size: 12px;
+}
+
+/* ============================================================
+2. EGG PRODUCTION FORM
+============================================================ */
+
+.pm-egg-form-card,
+.pm-egg-entry-card {
+min-width: 0;
+margin-bottom: 22px;
+padding: 22px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-egg-form-card h2,
+.pm-egg-entry-card h2 {
+margin: 0 0 18px;
+color: var(–pm-heading);
+font-size: 18px;
+font-weight: 750;
+}
+
+.pm-egg-form,
+.pm-egg-entry-form {
+display: flex;
+flex-direction: column;
+gap: 17px;
+}
+
+.pm-egg-form-row,
+.pm-egg-entry-row {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 16px;
+}
+
+.pm-egg-form label,
+.pm-egg-entry-form label {
+display: block;
+margin-bottom: 7px;
+color: var(–pm-heading);
+font-size: 13px;
+font-weight: 650;
+}
+
+.pm-egg-form input,
+.pm-egg-form select,
+.pm-egg-form textarea,
+.pm-egg-entry-form input,
+.pm-egg-entry-form select,
+.pm-egg-entry-form textarea {
+width: 100%;
+min-width: 0;
+min-height: 44px;
+padding: 11px 13px;
+color: var(–pm-text);
+background: var(–pm-input-bg);
+border: 1px solid var(–pm-border-strong);
+border-radius: var(–pm-radius-sm);
+outline: none;
+font-size: 14px;
+transition:
+border-color var(–pm-transition),
+box-shadow var(–pm-transition);
+}
+
+.pm-egg-form textarea,
+.pm-egg-entry-form textarea {
+min-height: 95px;
+resize: vertical;
+}
+
+.pm-egg-form input:focus,
+.pm-egg-form select:focus,
+.pm-egg-form textarea:focus,
+.pm-egg-entry-form input:focus,
+.pm-egg-entry-form select:focus,
+.pm-egg-entry-form textarea:focus {
+border-color: var(–pm-primary);
+box-shadow: 0 0 0 3px rgba(33, 140, 82, 0.12);
+}
+
+.pm-egg-form-actions,
+.pm-egg-entry-actions {
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 3px;
+}
+
+/* ============================================================
+3. EGG HISTORY AND RECORDS
+============================================================ */
+
+.pm-egg-history,
+#pmEggHistory,
+#eggHistory,
+.pm-egg-history-section {
+min-width: 0;
+padding: 22px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-egg-history-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 12px;
+margin-bottom: 17px;
+}
+
+.pm-egg-history-header h2 {
+margin: 0;
+color: var(–pm-heading);
+font-size: 18px;
+font-weight: 750;
+}
+
+.pm-egg-history-filters {
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 10px;
+margin-bottom: 16px;
+}
+
+.pm-egg-history-filters input,
+.pm-egg-history-filters select {
+min-width: 0;
+min-height: 40px;
+padding: 9px 12px;
+color: var(–pm-text);
+background: var(–pm-input-bg);
+border: 1px solid var(–pm-border-strong);
+border-radius: var(–pm-radius-sm);
+}
+
+.pm-table-wrapper,
+.pm-table-container,
+.pm-egg-table-wrapper {
+width: 100%;
+max-width: 100%;
+overflow-x: auto;
+overscroll-behavior-x: contain;
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+-webkit-overflow-scrolling: touch;
+}
+
+.pm-table,
+.pm-egg-table {
+width: 100%;
+border-collapse: collapse;
+background: var(–pm-surface);
+font-size: 13px;
+}
+
+.pm-table th,
+.pm-table td,
+.pm-egg-table th,
+.pm-egg-table td {
+padding: 13px 15px;
+text-align: left;
+vertical-align: middle;
+border-bottom: 1px solid var(–pm-border);
+}
+
+.pm-table th,
+.pm-egg-table th {
+color: var(–pm-text-secondary);
+background: var(–pm-surface-alt);
+font-size: 11px;
+font-weight: 750;
+letter-spacing: 0.35px;
+text-transform: uppercase;
+white-space: nowrap;
+}
+
+.pm-table td,
+.pm-egg-table td {
+color: var(–pm-text);
+}
+
+.pm-table tbody tr:last-child td,
+.pm-egg-table tbody tr:last-child td {
+border-bottom: 0;
+}
+
+.pm-table tbody tr:hover,
+.pm-egg-table tbody tr:hover {
+background: var(–pm-surface-alt);
+}
+
+.pm-table-empty,
+.pm-egg-table-empty {
+padding: 24px;
+color: var(–pm-text-muted);
+text-align: center;
+}
+
+/* ============================================================
+4. FEED MANAGEMENT VIEW
+============================================================ */
+
+#pmFeedView,
+#pmFeedManagementView,
+#feedManagementView,
+#feedView,
+.pm-feed-view {
+width: 100%;
+min-width: 0;
+}
+
+.pm-feed-header,
+.pm-feed-page-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-wrap: wrap;
+gap: 16px;
+margin-bottom: 22px;
+}
+
+.pm-feed-header h1,
+.pm-feed-page-header h1 {
+margin: 0;
+color: var(–pm-heading);
+font-size: clamp(23px, 3vw, 30px);
+font-weight: 800;
+}
+
+.pm-feed-header p,
+.pm-feed-page-header p {
+margin: 7px 0 0;
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.6;
+}
+
+.pm-feed-summary,
+.pm-feed-stats {
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 16px;
+margin-bottom: 22px;
+}
+
+.pm-feed-summary-card,
+.pm-feed-stat-card {
+min-width: 0;
+padding: 19px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-feed-summary-label,
+.pm-feed-stat-label {
+display: block;
+margin-bottom: 8px;
+color: var(–pm-text-secondary);
+font-size: 12px;
+font-weight: 600;
+}
+
+.pm-feed-summary-value,
+.pm-feed-stat-value {
+display: block;
+color: var(–pm-heading);
+font-size: clamp(21px, 3vw, 29px);
+font-weight: 800;
+line-height: 1.3;
+overflow-wrap: anywhere;
+}
+
+.pm-feed-summary-note,
+.pm-feed-stat-note {
+display: block;
+margin-top: 6px;
+color: var(–pm-text-muted);
+font-size: 12px;
+}
+
+/* ============================================================
+5. FEED MANAGEMENT CARDS AND INPUTS
+============================================================ */
+
+.pm-feed-card,
+.pm-feed-form-card,
+.pm-feed-records {
+min-width: 0;
+margin-bottom: 22px;
+padding: 22px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-feed-card h2,
+.pm-feed-form-card h2,
+.pm-feed-records h2 {
+margin: 0 0 18px;
+color: var(–pm-heading);
+font-size: 18px;
+font-weight: 750;
+}
+
+.pm-feed-form {
+display: flex;
+flex-direction: column;
+gap: 17px;
+}
+
+.pm-feed-form-row,
+.feed-input-row {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 16px;
+min-width: 0;
+}
+
+.pm-feed-form label,
+.feed-input-row label {
+display: block;
+margin-bottom: 7px;
+color: var(–pm-heading);
+font-size: 13px;
+font-weight: 650;
+}
+
+.pm-feed-form input,
+.pm-feed-form select,
+.pm-feed-form textarea,
+.feed-input-row input,
+.feed-input-row select,
+.feed-input-row textarea {
+width: 100%;
+min-width: 0;
+min-height: 44px;
+padding: 11px 13px;
+color: var(–pm-text);
+background: var(–pm-input-bg);
+border: 1px solid var(–pm-border-strong);
+border-radius: var(–pm-radius-sm);
+outline: none;
+font-size: 14px;
+transition:
+border-color var(–pm-transition),
+box-shadow var(–pm-transition);
+}
+
+.pm-feed-form textarea,
+.feed-input-row textarea {
+min-height: 95px;
+resize: vertical;
+}
+
+.pm-feed-form input:focus,
+.pm-feed-form select:focus,
+.pm-feed-form textarea:focus,
+.feed-input-row input:focus,
+.feed-input-row select:focus,
+.feed-input-row textarea:focus {
+border-color: var(–pm-primary);
+box-shadow: 0 0 0 3px rgba(33, 140, 82, 0.12);
+}
+
+/* ============================================================
+6. FEED MANAGEMENT ACTION BUTTONS
+============================================================ */
+
+.pm-feed-actions,
+.pm-feed-form-actions,
+.pm-feed-extra-actions {
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 12px;
+}
+
+.pm-feed-extra-actions {
+padding-top: 14px;
+border-top: 1px solid var(–pm-border);
+}
+
+.pm-feed-actions button,
+.pm-feed-form-actions button,
+.pm-feed-extra-actions button {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 7px;
+min-height: 40px;
+max-width: 100%;
+padding: 10px 14px;
+color: var(–pm-text);
+background: var(–pm-surface);
+border: 1px solid var(–pm-border-strong);
+border-radius: var(–pm-radius-sm);
+font-size: 13px;
+font-weight: 650;
+cursor: pointer;
+transition:
+background-color var(–pm-transition),
+border-color var(–pm-transition),
+transform var(–pm-transition);
+}
+
+.pm-feed-actions button:hover,
+.pm-feed-form-actions button:hover,
+.pm-feed-extra-actions button:hover {
+background: var(–pm-surface-alt);
+border-color: var(–pm-primary);
+}
+
+.pm-feed-actions button:active,
+.pm-feed-form-actions button:active,
+.pm-feed-extra-actions button:active {
+transform: scale(0.98);
+}
+
+.pm-feed-extra-actions button[data-action=“undo”],
+.pm-feed-extra-actions .pm-undo-button {
+color: var(–pm-info);
+border-color: var(–pm-info);
+}
+
+.pm-feed-extra-actions button[data-action=“reset”],
+.pm-feed-extra-actions .pm-reset-button {
+color: var(–pm-danger);
+border-color: var(–pm-danger);
+}
+
+/* ============================================================
+7. FEED RECORDS AND INVENTORY
+============================================================ */
+
+.pm-feed-inventory,
+.pm-feed-stock,
+.pm-feed-list {
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+
+.pm-feed-record,
+.pm-feed-item {
+display: flex;
+align-items: flex-start;
+justify-content: space-between;
+gap: 16px;
+min-width: 0;
+padding: 16px;
+background: var(–pm-surface-alt);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+}
+
+.pm-feed-record-content,
+.pm-feed-item-content {
+flex: 1 1 auto;
+min-width: 0;
+}
+
+.pm-feed-record-title,
+.pm-feed-item-title {
+margin: 0 0 5px;
+color: var(–pm-heading);
+font-size: 14px;
+font-weight: 750;
+overflow-wrap: anywhere;
+}
+
+.pm-feed-record-detail,
+.pm-feed-item-detail {
+margin: 0;
+color: var(–pm-text-secondary);
+font-size: 12px;
+line-height: 1.6;
+overflow-wrap: anywhere;
+}
+
+.pm-feed-record-value,
+.pm-feed-item-value {
+flex: 0 0 auto;
+color: var(–pm-heading);
+font-size: 15px;
+font-weight: 750;
+text-align: right;
+overflow-wrap: anywhere;
+}
+
+/* ============================================================
+8. SETTINGS VIEW
+============================================================ */
+
+#pmSettingsView,
+#settingsView,
+.pm-settings-view {
+width: 100%;
+min-width: 0;
+}
+
+#pmSettingsView > *,
+#settingsView > *,
+.pm-settings-view > * {
+min-width: 0;
+}
+
+.pm-settings-header {
+margin-bottom: 22px;
+}
+
+.pm-settings-header h1 {
+margin: 0;
+color: var(–pm-heading);
+font-size: clamp(23px, 3vw, 30px);
+font-weight: 800;
+}
+
+.pm-settings-header p {
+margin: 7px 0 0;
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.6;
+}
+
+.pm-settings-layout {
+display: grid;
+grid-template-columns: minmax(0, 1fr);
+gap: 20px;
+}
+
+.pm-settings-section {
+min-width: 0;
+padding: 22px;
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-lg);
+box-shadow: var(–pm-shadow-sm);
+}
+
+.pm-settings-section h2 {
+margin: 0 0 7px;
+color: var(–pm-heading);
+font-size: 18px;
+font-weight: 750;
+}
+
+.pm-settings-section-description {
+margin: 0 0 18px;
+color: var(–pm-text-secondary);
+font-size: 13px;
+line-height: 1.6;
+}
+
+/* ============================================================
+9. SETTINGS ROWS AND TOGGLES
+============================================================ */
+
+.pm-settings-list {
+display: flex;
+flex-direction: column;
+gap: 0;
+}
+
+.pm-settings-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 18px;
+padding: 16px 0;
+border-bottom: 1px solid var(–pm-border);
+}
+
+.pm-settings-row:first-child {
+padding-top: 0;
+}
+
+.pm-settings-row:last-child {
+padding-bottom: 0;
+border-bottom: 0;
+}
+
+.pm-settings-row-content {
+flex: 1 1 auto;
+min-width: 0;
+}
+
+.pm-settings-row-title {
+display: block;
+margin-bottom: 4px;
+color: var(–pm-heading);
+font-size: 14px;
+font-weight: 700;
+}
+
+.pm-settings-row-description {
+display: block;
+color: var(–pm-text-secondary);
+font-size: 12px;
+line-height: 1.6;
+}
+
+.pm-settings-row-control {
+display: flex;
+align-items: center;
+justify-content: flex-end;
+flex: 0 0 auto;
+gap: 10px;
+max-width: 55%;
+}
+
+.pm-settings-row-control select,
+.pm-settings-row-control input:not([type=“checkbox”]):not([type=“radio”]) {
+width: auto;
+max-width: 100%;
+min-height: 40px;
+padding: 9px 11px;
+color: var(–pm-text);
+background: var(–pm-input-bg);
+border: 1px solid var(–pm-border-strong);
+border-radius: var(–pm-radius-sm);
+}
+
+.pm-settings-row-control input[type=“checkbox”],
+.pm-settings-row-control input[type=“radio”] {
+flex-shrink: 0;
+}
+
+.pm-toggle {
+position: relative;
+display: inline-flex;
+align-items: center;
+flex-shrink: 0;
+width: 48px;
+height: 27px;
+padding: 3px;
+background: var(–pm-border-strong);
+border: 0;
+border-radius: var(–pm-radius-pill);
+cursor: pointer;
+transition: background-color var(–pm-transition);
+}
+
+.pm-toggle::before {
+content: “”;
+display: block;
+width: 21px;
+height: 21px;
+background: #ffffff;
+border-radius: 50%;
+box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+transition: transform var(–pm-transition);
+}
+
+.pm-toggle[aria-checked=“true”],
+.pm-toggle.is-active {
+background: var(–pm-primary);
+}
+
+.pm-toggle[aria-checked=“true”]::before,
+.pm-toggle.is-active::before {
+transform: translateX(21px);
+}
+
+.pm-toggle:focus-visible {
+outline: 3px solid rgba(33, 140, 82, 0.35);
+outline-offset: 3px;
+}
+
+/* ============================================================
+10. SETTINGS BUTTONS AND NOTICES
+============================================================ */
+
+.pm-settings-actions {
+display: flex;
+align-items: center;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 18px;
+}
+
+.pm-settings-notice {
+padding: 13px 15px;
+color: var(–pm-text);
+background: var(–pm-surface-alt);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+font-size: 13px;
+line-height: 1.6;
+}
+
+.pm-settings-notice-success {
+border-left: 4px solid var(–pm-success);
+}
+
+.pm-settings-notice-warning {
+border-left: 4px solid var(–pm-warning);
+}
+
+.pm-settings-notice-error {
+border-left: 4px solid var(–pm-danger);
+}
+
+/* ============================================================
+11. RESPONSIVE EGG, FEED, AND SETTINGS LAYOUTS
+============================================================ */
+
+@media (max-width: 900px) {
+.pm-egg-production-grid,
+.pm-egg-summary-grid,
+.pm-feed-summary,
+.pm-feed-stats {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+
+@media (max-width: 700px) {
+.pm-egg-production-header,
+.pm-egg-header,
+.pm-feed-header,
+.pm-feed-page-header {
+align-items: flex-start;
+flex-direction: column;
+}
+
+.pm-egg-form-card,
+.pm-egg-entry-card,
+.pm-egg-history,
+#pmEggHistory,
+#eggHistory,
+.pm-egg-history-section,
+.pm-feed-card,
+.pm-feed-form-card,
+.pm-feed-records,
+.pm-settings-section {
+    padding: 17px;
+    border-radius: var(--pm-radius-md);
+}
+.pm-egg-form-row,
+.pm-egg-entry-row,
+.pm-feed-form-row,
+.feed-input-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+}
+.pm-egg-history-filters {
+    align-items: stretch;
+    flex-direction: column;
+}
+.pm-egg-history-filters input,
+.pm-egg-history-filters select {
+    width: 100%;
+}
+.pm-settings-row {
+    align-items: flex-start;
+    gap: 12px;
+}
+.pm-settings-row-control {
+    max-width: 50%;
+}
+.pm-feed-record,
+.pm-feed-item {
+    gap: 12px;
+    padding: 13px;
+}
+
+}
+
+@media (max-width: 420px) {
+.pm-egg-production-grid,
+.pm-egg-summary-grid,
+.pm-feed-summary,
+.pm-feed-stats {
+grid-template-columns: minmax(0, 1fr);
+gap: 10px;
+}
+
+.pm-egg-form-actions,
+.pm-egg-entry-actions,
+.pm-feed-actions,
+.pm-feed-form-actions,
+.pm-feed-extra-actions,
+.pm-settings-actions {
+    align-items: stretch;
+    flex-direction: column;
+}
+.pm-egg-form-actions button,
+.pm-egg-entry-actions button,
+.pm-feed-actions button,
+.pm-feed-form-actions button,
+.pm-feed-extra-actions button,
+.pm-settings-actions button {
+    width: 100%;
+}
+.pm-settings-row {
+    flex-direction: column;
+}
+.pm-settings-row-control {
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 100%;
+}
+.pm-feed-record,
+.pm-feed-item {
+    flex-direction: column;
+}
+.pm-feed-record-value,
+.pm-feed-item-value {
+    text-align: left;
+}
+
+}
+
+/* ============================================================
+POULTRY MANAGER
+CLEAN STYLESHEET — PART 5 OF 5
+
+Contents:
+
+1. Main navigation
+2. Mobile navigation
+3. Shared buttons
+4. Badges and status indicators
+5. Notifications and messages
+6. Final mobile and tablet responsiveness
+7. Touch interaction improvements
+8. Accessibility
+9. Final theme and layout adjustments
+
+Append this part directly below Part 4.
+============================================================ */
+
+/* ============================================================
+
+1. MAIN NAVIGATION
+    ============================================================ */
+
+.pm-navigation,
+.pm-nav,
+.app-navigation,
+.main-navigation {
+display: flex;
+align-items: center;
+gap: 8px;
+min-width: 0;
+}
+
+.pm-navigation a,
+.pm-navigation button,
+.pm-nav a,
+.pm-nav button,
+.app-navigation a,
+.app-navigation button,
+.main-navigation a,
+.main-navigation button {
+display: inline-flex;
+align-items: center;
+justify-content: flex-start;
+gap: 9px;
+min-height: 42px;
+padding: 10px 14px;
+color: var(–pm-text-secondary);
+background: transparent;
+border: 1px solid transparent;
+border-radius: var(–pm-radius-sm);
+font-size: 13px;
+font-weight: 650;
+text-align: left;
+text-decoration: none;
+cursor: pointer;
+transition:
+color var(–pm-transition),
+background-color var(–pm-transition),
+border-color var(–pm-transition);
+}
+
+.pm-navigation a:hover,
+.pm-navigation button:hover,
+.pm-nav a:hover,
+.pm-nav button:hover,
+.app-navigation a:hover,
+.app-navigation button:hover,
+.main-navigation a:hover,
+.main-navigation button:hover {
+color: var(–pm-primary);
+background: var(–pm-primary-light);
+}
+
+.pm-navigation a.active,
+.pm-navigation button.active,
+.pm-nav a.active,
+.pm-nav button.active,
+.app-navigation a.active,
+.app-navigation button.active,
+.main-navigation a.active,
+.main-navigation button.active,
+.pm-navigation [aria-current=“page”],
+.pm-nav [aria-current=“page”] {
+color: var(–pm-primary);
+background: var(–pm-primary-light);
+border-color: var(–pm-border);
+}
+
+.pm-navigation svg,
+.pm-nav svg,
+.app-navigation svg,
+.main-navigation svg {
+width: 19px;
+height: 19px;
+flex-shrink: 0;
+}
+
+/* ============================================================
+2. SIDEBAR NAVIGATION
+============================================================ */
+
+.pm-sidebar,
+.pm-side-navigation,
+.app-sidebar {
+min-width: 0;
+background: var(–pm-surface);
+border-right: 1px solid var(–pm-border);
+}
+
+.pm-sidebar-nav,
+.pm-sidebar-navigation {
+display: flex;
+flex-direction: column;
+gap: 6px;
+padding: 16px;
+}
+
+.pm-sidebar-nav a,
+.pm-sidebar-nav button,
+.pm-sidebar-navigation a,
+.pm-sidebar-navigation button {
+display: flex;
+align-items: center;
+gap: 11px;
+width: 100%;
+min-height: 44px;
+padding: 11px 13px;
+color: var(–pm-text-secondary);
+background: transparent;
+border: 1px solid transparent;
+border-radius: var(–pm-radius-sm);
+font-size: 13px;
+font-weight: 650;
+text-align: left;
+cursor: pointer;
+transition:
+background-color var(–pm-transition),
+color var(–pm-transition),
+border-color var(–pm-transition);
+}
+
+.pm-sidebar-nav a:hover,
+.pm-sidebar-nav button:hover,
+.pm-sidebar-navigation a:hover,
+.pm-sidebar-navigation button:hover {
+color: var(–pm-primary);
+background: var(–pm-primary-light);
+}
+
+.pm-sidebar-nav a.active,
+.pm-sidebar-nav button.active,
+.pm-sidebar-navigation a.active,
+.pm-sidebar-navigation button.active {
+color: var(–pm-primary);
+background: var(–pm-primary-light);
+border-color: var(–pm-border);
+}
+
+/* ============================================================
+3. MOBILE BOTTOM NAVIGATION
+============================================================ */
+
+.pm-bottom-nav,
+.pm-mobile-nav,
+.pm-mobile-navigation,
+.app-bottom-nav {
+display: none;
+}
+
+@media (max-width: 700px) {
+.pm-bottom-nav,
+.pm-mobile-nav,
+.pm-mobile-navigation,
+.app-bottom-nav {
+position: fixed;
+right: 0;
+bottom: 0;
+left: 0;
+z-index: 100;
+align-items: stretch;
+justify-content: space-around;
+gap: 2px;
+width: 100%;
+padding: 8px 6px;
+padding-bottom: max(8px, env(safe-area-inset-bottom));
+background: var(–pm-surface);
+border-top: 1px solid var(–pm-border);
+box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.pm-bottom-nav,
+.pm-mobile-nav,
+.pm-mobile-navigation,
+.app-bottom-nav {
+    display: flex;
+}
+.pm-bottom-nav a,
+.pm-bottom-nav button,
+.pm-mobile-nav a,
+.pm-mobile-nav button,
+.pm-mobile-navigation a,
+.pm-mobile-navigation button,
+.app-bottom-nav a,
+.app-bottom-nav button {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 0;
+    min-height: 48px;
+    padding: 5px 3px;
+    color: var(--pm-text-secondary);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--pm-radius-sm);
+    font-size: 10px;
+    font-weight: 650;
+    line-height: 1.3;
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+.pm-bottom-nav a.active,
+.pm-bottom-nav button.active,
+.pm-mobile-nav a.active,
+.pm-mobile-nav button.active,
+.pm-mobile-navigation a.active,
+.pm-mobile-navigation button.active,
+.app-bottom-nav a.active,
+.app-bottom-nav button.active,
+.pm-bottom-nav [aria-current="page"],
+.pm-mobile-nav [aria-current="page"] {
+    color: var(--pm-primary);
+    background: var(--pm-primary-light);
+}
+.pm-bottom-nav svg,
+.pm-mobile-nav svg,
+.pm-mobile-navigation svg,
+.app-bottom-nav svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+body {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+}
+.pm-main,
+.pm-main-content,
+.app-main {
+    padding: 18px 15px 26px;
+}
+
+}
+
+/* ============================================================
+4. SHARED BUTTONS
+============================================================ */
+
+.pm-btn,
+.pm-button,
+.btn,
+button.pm-btn,
+button.pm-button {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+min-height: 42px;
+max-width: 100%;
+padding: 10px 16px;
+color: var(–pm-text);
+background: var(–pm-surface);
+border: 1px solid var(–pm-border-strong);
+border-radius: var(–pm-radius-sm);
+font-size: 13px;
+font-weight: 700;
+line-height: 1.4;
+text-align: center;
+text-decoration: none;
+cursor: pointer;
+transition:
+background-color var(–pm-transition),
+color var(–pm-transition),
+border-color var(–pm-transition),
+box-shadow var(–pm-transition),
+transform var(–pm-transition);
+}
+
+.pm-btn:hover,
+.pm-button:hover,
+.btn:hover {
+border-color: var(–pm-primary);
+}
+
+.pm-btn:active,
+.pm-button:active,
+.btn:active {
+transform: scale(0.98);
+}
+
+.pm-btn-primary,
+.pm-button-primary,
+.btn-primary {
+color: #ffffff;
+background: var(–pm-primary);
+border-color: var(–pm-primary);
+}
+
+.pm-btn-primary:hover,
+.pm-button-primary:hover,
+.btn-primary:hover {
+color: #ffffff;
+background: var(–pm-primary-hover);
+border-color: var(–pm-primary-hover);
+}
+
+.pm-btn-secondary,
+.pm-button-secondary,
+.btn-secondary {
+color: var(–pm-text);
+background: var(–pm-surface);
+border-color: var(–pm-border-strong);
+}
+
+.pm-btn-danger,
+.pm-button-danger,
+.btn-danger {
+color: #ffffff;
+background: var(–pm-danger);
+border-color: var(–pm-danger);
+}
+
+.pm-btn-danger:hover,
+.pm-button-danger:hover,
+.btn-danger:hover {
+color: #ffffff;
+filter: brightness(0.94);
+}
+
+.pm-btn-ghost,
+.pm-button-ghost,
+.btn-ghost {
+color: var(–pm-primary);
+background: transparent;
+border-color: transparent;
+}
+
+.pm-btn-ghost:hover,
+.pm-button-ghost:hover,
+.btn-ghost:hover {
+background: var(–pm-primary-light);
+}
+
+.pm-btn-sm,
+.pm-button-sm,
+.btn-sm {
+min-height: 34px;
+padding: 7px 11px;
+font-size: 12px;
+}
+
+.pm-btn-lg,
+.pm-button-lg,
+.btn-lg {
+min-height: 48px;
+padding: 13px 20px;
+font-size: 14px;
+}
+
+.pm-btn-block,
+.pm-button-block,
+.btn-block {
+width: 100%;
+}
+
+.pm-btn svg,
+.pm-button svg,
+.btn svg {
+width: 17px;
+height: 17px;
+flex-shrink: 0;
+}
+
+/* ============================================================
+5. STATUS BADGES
+============================================================ */
+
+.pm-badge,
+.pm-status-badge,
+.pm-status {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 5px;
+max-width: 100%;
+padding: 5px 10px;
+color: var(–pm-text-secondary);
+background: var(–pm-surface-alt);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-pill);
+font-size: 11px;
+font-weight: 700;
+line-height: 1.4;
+overflow-wrap: anywhere;
+}
+
+.pm-badge-success,
+.pm-status-success {
+color: var(–pm-success);
+background: rgba(22, 163, 74, 0.1);
+border-color: rgba(22, 163, 74, 0.25);
+}
+
+.pm-badge-warning,
+.pm-status-warning {
+color: var(–pm-warning);
+background: rgba(217, 119, 6, 0.1);
+border-color: rgba(217, 119, 6, 0.25);
+}
+
+.pm-badge-danger,
+.pm-status-danger {
+color: var(–pm-danger);
+background: rgba(220, 38, 38, 0.1);
+border-color: rgba(220, 38, 38, 0.25);
+}
+
+.pm-badge-info,
+.pm-status-info {
+color: var(–pm-info);
+background: rgba(2, 132, 199, 0.1);
+border-color: rgba(2, 132, 199, 0.25);
+}
+
+/* ============================================================
+6. ALERTS AND NOTIFICATIONS
+============================================================ */
+
+.pm-alert,
+.pm-notice,
+.pm-message {
+display: flex;
+align-items: flex-start;
+gap: 11px;
+min-width: 0;
+padding: 14px 16px;
+color: var(–pm-text);
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+font-size: 13px;
+line-height: 1.6;
+overflow-wrap: anywhere;
+}
+
+.pm-alert-success {
+border-left: 4px solid var(–pm-success);
+}
+
+.pm-alert-warning {
+border-left: 4px solid var(–pm-warning);
+}
+
+.pm-alert-danger {
+border-left: 4px solid var(–pm-danger);
+}
+
+.pm-alert-info {
+border-left: 4px solid var(–pm-info);
+}
+
+.pm-toast,
+.pm-toast-message {
+position: fixed;
+right: 18px;
+bottom: 18px;
+z-index: 200;
+width: max-content;
+max-width: min(420px, calc(100vw - 36px));
+padding: 14px 18px;
+color: var(–pm-text);
+background: var(–pm-surface);
+border: 1px solid var(–pm-border);
+border-radius: var(–pm-radius-md);
+box-shadow: var(–pm-shadow-lg);
+font-size: 13px;
+line-height: 1.5;
+overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+.pm-toast,
+.pm-toast-message {
+right: 12px;
+bottom: calc(88px + env(safe-area-inset-bottom));
+left: 12px;
+width: auto;
+max-width: none;
+}
+}
+
+/* ============================================================
+7. FINAL RESPONSIVE LAYOUT ADJUSTMENTS
+============================================================ */
+
+@media (max-width: 900px) {
+.pm-main,
+.pm-main-content,
+.app-main {
+padding: 20px;
+}
+
+.pm-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.pm-navigation,
+.pm-nav,
+.app-navigation,
+.main-navigation {
+    flex-wrap: wrap;
+}
+
+}
+
+@media (max-width: 700px) {
+.pm-header,
+.app-header,
+header.pm-header {
+min-height: 60px;
+gap: 10px;
+padding: 11px 15px;
+}
+
+.pm-header-left,
+.pm-header-right,
+.app-header-left,
+.app-header-right {
+    gap: 8px;
+}
+.pm-header h1,
+.app-header h1,
+.pm-header .app-title,
+.app-header .app-title {
+    font-size: 19px;
+}
+.pm-view-header,
+.pm-section-header,
+.app-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+}
+.pm-card,
+.app-card {
+    padding: 16px;
+    border-radius: var(--pm-radius-md);
+}
+.pm-panel {
+    padding: 17px;
+    border-radius: var(--pm-radius-md);
+}
+.pm-grid,
+.pm-grid-3,
+.pm-grid-4 {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+}
+.pm-inline {
+    align-items: stretch;
+}
+.pm-inline > button,
+.pm-inline > .pm-btn,
+.pm-inline > .pm-button {
+    max-width: 100%;
+}
+.pm-table-wrapper,
+.pm-table-container,
+.pm-egg-table-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+}
+.pm-table,
+.pm-egg-table {
+    min-width: 500px;
+}
+
+}
+
+@media (max-width: 420px) {
+.pm-main,
+.pm-main-content,
+.app-main {
+padding: 15px 12px 22px;
+}
+
+.pm-header,
+.app-header,
+header.pm-header {
+    padding-right: 12px;
+    padding-left: 12px;
+}
+.pm-header h1,
+.app-header h1,
+.pm-header .app-title,
+.app-header .app-title {
+    font-size: 17px;
+}
+.pm-btn,
+.pm-button,
+.btn {
+    padding: 10px 12px;
+}
+.pm-form-actions,
+.pm-profile-actions,
+.pm-farm-actions {
+    flex-direction: column;
+    align-items: stretch;
+}
+.pm-form-actions button,
+.pm-profile-actions button,
+.pm-farm-actions button {
+    width: 100%;
+}
+
+}
+
+/* ============================================================
+8. TOUCH INTERACTION
+============================================================ */
+
+/*
+Improves touch response for interactive elements and reduces
+accidental double-tap zoom on buttons.
+
+This does NOT disable pinch-to-zoom across the whole page.
+*/
+
+button,
+[role=“button”],
+.pm-btn,
+.pm-button,
+.btn,
+.pm-navigation a,
+.pm-nav a,
+.pm-sidebar-nav a,
+.pm-sidebar-navigation a,
+.pm-bottom-nav a,
+.pm-mobile-nav a,
+.pm-mobile-navigation a,
+.app-bottom-nav a {
+touch-action: manipulation;
+}
+
+input,
+select,
+textarea {
+touch-action: auto;
+}
+
+/* ============================================================
+9. ACCESSIBILITY
+============================================================ */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role=“button”]:focus-visible {
+outline: 3px solid rgba(33, 140, 82, 0.45);
+outline-offset: 3px;
+}
+
+button:disabled,
+.pm-btn:disabled,
+.pm-button:disabled,
+.btn:disabled {
+transform: none;
+box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+html {
+scroll-behavior: auto;
+}
+
+*,
+*::before,
+*::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+}
+
+}
+
+/* ============================================================
+10. FINAL THEME AND LAYOUT SAFEGUARDS
+============================================================ */
+
+body,
+.pm-app,
+.pm-card,
+.pm-panel,
+.app-card,
+.pm-header,
+.app-header,
+.pm-profile-card,
+.pm-farm-card,
+.pm-settings-section,
+.pm-egg-history,
+.pm-feed-card {
+color: var(–pm-text);
+}
+
+.pm-card,
+.pm-panel,
+.app-card,
+.pm-profile-card,
+.pm-farm-card,
+.pm-settings-section,
+.pm-egg-history,
+.pm-feed-card {
+background-color: var(–pm-surface);
+border-color: var(–pm-border);
+}
+
+.pm-card h1,
+.pm-card h2,
+.pm-card h3,
+.pm-panel h1,
+.pm-panel h2,
+.pm-panel h3,
+.app-card h1,
+.app-card h2,
+.app-card h3 {
+color: var(–pm-heading);
+}
+
+.pm-muted,
+.pm-text-muted {
+color: var(–pm-text-muted);
+}
+
+.pm-text-secondary {
+color: var(–pm-text-secondary);
+}
+
+/* Prevent long content from breaking mobile layouts. */
+
+.pm-view,
+.pm-card,
+.pm-panel,
+.app-card,
+.pm-profile-card,
+.pm-farm-card,
+.pm-settings-section,
+.pm-egg-history,
+.pm-feed-card,
+.pm-table-wrapper {
+overflow-wrap: anywhere;
+}
+
+/* End of Poultry Manager stylesheet. */
