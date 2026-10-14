@@ -5111,25 +5111,44 @@ function ensureFeedActionButtons() {
     try {
         console.log("Starting notification disable process...");
 
-        // Get the service worker registration
+        let subscription = null;
+
+        // Get the existing service worker registration.
         const registration =
             await navigator.serviceWorker.ready;
 
-        if (!registration) {
-            throw new Error(
-                "Service worker registration not found."
-            );
-        }
-
-        console.log("Service worker found.");
-
-        // Get the existing push subscription
-        const subscription =
+        // Get the browser's current push subscription.
+        subscription =
             await registration.pushManager.getSubscription();
 
+        // Remove the subscription from the backend first.
         if (subscription) {
-            console.log("Push subscription found. Unsubscribing...");
+            const unsubscribeResponse = await fetch(
+                `${APP.renderBase}/unsubscribe`,
+                {
+                    method: "POST",
 
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        endpoint: subscription.endpoint
+                    })
+                }
+            );
+
+            if (!unsubscribeResponse.ok) {
+                throw new Error(
+                    "Could not remove the subscription from the server."
+                );
+            }
+
+            console.log(
+                "Server subscription removed."
+            );
+
+            // Unsubscribe the browser.
             const unsubscribed =
                 await subscription.unsubscribe();
 
@@ -5139,18 +5158,22 @@ function ensureFeedActionButtons() {
                 );
             }
 
-            console.log("Push subscription removed.");
+            console.log(
+                "Browser push subscription removed."
+            );
         } else {
-            console.log("No active push subscription found.");
+            console.log(
+                "No active browser subscription found."
+            );
         }
 
-        // Update the saved notification setting
+        // Save the disabled state.
         writeStorage(
             APP.storage.notifications,
             "false"
         );
 
-        // Refresh the interface
+        // Refresh the interface.
         updateNotificationStatus();
 
         notify(
