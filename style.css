@@ -170,11 +170,23 @@ a {
     touch-action: manipulation;
 }
 
-/* Prevent unwanted double-tap zoom on app sections */
-#pmDashboardView,
-#pmFarmView,
-#pmProfileView,
-#pmSettingsView {
+/* Stable touch behavior across Poultry Manager */
+html {
+    touch-action: manipulation;
+}
+
+body,
+main,
+section,
+article,
+.pm-view,
+.pm-farm-grid,
+.pm-farm-card {
+    touch-action: manipulation;
+}
+
+button,
+a {
     touch-action: manipulation;
 }
 
