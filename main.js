@@ -1,4 +1,4 @@
-(function () {
+ (function () {
     "use strict";
 
     /* ============================================================
@@ -914,95 +914,70 @@
 
 
     function updateEggHistory() {
-        const list =
-            $("#eggHistoryList");
+    const list = $("#eggHistoryList");
 
-        if (!list) {
-            return;
-        }
-
-
-        const history =
-            getEggHistory()
-                .slice()
-                .sort(function (a, b) {
-                    return b.date.localeCompare(
-                        a.date
-                    );
-                });
-
-
-        if (!history.length) {
-            list.innerHTML =
-                `
-                <div class="history-item">
-                    <div>
-                        <strong>No egg records yet</strong>
-                        <span>
-                            Start recording today's eggs.
-                        </span>
-                    </div>
-                </div>
-                `;
-
-            return;
-        }
-
-
-        const recent =
-            history.slice(0, 7);
-
-
-        list.innerHTML =
-            recent.map(function (record) {
-                const flock =
-                    getFlockCount();
-
-                const rate =
-                    flock > 0
-                        ? Math.round(
-                            (record.eggs / flock) *
-                            100
-                        )
-                        : 0;
-
-                const label =
-                    isToday(record.date)
-                        ? "Today"
-                        : formatShortDate(
-                            record.date
-                        );
-
-
-                return `
-                    <div class="history-item">
-                        <div>
-                            <strong>
-                                ${escapeHTML(label)}
-                            </strong>
-
-                            <span>
-                                ${escapeHTML(
-                                    formatDate(record.date)
-                                )}
-                            </span>
-                        </div>
-
-                        <div>
-                            <strong>
-                                ${record.eggs} eggs
-                            </strong>
-
-                            <span>
-                                ${rate}% laying rate
-                            </span>
-                        </div>
-                    </div>
-                `;
-            })
-            .join("");
+    if (!list) {
+        return;
     }
 
+    // Keep the full history visible when expanded.
+    if (list.dataset.expanded === "true") {
+        showAllEggHistory();
+        return;
+    }
+
+    const history = getEggHistory()
+        .slice()
+        .sort(function (a, b) {
+            return b.date.localeCompare(a.date);
+        });
+
+    if (!history.length) {
+        list.innerHTML = `
+            <div class="history-item">
+                <div>
+                    <strong>No egg records yet</strong>
+                    <span>
+                        Start recording today's eggs.
+                    </span>
+                </div>
+            </div>
+        `;
+        return;
+    }
+
+    const recent = history.slice(0, 7);
+
+    list.innerHTML = recent.map(function (record) {
+        const flock = getFlockCount();
+
+        const rate = flock > 0
+            ? Math.round((record.eggs / flock) * 100)
+            : 0;
+
+        const label = isToday(record.date)
+            ? "Today"
+            : formatShortDate(record.date);
+
+        return `
+            <div class="history-item">
+                <div>
+                    <strong>
+                        ${escapeHTML(label)}
+                    </strong>
+                    <span>
+                        ${escapeHTML(formatDate(record.date))}
+                    </span>
+                </div>
+
+                <div>
+                    <strong>${record.eggs} eggs</strong>
+                    <span>${rate}% laying rate</span>
+                </div>
+            </div>
+        `;
+    }).join("");
+}
 
     function showAllEggHistory() {
         const list =
