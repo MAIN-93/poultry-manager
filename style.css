@@ -169,6 +169,15 @@ button,
 a {
     touch-action: manipulation;
 }
+
+/* Prevent unwanted double-tap zoom on app sections */
+#pmDashboardView,
+#pmFarmView,
+#pmProfileView,
+#pmSettingsView {
+    touch-action: manipulation;
+}
+
 button {
     cursor: pointer;
 }
