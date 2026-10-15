@@ -5069,135 +5069,28 @@ function ensureFeedActionButtons() {
     }
 
 
-    async function enablePushNotifications() {
-        if (
-            !("Notification" in window)
-        ) {
-            notify(
-                "Notifications are not supported by this browser.",
-                "warning"
-            );
-
-            return false;
-        }
-
-
-        if (
-            !("serviceWorker" in navigator)
-        ) {
-            notify(
-                "Service workers are not supported here.",
-                "warning"
-            );
-
-            return false;
-        }
-
-
+        async function enablePushNotifications() {
         try {
+            if (!("Notification" in window)) {
+                throw new Error(
+                    "Notifications are not supported by this browser."
+                );
+            }
+
+            if (!("serviceWorker" in navigator)) {
+                throw new Error(
+                    "Service workers are not supported."
+                );
+            }
+
             const permission =
                 await Notification.requestPermission();
 
-
-            if (
-                permission !== "granted"
-            ) {
+            if (permission !== "granted") {
                 writeStorage(
                     APP.storage.notifications,
                     "false"
                 );
-                
-                async function disablePushNotifications() {
-    try {
-        console.log("Starting notification disable process...");
-
-        let subscription = null;
-
-        // Get the existing service worker registration.
-        const registration =
-            await navigator.serviceWorker.ready;
-
-        // Get the browser's current push subscription.
-        subscription =
-            await registration.pushManager.getSubscription();
-
-        // Remove the subscription from the backend first.
-        if (subscription) {
-            const unsubscribeResponse = await fetch(
-                `${APP.renderBase}/unsubscribe`,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        endpoint: subscription.endpoint
-                    })
-                }
-            );
-
-            if (!unsubscribeResponse.ok) {
-                throw new Error(
-                    "Could not remove the subscription from the server."
-                );
-            }
-
-            console.log(
-                "Server subscription removed."
-            );
-
-            // Unsubscribe the browser.
-            const unsubscribed =
-                await subscription.unsubscribe();
-
-            if (!unsubscribed) {
-                throw new Error(
-                    "Browser could not unsubscribe from push notifications."
-                );
-            }
-
-            console.log(
-                "Browser push subscription removed."
-            );
-        } else {
-            console.log(
-                "No active browser subscription found."
-            );
-        }
-
-        // Save the disabled state.
-        writeStorage(
-            APP.storage.notifications,
-            "false"
-        );
-
-        // Refresh the interface.
-        updateNotificationStatus();
-
-        notify(
-            "Push notifications have been disabled.",
-            "success"
-        );
-
-        return true;
-
-    } catch (error) {
-        console.error(
-            "Could not disable push notifications:",
-            error
-        );
-
-        notify(
-            "Could not disable notifications: " +
-            (error.message || "Unknown error"),
-            "warning"
-        );
-
-        return false;
-    }
-}
 
                 updateNotificationStatus();
 
@@ -5209,135 +5102,196 @@ function ensureFeedActionButtons() {
                 return false;
             }
 
-
             const registration =
                 await getServiceWorkerRegistration();
 
-
             if (!registration) {
                 throw new Error(
-                    "Service worker unavailable."
+                    "Service worker registration failed."
                 );
             }
 
-
-            const keyResponse =
-                await fetch(
-                    `${APP.renderBase}/vapid-public-key`
-                );
-
+            const keyResponse = await fetch(
+                `${APP.renderBase}/vapid-public-key`
+            );
 
             if (!keyResponse.ok) {
                 throw new Error(
-                    "Could not retrieve notification key."
+                    "Could not retrieve the notification public key."
                 );
             }
 
-
             const keyData =
                 await keyResponse.json();
-
 
             const publicKey =
                 keyData.publicKey ||
                 keyData.key ||
                 keyData.vapidPublicKey;
 
-
             if (!publicKey) {
                 throw new Error(
-                    "Notification public key missing."
+                    "The server did not return a public key."
                 );
             }
 
+            const applicationServerKey =
+                base64ToUint8Array(publicKey);
 
             let subscription =
                 await registration.pushManager
                     .getSubscription();
 
-
             if (!subscription) {
                 subscription =
                     await registration.pushManager
                         .subscribe({
-                            userVisibleOnly:
-                                true,
-
+                            userVisibleOnly: true,
                             applicationServerKey:
-                                base64ToUint8Array(
-                                    publicKey
-                                )
+                                applicationServerKey
                         });
             }
 
+            const response = await fetch(
+                `${APP.renderBase}/subscribe`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(
+                        subscription.toJSON()
+                    )
+                }
+            );
 
-            const subscribeResponse =
-                await fetch(
-                    `${APP.renderBase}/subscribe`,
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify(
-                                subscription
-                            )
-                    }
-                );
-
-
-            if (!subscribeResponse.ok) {
+            if (!response.ok) {
                 throw new Error(
-                    "Server subscription failed."
+                    "The server could not save the subscription."
                 );
             }
-
 
             writeStorage(
                 APP.storage.notifications,
                 "true"
             );
 
-
             updateNotificationStatus();
 
-
             notify(
-                "Push notifications are enabled.",
+                "Push notifications enabled successfully.",
                 "success"
             );
-
-
-            createAutomaticBackupIfEnabled();
-
 
             return true;
 
         } catch (error) {
             console.error(
-                "Push notification setup failed:",
+                "Enable notifications failed:",
                 error
             );
-
 
             writeStorage(
                 APP.storage.notifications,
                 "false"
             );
 
-
             updateNotificationStatus();
 
-
             notify(
-                "Notifications could not be enabled right now.",
+                error.message ||
+                "Could not enable notifications.",
                 "warning"
             );
 
+            return false;
+        }
+    }
+
+
+    async function disablePushNotifications() {
+        try {
+            const registration =
+                await getServiceWorkerRegistration();
+
+            let subscription = null;
+
+            if (registration) {
+                subscription =
+                    await registration.pushManager
+                        .getSubscription();
+            }
+
+            if (subscription) {
+                const endpoint =
+                    subscription.endpoint;
+
+                // Attempt to remove the server record.
+                try {
+                    const response = await fetch(
+                        `${APP.renderBase}/unsubscribe`,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                endpoint: endpoint
+                            })
+                        }
+                    );
+
+                    if (!response.ok) {
+                        console.warn(
+                            "The server could not remove the subscription."
+                        );
+                    }
+
+                } catch (serverError) {
+                    console.warn(
+                        "Server subscription cleanup failed:",
+                        serverError
+                    );
+                }
+
+                // Unsubscribe this browser.
+                const unsubscribed =
+                    await subscription.unsubscribe();
+
+                if (!unsubscribed) {
+                    throw new Error(
+                        "The browser could not unsubscribe."
+                    );
+                }
+            }
+
+            writeStorage(
+                APP.storage.notifications,
+                "false"
+            );
+
+            updateNotificationStatus();
+
+            notify(
+                "Push notifications disabled.",
+                "success"
+            );
+
+            return true;
+
+        } catch (error) {
+            console.error(
+                "Disable notifications failed:",
+                error
+            );
+
+            updateNotificationStatus();
+
+            notify(
+                error.message ||
+                "Could not disable notifications.",
+                "warning"
+            );
 
             return false;
         }
