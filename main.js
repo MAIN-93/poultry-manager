@@ -4504,41 +4504,28 @@
 
 
         if (history) {
-            history.onclick =
-                function () {
-                    const list =
-                        $("#eggHistoryList");
+    history.onclick = function () {
+        const list = $("#eggHistoryList");
 
-                    if (!list) {
-                        return;
-                    }
+        if (!list) return;
 
+        const expanded =
+            list.dataset.expanded === "true";
 
-                    const isHidden =
-                        list.dataset.expanded !==
-                        "true";
+        // Update the state BEFORE rendering.
+        list.dataset.expanded = expanded
+            ? "false"
+            : "true";
 
-
-                    if (isHidden) {
-                        showAllEggHistory();
-
-                        list.dataset.expanded =
-                            "true";
-
-                        history.textContent =
-                            "Show Recent";
-
-                    } else {
-                        updateEggHistory();
-
-                        list.dataset.expanded =
-                            "false";
-
-                        history.textContent =
-                            "View History";
-                    }
-                };
+        if (list.dataset.expanded === "true") {
+            showAllEggHistory();
+            history.textContent = "Show Recent";
+        } else {
+            updateEggHistory();
+            history.textContent = "View History";
         }
+    };
+}
 
 
         updateEggDisplay();
