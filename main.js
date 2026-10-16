@@ -4413,25 +4413,28 @@
         }
 
 
-        if (historyButton) {
-            historyButton.onclick =
-                function () {
-                    showFarm();
+    if (historyButton) {
+    historyButton.onclick = function () {
+        showFarm();
 
-                    setTimeout(
-                        function () {
-                            scrollToElement(
-                                $("#eggHistoryList")
-                            );
+        setTimeout(function () {
+            const list = $("#eggHistoryList");
+            const button = $("#viewHistoryButton");
 
-                            updateEggHistory();
-                        },
-                        150
-                    );
-                };
-        }
-    }
+            if (list) {
+                list.dataset.expanded = "false";
+            }
 
+            if (button) {
+                button.textContent = "View History";
+            }
+
+            updateEggHistory();
+
+            scrollToElement($("#eggHistoryList"));
+        }, 150);
+    };
+}
 
     /* ============================================================
        FLOCK CONTROLS IN MY FARM
