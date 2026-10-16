@@ -4503,26 +4503,56 @@
         }
 
 
-        if (history) {
+       if (history) {
     history.onclick = function () {
         const list = $("#eggHistoryList");
 
         if (!list) return;
 
-        const expanded =
-            list.dataset.expanded === "true";
+        const expanded = list.dataset.expanded === "true";
 
-        // Update the state BEFORE rendering.
-        list.dataset.expanded = expanded
-            ? "false"
-            : "true";
+        if (expanded) {
+            // Collapse: directly render only the latest 7 records.
+            const records = getEggHistory()
+                .slice()
+                .sort(function (a, b) {
+                    return b.date.localeCompare(a.date);
+                })
+                .slice(0, 7);
 
-        if (list.dataset.expanded === "true") {
+            list.innerHTML = records.map(function (record) {
+                const flock = getFlockCount();
+
+                const rate = flock > 0
+                    ? Math.round((record.eggs / flock) * 100)
+                    : 0;
+
+                const label = isToday(record.date)
+                    ? "Today"
+                    : formatShortDate(record.date);
+
+                return `
+                    <div class="history-item">
+                        <div>
+                            <strong>${escapeHTML(label)}</strong>
+                            <span>${escapeHTML(formatDate(record.date))}</span>
+                        </div>
+                        <div>
+                            <strong>${record.eggs} eggs</strong>
+                            <span>${rate}% laying rate</span>
+                        </div>
+                    </div>
+                `;
+            }).join("");
+
+            list.dataset.expanded = "false";
+            history.textContent = "View History";
+
+        } else {
+            // Expand: display all records.
+            list.dataset.expanded = "true";
             showAllEggHistory();
             history.textContent = "Show Recent";
-        } else {
-            updateEggHistory();
-            history.textContent = "View History";
         }
     };
 }
