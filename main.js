@@ -1,4 +1,4 @@
- (function () {
+s =cv(function () {
     "use strict";
 
     /* ============================================================
@@ -4413,28 +4413,23 @@
         }
 
 
-    if (historyButton) {
-    historyButton.onclick = function () {
-        showFarm();
+      if (historyButton) {
+            historyButton.onclick =
+                function () {
+                    showFarm();
 
-        setTimeout(function () {
-            const list = $("#eggHistoryList");
-            const button = $("#viewHistoryButton");
+                    setTimeout(
+                        function () {
+                            scrollToElement(
+                                $("#eggHistoryList")
+                            );
 
-            if (list) {
-                list.dataset.expanded = "false";
-            }
-
-            if (button) {
-                button.textContent = "View History";
-            }
-
-            updateEggHistory();
-
-            scrollToElement($("#eggHistoryList"));
-        }, 150);
-    };
-}
+                            updateEggHistory();
+                        },
+                        150
+                    );
+                };
+        }
 
     /* ============================================================
        FLOCK CONTROLS IN MY FARM
