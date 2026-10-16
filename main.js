@@ -915,42 +915,39 @@
 
     function updateEggHistory() {
     const list = $("#eggHistoryList");
+    const button = $("#viewHistoryButton");
 
-    if (!list) {
-        return;
-    }
-
-    // Keep the full history visible when expanded.
-    if (list.dataset.expanded === "true") {
-        showAllEggHistory();
-        return;
-    }
+    if (!list) return;
 
     const history = getEggHistory()
         .slice()
-        .sort(function (a, b) {
-            return b.date.localeCompare(a.date);
-        });
+        .sort((a, b) => b.date.localeCompare(a.date));
+
+    const expanded = list.dataset.expanded === "true";
+
+    if (button) {
+        button.textContent = expanded ? "Show Recent" : "View History";
+    }
 
     if (!history.length) {
         list.innerHTML = `
             <div class="history-item">
                 <div>
                     <strong>No egg records yet</strong>
-                    <span>
-                        Start recording today's eggs.
-                    </span>
+                    <span>Start recording today's eggs.</span>
                 </div>
             </div>
         `;
         return;
     }
 
-    const recent = history.slice(0, 7);
+    // Show all records when expanded; otherwise show only seven.
+    const recordsToShow = expanded
+        ? history
+        : history.slice(0, 7);
 
-    list.innerHTML = recent.map(function (record) {
+    list.innerHTML = recordsToShow.map(function(record) {
         const flock = getFlockCount();
-
         const rate = flock > 0
             ? Math.round((record.eggs / flock) * 100)
             : 0;
@@ -962,14 +959,9 @@
         return `
             <div class="history-item">
                 <div>
-                    <strong>
-                        ${escapeHTML(label)}
-                    </strong>
-                    <span>
-                        ${escapeHTML(formatDate(record.date))}
-                    </span>
+                    <strong>${escapeHTML(label)}</strong>
+                    <span>${escapeHTML(formatDate(record.date))}</span>
                 </div>
-
                 <div>
                     <strong>${record.eggs} eggs</strong>
                     <span>${rate}% laying rate</span>
