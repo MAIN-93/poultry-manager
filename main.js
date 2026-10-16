@@ -4424,7 +4424,7 @@
                                 $("#eggHistoryList")
                             );
 
-                            showAllEggHistory();
+                            updateEggHistory();
                         },
                         150
                     );
