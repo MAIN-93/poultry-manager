@@ -4518,7 +4518,7 @@
                 .sort(function (a, b) {
                     return b.date.localeCompare(a.date);
                 })
-                .slice(0, 7);
+                .slice(0, 4);
 
             list.innerHTML = records.map(function (record) {
                 const flock = getFlockCount();
