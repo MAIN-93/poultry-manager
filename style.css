@@ -2897,3 +2897,22 @@ body[data-theme="dark"] #pmSettingsView .pm-about-card {
 /* ============================================================
    END OF TARGETED UI CORRECTIONS
    ============================================================ */
+
+
+/* =====================================================
+   PREVENT ACCIDENTAL DOUBLE-TAP ZOOM
+   POULTRY MANAGER
+   ===================================================== */
+
+button,
+a,
+.pm-card,
+.history-item,
+.feed-history-item,
+.pm-bottom-nav,
+.pm-bottom-nav *,
+input,
+select,
+textarea {
+    touch-action: manipulation;
+}
