@@ -923,10 +923,13 @@
         .slice()
         .sort((a, b) => b.date.localeCompare(a.date));
 
+    // Default to collapsed unless the user has expanded the history.
     const expanded = list.dataset.expanded === "true";
 
     if (button) {
-        button.textContent = expanded ? "Show Recent" : "View History";
+        button.textContent = expanded
+            ? "Show Recent"
+            : "View History";
     }
 
     if (!history.length) {
@@ -941,13 +944,14 @@
         return;
     }
 
-    // Show all records when expanded; otherwise show only seven.
+    // Show all records when expanded; otherwise show only the latest 3.
     const recordsToShow = expanded
         ? history
-        : history.slice(0, 7);
+        : history.slice(0, 3);
 
     list.innerHTML = recordsToShow.map(function(record) {
         const flock = getFlockCount();
+
         const rate = flock > 0
             ? Math.round((record.eggs / flock) * 100)
             : 0;
@@ -4557,8 +4561,14 @@
 }
 
 
-        updateEggDisplay();
-        updateEggHistory();
+const historyList = $("#eggHistoryList");
+
+if (historyList) {
+    historyList.dataset.expanded = "false";
+}
+
+updateEggDisplay();
+updateEggHistory();
     }
 
 
