@@ -2625,145 +2625,102 @@
 
 
     function updateFeedHistory() {
-        const list =
-            $("#feedHistoryList");
+    const list = $("#feedHistoryList");
 
-        if (!list) {
-            return;
-        }
+    if (!list) return;
 
+    const usage = getFeedUsageHistory()
+        .slice()
+        .sort(function (a, b) {
+            return b.date.localeCompare(a.date);
+        });
 
-        const usage =
-            getFeedUsageHistory()
-                .slice()
-                .sort(function (a, b) {
-                    return b.date.localeCompare(
-                        a.date
-                    );
-                });
+    const additions = getFeedAdditionHistory()
+        .slice()
+        .sort(function (a, b) {
+            return safeNumber(b.id) - safeNumber(a.id);
+        });
 
+    const items = [];
 
-        const additions =
-            getFeedAdditionHistory()
-                .slice()
-                .sort(function (a, b) {
-                    return (
-                        safeNumber(b.id) -
-                        safeNumber(a.id)
-                    );
-                });
+    usage.forEach(function (record) {
+        items.push({
+            timestamp: dateFromKey(record.date).getTime(),
 
-
-        const items = [];
-
-
-        usage.slice(0, 5)
-            .forEach(function (record) {
-                items.push({
-                    timestamp:
-                        dateFromKey(
-                            record.date
-                        ).getTime(),
-
-                    html: `
-                        <div class="feed-history-item">
-                            <div>
-                                <strong>
-                                    Feed used
-                                </strong>
-
-                                <span>
-                                    ${escapeHTML(
-                                        isToday(record.date)
-                                            ? "Today"
-                                            : formatShortDate(
-                                                record.date
-                                            )
-                                    )}
-                                </span>
-                            </div>
-
-                            <strong>
-                                −${record.amount.toFixed(2)} kg
-                            </strong>
-                        </div>
-                    `
-                });
-            });
-
-
-        additions.slice(0, 5)
-            .forEach(function (record) {
-                items.push({
-                    timestamp:
-                        safeNumber(
-                            record.id
-                        ),
-
-                    html: `
-                        <div class="feed-history-item">
-                            <div>
-                                <strong>
-                                    Feed added
-                                </strong>
-
-                                <span>
-                                    ${escapeHTML(
-                                        formatDate(
-                                            record.timestamp ||
-                                            record.id
-                                        )
-                                    )}
-                                </span>
-                            </div>
-
-                            <strong>
-                                +${safeNumber(
-                                    record.amount
-                                ).toFixed(2)} kg
-                            </strong>
-                        </div>
-                    `
-                });
-            });
-
-
-        items.sort(
-            (a, b) =>
-                b.timestamp -
-                a.timestamp
-        );
-
-
-        const visible =
-            items.slice(0, 8);
-
-
-        if (!visible.length) {
-            list.innerHTML =
-                `
+            html: `
                 <div class="feed-history-item">
                     <div>
-                        <strong>
-                            No feed activity yet
-                        </strong>
-
+                        <strong>Feed used</strong>
                         <span>
-                            Add stock or record usage to begin.
+                            ${escapeHTML(
+                                isToday(record.date)
+                                    ? "Today"
+                                    : formatShortDate(record.date)
+                            )}
                         </span>
                     </div>
+
+                    <strong>
+                        −${safeNumber(record.amount).toFixed(2)} kg
+                    </strong>
                 </div>
-                `;
+            `
+        });
+    });
 
-            return;
-        }
+    additions.forEach(function (record) {
+        items.push({
+            timestamp: safeNumber(record.id),
 
+            html: `
+                <div class="feed-history-item">
+                    <div>
+                        <strong>Feed added</strong>
+                        <span>
+                            ${escapeHTML(
+                                formatDate(
+                                    record.timestamp || record.id
+                                )
+                            )}
+                        </span>
+                    </div>
 
-        list.innerHTML =
-            visible
-                .map(item => item.html)
-                .join("");
+                    <strong>
+                        +${safeNumber(record.amount).toFixed(2)} kg
+                    </strong>
+                </div>
+            `
+        });
+    });
+
+    items.sort(function (a, b) {
+        return b.timestamp - a.timestamp;
+    });
+
+    const expanded = list.dataset.expanded === "true";
+
+    const visible = expanded
+        ? items
+        : items.slice(0, 3);
+
+    if (!visible.length) {
+        list.innerHTML = `
+            <div class="feed-history-item">
+                <div>
+                    <strong>No feed activity yet</strong>
+                    <span>Add stock or record usage to begin.</span>
+                </div>
+            </div>
+        `;
+        return;
     }
+
+    list.innerHTML = visible
+        .map(function (item) {
+            return item.html;
+        })
+        .join("");
+}
 
 
     function showAllFeedHistory() {
@@ -4639,41 +4596,24 @@ updateEggHistory();
 
 
         if (historyButton) {
-            historyButton.onclick =
-                function () {
-                    const list =
-                        $("#feedHistoryList");
+    historyButton.onclick = function () {
+        const list = $("#feedHistoryList");
 
-                    if (!list) {
-                        return;
-                    }
+        if (!list) return;
 
+        const expanded = list.dataset.expanded === "true";
 
-                    const expanded =
-                        list.dataset.expanded ===
-                        "true";
-
-
-                    if (expanded) {
-                        updateFeedHistory();
-
-                        list.dataset.expanded =
-                            "false";
-
-                       historyButton.textContent =
-    expanded ? "Show Recent" : "View History";
-
-                    } else {
-                        showAllFeedHistory();
-
-                        list.dataset.expanded =
-                            "true";
-
-                        historyButton.textContent =
-                            "Show Recent";
-                    }
-                };
+        if (expanded) {
+            list.dataset.expanded = "false";
+            updateFeedHistory();
+            historyButton.textContent = "View History";
+        } else {
+            list.dataset.expanded = "true";
+            updateFeedHistory();
+            historyButton.textContent = "Show Recent";
         }
+    };
+}
 
 
         [addInput, useInput]
@@ -4712,8 +4652,18 @@ updateEggHistory();
             );
 
 
-        updateFeedManagement();
-        updateFeedHistory();
+        const feedHistoryList = $("#feedHistoryList");
+
+if (feedHistoryList) {
+    feedHistoryList.dataset.expanded = "false";
+}
+
+if (historyButton) {
+    historyButton.textContent = "View History";
+}
+
+updateFeedManagement();
+updateFeedHistory();
     }
 
 
