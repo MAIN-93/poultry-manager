@@ -2917,15 +2917,3 @@ textarea {
     touch-action: manipulation;
 }
 
-
-
-/* =========================================
-   POULTRY MANAGER — PREVENT DOUBLE-TAP ZOOM
-   Preserve normal scrolling and pinch-to-zoom
-   ========================================= */
-
-html,
-body,
-body * {
-    touch-action: manipulation !important;
-}
