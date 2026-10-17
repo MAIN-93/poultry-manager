@@ -4650,8 +4650,8 @@
                         list.dataset.expanded =
                             "false";
 
-                        historyButton.textContent =
-                            "View Feed History";
+                       historyButton.textContent =
+    expanded ? "Show Recent" : "View History";
 
                     } else {
                         showAllFeedHistory();
